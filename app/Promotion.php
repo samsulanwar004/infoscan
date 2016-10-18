@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Exchange extends Model
+class Promotion extends Model
 {
-    protected $table = 'exchanges';
+    protected $table = 'promotions';
 }

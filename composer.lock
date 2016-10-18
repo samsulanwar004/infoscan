@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "5533dbab5a14f834d6c76bf98ae7588f",
-    "content-hash": "8ad6657e510820b5aa13c41b910c1161",
+    "hash": "0d685136135da54293c7749719ee9d7d",
+    "content-hash": "db5d7689ad56832a63bd6cbd0eb7accf",
     "packages": [
         {
             "name": "classpreloader/classpreloader",
@@ -522,16 +522,16 @@
         },
         {
             "name": "laravel/framework",
-            "version": "v5.3.18",
+            "version": "v5.3.19",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "9bee167d173857c25966c19afdaa66f127ca6784"
+                "reference": "f1a5bb417b3e0d1949fe84617eacd1a14d75d7f1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/9bee167d173857c25966c19afdaa66f127ca6784",
-                "reference": "9bee167d173857c25966c19afdaa66f127ca6784",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/f1a5bb417b3e0d1949fe84617eacd1a14d75d7f1",
+                "reference": "f1a5bb417b3e0d1949fe84617eacd1a14d75d7f1",
                 "shasum": ""
             },
             "require": {
@@ -613,7 +613,7 @@
                 "pusher/pusher-php-server": "Required to use the Pusher broadcast driver (~2.0).",
                 "symfony/css-selector": "Required to use some of the crawler integration testing tools (3.1.*).",
                 "symfony/dom-crawler": "Required to use most of the crawler integration testing tools (3.1.*).",
-                "symfony/psr-http-message-bridge": "Required to psr7 bridging features (0.2.*)."
+                "symfony/psr-http-message-bridge": "Required to use psr7 bridging features (0.2.*)."
             },
             "type": "library",
             "extra": {
@@ -646,20 +646,20 @@
                 "framework",
                 "laravel"
             ],
-            "time": "2016-10-08 01:51:20"
+            "time": "2016-10-17 19:35:14"
         },
         {
             "name": "laravel/passport",
-            "version": "v1.0.6",
+            "version": "v1.0.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/passport.git",
-                "reference": "0d9b4e491792496c80a0753826c38824d3f65ae6"
+                "reference": "9c24790adb31f9c8c1bda71213e0a3dafdc0fc29"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/passport/zipball/0d9b4e491792496c80a0753826c38824d3f65ae6",
-                "reference": "0d9b4e491792496c80a0753826c38824d3f65ae6",
+                "url": "https://api.github.com/repos/laravel/passport/zipball/9c24790adb31f9c8c1bda71213e0a3dafdc0fc29",
+                "reference": "9c24790adb31f9c8c1bda71213e0a3dafdc0fc29",
                 "shasum": ""
             },
             "require": {
@@ -710,7 +710,7 @@
                 "oauth",
                 "passport"
             ],
-            "time": "2016-10-12 15:29:07"
+            "time": "2016-10-15 21:33:46"
         },
         {
             "name": "lcobucci/jwt",
@@ -822,20 +822,20 @@
         },
         {
             "name": "league/flysystem",
-            "version": "1.0.28",
+            "version": "1.0.29",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/flysystem.git",
-                "reference": "a9663643ff2d16d7f66ed1e0d3212c5491bc9044"
+                "reference": "b732cc946c48cf102ddffd41ffcd54901a28ccdb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/a9663643ff2d16d7f66ed1e0d3212c5491bc9044",
-                "reference": "a9663643ff2d16d7f66ed1e0d3212c5491bc9044",
+                "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/b732cc946c48cf102ddffd41ffcd54901a28ccdb",
+                "reference": "b732cc946c48cf102ddffd41ffcd54901a28ccdb",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.4.0"
+                "php": ">=5.6.0"
             },
             "conflict": {
                 "league/flysystem-sftp": "<1.0.6"
@@ -901,7 +901,7 @@
                 "sftp",
                 "storage"
             ],
-            "time": "2016-10-07 12:20:37"
+            "time": "2016-10-17 23:14:19"
         },
         {
             "name": "league/oauth2-server",
@@ -1201,16 +1201,16 @@
         },
         {
             "name": "paragonie/random_compat",
-            "version": "v2.0.2",
+            "version": "v2.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/paragonie/random_compat.git",
-                "reference": "088c04e2f261c33bed6ca5245491cfca69195ccf"
+                "reference": "c0125896dbb151380ab47e96c621741e79623beb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/paragonie/random_compat/zipball/088c04e2f261c33bed6ca5245491cfca69195ccf",
-                "reference": "088c04e2f261c33bed6ca5245491cfca69195ccf",
+                "url": "https://api.github.com/repos/paragonie/random_compat/zipball/c0125896dbb151380ab47e96c621741e79623beb",
+                "reference": "c0125896dbb151380ab47e96c621741e79623beb",
                 "shasum": ""
             },
             "require": {
@@ -1245,7 +1245,7 @@
                 "pseudorandom",
                 "random"
             ],
-            "time": "2016-04-03 06:00:07"
+            "time": "2016-10-17 15:23:22"
         },
         {
             "name": "phpseclib/phpseclib",
@@ -1637,6 +1637,83 @@
                 "uuid"
             ],
             "time": "2016-10-02 15:51:17"
+        },
+        {
+            "name": "rebel/component-rbac",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://pieter-rebel-works@bitbucket.org/rebeldevs/rebel-component-rbac.git",
+                "reference": "f5dcf232a986a2c55623f0c1626ae51aa3d4eb85"
+            },
+            "require": {
+                "laravel/framework": "5.3.*",
+                "php": ">=5.6.4",
+                "rebel/component-util": "dev-master"
+            },
+            "type": "library",
+            "license": [
+                "REBEL LICENSE"
+            ],
+            "authors": [
+                {
+                    "name": "Pieter Lelaona",
+                    "email": "pieter@rebelworks.co"
+                }
+            ],
+            "description": "Laravel RBAC component",
+            "time": "2016-10-18 05:21:41"
+        },
+        {
+            "name": "rebel/component-setting",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://pieter-rebel-works@bitbucket.org/rebeldevs/rebel-component-setting.git",
+                "reference": "d20ce44600f2096d3ed91043fa559a45ac484ddf"
+            },
+            "require": {
+                "laravel/framework": "5.3.*",
+                "php": ">=5.6.4",
+                "rebel/component-util": "dev-master"
+            },
+            "type": "library",
+            "license": [
+                "REBEL LICENSE"
+            ],
+            "authors": [
+                {
+                    "name": "Pieter Lelaona",
+                    "email": "pieter@rebelworks.co"
+                }
+            ],
+            "description": "Laravel Setting component",
+            "time": "2016-10-18 05:21:13"
+        },
+        {
+            "name": "rebel/component-util",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://pieter-rebel-works@bitbucket.org/rebeldevs/rebel-component-utilities.git",
+                "reference": "b6bf9fa9395e136bf4c23e21b06acaa9d4f942da"
+            },
+            "require": {
+                "laravel/framework": "5.3.*",
+                "php": ">=5.6.4"
+            },
+            "type": "library",
+            "license": [
+                "REBEL LICENSE"
+            ],
+            "authors": [
+                {
+                    "name": "Pieter Lelaona",
+                    "email": "pieter@rebelworks.co"
+                }
+            ],
+            "description": "Laravel Utilities component",
+            "time": "2016-10-18 04:46:21"
         },
         {
             "name": "swiftmailer/swiftmailer",
@@ -4199,7 +4276,11 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "rebel/component-util": 20,
+        "rebel/component-rbac": 20,
+        "rebel/component-setting": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
