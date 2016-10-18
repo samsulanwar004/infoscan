@@ -167,8 +167,8 @@ return [
          * Package Service Providers...
          */
         Laravel\Passport\PassportServiceProvider::class,
-        \Rebel\Component\Rbac\RebelRbacServiceProvider::class,
-        \Rebel\Component\Setting\RebelSettingServiceProvider::class,
+        Rebel\Component\Rbac\RebelRbacServiceProvider::class,
+        Rebel\Component\Setting\RebelSettingServiceProvider::class,
 
         //
 

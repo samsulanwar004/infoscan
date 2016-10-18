@@ -1644,7 +1644,7 @@
             "source": {
                 "type": "git",
                 "url": "https://pieter-rebel-works@bitbucket.org/rebeldevs/rebel-component-rbac.git",
-                "reference": "f5dcf232a986a2c55623f0c1626ae51aa3d4eb85"
+                "reference": "44e1a1ad834d45b91019d9ef2a69d49e40c2c31c"
             },
             "require": {
                 "laravel/framework": "5.3.*",
@@ -1652,6 +1652,11 @@
                 "rebel/component-util": "dev-master"
             },
             "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Rebel\\Component\\Rbac\\": "src/"
+                }
+            },
             "license": [
                 "REBEL LICENSE"
             ],
@@ -1662,7 +1667,7 @@
                 }
             ],
             "description": "Laravel RBAC component",
-            "time": "2016-10-18 05:21:41"
+            "time": "2016-10-18 08:14:39"
         },
         {
             "name": "rebel/component-setting",
@@ -1670,7 +1675,7 @@
             "source": {
                 "type": "git",
                 "url": "https://pieter-rebel-works@bitbucket.org/rebeldevs/rebel-component-setting.git",
-                "reference": "d20ce44600f2096d3ed91043fa559a45ac484ddf"
+                "reference": "f40b09cb682c552444e1165dfbbc1f4c1e343e0e"
             },
             "require": {
                 "laravel/framework": "5.3.*",
@@ -1678,6 +1683,11 @@
                 "rebel/component-util": "dev-master"
             },
             "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Rebel\\Component\\Setting\\": "src/"
+                }
+            },
             "license": [
                 "REBEL LICENSE"
             ],
@@ -1688,7 +1698,7 @@
                 }
             ],
             "description": "Laravel Setting component",
-            "time": "2016-10-18 05:21:13"
+            "time": "2016-10-18 08:14:30"
         },
         {
             "name": "rebel/component-util",
@@ -1696,13 +1706,18 @@
             "source": {
                 "type": "git",
                 "url": "https://pieter-rebel-works@bitbucket.org/rebeldevs/rebel-component-utilities.git",
-                "reference": "b6bf9fa9395e136bf4c23e21b06acaa9d4f942da"
+                "reference": "b6cfb01682e9d0356535cbaa1f468fe9da70094a"
             },
             "require": {
                 "laravel/framework": "5.3.*",
                 "php": ">=5.6.4"
             },
             "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Rebel\\Component\\Util\\": "src/"
+                }
+            },
             "license": [
                 "REBEL LICENSE"
             ],
@@ -1713,7 +1728,7 @@
                 }
             ],
             "description": "Laravel Utilities component",
-            "time": "2016-10-18 04:46:21"
+            "time": "2016-10-18 08:14:20"
         },
         {
             "name": "swiftmailer/swiftmailer",
