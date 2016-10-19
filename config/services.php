@@ -35,4 +35,10 @@ return [
         'secret' => env('STRIPE_SECRET'),
     ],
 
+    'google' => [
+        'vision' => [
+            'key' => env('GOOGLE_VISION_KEY')
+        ]
+    ]
+
 ];

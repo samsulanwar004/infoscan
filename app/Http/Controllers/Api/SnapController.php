@@ -4,11 +4,11 @@ namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
 
-class SnapController extends Controller
+class SnapController extends BaseApiController
 {
-    public function store(Request $request)
+    public function store(Request $request, $type = 'bill')
     {
-        switch ($action) {
+        switch ($type) {
             case 'arrange':
                 return $this->arrange($request);
                 break;
@@ -22,11 +22,11 @@ class SnapController extends Controller
 
     private function bill(Request $request)
     {
-
+        dd('masuk ke bill');
     }
 
     private function arrange(Request $request)
     {
-
+        dd('masuk ke arrange');
     }
 }

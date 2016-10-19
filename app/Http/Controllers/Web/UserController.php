@@ -12,12 +12,10 @@ class UserController extends AdminController
 
     public function show($id)
     {
-
     }
 
     public function create()
     {
-
     }
 
     public function edit($id)
@@ -26,16 +24,13 @@ class UserController extends AdminController
 
     public function store(Request $request)
     {
-
     }
 
     public function update(Request $request, $id)
     {
-
     }
 
     public function destroy(Request $request, $id)
     {
-
     }
 }
