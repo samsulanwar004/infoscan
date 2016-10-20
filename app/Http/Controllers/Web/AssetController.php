@@ -3,13 +3,12 @@
 namespace App\Http\Controllers\Web;
 
 use App\Services\ImageDetection;
-use Request;
+use Illuminate\Http\Request;
 
 class AssetController extends AdminController
 {
     public function transferImages(Request $request)
     {
-        $ocr = (new ImageDetection)->handle($request);
-        die;
+        $ocr = (new ImageDetection)->handle($request); die;
     }
 }

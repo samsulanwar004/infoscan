@@ -10,7 +10,7 @@ Route::group([
     Route::get('/', 'Web\AdminController@dashboard')
          ->name($routePrefix == null ? 'dashboard' : '.dashboard');
 
-    Route::get('/transfer', 'Web\AssetController@transferImages')
+    Route::post('/transfer', 'Web\AssetController@transferImages')
          ->name($routePrefix == null ? 'transfer' : '.transfer');
 
 });

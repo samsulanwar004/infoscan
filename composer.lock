@@ -1888,7 +1888,7 @@
             "source": {
                 "type": "git",
                 "url": "https://pieter-rebel-works@bitbucket.org/rebeldevs/rebel-component-utilities.git",
-                "reference": "b6cfb01682e9d0356535cbaa1f468fe9da70094a"
+                "reference": "3166d1feff81c3d0d16c41510890f0e2af65e7c0"
             },
             "require": {
                 "laravel/framework": "5.3.*",
@@ -1896,6 +1896,9 @@
             },
             "type": "library",
             "autoload": {
+                "files": [
+                    "src/Supports/helpers.php"
+                ],
                 "psr-4": {
                     "Rebel\\Component\\Util\\": "src/"
                 }
@@ -1910,7 +1913,7 @@
                 }
             ],
             "description": "Laravel Utilities component",
-            "time": "2016-10-18 08:14:20"
+            "time": "2016-10-19 08:35:46"
         },
         {
             "name": "swiftmailer/swiftmailer",

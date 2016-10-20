@@ -21,16 +21,17 @@ class GoogleVision
     /**
      * Handle all process.
      *
-     * @return bool
+     * @return array
      */
     public function handle()
     {
+        $result = [];
         foreach ($this->getImages() as $image) {
             $body = $this->buildRequestBody($image); dd($body);
-            $this->push($this->getGvUrl(), $body);
+            $result[] = $this->push($this->getGvUrl(), $body);
         }
 
-        return true;
+        return $result;
     }
 
     /**
@@ -113,6 +114,9 @@ class GoogleVision
         curl_setopt($curl, CURLOPT_POSTFIELDS, $requestBody);
         $jsonResponse = curl_exec($curl);
         $status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+        curl_errno($curl);
+        curl_error($curl);
+
         curl_close($curl);
         if ($status != 200) {
             throw new \Exception(

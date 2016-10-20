@@ -12,9 +12,12 @@ class ImageDetection
 
     public function handle(Request $request)
     {
-        $images = $request->input(self::IMAGE_KEY_NAME);
-        $key = config('services.google.vision.key');
+        $images = $request->file(self::IMAGE_KEY_NAME);
+        if (!is_array($images)) {
+            $images = [$images];
+        }
 
+        $key = config('services.google.vision.key');
         $ocrProcess = (new GoogleVision($key))->setImages($images);
 
         return $ocrProcess->handle();
