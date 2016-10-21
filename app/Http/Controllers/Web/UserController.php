@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 class UserController extends AdminController
 {
+
     public function index()
     {
     }
