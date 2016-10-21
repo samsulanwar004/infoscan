@@ -10,16 +10,26 @@ class UserController extends AdminController
 
     public function index(Request $request)
     {
-        $users = new User;
-        // ?filter=roles:administrator,crowd-source,vendor|status:active,non-active,suspended&blabla=scrum:master,diff
-        if ($request->exists('filter')) {
-            $filters = $this->uriExtractor($request, 'filter');
-            if (!empty($filters)) {
-                foreach ()
+        $userObject = new User;
+        $filters = $this->uriExtractor($request, 'filter');
+
+        if (!empty($filters)) {
+
+            foreach ($filters as $key => $value) {
+                $identifier = $userObject->filterIdentifier[$key];
+
+                if (is_array($value)) {
+                    $userObject->whereIn($identifier, $value);
+                } else {
+                    $userObject->where($identifier, '=', $value);
+                }
             }
         }
 
-        return view('users.index');
+
+        $users = $userObject->get();
+        dd($users->first());
+        return view('users.index', compact('users'));
     }
 
     public function show($id)

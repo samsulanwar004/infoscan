@@ -7,11 +7,24 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Rebel\Component\Rbac\Traits\HasRoles;
 
+/**
+ * Class User
+ *
+ * @package App
+ * @property $filterIdentifier
+ */
 class User extends Authenticatable
 {
     use Notifiable, HasRoles, SoftDeletes;
 
     protected $table = 'users';
+
+
+    public $filterIdentifier = [
+        'name' => 'name',
+        'active' => 'is_active',
+        'roles' => 'roles'
+    ];
 
     /**
      * The attributes that are mass assignable.

@@ -19,6 +19,9 @@ trait UriTrait
      */
     protected function uriExtractor(Request $request, $key)
     {
+        if (!$request->has($key)) {
+            return null;
+        }
         if ($reqQuery = $request->query($key)) {
             return $this->uriList($reqQuery);
         }
@@ -36,9 +39,10 @@ trait UriTrait
 
             $key = $split[0];
             $value = $split[1];
-            $value = explode(',', trim($value));
+            $explodeValue = explode(',', trim($value));
 
-            $result[$key] = (count($value) > 1) ? $value[0] : $value;
+            $result[$key] = (count($explodeValue) > 1) ? $explodeValue : $explodeValue[0];
+
         }
 
         return $result;
