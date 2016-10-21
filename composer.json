@@ -24,15 +24,15 @@
     "repositories": [
         {
             "type": "git",
-            "url": "https://pieter-rebel-works@bitbucket.org/rebeldevs/rebel-component-utilities.git"
+            "url": "https://pieter-rebel-works@bitbucket.org/rebelworksco/rebel-component-utilities.git"
         },
         {
             "type": "git",
-            "url": "https://pieter-rebel-works@bitbucket.org/rebeldevs/rebel-component-rbac.git"
+            "url": "https://pieter-rebel-works@bitbucket.org/rebelworksco/rebel-component-rbac.git"
         },
         {
             "type": "git",
-            "url": "https://pieter-rebel-works@bitbucket.org/rebeldevs/rebel-component-setting.git"
+            "url": "https://pieter-rebel-works@bitbucket.org/rebelworksco/rebel-component-setting.git"
         }
     ],
     "autoload": {
