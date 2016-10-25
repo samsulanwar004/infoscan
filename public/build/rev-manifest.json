@@ -1,5 +1,6 @@
 {
-  "css/vendor.css": "css/vendor-c436c55275.css",
-  "js/app.js": "js/app-052677e424.js",
-  "js/vendor.js": "js/vendor-802b6d5751.js"
+  "css/app.css": "css/app-746cd3911c.css",
+  "js/admin.js": "js/admin-c67620983f.js",
+  "js/ie-support.js": "js/ie-support-581459d2bf.js",
+  "js/vendor.js": "js/vendor-553cacce62.js"
 }

@@ -1,6 +1,8 @@
 const elixir = require('laravel-elixir'),
-      acePath = './resources/assets/admin/'
-;
+    assetPath = './resources/assets/',
+    ltePath = './resources/assets/lte/',
+    nodePath = './node_modules/'
+    ;
 require('laravel-elixir-vue-2');
 
 /*
@@ -15,43 +17,45 @@ require('laravel-elixir-vue-2');
  */
 
 elixir(mix => {
-    mix.sass('app.scss')
-       .webpack('app.js');
-
     mix.styles([
-        acePath + 'css/bootstrap.min.css',
-        acePath + 'css/ace.min.css',
-        acePath + 'css/ace-ie.min.css',
-        acePath + 'css/ace-part2.min.css',
-        acePath + 'css/ace-skins.min.css',
-        acePath + 'css/font-awesome.min.css',
-    ], 'public/css/vendor.css');
+        assetPath + 'bootstrap/css/bootstrap.min.css',
+        ltePath + 'css/font-awesome.css',
+        ltePath + 'css/AdminLTE.css',
+        ltePath + 'css/skins/skin-blue.css',
+        ltePath + 'plugins/icheck/square/blue.css'
+    ], 'public/css/app.css');
+
+    /*mix.webpack('app.js');*/
 
     mix.scripts([
-        acePath + 'js/jquery-2.1.4.min.js',
-        acePath + 'js/html5shiv.min.js',
-        acePath + 'js/respond.min.js',
-        acePath + 'js/bootstrap.min.js',
-        acePath + 'js/ace-elements.min.js',
-        acePath + 'js/ace-extra.min.js',
-        acePath + 'js/autosize.min.js',
-        acePath + 'js/ace.min.js',
+        ltePath + 'plugins/jquery/jquery.min.js',
+        assetPath + 'bootstrap/js/bootstrap.js',
+        ltePath + 'plugins/fastclick/fastclick.min.js',
+        ltePath + 'plugins/icheck/icheck.js'
     ], 'public/js/vendor.js');
 
     mix.scripts([
-        acePath + 'js/html5shiv.min.js',
-        acePath + 'js/respond.min.js',
-    ], 'public/js/ie.js');
+        ltePath + 'js/app.js',
+        assetPath + 'js/project.js'
+    ], 'public/js/admin.js');
+
+    mix.scripts([
+        ltePath + 'js/html5shiv.js',
+        ltePath + 'js/respond.js'
+    ], 'public/js/ie-support.js');
+
+    mix.copy(nodePath + 'font-awesome/fonts/*.{ttf,woff,woff2,eof,svg}', 'public/fonts');
+    mix.copy(nodePath + 'bootstrap-sass/assets/fonts/bootstrap/*.{ttf,woff,woff2,eof,svg}', 'public/fonts');
+    mix.copy(ltePath + 'fonts/*', 'public/fonts');
+
+    mix.copy(ltePath + 'img', 'public/img/lte'); // lte image
+    mix.copy(ltePath + 'plugins/icheck/square/blue.png', 'public/img');
 
     mix.version([
-        'css/vendor.css',
+        'css/app.css',
         'js/vendor.js',
-        'js/app.css',
-        'js/app.js',
+        'js/admin.js',
+        'js/ie-support.js',
+        'js/app.js'
     ]);
-
-    mix.copy(acePath + 'fonts/*.{ttf,woff,woff2,eof,svg}', 'public/fonts');
-    mix.copy(acePath + 'css/fonts.googleapis.com.css', 'public/css/fonts.googleapis.com.css');
-    mix.copy(acePath + 'css/jquery.mobile.custom.min.js', 'public/css/jquery.mobile.custom.min.js');
-    mix.copy(acePath + 'images', 'public/img');
 });

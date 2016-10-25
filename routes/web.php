@@ -13,7 +13,10 @@ Route::group([
     Route::post('/transfer', 'Web\AssetController@transferImages')
          ->name($routePrefix == null ? 'transfer' : '.transfer');
 
-    Route::resource('/users', 'Web\UserController', ['names' => route_resource_name($routePrefix, 'users')]);
+    Route::resource('/users', 'Web\UserController',
+        ['except' => ['show'], 'names' => route_resource_name($routePrefix, 'users')]);
+    Route::resource('/users/roles', 'Web\RbacController',
+        ['except' => ['show'], 'names' => route_resource_name($routePrefix, 'roles')]);
 });
 
 Auth::routes();
