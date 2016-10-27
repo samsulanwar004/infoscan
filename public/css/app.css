@@ -8123,7 +8123,8 @@ td.vertical-middle {
 }
 
 .table > thead > tr > td, .table > thead > tr > th {
-    font-weight: 500;
+    font-weight: 700;
+    font-size: 14px;
 }
 
 .form-control {
@@ -8149,6 +8150,18 @@ td.vertical-middle {
 
 .top-alert > h4 {
     margin-bottom: 3px !important;;
+}
+
+.dropdown a i.fa {
+    font-weight: 700;
+}
+
+.button-container {
+    display: inline-block;
+}
+
+.modal-body {
+    overflow: hidden !important;
 }
 /*
  * Skin: Blue

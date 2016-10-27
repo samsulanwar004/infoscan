@@ -37,6 +37,15 @@
                         </div>
 
                         <div class="form-group">
+                            <label for="role">Select Role</label>
+                            <select name="role" id="role" class="form-control">
+                                @foreach($roles as $role)
+                                    <option value="{{ $role->id }}">{{ $role->role_name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="form-group">
                             <label for="password">Password</label>
                             <input type="password" class="form-control" id="password" name="password"
                                    value="{{ old('password', '******') }}" placeholder="Password" required>

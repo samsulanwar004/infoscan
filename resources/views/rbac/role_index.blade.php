@@ -10,17 +10,13 @@
         <div class="box">
             <div class="box-header with-border">
                 <h3 class="box-title">
-                    <a href="/users/roles/create" class="btn btn-info btn-sm"> <i class="fa fa-plus fa-btn"></i> add new</a>
                 </h3>
 
-                <!--<div class="box-tools pull-right">
-                    <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip"
-                            title="Collapse">
-                        <i class="fa fa-minus"></i></button>
-                    <button type="button" class="btn btn-box-tool" data-widget="remove" data-toggle="tooltip"
-                            title="Remove">
-                        <i class="fa fa-times"></i></button>
-                </div>-->
+                <div class="box-tools pull-right">
+                    <a href="/users/roles/create" class="btn btn-box-tool" data-toggle="tooltip"
+                       title="Create New">
+                        <i class="fa fa-plus-circle fa-btn"></i> Create New</a>
+                </div>
             </div>
             <div class="box-body">
                 <table class="table table-striped">
@@ -28,7 +24,7 @@
                     <tr>
                         <th width="50">#</th>
                         <th>Role name</th>
-                        <th>Total of Permission</th>
+                        <th>Permission</th>
                         <th width="250"></th>
                     </tr>
                     </thead>
@@ -38,20 +34,30 @@
                             <td class="vertical-middle">
                                 <i class="fa fa-check-circle {{ $role->is_active == 1 ? 'text-green' : 'text-default' }}"></i>
                             </td>
-                            <td>
+                            <td class="vertical-middle">
                                 {{ $role->role_name }} <br>
                             </td>
-                            <td class="vertical-middle"><a href="#">
-                                    <i class="fa fa-key fa-btn"></i> </a>
+                            <td class="vertical-middle">
+                                <a href="{{ route('roles.show', ['id' => $role->id]) }}"
+                                   data-toggle="modal"
+                                   data-target="#"
+                                >
+                                    <i class="fa fa-key fa-btn"></i> Click to see permissions list
+                                </a>
                             </td>
                             <td class="text-right vertival-middle">
                                 <div class="btn-group">
-                                    <button type="button" class="btn btn-primary">
+                                    <a href="{{ route('roles.edit', ['id' => $role->id]) }}" class="btn btn-info">
                                         <i class="fa fa-pencil"> </i>
-                                    </button>
-                                    <button type="button" class="btn btn-danger">
-                                        <i class="fa fa-trash"> </i>
-                                    </button>
+                                    </a>
+                                    <a class="btn btn-danger"
+                                       href="{{ route('roles.destroy', ['id' => $role->id]) }}"
+                                       data-toggle="modal"
+                                       data-target="#"
+                                       title="Delete this data"
+                                       for-delete="true"
+                                       data-message="Are you sure you want to delete this roles ?"
+                                    > <i class="fa fa-trash"></i> </a>
                                 </div>
                             </td>
                         </tr>

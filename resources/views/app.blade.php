@@ -43,12 +43,15 @@
 
 <script>
     $(document).ready(function () {
-        if ($('div[class^="alert-"]:not(.alert-danger)')) {
+        if ($('div[class^="alert-"]:not(".alert-danger")')) {
             setTimeout(function () {
                 REBEL.removeAllMessageAlert();
             }, 3000);
         }
     });
 </script>
+
+@section('footer_scripts')
+@show
 </body>
 </html>

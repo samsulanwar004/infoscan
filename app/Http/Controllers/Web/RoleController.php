@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 use Rebel\Component\Rbac\Contracts\Permission;
 use Rebel\Component\Rbac\Contracts\Role;
 
-class RbacController extends Controller
+class RoleController extends Controller
 {
     /**
      * @var \Rebel\Component\Rbac\Contracts\Role
@@ -52,9 +52,15 @@ class RbacController extends Controller
 
     /**
      * @param $id
+     *
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function show($id)
     {
+        $role = $this->role->with('permissions')->where('id', '=', $id)->first();
+        $permissions = $role->permissions;
+
+        return view('rbac.permission_list', compact('role', 'permissions'));
     }
 
     /**
@@ -64,7 +70,7 @@ class RbacController extends Controller
      */
     public function create()
     {
-        $permissions = $this->getPermissions();
+        $permissions = $this->getPermissions(false);
 
         return view('rbac.role_create', compact('permissions'));
     }
@@ -96,10 +102,12 @@ class RbacController extends Controller
      */
     public function edit($id)
     {
-        $role = $this->role->getRoleById($id);
+        $role = $this->role->with('permissions')->where('id', '=', $id)->first();
+        $currentPermissions = $role->permissions;
+
         $permissions = $this->getPermissions();
 
-        return view('rbac.role_edit', compact('role', 'permissions'));
+        return view('rbac.role_edit', compact('role', 'permissions', 'currentPermissions'));
     }
 
     /**
@@ -144,11 +152,15 @@ class RbacController extends Controller
     }
 
     /**
-     * @return mixed|\Illuminate\Database\Eloquent\Collection
+     * @param bool $isPaginate
+     *
+     * @return \Illuminate\Database\Eloquent\Collection|mixed
      */
-    private function getPermissions()
+    private function getPermissions($isPaginate = true)
     {
-        return $this->permission->paginate();
+        $permissions = $this->permission->orderBy('permission_name', 'ASC');
+
+        return $isPaginate ? $permissions->paginate() : $permissions->get();
     }
 
     /**
@@ -162,12 +174,12 @@ class RbacController extends Controller
     private function persistRoles(Request $request, $id = null)
     {
         $role = is_null($id) ? $this->role : $this->getRoleById($id);
-        $role->role_name = $request->input('role_name');
-        $role->role_label = $request->input('role_label');
-        $role->is_active = $request->input('is_active');
+        $role->role_name = $request->input('name');
+        $role->role_label = $request->input('name');
+        $role->is_active = $request->has('is_active') ? 1 : 0;
         DB::beginTransaction();
         if ($role->save()) {
-            $role->sync($this->input('permissions'));
+            $role->permissions()->sync($request->input('permissions'));
 
             DB::commit();
 

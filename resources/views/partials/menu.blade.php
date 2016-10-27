@@ -37,12 +37,12 @@
                     <i class="fa fa-user"></i>
                     <span>Users</span>
                     <span class="pull-right-container">
-              <i class="fa fa-angle-left pull-right"></i>
-            </span>
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </span>
                 </a>
                 <ul class="treeview-menu">
                     <li><a href="/users"><i class="fa fa-circle-o"></i> List</a></li>
-                    <li><a href="#"><i class="fa fa-circle-o"></i> Roles</a></li>
+                    <li><a href="/users/roles"><i class="fa fa-circle-o"></i> Roles</a></li>
                 </ul>
             </li>
 

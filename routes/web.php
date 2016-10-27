@@ -15,8 +15,10 @@ Route::group([
 
     Route::resource('/users', 'Web\UserController',
         ['except' => ['show'], 'names' => route_resource_name($routePrefix, 'users')]);
-    Route::resource('/users/roles', 'Web\RbacController',
-        ['except' => ['show'], 'names' => route_resource_name($routePrefix, 'roles')]);
+    Route::resource('/users/roles', 'Web\RoleController',
+        ['names' => route_resource_name($routePrefix, 'roles')]);
+    Route::resource('/users/permissions', 'Web\PermissionController',
+        ['except' => ['show'], 'names' => route_resource_name($routePrefix, 'permissions')]);
 });
 
 Auth::routes();

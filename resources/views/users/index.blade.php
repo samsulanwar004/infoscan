@@ -13,7 +13,7 @@
                 </h3>
 
                 <div class="box-tools pull-right">
-                    <a href="users/create" class="btn btn-box-tool" data-toggle="tooltip"
+                    <a href="/users/create" class="btn btn-box-tool" data-toggle="tooltip"
                        title="Create New">
                         <i class="fa fa-plus-circle fa-btn"></i> Create New</a>
                 </div>
@@ -40,11 +40,13 @@
                             </td>
                             <td class="vertical-middle"><a href="#"><i class="fa fa-list-alt fa-btn"></i> See
                                     activity</a></td>
-                            <td class="text-right vertival-middle">
+                            <td class="text-right vertical-middle">
                                 <div class="btn-group">
+                                    @canDo('User.Update')
                                     <a href="{{ route('users.edit', ['id' => $user->id]) }}" class="btn btn-info">
                                         <i class="fa fa-pencil"> </i>
                                     </a>
+                                    @endCanDo
                                     <a class="btn btn-danger"
                                        href="{{ route('users.destroy', ['id' => $user->id]) }}"
                                        data-toggle="modal"

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Web;
 
 use App\User;
+use DB;
 use Exception;
 use Illuminate\Http\Request;
 use Rebel\Component\Rbac\Contracts\Role;
@@ -151,14 +152,20 @@ class UserController extends AdminController
         if (is_null($id)) {
             $user->email = $request->input('email');
         }
-        $user->password = $request->input('password');
+        if ('******' !== $request->input('password')) {
+            $user->password = bcrypt($request->input('password'));
+        }
         $user->is_active = $request->has('is_active') ? 1 : 0;
 
+        DB::beginTransaction();
         if ($user->save()) {
             $user->roles()->attach($request->input('role'));
+            DB::commit();
 
             return true;
         }
+
+        DB::rollBack();
 
         return false;
     }
@@ -175,6 +182,6 @@ class UserController extends AdminController
 
     private function getRoles()
     {
-        return $this->role->all();
+        return $this->role->orderBy('role_name', 'ASC')->get();
     }
 }

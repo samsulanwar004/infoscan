@@ -31,6 +31,7 @@ elixir(mix => {
         ltePath + 'plugins/jquery/jquery.min.js',
         assetPath + 'bootstrap/js/bootstrap.js',
         ltePath + 'plugins/fastclick/fastclick.min.js',
+        ltePath + 'plugins/form-serialize/jquery.serializejson.min.js',
         ltePath + 'plugins/icheck/icheck.js'
     ], 'public/js/vendor.js');
 
