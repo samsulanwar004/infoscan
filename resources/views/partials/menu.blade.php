@@ -54,7 +54,7 @@
                     </span>
                 </a>
                 <ul class="treeview-menu">
-                    <li><a href="#"><i class="fa fa-circle-o"></i> General</a></li>
+                    <li><a href="/settings"><i class="fa fa-circle-o"></i> General</a></li>
                     <li><a href="#"><i class="fa fa-circle-o"></i> Questionnaire</a></li>
                 </ul>
             </li>

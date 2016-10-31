@@ -12,7 +12,7 @@ return [
     | any other location as required by the application or its packages.
     */
 
-    'name' => 'Laravel',
+    'name' => 'Infoscan',
 
     /*
     |--------------------------------------------------------------------------
@@ -166,9 +166,10 @@ return [
         /*
          * Package Service Providers...
          */
-        Laravel\Passport\PassportServiceProvider::class,
+        //Laravel\Passport\PassportServiceProvider::class,
         Rebel\Component\Rbac\RebelRbacServiceProvider::class,
         Rebel\Component\Setting\RebelSettingServiceProvider::class,
+        Rebel\Component\Util\BladeDirectives\BladeDirectiveServiceProvider::class,
 
         //
 
@@ -228,7 +229,7 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
-
+        'RebelField' => Rebel\Component\Util\BladeDirectives\Facades\RebelField::class,
     ],
 
 ];

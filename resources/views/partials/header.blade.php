@@ -86,7 +86,9 @@
                                             <small class="pull-right">20%</small>
                                         </h3>
                                         <div class="progress xs">
-                                            <div class="progress-bar progress-bar-aqua" style="width: 20%" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100">
+                                            <div class="progress-bar progress-bar-aqua" style="width: 20%"
+                                                 role="progressbar" aria-valuenow="20" aria-valuemin="0"
+                                                 aria-valuemax="100">
                                                 <span class="sr-only">20% Complete</span>
                                             </div>
                                         </div>
@@ -104,7 +106,7 @@
                 <li class="dropdown user user-menu">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         <img src="/img/lte/user2-160x160.jpg" class="user-image" alt="User Image">
-                        <span class="hidden-xs">Alexander Pierce</span>
+                        <span class="hidden-xs">{{ auth()->user()->email }}</span>
                     </a>
                     <ul class="dropdown-menu">
                         <!-- User image -->
@@ -112,12 +114,12 @@
                             <img src="/img/lte/user2-160x160.jpg" class="img-circle" alt="User Image">
 
                             <p>
-                                Alexander Pierce - Web Developer
-                                <small>Member since Nov. 2012</small>
+                                {{ auth()->user()->email }}
+                                <small>Member since, {{ date_format(auth()->user()->created_at, 'M Y') }}</small>
                             </p>
                         </li>
                         <!-- Menu Body -->
-                        <li class="user-body">
+                        <!--<li class="user-body">
                             <div class="row">
                                 <div class="col-xs-4 text-center">
                                     <a href="#">Followers</a>
@@ -129,8 +131,8 @@
                                     <a href="#">Friends</a>
                                 </div>
                             </div>
-                            <!-- /.row -->
-                        </li>
+                            <!-- /.row
+                        </li> -->
                         <!-- Menu Footer-->
                         <li class="user-footer">
                             <div class="pull-left">

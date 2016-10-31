@@ -13,9 +13,11 @@
                 </h3>
 
                 <div class="box-tools pull-right">
+                    @cando('User.Create')
                     <a href="/users/create" class="btn btn-box-tool" data-toggle="tooltip"
                        title="Create New">
                         <i class="fa fa-plus-circle fa-btn"></i> Create New</a>
+                    @endcando
                 </div>
             </div>
             <div class="box-body">
@@ -42,11 +44,13 @@
                                     activity</a></td>
                             <td class="text-right vertical-middle">
                                 <div class="btn-group">
-                                    @canDo('User.Update')
+                                    @cando('User.Update')
                                     <a href="{{ route('users.edit', ['id' => $user->id]) }}" class="btn btn-info">
                                         <i class="fa fa-pencil"> </i>
                                     </a>
-                                    @endCanDo
+                                    @endcando
+
+                                    @cando('User.Delete')
                                     <a class="btn btn-danger"
                                        href="{{ route('users.destroy', ['id' => $user->id]) }}"
                                        data-toggle="modal"
@@ -55,6 +59,7 @@
                                        for-delete="true"
                                        data-message="Are you sure you want to delete this user ?"
                                     > <i class="fa fa-trash"></i> </a>
+                                    @endcando
                                 </div>
                             </td>
                         </tr>

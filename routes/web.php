@@ -9,7 +9,6 @@ Route::group([
     // dashboard
     Route::get('/', 'Web\AdminController@dashboard')
          ->name($routePrefix == null ? 'dashboard' : '.dashboard');
-
     Route::post('/transfer', 'Web\AssetController@transferImages')
          ->name($routePrefix == null ? 'transfer' : '.transfer');
 
@@ -19,6 +18,8 @@ Route::group([
         ['names' => route_resource_name($routePrefix, 'roles')]);
     Route::resource('/users/permissions', 'Web\PermissionController',
         ['except' => ['show'], 'names' => route_resource_name($routePrefix, 'permissions')]);
+    Route::resource('/settings', 'Web\SettingController',
+        ['except' => ['show'], 'names' => route_resource_name($routePrefix, 'settings')]);
 });
 
 Auth::routes();
