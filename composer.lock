@@ -1590,7 +1590,7 @@
             "source": {
                 "type": "git",
                 "url": "https://pieter-rebel-works@bitbucket.org/rebelworksco/rebel-component-setting.git",
-                "reference": "1ffd51c594397427f82ee03952d93abc5c67b744"
+                "reference": "c002648d475a73d1bed65dc56056fb732d0f67e5"
             },
             "require": {
                 "laravel/framework": "5.3.*",
@@ -1613,7 +1613,7 @@
                 }
             ],
             "description": "Laravel Setting component",
-            "time": "2016-10-28 08:28:43"
+            "time": "2016-10-31 09:19:40"
         },
         {
             "name": "rebel/component-util",
@@ -1621,7 +1621,7 @@
             "source": {
                 "type": "git",
                 "url": "https://pieter-rebel-works@bitbucket.org/rebelworksco/rebel-component-utilities.git",
-                "reference": "3166d1feff81c3d0d16c41510890f0e2af65e7c0"
+                "reference": "d0e01af3195a6b3ae94242189fe01258b64789e7"
             },
             "require": {
                 "laravel/framework": "5.3.*",
@@ -1646,7 +1646,7 @@
                 }
             ],
             "description": "Laravel Utilities component",
-            "time": "2016-10-19 08:35:46"
+            "time": "2016-10-31 09:21:56"
         },
         {
             "name": "swiftmailer/swiftmailer",
