@@ -13,7 +13,8 @@
         "rebel/component-setting": "dev-master",
         "league/flysystem-aws-s3-v3": "^1.0",
         "barryvdh/laravel-cors": "^0.8.2",
-        "tymon/jwt-auth": "dev-develop"
+        "tymon/jwt-auth": "dev-develop",
+        "barryvdh/laravel-debugbar": "^2.3"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
@@ -34,6 +35,13 @@
         {
             "type": "git",
             "url": "https://pieter-rebel-works@bitbucket.org/rebelworksco/rebel-component-setting.git"
+        },
+        {
+            "type": "composer",
+            "url": "https://packagist.org"
+        },
+        {
+            "packagist": false
         }
     ],
     "autoload": {

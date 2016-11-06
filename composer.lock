@@ -4,21 +4,21 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "edeab2cb6d47165147ea7ab63eae7550",
-    "content-hash": "70dea980f00bf49b97deb98e426dbf3a",
+    "hash": "bfa3e05040d1360d02eab3939549c5ae",
+    "content-hash": "c830e7828c4ce267e4ee04b730264fbf",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.19.22",
+            "version": "3.19.23",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "04d2a027cac94674b52dfb4d68667bfe225b0fb5"
+                "reference": "fbfb87734e5d298b40354ac7fb3f95d0f72ad16e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/04d2a027cac94674b52dfb4d68667bfe225b0fb5",
-                "reference": "04d2a027cac94674b52dfb4d68667bfe225b0fb5",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/fbfb87734e5d298b40354ac7fb3f95d0f72ad16e",
+                "reference": "fbfb87734e5d298b40354ac7fb3f95d0f72ad16e",
                 "shasum": ""
             },
             "require": {
@@ -85,7 +85,7 @@
                 "s3",
                 "sdk"
             ],
-            "time": "2016-11-02 22:24:48"
+            "time": "2016-11-03 20:28:28"
         },
         {
             "name": "barryvdh/laravel-cors",
@@ -139,6 +139,60 @@
                 "laravel"
             ],
             "time": "2016-08-11 08:46:01"
+        },
+        {
+            "name": "barryvdh/laravel-debugbar",
+            "version": "v2.3.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/barryvdh/laravel-debugbar.git",
+                "reference": "0c87981df959c7c1943abe227baf607c92f204f9"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/barryvdh/laravel-debugbar/zipball/0c87981df959c7c1943abe227baf607c92f204f9",
+                "reference": "0c87981df959c7c1943abe227baf607c92f204f9",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/support": "5.1.*|5.2.*|5.3.*",
+                "maximebf/debugbar": "~1.13.0",
+                "php": ">=5.5.9",
+                "symfony/finder": "~2.7|~3.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.3-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Barryvdh\\Debugbar\\": "src/"
+                },
+                "files": [
+                    "src/helpers.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Barry vd. Heuvel",
+                    "email": "barryvdh@gmail.com"
+                }
+            ],
+            "description": "PHP Debugbar integration for Laravel",
+            "keywords": [
+                "debug",
+                "debugbar",
+                "laravel",
+                "profiler",
+                "webprofiler"
+            ],
+            "time": "2016-09-15 14:05:56"
         },
         {
             "name": "classpreloader/classpreloader",
@@ -869,6 +923,67 @@
             "time": "2016-06-21 21:34:35"
         },
         {
+            "name": "maximebf/debugbar",
+            "version": "v1.13.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/maximebf/php-debugbar.git",
+                "reference": "5f49a5ed6cfde81d31d89378806670d77462526e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/maximebf/php-debugbar/zipball/5f49a5ed6cfde81d31d89378806670d77462526e",
+                "reference": "5f49a5ed6cfde81d31d89378806670d77462526e",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0",
+                "psr/log": "^1.0",
+                "symfony/var-dumper": "^2.6|^3.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^4.0|^5.0"
+            },
+            "suggest": {
+                "kriswallsmith/assetic": "The best way to manage assets",
+                "monolog/monolog": "Log using Monolog",
+                "predis/predis": "Redis storage"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.13-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "DebugBar\\": "src/DebugBar/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Maxime Bouroumeau-Fuseau",
+                    "email": "maxime.bouroumeau@gmail.com",
+                    "homepage": "http://maximebf.com"
+                },
+                {
+                    "name": "Barry vd. Heuvel",
+                    "email": "barryvdh@gmail.com"
+                }
+            ],
+            "description": "Debug bar in the browser for php application",
+            "homepage": "https://github.com/maximebf/php-debugbar",
+            "keywords": [
+                "debug",
+                "debugbar"
+            ],
+            "time": "2016-09-15 14:01:59"
+        },
+        {
             "name": "monolog/monolog",
             "version": "1.21.0",
             "source": {
@@ -1559,7 +1674,7 @@
             "source": {
                 "type": "git",
                 "url": "https://pieter-rebel-works@bitbucket.org/rebelworksco/rebel-component-rbac.git",
-                "reference": "3ff38384c416734c9f41045eca83cecfb3001e84"
+                "reference": "2a35da521a8f8171bf5feb3db8a181b3e90f3f69"
             },
             "require": {
                 "laravel/framework": "5.3.*",
@@ -1582,7 +1697,7 @@
                 }
             ],
             "description": "Laravel RBAC component",
-            "time": "2016-11-03 04:39:36"
+            "time": "2016-11-05 19:52:36"
         },
         {
             "name": "rebel/component-setting",
@@ -1590,7 +1705,7 @@
             "source": {
                 "type": "git",
                 "url": "https://pieter-rebel-works@bitbucket.org/rebelworksco/rebel-component-setting.git",
-                "reference": "c002648d475a73d1bed65dc56056fb732d0f67e5"
+                "reference": "4de231cd247b553b9766a55a4c17ddae77ae9959"
             },
             "require": {
                 "laravel/framework": "5.3.*",
@@ -1613,7 +1728,7 @@
                 }
             ],
             "description": "Laravel Setting component",
-            "time": "2016-10-31 09:19:40"
+            "time": "2016-11-05 19:53:44"
         },
         {
             "name": "rebel/component-util",
