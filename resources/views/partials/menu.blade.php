@@ -8,7 +8,7 @@
                 <img src="/img/lte/user2-160x160.jpg" class="img-circle" alt="User Image">
             </div>
             <div class="pull-left info">
-                <p>Alexander Pierce</p>
+                <p>{{ auth()->user()->name }}</p>
                 <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
             </div>
         </div>
@@ -24,8 +24,8 @@
         </form>
         <!-- /.search form -->
         <!-- sidebar menu: : style can be found in sidebar.less -->
-        <ul class="sidebar-menu">
-            <li class="header">MAIN NAVIGATION</li>
+        <ul class="sidebar-menu left-menu">
+            <li class="header">MAIN MENU</li>
             <li>
                 <a href="/">
                     <i class="fa fa-dashboard"></i> <span>Dashboard</span>
@@ -34,15 +34,15 @@
 
             <li class="treeview">
                 <a href="#">
-                    <i class="fa fa-user"></i>
-                    <span>Users</span>
+                    <i class="fa fa-key"></i>
+                    <span>IAM</span>
                     <span class="pull-right-container">
                         <i class="fa fa-angle-left pull-right"></i>
                     </span>
                 </a>
                 <ul class="treeview-menu">
-                    <li><a href="/users"><i class="fa fa-circle-o"></i> List</a></li>
-                    <li><a href="/users/roles"><i class="fa fa-circle-o"></i> Roles</a></li>
+                    <li><a href="/users"><i class="fa fa-circle-o"></i>Users</a></li>
+                    <li><a href="/users/roles"><i class="fa fa-circle-o"></i>Roles</a></li>
                 </ul>
             </li>
 
@@ -54,8 +54,8 @@
                     </span>
                 </a>
                 <ul class="treeview-menu">
-                    <li><a href="/settings"><i class="fa fa-circle-o"></i> General</a></li>
-                    <li><a href="#"><i class="fa fa-circle-o"></i> Questionnaire</a></li>
+                    <li><a href="/settings"><i class="fa fa-circle-o"></i>General</a></li>
+                    <li><a href="#"><i class="fa fa-circle-o"></i>Questionnaire</a></li>
                 </ul>
             </li>
             <li class="header">LABELS</li>
