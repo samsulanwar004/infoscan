@@ -26,7 +26,7 @@
         <!-- sidebar menu: : style can be found in sidebar.less -->
         <ul class="sidebar-menu left-menu">
             <li class="header">MAIN MENU</li>
-            <li>
+            <li class="dashboard">
                 <a href="/">
                     <i class="fa fa-dashboard"></i> <span>Dashboard</span>
                 </a>
