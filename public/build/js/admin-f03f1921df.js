@@ -419,7 +419,7 @@ function _init() {
           checkElement.slideDown(animationSpeed, function () {
             //Add the class active to the parent li
             checkElement.addClass('menu-open');
-            parent.find('li.active').removeClass('active');
+            //parent.find('li.active').removeClass('active');
             parent_li.addClass('active');
             //Fix the layout in case the sidebar stretches over the height of the window
             _this.layout.fix();
@@ -803,6 +803,36 @@ function createPutInput() {
     return '<input type="hidden" name="_method" value="PUT">';
 }
 
+function menuFocus() {
+    var path = window.location.pathname;
+    path = path.replace(/\/$/, "");
+    path = decodeURIComponent(path);
+
+    $(".left-menu > li.treeview").removeClass('active');
+    $(".left-menu > li.treeview > a").removeClass('v-link-active v-link-active-exact');
+
+    if (0 === path.length || path == '/') {
+        $("li.dashboard").addClass('active');
+        $('a.link-dashboard').addClass('v-link-active v-link-active-exact');
+    } else {
+        $(".left-menu a").each(function () {
+
+            var href = $(this).attr('href');
+            var objReg = RegExp(href, 'gi');
+            objReg = href.match(path);//path.match(objReg);
+            //console.log(href, objReg);
+            // must re-check for matching value.
+            if (path === href || null !== objReg && !$(this).hasClass('dashboard')) {
+                $(this).closest('li.treeview').addClass('active');
+
+                $(this).closest('li.treeview > ul').addClass('menu-open');
+                //$(this).closest('li').addClass('active');
+                //$(this).closest('li.treeview > a').addClass('v-link-active v-link-active-exact');
+            }
+        });
+    }
+}
+
 function redirectIfUnauthorizedInAdmin(xhr) {
     if (xhr.status == 401) {
 
@@ -835,6 +865,7 @@ REBEL = (function () {
     return {
         initialize: function () {
             getModalContent();
+            menuFocus();
             //REBEL.setIcheck();
         },
 
