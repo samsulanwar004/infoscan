@@ -13,9 +13,11 @@
                 </h3>
 
                 <div class="box-tools pull-right">
+                    @cando('Role.Create')
                     <a href="/users/roles/create" class="btn btn-box-tool" data-toggle="tooltip"
                        title="Create New">
                         <i class="fa fa-plus-circle fa-btn"></i> Create New</a>
+                    @endcando
                 </div>
             </div>
             <div class="box-body">
@@ -47,9 +49,13 @@
                             </td>
                             <td class="text-right vertival-middle">
                                 <div class="btn-group">
+                                    @cando('Role.Update')
                                     <a href="{{ route('roles.edit', ['id' => $role->id]) }}" class="btn btn-info">
                                         <i class="fa fa-pencil"> </i>
                                     </a>
+                                    @endcando
+
+                                    @cando('Role.Delete')
                                     <a class="btn btn-danger"
                                        href="{{ route('roles.destroy', ['id' => $role->id]) }}"
                                        data-toggle="modal"
@@ -58,6 +64,7 @@
                                        for-delete="true"
                                        data-message="Are you sure you want to delete this roles ?"
                                     > <i class="fa fa-trash"></i> </a>
+                                    @endcando
                                 </div>
                             </td>
                         </tr>
