@@ -170,6 +170,7 @@ return [
         Rebel\Component\Rbac\RebelRbacServiceProvider::class,
         Rebel\Component\Setting\RebelSettingServiceProvider::class,
         Rebel\Component\Util\BladeDirectives\BladeDirectiveServiceProvider::class,
+        Barryvdh\Debugbar\ServiceProvider::class,
 
         //
 

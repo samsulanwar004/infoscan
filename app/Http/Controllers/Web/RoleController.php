@@ -142,6 +142,7 @@ class RoleController extends Controller
             if ($role = $this->getRoleById($id)) {
                 $role->delete();
 
+                $role->clearPermissionOfRoleCache();
                 return redirect($this->redirectAfterSave)->with('success', 'Role Deleted!');
             }
 
@@ -183,6 +184,7 @@ class RoleController extends Controller
 
             DB::commit();
 
+            $role->clearPermissionOfRoleCache();
             return true;
         }
 
