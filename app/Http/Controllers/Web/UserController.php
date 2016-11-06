@@ -6,7 +6,7 @@ use App\User;
 use DB;
 use Exception;
 use Illuminate\Http\Request;
-use Rebel\Component\Rbac\Contracts\Role;
+use Rebel\Component\Rbac\Models\Role;
 
 class UserController extends AdminController
 {
