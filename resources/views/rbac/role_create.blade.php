@@ -49,6 +49,7 @@
                     </h3>
 
                     <div class="box-tools pull-right">
+                        @cando('Permission.Create')
                         <span title="Create New" data-toggle="tooltip">
                             <a href="/users/permissions/create" class="btn btn-box-tool"
                                data-toggle="modal"
@@ -56,6 +57,7 @@
                             >
                                 <i class="fa fa-plus-circle fa-btn"></i> Add New Permissions</a>
                         </span>
+                        @endcando
                     </div>
                 </div>
                 <div class="box-body">

@@ -113,6 +113,7 @@
 
 .skin-blue .treeview-menu > li > a {
     color: #8aa4af;
+    font-size: 12px;
 }
 
 .skin-blue .treeview-menu > li.active > a,
