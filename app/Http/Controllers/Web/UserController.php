@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Web;
 
+use App\Contracts\ProfileTrait;
 use App\User;
 use DB;
 use Exception;
@@ -10,6 +11,8 @@ use Rebel\Component\Rbac\Models\Role;
 
 class UserController extends AdminController
 {
+    use ProfileTrait;
+
     /**
      * @var string
      */
@@ -22,7 +25,7 @@ class UserController extends AdminController
     /**
      * UserController constructor.
      *
-     * @param \Rebel\Component\Rbac\Contracts\Role $role
+     * @param \Rebel\Component\Rbac\Contracts\Role|\Rebel\Component\Rbac\Models\Role $role
      */
     public function __construct(Role $role)
     {

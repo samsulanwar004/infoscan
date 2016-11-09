@@ -14,6 +14,9 @@ Route::group([
 
     Route::resource('/users', 'Web\UserController',
         ['except' => ['show'], 'names' => route_resource_name($routePrefix, 'users')]);
+    Route::get('/users/{id}/profile', 'Web\UserController@getProfile');
+    Route::put('/users/{id}/credential', 'Web\UserController@putCredential');
+
     Route::resource('/users/roles', 'Web\RoleController',
         ['names' => route_resource_name($routePrefix, 'roles')]);
     Route::resource('/users/permissions', 'Web\PermissionController',
