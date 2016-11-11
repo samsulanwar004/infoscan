@@ -159,7 +159,7 @@ class RoleController extends Controller
      */
     private function getPermissions($isPaginate = true)
     {
-        $permissions = $this->permission->orderBy('permission_name', 'ASC');
+        $permissions = $this->permission->orderBy('permission_group', 'ASC');
 
         return $isPaginate ? $permissions->paginate() : $permissions->get();
     }

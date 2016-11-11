@@ -20,7 +20,7 @@ class PromotionController extends AdminController
     {
         $promos = Promotion::where('is_active', '=', 1)->paginate(50);
 
-        return view('promotion.index', compact('promos'));
+        return view('promotions.index', compact('promos'));
     }
 
     /**
@@ -28,7 +28,7 @@ class PromotionController extends AdminController
      */
     public function create()
     {
-        return view('promotion.create');
+        return view('promotions.create');
     }
 
     /**
@@ -56,7 +56,7 @@ class PromotionController extends AdminController
     {
         $promotion = $this->getPromotionById($id);
 
-        return view('promotion.edit', compact('promotion'));
+        return view('promotions.edit', compact('promotion'));
     }
 
     /**
@@ -87,8 +87,8 @@ class PromotionController extends AdminController
         $p = is_null($id) ? new Promotion : $this->getPromotionById($id);
         $p->title = $request->input('title');
         $p->description = $request->input('description');
-        $p->start_date = $request->input('start_date');
-        $p->end_date = $request->input('end_date');
+        $p->start_at = $request->input('start_at');
+        $p->end_at = $request->input('end_at');
         $p->url = $request->input('url');
         $p->status = $request->input('status');
 

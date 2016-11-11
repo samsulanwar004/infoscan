@@ -1490,6 +1490,9 @@ a:focus {
     border-radius: 0;
     box-shadow: none;
     border-color: #d2d6de;
+    -webkit-border-radius:3px;
+    -moz-border-radius:3px;
+    border-radius:3px;
 }
 
 .form-control:focus {
