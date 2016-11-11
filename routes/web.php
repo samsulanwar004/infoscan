@@ -23,6 +23,9 @@ Route::group([
         ['except' => ['show'], 'names' => route_resource_name($routePrefix, 'permissions')]);
     Route::resource('/settings', 'Web\SettingController',
         ['except' => ['show'], 'names' => route_resource_name($routePrefix, 'settings')]);
+    Route::resource('/promotions', 'Web\PromotionController',
+        ['except' => ['show'], 'names' => route_resource_name($routePrefix, 'promotions')]);
+
 });
 
 Auth::routes();

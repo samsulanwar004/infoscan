@@ -131,7 +131,7 @@ class PermissionController extends Controller
         $p = is_null($id) ? $this->permission : $this->getPermissionById($id);
         $p->permission_name = $request->input('name');
         $p->permission_label = $request->input('name');
-        $p->permission_group = $request->input('group');
+        $p->permission_group = $request->has('is_new') ? $request->input('group_text') : $request->input('group');
         if (!$p->save()) {
             return false;
         }

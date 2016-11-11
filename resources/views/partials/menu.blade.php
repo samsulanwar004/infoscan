@@ -55,7 +55,7 @@
                 </a>
                 <ul class="treeview-menu">
                     <li><a href="/settings"><i class="fa fa-circle-o"></i>General</a></li>
-                    <li><a href="#"><i class="fa fa-circle-o"></i>Questionnaire</a></li>
+                    <li><a href="/promotions"><i class="fa fa-circle-o"></i>Promotion</a></li>
                 </ul>
             </li>
             <li class="header">LABELS</li>

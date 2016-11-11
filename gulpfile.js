@@ -22,7 +22,8 @@ elixir(mix => {
         ltePath + 'css/font-awesome.css',
         ltePath + 'css/AdminLTE.css',
         ltePath + 'css/skins/skin-blue.css',
-        ltePath + 'plugins/icheck/square/blue.css'
+        ltePath + 'plugins/icheck/square/blue.css',
+        ltePath + 'plugins/datepicker/datepicker3.css'
     ], 'public/css/app.css');
 
     /*mix.webpack('app.js');*/
@@ -32,7 +33,8 @@ elixir(mix => {
         assetPath + 'bootstrap/js/bootstrap.js',
         ltePath + 'plugins/fastclick/fastclick.min.js',
         ltePath + 'plugins/form-serialize/jquery.serializejson.min.js',
-        ltePath + 'plugins/icheck/icheck.js'
+        ltePath + 'plugins/icheck/icheck.js',
+        ltePath + 'plugins/datepicker/bootstrap-datepicker.js'
     ], 'public/js/vendor.js');
 
     mix.scripts([
