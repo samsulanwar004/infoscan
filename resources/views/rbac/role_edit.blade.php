@@ -1,12 +1,20 @@
 @extends('app')
 
 @section('content')
-    @include('partials.content_header', ['pageTitle' => 'Roles', 'pageDescription' => 'Edit role', 'breadcrumbs' => ['Roles' => '/users/roles', 'Edit' => false]])
+
+    @include('partials.content_header', [
+        'pageTitle' => 'Roles',
+        'pageDescription' => 'Edit role',
+        'breadcrumbs' => [
+            'Roles' => admin_route_url('roles.index'),
+            'Edit' => false]
+        ]
+    )
 
     <!-- Main content -->
     <section class="content">
 
-        <form role="form" action="{{ route('roles.update', ['id' => $role->id]) }}" method="POST">
+        <form role="form" action="{{ admin_route_url('roles.update', ['id' => $role->id]) }}" method="POST">
         {{ csrf_field() }}
         {{ method_field('PUT') }}
 
@@ -16,7 +24,7 @@
                     <h3 class="box-title"></h3>
 
                     <div class="box-tools pull-right">
-                        <a href="/users/roles" class="btn btn-box-tool" data-toggle="tooltip" title="Back">
+                        <a href="{{ admin_route_url('roles.index') }}" class="btn btn-box-tool" data-toggle="tooltip" title="Back">
                             <i class="fa fa-times"></i>
                         </a>
                     </div>
@@ -52,7 +60,7 @@
 
                     <div class="box-tools pull-right">
                         <span title="Create New" data-toggle="tooltip">
-                            <a href="/users/permissions/create" class="btn btn-box-tool"
+                            <a href="{{ admin_route_url('permissions.create') }}" class="btn btn-box-tool"
                                data-toggle="modal"
                                data-target="#"
                             >
