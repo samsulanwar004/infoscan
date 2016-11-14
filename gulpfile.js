@@ -50,7 +50,7 @@ elixir(mix => {
         ltePath + 'js/respond.js'
     ], 'public/js/ie-support.js');
 
-    mix.copy(nodePath + 'font-awesome/fonts/*.{ttf,woff,woff2,eof,svg}', 'public/fonts');
+    mix.copy(ltePath + 'fonts/*.{ttf,woff,woff2,eof,svg}', 'public/fonts');
     mix.copy(nodePath + 'bootstrap-sass/assets/fonts/bootstrap/*.{ttf,woff,woff2,eof,svg}', 'public/fonts');
     mix.copy(ltePath + 'fonts/*', 'public/fonts');
 
