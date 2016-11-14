@@ -1,7 +1,14 @@
 @extends('app')
 
 @section('content')
-    @include('partials.content_header', ['pageTitle' => 'Users', 'pageDescription' => 'Create a new user', 'breadcrumbs' => ['Users' => '/users', 'Create' => false]])
+    @include('partials.content_header', [
+        'pageTitle' => 'Users',
+        'pageDescription' => 'Create a new user',
+        'breadcrumbs' => [
+            'Users' => admin_route_url('users.index'),
+            'Create' => false]
+        ]
+    )
 
     <!-- Main content -->
     <section class="content">
@@ -13,12 +20,12 @@
                 </h3>
 
                 <div class="box-tools pull-right">
-                    <a href="/users" class="btn btn-box-tool" data-toggle="tooltip" title="Back"> <i
+                    <a href="{{ admin_route_url('users.index') }}" class="btn btn-box-tool" data-toggle="tooltip" title="Back"> <i
                             class="fa fa-times"></i></a>
                 </div>
             </div>
             <div class="box-body">
-                <form role="form" action="{{ route('users.store') }}" method="POST">
+                <form role="form" action="{{ admin_route_url('users.store') }}" method="POST">
                     {{ csrf_field() }}
                     <div class="box-body">
                         <div class="form-group">

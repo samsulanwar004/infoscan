@@ -14,7 +14,7 @@
 
                 <div class="box-tools pull-right">
                     @cando('User.Create')
-                    <a href="/users/create" class="btn btn-box-tool" data-toggle="tooltip"
+                    <a href="{{ admin_route_url('users.create') }}" class="btn btn-box-tool" data-toggle="tooltip"
                        title="Create New">
                         <i class="fa fa-plus-circle fa-btn"></i> Create New</a>
                     @endcando
@@ -45,14 +45,14 @@
                             <td class="text-right vertical-middle">
                                 <div class="btn-group">
                                     @cando('User.Update')
-                                    <a href="{{ route('users.edit', ['id' => $user->id]) }}" class="btn btn-info">
+                                    <a href="{{ admin_route_url('users.edit', ['id' => $user->id]) }}" class="btn btn-info">
                                         <i class="fa fa-pencil"> </i>
                                     </a>
                                     @endcando
 
                                     @cando('User.Delete')
                                     <a class="btn btn-danger"
-                                       href="{{ route('users.destroy', ['id' => $user->id]) }}"
+                                       href="{{ admin_route_url('users.destroy', ['id' => $user->id]) }}"
                                        data-toggle="modal"
                                        data-target="#"
                                        title="Delete this data"

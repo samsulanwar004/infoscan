@@ -1,4 +1,4 @@
-<form id="modalForm" action="{{ route('permissions.store') }}" class="form-horizontal" method="POST">
+<form id="modalForm" action="{{ admin_route_url('permissions.store') }}" class="form-horizontal" method="POST">
     {{ csrf_field() }}
     <div class="modal-header">
         <a class="close" data-dismiss="modal">&times;</a>

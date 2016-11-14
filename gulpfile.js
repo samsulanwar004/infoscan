@@ -23,18 +23,21 @@ elixir(mix => {
         ltePath + 'css/AdminLTE.css',
         ltePath + 'css/skins/skin-blue.css',
         ltePath + 'plugins/icheck/square/blue.css',
-        ltePath + 'plugins/datepicker/datepicker3.css'
+        ltePath + 'plugins/datepicker/datepicker3.css',
+        ltePath + 'plugins/daterangepicker/daterangepicker.css'
     ], 'public/css/app.css');
 
     /*mix.webpack('app.js');*/
 
     mix.scripts([
         ltePath + 'plugins/jquery/jquery.min.js',
+        ltePath + 'plugins/daterangepicker/moment.js',
+        ltePath + 'plugins/datepicker/bootstrap-datepicker.js',
+        ltePath + 'plugins/daterangepicker/daterangepicker.js',
         assetPath + 'bootstrap/js/bootstrap.js',
         ltePath + 'plugins/fastclick/fastclick.min.js',
         ltePath + 'plugins/form-serialize/jquery.serializejson.min.js',
         ltePath + 'plugins/icheck/icheck.js',
-        ltePath + 'plugins/datepicker/bootstrap-datepicker.js'
     ], 'public/js/vendor.js');
 
     mix.scripts([
