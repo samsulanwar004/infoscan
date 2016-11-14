@@ -63,10 +63,14 @@
 
 @section('footer_scripts')
     <script>
-        $(document).ready(function() {
-            $('.datepicker').datepicker({
-                autoclose: true
+        $(document).ready(function () {
+            $('.datepicker').daterangepicker({
+                timePicker: true,
+                timePickerIncrement: 30,
+                locale: {
+                    format: 'MMMM D, YYYY h:mm A'
+                }
             });
         });
     </script>
-@endsection
+@stop

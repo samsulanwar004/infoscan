@@ -1,12 +1,19 @@
 @extends('app')
 
 @section('content')
-    @include('partials.content_header', ['pageTitle' => 'Roles', 'pageDescription' => 'Create a new role', 'breadcrumbs' => ['Roles' => '/users/roles', 'Create' => false]])
+    @include('partials.content_header', [
+        'pageTitle' => 'Roles',
+        'pageDescription' => 'Create a new role',
+        'breadcrumbs' => [
+            'Roles' => admin_route_url('roles.index'),
+            'Create' => false]
+        ]
+    )
 
     <!-- Main content -->
     <section class="content">
 
-        <form role="form" action="{{ route('roles.store') }}" method="POST">
+        <form role="form" action="{{ admin_route_url('roles.store') }}" method="POST">
         {{ csrf_field() }}
 
         <!-- Default box -->
@@ -15,7 +22,7 @@
                     <h3 class="box-title"></h3>
 
                     <div class="box-tools pull-right">
-                        <a href="/users/roles" class="btn btn-box-tool" data-toggle="tooltip" title="Back">
+                        <a href="{{ admin_route_url('roles.index') }}" class="btn btn-box-tool" data-toggle="tooltip" title="Back">
                             <i class="fa fa-times"></i>
                         </a>
                     </div>
@@ -49,15 +56,13 @@
                     </h3>
 
                     <div class="box-tools pull-right">
-                        @cando('Permission.Create')
                         <span title="Create New" data-toggle="tooltip">
-                            <a href="/users/permissions/create" class="btn btn-box-tool"
+                            <a href="{{ admin_route_url('permissions.create') }}" class="btn btn-box-tool"
                                data-toggle="modal"
                                data-target="#"
                             >
                                 <i class="fa fa-plus-circle fa-btn"></i> Add New Permissions</a>
                         </span>
-                        @endcando
                     </div>
                 </div>
                 <div class="box-body">
