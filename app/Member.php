@@ -8,4 +8,6 @@ use Illuminate\Notifications\Notifiable;
 class Member extends Authenticable
 {
     use Notifiable;
+
+    protected $hidden = ['password'];
 }

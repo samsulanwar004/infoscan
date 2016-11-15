@@ -29,19 +29,25 @@ class BaseApiController extends Controller
     {
         if(null == $message) {
             return response()->json(
-                $this->generateMessage('ok', 'Success'),
+                $this->generateMessage('Ok', 'Success'),
                 $httpCode
             );
         }
 
         if(is_string($message)) {
             return response()->json(
-                $this->generateMessage('ok', $message),
+                $this->generateMessage('Ok', $message),
                 $httpCode
             );
         }
 
         if(is_array($message)) {
+            $m = [
+                'status' => 'Ok',
+                'message' => 'Success'
+            ];
+
+            $message = array_merge($m, $message);
             return response()->json(
                 $message,
                 $httpCode
