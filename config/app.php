@@ -171,6 +171,7 @@ return [
         Rebel\Component\Setting\RebelSettingServiceProvider::class,
         Rebel\Component\Util\BladeDirectives\BladeDirectiveServiceProvider::class,
         Spatie\Fractal\FractalServiceProvider::class,
+        Laravel\Socialite\SocialiteServiceProvider::class,
 
         Barryvdh\Debugbar\ServiceProvider::class,
 
@@ -233,6 +234,7 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
         'RebelField' => Rebel\Component\Util\BladeDirectives\Facades\RebelField::class,
+        'Socialite' => Laravel\Socialite\Facades\Socialite::class,
     ],
 
 ];

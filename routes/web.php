@@ -30,4 +30,5 @@ Route::group([
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index');
+Route::get('/secure/{requestCode}/{social}', 'SecureController@redirect');
+Route::get('/callback/{social}', 'SecureController@callback');
