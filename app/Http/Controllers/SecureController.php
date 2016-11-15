@@ -31,7 +31,7 @@ class SecureController extends BaseApiController
 
             return $this->success($secure);
         } catch (\Exception $e) {
-            return $this->error($e->getMessage());
+            return $this->error($e);
         }
     }
 }
