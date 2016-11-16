@@ -84,6 +84,13 @@ class MerchantController extends AdminController
      */
     public function update(Request $request, $id = null)
     {
+        $this->validate($request, [
+            'company_name'  => 'required|min:3|max:200',
+            'address'       => 'required',
+            'company_email' => 'required|email|unique:merchants,company_email',
+            'company_logo'  => 'mimes:jpg,jpeg,png'
+        ]);
+        
         try {
             $this->persistMerchant($request, $id);
         } catch (\Exception $e) {
