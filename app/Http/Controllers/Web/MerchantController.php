@@ -106,7 +106,7 @@ class MerchantController extends AdminController
             $m->delete();
 
             if ($m->company_logo != null) {
-                \Storage::delete('public/images/' . $m->company_logo);
+                \Storage::delete('public/' . $m->company_logo);
             }
 
         } catch (\Exception $e) {
