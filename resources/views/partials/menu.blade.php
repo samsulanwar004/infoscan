@@ -46,6 +46,12 @@
                 </ul>
             </li>
 
+            <li class="merchants">
+                <a href="/merchants">
+                    <i class="fa fa-university"></i> <span>Merchants</span>
+                </a>
+            </li>
+
             <li class="treeview">
                 <a href="#">
                     <i class="fa fa-cogs"></i> <span>Settings</span>
