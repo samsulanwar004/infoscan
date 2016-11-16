@@ -24,10 +24,10 @@
                 <table class="table table-striped">
                     <thead>
                     <tr>
-                        <th width="50">#</th>
-                        <th>Username & Email</th>
-                        <th>Activity</th>
-                        <th width="250"></th>
+                        <th>Merchant Code</th>
+                        <th>Company</th>
+                        <th>Email</th>
+                        <th width="50"></th>
                     </tr>
                     </thead>
                     <tbody>
@@ -37,16 +37,12 @@
                                 {{ $merchant->merchant_code }}
                             </td>
                             <td>
-                                {{ $merchant->company_name }}
-                            </td>
-                            <td>
-                                {{ $merchant->address }}
+                                {{ $merchant->company_name }} <br>
+                                <small>{{ $merchant->address }}</small>
                             </td>
                             <td>
                                 {{ $merchant->company_email }}
                             </td>
-                            <td class="vertical-middle"><a href="#"><i class="fa fa-list-alt fa-btn"></i> See
-                                    activity</a></td>
                             <td class="text-right vertical-middle">
                                 <div class="btn-group">
                                     @cando('User.Update')
