@@ -19,7 +19,16 @@ class CreateMerchantsTable extends Migration
             $table->string('company_name');
             $table->string('company_logo');
             $table->text('address');
+            $table->string('company_email');
             $table->timestamps();
+        });
+
+        Schema::create('merchant_users', function (Blueprint $table) {
+            $table->increments('id');
+            $table->integer('merchant_id')->unsigned();
+            $table->integer('user_id')->unsigned();
+            $table->foreign('merchant_id')->references('id')->on('merchants');
+            $table->foreign('user_id')->references('id')->on('users');
         });
     }
 
@@ -31,5 +40,6 @@ class CreateMerchantsTable extends Migration
     public function down()
     {
         Schema::dropIfExists('merchants');
+        Schema::dropIfExists('merchant_users');
     }
 }

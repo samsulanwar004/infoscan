@@ -28,7 +28,8 @@
                 </div>
             </div>
             <div class="box-body">
-                <form role="form" action="{{ admin_route_url('users.update', ['id' => $user->id]) }}" method="POST">
+                <form role="form" action="{{ admin_route_url('users.update', ['id' => $user->id]) }}" method="POST"
+                      enctype="multipart/form-data" class="form" accept-charset="utf-8">
                     {{ csrf_field() }}
                     {{ method_field('PUT') }}
                     <div class="box-body">

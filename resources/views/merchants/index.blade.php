@@ -31,40 +31,46 @@
                     </tr>
                     </thead>
                     <tbody>
-                    @forelse($users as $user)
+                    @forelse($merchants as $merchant)
                         <tr>
-                            <td class="vertical-middle">
-                                <i class="fa fa-check-circle {{ $user->is_active == 1 ? 'text-green' : 'text-default' }}"></i>
+                            <td>
+                                {{ $merchant->merchant_code }}
                             </td>
                             <td>
-                                {{ $user->name }} <br>
-                                <small>{{ $user->email }}</small>
+                                {{ $merchant->company_name }}
+                            </td>
+                            <td>
+                                {{ $merchant->address }}
+                            </td>
+                            <td>
+                                {{ $merchant->company_email }}
                             </td>
                             <td class="vertical-middle"><a href="#"><i class="fa fa-list-alt fa-btn"></i> See
                                     activity</a></td>
                             <td class="text-right vertical-middle">
                                 <div class="btn-group">
                                     @cando('User.Update')
-                                    <a href="{{ admin_route_url('users.edit', ['id' => $user->id]) }}" class="btn btn-info">
+                                    <a href="{{ admin_route_url('merchants.edit', ['id' => $merchant->id]) }}"
+                                       class="btn btn-info">
                                         <i class="fa fa-pencil"> </i>
                                     </a>
                                     @endcando
 
                                     @cando('User.Delete')
                                     <a class="btn btn-danger"
-                                       href="{{ admin_route_url('users.destroy', ['id' => $user->id]) }}"
+                                       href="{{ admin_route_url('merchants.destroy', ['id' => $merchant->id]) }}"
                                        data-toggle="modal"
                                        data-target="#"
                                        title="Delete this data"
                                        for-delete="true"
-                                       data-message="Are you sure you want to delete this user ?"
+                                       data-message="Are you sure you want to delete this merchant ?"
                                     > <i class="fa fa-trash"></i> </a>
                                     @endcando
                                 </div>
                             </td>
                         </tr>
                     @empty
-                        <td colspan="4"> There is no record for users data!</td>
+                        <td colspan="4"> There is no record for merchants data!</td>
                     @endforelse
                     </tbody>
                 </table>

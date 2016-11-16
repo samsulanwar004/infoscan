@@ -2,10 +2,10 @@
 
 @section('content')
     @include('partials.content_header', [
-        'pageTitle' => 'Users',
-        'pageDescription' => 'Create a new user',
+        'pageTitle' => 'Merchant',
+        'pageDescription' => 'Create a new merchant',
         'breadcrumbs' => [
-            'Users' => admin_route_url('users.index'),
+            'Merchants' => admin_route_url('merchants.index'),
             'Create' => false]
         ]
     )
@@ -20,57 +20,46 @@
                 </h3>
 
                 <div class="box-tools pull-right">
-                    <a href="{{ admin_route_url('users.index') }}" class="btn btn-box-tool" data-toggle="tooltip" title="Back"> <i
-                            class="fa fa-times"></i></a>
+                    <a href="{{ admin_route_url('merchants.index') }}" class="btn btn-box-tool" data-toggle="tooltip"
+                       title="Back"> <i
+                                class="fa fa-times"></i></a>
                 </div>
             </div>
             <div class="box-body">
-                <form role="form" action="{{ admin_route_url('users.store') }}" method="POST">
+                <form role="form" action="{{ admin_route_url('merchants.store') }}" method="POST"
+                      enctype="multipart/form-data" class="form" accept-charset="utf-8">
                     {{ csrf_field() }}
                     <div class="box-body">
                         <div class="form-group">
-                            <label for="name">Name</label>
-                            <input type="text" class="form-control" id="name" name="name" placeholder="Enter name"
-                                   value="{{ old('name') }}" required autofocus>
+                            <label for="merchant_code">Merchant Code</label>
+                            <input type="text" class="form-control" id="merchant_code" name="merchant_code"
+                                   placeholder="Enter merchant code" required autofocus>
                         </div>
                         <div class="form-group">
-                            <label for="email">Email address</label>
-                            <input type="email" class="form-control" id="email" name="email" placeholder="Enter email"
-                                   value="{{ old('email') }}" required>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="role">Select Role</label>
-                            <select name="role" id="role" class="form-control">
-                                @foreach($roles as $role)
-                                    <option value="{{ $role->id }}">{{ $role->role_name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="password">Password</label>
-                            <input type="password" class="form-control" id="password" name="password"
-                                   value="{{ old('password') }}" placeholder="Password" required>
+                            <label for="company_name">Company Name</label>
+                            <input type="text" class="form-control" id="company_name" name="company_name"
+                                   placeholder="Enter company name" required>
                         </div>
                         <div class="form-group">
-                            <label for="confirm_password">Confirm Password</label>
-                            <input type="password" class="form-control" id="confirm_password" name="confirm_password"
-                                   value="{{ old('confirm_password') }}" placeholder="Password" required>
+                            <label for="company_name">Company Logo</label>
+                            <input type="file" class="form-control" id="company_logo" name="company_name"
+                                   placeholder="Enter company name">
                         </div>
-
-                        <div class="checkbox">
-                            <label>
-                                <input name="is_active" {{ 'on' == old('is_active') ? 'checked' : '' }} type="checkbox">
-                                Is Active ?
-                            </label>
+                        <div class="form-group">
+                            <label for="address">Address</label>
+                            <textarea class="form-control" name="address" id="address" placeholder="Enter address"
+                                      required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="company_email">Email</label>
+                            <input type="email" class="form-control" name="company_email" id="company_email"
+                                   placeholder="Enter email" required>
                         </div>
                     </div>
                     <!-- /.box-body -->
-
                     <div class="box-footer text-right">
                         <button type="submit" class="btn btn-primary">
-                            <i class="fa fa-save fa-btn"></i> Save User
+                            <i class="fa fa-save fa-btn"></i> Save Merchant
                         </button>
                     </div>
                 </form>

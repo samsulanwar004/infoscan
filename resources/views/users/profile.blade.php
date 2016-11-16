@@ -9,7 +9,7 @@
         <!-- Default box -->
         <div class="box">
             <div class="box-header with-border">
-                <h3 class="box-title"> <i class="fa fa-btn fa-lock"></i> Update Credential</h3>
+                <h3 class="box-title"><i class="fa fa-btn fa-lock"></i> Update Credential</h3>
             </div>
             <div class="box-body">
                 <form role="form" action="/users/{{ $user->id }}/profile" method="POST">
