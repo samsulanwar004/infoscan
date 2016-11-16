@@ -37,6 +37,13 @@ class MerchantController extends AdminController
      */
     public function store(Request $request)
     {
+        $this->validate($request, [
+            'company_name'  => 'required|min:3|max:200',
+            'address'       => 'required',
+            'company_email' => 'required|email|unique:merchants,company_email',
+            'company_logo'  => 'mimes:jpg,jpeg,png'
+        ]);
+
         try {
             $this->persistMerchant($request);
         } catch (\Exception $e) {
@@ -115,21 +122,31 @@ class MerchantController extends AdminController
      *
      * @return bool
      */
-    public function persistMerchant($request, $id = null)
+    private function persistMerchant($request, $id = null)
     {
-        $file             = $request->file('company_logo');
+        $memberCode = strtolower(str_random(10));
+
+        //$file             = $request->file('company_logo');
         $m                = is_null($id) ? new Merchant : $this->getMerchantById($id);
-        $m->merchant_code = $request->input('merchant_id');
+        $m->merchant_code = $memberCode;
         $m->company_name  = $request->input('company_name');
         $m->address       = $request->input('address');
         $m->company_email = $request->input('company_email');
 
-        if ($file) {
-            $filename        = $request->input('merchant_id') . '-' . $request->input('company_name') . '.' . $request->image->getClientOriginalExtension();
-            $m->company_logo = 'merchants/' . $filename;
-            \Storage::putFileAs(
-                'public/images/merchants/', $file, $filename
+        
+        //dd($request->all(), $request->hasFile('company_logo'));
+        if ($request->hasFile('company_logo')) {
+            $file = $request->file('company_logo'); 
+            $filename = sprintf(
+                "%s-%s.%s", 
+                $memberCode,
+                date('Ymdhis'),  
+                $file->getClientOriginalExtension()
             );
+
+            $m->company_logo = $file->storeAs(
+                'merchants', $filename, 'public'
+            );            
         }
 
         return $m->save();

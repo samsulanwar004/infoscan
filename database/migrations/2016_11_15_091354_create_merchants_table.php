@@ -15,11 +15,11 @@ class CreateMerchantsTable extends Migration
     {
         Schema::create('merchants', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('merchant_code');
-            $table->string('company_name');
-            $table->string('company_logo');
-            $table->text('address');
-            $table->string('company_email');
+            $table->string('merchant_code', 10)->unique();
+            $table->string('company_name', 200);
+            $table->string('company_logo')->nullable();
+            $table->text('address')->nullable();
+            $table->string('company_email', 100)->unique();
             $table->timestamps();
         });
 
@@ -39,7 +39,7 @@ class CreateMerchantsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('merchants');
         Schema::dropIfExists('merchant_users');
+        Schema::dropIfExists('merchants');
     }
 }
