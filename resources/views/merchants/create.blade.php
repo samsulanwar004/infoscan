@@ -42,7 +42,7 @@
                         </div>
                         <div class="form-group">
                             <label for="company_name">Company Logo</label>
-                            <input type="file" class="form-control" id="company_logo" name="company_name"
+                            <input type="file" class="form-control" id="company_logo" name="company_logo"
                                    placeholder="Enter company name">
                         </div>
                         <div class="form-group">
