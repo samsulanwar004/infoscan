@@ -1,7 +1,7 @@
 @extends('app')
 
 @section('content')
-    @include('partials.content_header', ['pageTitle' => 'Users', 'pageDescription' => 'List of users', 'breadcrumbs' => ['Users' => false]])
+    @include('partials.content_header', ['pageTitle' => 'Merchants', 'pageDescription' => 'List of merchants', 'breadcrumbs' => ['Merchants' => false]])
 
     <!-- Main content -->
     <section class="content">
@@ -14,7 +14,7 @@
 
                 <div class="box-tools pull-right">
                     @cando('User.Create')
-                    <a href="{{ admin_route_url('users.create') }}" class="btn btn-box-tool" data-toggle="tooltip"
+                    <a href="{{ admin_route_url('merchants.create') }}" class="btn btn-box-tool" data-toggle="tooltip"
                        title="Create New">
                         <i class="fa fa-plus-circle fa-btn"></i> Create New</a>
                     @endcando
@@ -24,10 +24,10 @@
                 <table class="table table-striped">
                     <thead>
                     <tr>
-                        <th width="50">#</th>
-                        <th>Username & Email</th>
-                        <th>Activity</th>
-                        <th width="250"></th>
+                        <th>Merchant Code</th>
+                        <th>Company</th>
+                        <th>Email</th>
+                        <th width="50"></th>
                     </tr>
                     </thead>
                     <tbody>
@@ -37,16 +37,12 @@
                                 {{ $merchant->merchant_code }}
                             </td>
                             <td>
-                                {{ $merchant->company_name }}
-                            </td>
-                            <td>
-                                {{ $merchant->address }}
+                                {{ $merchant->company_name }} <br>
+                                <small>{{ $merchant->address }}</small>
                             </td>
                             <td>
                                 {{ $merchant->company_email }}
                             </td>
-                            <td class="vertical-middle"><a href="#"><i class="fa fa-list-alt fa-btn"></i> See
-                                    activity</a></td>
                             <td class="text-right vertical-middle">
                                 <div class="btn-group">
                                     @cando('User.Update')

@@ -66,7 +66,7 @@ class MerchantController extends AdminController
     {
         $merchant = $this->getMerchantById($id);
 
-        return view('merchants.edit', compact('merchant'))
+        return view('merchants.edit', compact('merchant'));
     }
 
     /**

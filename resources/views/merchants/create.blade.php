@@ -2,7 +2,7 @@
 
 @section('content')
     @include('partials.content_header', [
-        'pageTitle' => 'Merchant',
+        'pageTitle' => 'Merchants',
         'pageDescription' => 'Create a new merchant',
         'breadcrumbs' => [
             'Merchants' => admin_route_url('merchants.index'),
@@ -31,28 +31,25 @@
                     {{ csrf_field() }}
                     <div class="box-body">
                         <div class="form-group">
-                            <label for="merchant_code">Merchant Code</label>
-                            <input type="text" class="form-control" id="merchant_code" name="merchant_code"
-                                   placeholder="Enter merchant code" required autofocus>
-                        </div>
-                        <div class="form-group">
                             <label for="company_name">Company Name</label>
                             <input type="text" class="form-control" id="company_name" name="company_name"
-                                   placeholder="Enter company name" required>
+                                   value="{{ old('company_name') }}"
+                                   placeholder="Enter company name" required autofocus>
                         </div>
                         <div class="form-group">
                             <label for="company_name">Company Logo</label>
-                            <input type="file" class="form-control" id="company_logo" name="company_name"
+                            <input type="file" class="form-control" id="company_logo" name="company_logo"
                                    placeholder="Enter company name">
                         </div>
                         <div class="form-group">
                             <label for="address">Address</label>
                             <textarea class="form-control" name="address" id="address" placeholder="Enter address"
-                                      required></textarea>
+                                      value="{{ old('address') }}"></textarea>
                         </div>
                         <div class="form-group">
                             <label for="company_email">Email</label>
                             <input type="email" class="form-control" name="company_email" id="company_email"
+                                   value="{{ old('company_email') }}"
                                    placeholder="Enter email" required>
                         </div>
                     </div>
