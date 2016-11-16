@@ -2,7 +2,7 @@
 
 @section('content')
     @include('partials.content_header', [
-        'pageTitle' => 'Users',
+        'pageTitle' => 'Merchants',
         'pageDescription' => 'Edit merchants',
         'breadcrumbs' => [
             'Merchants' => admin_route_url('merchants.index'),
@@ -45,8 +45,8 @@
                         </div>
                         <div class="form-group">
                             <label for="company_name">Company Logo</label>
-                            <img src="{{ 'storage/images/'.$merchant->company_logo }}">
-                            <input type="file" class="form-control" id="company_logo" name="company_name">
+                            <img src="{{ 'storage/images/merchants/'.$merchant->company_logo }}">
+                            <input type="file" class="form-control" id="company_logo" name="company_logo">
                         </div>
                         <div class="form-group">
                             <label for="address">Address</label>

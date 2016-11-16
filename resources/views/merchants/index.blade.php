@@ -1,7 +1,7 @@
 @extends('app')
 
 @section('content')
-    @include('partials.content_header', ['pageTitle' => 'Users', 'pageDescription' => 'List of users', 'breadcrumbs' => ['Users' => false]])
+    @include('partials.content_header', ['pageTitle' => 'Merchants', 'pageDescription' => 'List of merchants', 'breadcrumbs' => ['Merchants' => false]])
 
     <!-- Main content -->
     <section class="content">
@@ -14,7 +14,7 @@
 
                 <div class="box-tools pull-right">
                     @cando('User.Create')
-                    <a href="{{ admin_route_url('users.create') }}" class="btn btn-box-tool" data-toggle="tooltip"
+                    <a href="{{ admin_route_url('merchants.create') }}" class="btn btn-box-tool" data-toggle="tooltip"
                        title="Create New">
                         <i class="fa fa-plus-circle fa-btn"></i> Create New</a>
                     @endcando
