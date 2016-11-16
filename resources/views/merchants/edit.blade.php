@@ -28,36 +28,35 @@
                 </div>
             </div>
             <div class="box-body">
-                <form role="form" action="{{ admin_route_url('merchants.store') }}" method="POST">
+                <form role="form" action="{{ admin_route_url('merchants.update', ['id' => $merchant->id]) }}"
+                      method="POST" enctype="multipart/form-data" accept-charset="utf-8">
                     {{ csrf_field() }}
+                    {{ method_field('PUT') }}
                     <div class="box-body">
-                        <div class="form-group">
-                            <label for="merchant_code">Merchant Code</label>
-                            <input type="text" class="form-control" id="merchant_code" name="merchant_code"
-                                   placeholder="Enter merchant code"
-                                   value="{{ old('merchant_code', $merchant->merchant_code) }}" required autofocus>
-                        </div>
-                        <div class="form-group">
+
+                        <div class="form-group has-feedback{{ $errors->has('company_name') ? ' has-error' : '' }}">
                             <label for="company_name">Company Name</label>
                             <input type="text" class="form-control" id="company_name" name="company_name"
                                    placeholder="Enter company name"
                                    value="{{ old('company_name', $merchant->company_name) }}" required>
                         </div>
-                        <div class="form-group">
-                            <label for="company_name">Company Logo</label>
-                            <img src="{{ 'storage/images/merchants/'.$merchant->company_logo }}">
+
+                        <div class="form-group has-feedback{{ $errors->has('company_logo') ? ' has-error' : '' }}">
+                            <label for="company_logo">Company Logo</label>
+                            <img width="200" height="200" src="{{ '/storage/merchants/'.$merchant->company_logo }}">
                             <input type="file" class="form-control" id="company_logo" name="company_logo">
                         </div>
-                        <div class="form-group">
+
+                        <div class="form-group has-feedback{{ $errors->has('address') ? ' has-error' : '' }}">
                             <label for="address">Address</label>
                             <textarea class="form-control" name="address" id="address" placeholder="Enter address"
-                                      value="{{ $merchant->address }}"
-                                      required></textarea>
+                                      value=""
+                                      required>{{ old('address', $merchant->address) }}</textarea>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group has-feedback{{ $errors->has('company_email') ? ' has-error' : '' }}">
                             <label for="company_email">Email</label>
                             <input type="email" class="form-control" name="company_email" id="company_email"
-                                   value="{{ $merchant->company_email }}"
+                                   value="{{ old('company_email', $merchant->company_email) }}"
                                    placeholder="Enter email" required>
                         </div>
                     </div>
@@ -67,6 +66,7 @@
                             <i class="fa fa-save fa-btn"></i> Save Merchant
                         </button>
                     </div>
+
                 </form>
             </div>
         </div>

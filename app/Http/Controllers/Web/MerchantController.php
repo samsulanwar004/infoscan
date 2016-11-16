@@ -31,17 +31,17 @@ class MerchantController extends AdminController
     }
 
     /**
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
      *
      * @return \Illuminate\Http\RedirectResponse
      */
     public function store(Request $request)
     {
         $this->validate($request, [
-            'company_name'  => 'required|min:3|max:200',
-            'address'       => 'required',
+            'company_name' => 'required|min:3|max:200',
+            'address' => 'required',
             'company_email' => 'required|email|unique:merchants,company_email',
-            'company_logo'  => 'mimes:jpg,jpeg,png'
+            'company_logo' => 'mimes:jpg,jpeg,png'
         ]);
 
         try {
@@ -56,7 +56,7 @@ class MerchantController extends AdminController
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -96,7 +96,7 @@ class MerchantController extends AdminController
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
@@ -126,27 +126,23 @@ class MerchantController extends AdminController
     {
         $memberCode = strtolower(str_random(10));
 
-        //$file             = $request->file('company_logo');
-        $m                = is_null($id) ? new Merchant : $this->getMerchantById($id);
+        $m = is_null($id) ? new Merchant : $this->getMerchantById($id);
         $m->merchant_code = $memberCode;
-        $m->company_name  = $request->input('company_name');
-        $m->address       = $request->input('address');
+        $m->company_name = $request->input('company_name');
+        $m->address = $request->input('address');
         $m->company_email = $request->input('company_email');
 
-        
-        //dd($request->all(), $request->hasFile('company_logo'));
         if ($request->hasFile('company_logo')) {
-            $file = $request->file('company_logo'); 
+            $file = $request->file('company_logo');
             $filename = sprintf(
-                "%s-%s.%s", 
+                "%s-%s.%s",
                 $memberCode,
-                date('Ymdhis'),  
+                date('Ymdhis'),
                 $file->getClientOriginalExtension()
             );
 
-            $m->company_logo = $file->storeAs(
-                'merchants', $filename, 'public'
-            );            
+            $m->company_logo = $filename;
+            $file->storeAs('merchants', $filename, 'public');
         }
 
         return $m->save();

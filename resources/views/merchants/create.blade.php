@@ -30,23 +30,23 @@
                       enctype="multipart/form-data" class="form" accept-charset="utf-8">
                     {{ csrf_field() }}
                     <div class="box-body">
-                        <div class="form-group">
+                        <div class="form-group has-feedback{{ $errors->has('company_name') ? ' has-error' : '' }}">
                             <label for="company_name">Company Name</label>
                             <input type="text" class="form-control" id="company_name" name="company_name"
                                    value="{{ old('company_name') }}"
                                    placeholder="Enter company name" required autofocus>
                         </div>
-                        <div class="form-group">
-                            <label for="company_name">Company Logo</label>
+                        <div class="form-group has-feedback{{ $errors->has('company_logo') ? ' has-error' : '' }}">
+                            <label for="company_logo">Company Logo</label>
                             <input type="file" class="form-control" id="company_logo" name="company_logo"
-                                   placeholder="Enter company name">
+                                   placeholder="Enter company name" required>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group has-feedback{{ $errors->has('address') ? ' has-error' : '' }}">
                             <label for="address">Address</label>
                             <textarea class="form-control" name="address" id="address" placeholder="Enter address"
-                                      value="{{ old('address') }}"></textarea>
+                                      required>{{ old('address') }}</textarea>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group has-feedback{{ $errors->has('company_email') ? ' has-error' : '' }}">
                             <label for="company_email">Email</label>
                             <input type="email" class="form-control" name="company_email" id="company_email"
                                    value="{{ old('company_email') }}"
