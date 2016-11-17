@@ -41,7 +41,7 @@ class MerchantController extends AdminController
             'company_name'  => 'required|min:3|max:200',
             'address'       => 'required',
             'company_email' => 'required|email|unique:merchants,company_email',
-            'company_logo'  => 'mimes:jpg,jpeg,png'
+            'company_logo'  => 'mimes:jpg,jpeg,png',
         ]);
 
         try {
@@ -84,6 +84,13 @@ class MerchantController extends AdminController
      */
     public function update(Request $request, $id = null)
     {
+        $this->validate($request, [
+            'company_name'  => 'required|min:3|max:200',
+            'address'       => 'required',
+            'company_email' => 'required|email|unique:merchants,company_email',
+            'company_logo'  => 'mimes:jpg,jpeg,png',
+        ]);
+
         try {
             $this->persistMerchant($request, $id);
         } catch (\Exception $e) {
@@ -106,7 +113,7 @@ class MerchantController extends AdminController
             $m->delete();
 
             if ($m->company_logo != null) {
-                \Storage::delete('public/images/' . $m->company_logo);
+                \Storage::delete('public/' . $m->company_logo);
             }
 
         } catch (\Exception $e) {
@@ -126,30 +133,53 @@ class MerchantController extends AdminController
     {
         $memberCode = strtolower(str_random(10));
 
-        //$file             = $request->file('company_logo');
         $m                = is_null($id) ? new Merchant : $this->getMerchantById($id);
         $m->merchant_code = $memberCode;
         $m->company_name  = $request->input('company_name');
         $m->address       = $request->input('address');
         $m->company_email = $request->input('company_email');
 
-        
-        //dd($request->all(), $request->hasFile('company_logo'));
         if ($request->hasFile('company_logo')) {
-            $file = $request->file('company_logo'); 
+            $file     = $request->file('company_logo');
             $filename = sprintf(
-                "%s-%s.%s", 
+                "%s-%s.%s",
                 $memberCode,
-                date('Ymdhis'),  
+                date('Ymdhis'),
                 $file->getClientOriginalExtension()
             );
 
             $m->company_logo = $file->storeAs(
                 'merchants', $filename, 'public'
-            );            
+            );
         }
 
         return $m->save();
+    }
+
+    private function createNewUser(Request $request)
+    {
+        $userList = [];
+        $u        = new User;
+        foreach ($request->input('user') as $key => $user) {
+            $name        = $user['name'];
+            $email       = $user['email'];
+            $password    = bcrypt(strtolower(str_random(10)));
+            $u->name     = $name;
+            $u->email    = $email;
+            $u->password = $password;
+            $u->save();
+
+            $userList[] = [
+                'id'       => $u->id,
+                'name'     => $name,
+                'email'    => $email,
+                'password' => $password,
+            ];
+
+            $u->newInstance();
+        }
+
+        return $userList;
     }
 
     /**
