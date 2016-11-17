@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Web;
 
 use App\MerchantUser;
 use Illuminate\Http\Request;
+use App\Merchant;
+use App\User;
 
 class MerchantUserController extends AdminController
 {
@@ -28,7 +30,9 @@ class MerchantUserController extends AdminController
      */
     public function create()
     {
-        return view('merchants.user_create');
+        $merchants = $this->getMerchant();
+
+        return view('merchants.user_create', compact('merchants'));
     }
 
     /**
@@ -38,6 +42,7 @@ class MerchantUserController extends AdminController
      */
     public function store(Request $request)
     {
+     
         try {
             $this->persistMerchantUser($request);
         } catch (\Exception $e) {
@@ -67,7 +72,9 @@ class MerchantUserController extends AdminController
     {
         $merchantUsers = $this->getMerchantUserById($id);
 
-        return view('merchants.user_edit', compact('merchantUsers'));
+        $merchants = $this->getMerchant();
+
+        return view('merchants.user_edit', compact('merchantUsers', 'merchants'));
     }
 
     /**
@@ -96,8 +103,8 @@ class MerchantUserController extends AdminController
     public function destroy($id)
     {
         try {
-            $mu->getMerchantUserById($id);
-            $m->delete();
+            $mu = $this->getMerchantUserById($id);
+            $mu->delete();
         } catch (\Exception $e) {
             return back()->with('errors', $e->getMessage());
         }
@@ -143,4 +150,10 @@ class MerchantUserController extends AdminController
     {
         return User::where('id', '=', $id)->first();
     }
+
+    private function getMerchant()
+    {
+        return Merchant::all();
+    }
+
 }
