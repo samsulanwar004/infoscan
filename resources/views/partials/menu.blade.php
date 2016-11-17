@@ -47,9 +47,17 @@
             </li>
 
             <li class="merchants">
-                <a href="/merchants">
-                    <i class="fa fa-university"></i> <span>Merchants</span>
+                <a href="#">
+                    <i class="fa fa-university"></i>
+                    <span>Merchants</span>
+                    <span class="pull-right-container">
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </span>
                 </a>
+                <ul class="treeview-menu">
+                    <li><a href="/merchants"><i class="fa fa-circle-o"></i>Merchants List</a></li>
+                    <li><a href="/merchants/user"><i class="fa fa-circle-o"></i>Merchants Users</a></li>
+                </ul>
             </li>
 
             <li class="treeview">

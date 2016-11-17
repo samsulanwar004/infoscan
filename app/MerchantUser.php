@@ -10,6 +10,11 @@ class MerchantUser extends Model
 
     public function merchant()
     {
-        return $this->hasOne(Merchant::class, 'merchant_id');
+        return $this->belongsTo(Merchant::class, 'id');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'id');
     }
 }
