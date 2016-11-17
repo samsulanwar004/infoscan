@@ -31,17 +31,18 @@ class MerchantController extends AdminController
     }
 
     /**
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
      *
      * @return \Illuminate\Http\RedirectResponse
      */
     public function store(Request $request)
     {
         $this->validate($request, [
-            'company_name'  => 'required|min:3|max:200',
-            'address'       => 'required',
+            'company_name' => 'required|min:3|max:200',
+            'address' => 'required',
             'company_email' => 'required|email|unique:merchants,company_email',
-            'company_logo'  => 'mimes:jpg,jpeg,png',
+            'company_logo' => 'mimes:jpg,jpeg,png',
+
         ]);
 
         try {
@@ -56,7 +57,7 @@ class MerchantController extends AdminController
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -85,10 +86,10 @@ class MerchantController extends AdminController
     public function update(Request $request, $id = null)
     {
         $this->validate($request, [
-            'company_name'  => 'required|min:3|max:200',
-            'address'       => 'required',
+            'company_name' => 'required|min:3|max:200',
+            'address' => 'required',
             'company_email' => 'required|email|unique:merchants,company_email',
-            'company_logo'  => 'mimes:jpg,jpeg,png',
+            'company_logo' => 'mimes:jpg,jpeg,png',
         ]);
 
         try {
@@ -103,7 +104,7 @@ class MerchantController extends AdminController
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
@@ -133,14 +134,14 @@ class MerchantController extends AdminController
     {
         $memberCode = strtolower(str_random(10));
 
-        $m                = is_null($id) ? new Merchant : $this->getMerchantById($id);
+        $m = is_null($id) ? new Merchant : $this->getMerchantById($id);
         $m->merchant_code = $memberCode;
-        $m->company_name  = $request->input('company_name');
-        $m->address       = $request->input('address');
+        $m->company_name = $request->input('company_name');
+        $m->address = $request->input('address');
         $m->company_email = $request->input('company_email');
 
         if ($request->hasFile('company_logo')) {
-            $file     = $request->file('company_logo');
+            $file = $request->file('company_logo');
             $filename = sprintf(
                 "%s-%s.%s",
                 $memberCode,
@@ -159,20 +160,20 @@ class MerchantController extends AdminController
     private function createNewUser(Request $request)
     {
         $userList = [];
-        $u        = new User;
+        $u = new User;
         foreach ($request->input('user') as $key => $user) {
-            $name        = $user['name'];
-            $email       = $user['email'];
-            $password    = bcrypt(strtolower(str_random(10)));
-            $u->name     = $name;
-            $u->email    = $email;
+            $name = $user['name'];
+            $email = $user['email'];
+            $password = bcrypt(strtolower(str_random(10)));
+            $u->name = $name;
+            $u->email = $email;
             $u->password = $password;
             $u->save();
 
             $userList[] = [
-                'id'       => $u->id,
-                'name'     => $name,
-                'email'    => $email,
+                'id' => $u->id,
+                'name' => $name,
+                'email' => $email,
                 'password' => $password,
             ];
 
