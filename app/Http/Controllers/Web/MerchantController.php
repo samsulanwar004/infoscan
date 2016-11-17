@@ -41,7 +41,8 @@ class MerchantController extends AdminController
             'company_name' => 'required|min:3|max:200',
             'address' => 'required',
             'company_email' => 'required|email|unique:merchants,company_email',
-            'company_logo' => 'mimes:jpg,jpeg,png'
+            'company_logo' => 'mimes:jpg,jpeg,png',
+
         ]);
 
         try {
@@ -84,6 +85,13 @@ class MerchantController extends AdminController
      */
     public function update(Request $request, $id = null)
     {
+        $this->validate($request, [
+            'company_name' => 'required|min:3|max:200',
+            'address' => 'required',
+            'company_email' => 'required|email|unique:merchants,company_email',
+            'company_logo' => 'mimes:jpg,jpeg,png',
+        ]);
+
         try {
             $this->persistMerchant($request, $id);
         } catch (\Exception $e) {
@@ -106,7 +114,7 @@ class MerchantController extends AdminController
             $m->delete();
 
             if ($m->company_logo != null) {
-                \Storage::delete('public/images/' . $m->company_logo);
+                \Storage::delete('public/' . $m->company_logo);
             }
 
         } catch (\Exception $e) {
@@ -141,11 +149,38 @@ class MerchantController extends AdminController
                 $file->getClientOriginalExtension()
             );
 
-            $m->company_logo = $filename;
-            $file->storeAs('merchants', $filename, 'public');
+            $m->company_logo = $file->storeAs(
+                'merchants', $filename, 'public'
+            );
         }
 
         return $m->save();
+    }
+
+    private function createNewUser(Request $request)
+    {
+        $userList = [];
+        $u = new User;
+        foreach ($request->input('user') as $key => $user) {
+            $name = $user['name'];
+            $email = $user['email'];
+            $password = bcrypt(strtolower(str_random(10)));
+            $u->name = $name;
+            $u->email = $email;
+            $u->password = $password;
+            $u->save();
+
+            $userList[] = [
+                'id' => $u->id,
+                'name' => $name,
+                'email' => $email,
+                'password' => $password,
+            ];
+
+            $u->newInstance();
+        }
+
+        return $userList;
     }
 
     /**
