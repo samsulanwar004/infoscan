@@ -42,7 +42,7 @@ class MerchantUserController extends AdminController
      */
     public function store(Request $request)
     {
-     
+
         try {
             $this->persistMerchantUser($request);
         } catch (\Exception $e) {

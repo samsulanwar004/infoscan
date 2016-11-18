@@ -192,7 +192,7 @@ class MerchantController extends AdminController
         $user = $request->input('user');
         $countUser = $this->countOfUserInput($request);
 
-        for ($i=0; $i <= $countUser -1; ++$i) {
+        for ($i=0; $i <= $countUser; ++$i) {
             $u = new User;
 
             $name = $user['name'][$i];

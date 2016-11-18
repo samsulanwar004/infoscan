@@ -38,22 +38,13 @@
                         </div>
                         <div class="form-group has-feedback">
                             <label for="company_logo">Company Logo</label>
-<<<<<<< HEAD
                             <input type="file" class="form-control" id="company_logo" name="company_logo"
                                    placeholder="Enter company name">
-=======
-                            <input type="file" class="form-control" id="company_logo" name="company_logo">
->>>>>>> upstream/master
                         </div>
                         <div class="form-group has-feedback">
                             <label for="address">Address</label>
-<<<<<<< HEAD
                             <textarea class="form-control" name="address" id="address"
-                                      placeholder="Enter address">{{ old('address') }}</textarea>
-=======
-                            <textarea class="form-control" name="address" id="address" placeholder="Enter address"
-                                      >{{ old('address') }}</textarea>
->>>>>>> upstream/master
+                                      placeholder="Enter address" required>{{ old('address') }}</textarea>
                         </div>
                         <div class="form-group has-feedback">
                             <label for="company_email">Email</label>
@@ -67,21 +58,21 @@
                         <button class="btn btn-danger" id="remove">Remove</button>
 
                         @for($i=0; $i <= session('countOfUser', 0); ++$i)
-                        <div id="user">
-                            <hr>
-                            <div class="form-group has-feedback">
-                                <label for="name">Name</label>
-                                <input type="text" class="form-control" name="user[name][]" id="name"
-                                       value="{{ old('user.name.' . $i) }}" placeholder="Enter user name"
-                                       required>
+                            <div id="user">
+                                <hr>
+                                <div class="form-group has-feedback">
+                                    <label for="name">Name</label>
+                                    <input type="text" class="form-control" name="user[name][]" id="name"
+                                           value="{{ old('user.name.' . $i) }}" placeholder="Enter user name"
+                                           required>
+                                </div>
+                                <div class="form-group has-feedback">
+                                    <label for="email">Email</label>
+                                    <input type="email" class="form-control" name="user[email][]" id="email"
+                                           value="{{ old('user.email.' . $i) }}" placeholder="Enter email"
+                                           required>
+                                </div>
                             </div>
-                            <div class="form-group has-feedback">
-                                <label for="email">Email</label>
-                                <input type="email" class="form-control" name="user[email][]" id="email"
-                                       value="{{ old('user.email.' . $i) }}" placeholder="Enter email"
-                                       required>
-                            </div>
-                        </div>
                         @endfor
                     </div>
                     <!-- /.box-body -->
@@ -127,11 +118,7 @@
             updateCounterForm(false);
             console.log("add");
         });
-<<<<<<< HEAD
-        $("button#remove").on('click', function (e ) {
-=======
         $("button#remove").on('click', function (e) {
->>>>>>> upstream/master
             e.preventDefault();
             $("#user").last().remove();
             updateCounterForm(true);
