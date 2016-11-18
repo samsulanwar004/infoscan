@@ -45,11 +45,11 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="merchant">Select Role</label>
+                            <label for="merchant">Select Merchant</label>
                             <select name="merchant" id="merchant" class="form-control">
                                 @foreach($merchants as $merchant)
                                     <option value="{{ $merchant->id }}"
-                                            @if($merchant->id == $merchantUsers->merchant_id) selected>{{ $merchant->company_name }}</option>
+                                            @if($merchant->id == $merchant->id) selected @endif>{{ $merchant->company_name }}</option>
                                 @endforeach
                             </select>
                         </div>
