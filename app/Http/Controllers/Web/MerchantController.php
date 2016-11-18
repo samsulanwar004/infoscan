@@ -49,7 +49,6 @@ class MerchantController extends AdminController
         ]);
 
 
-
         try {
             \DB::beginTransaction();
             $merchant = $this->createNewMerchant($request);
@@ -174,9 +173,8 @@ class MerchantController extends AdminController
                 $file->getClientOriginalExtension()
             );
 
-            $m->company_logo = $file->storeAs(
-                'merchants', $filename, 'public'
-            );
+            $m->company_logo = $filename;
+            $file->storeAs('merchants', $filename, 'public');
         }
 
         $m->save();
@@ -185,14 +183,13 @@ class MerchantController extends AdminController
     }
 
 
-
     private function createNewUser($request)
     {
         $userList = [];
         $user = $request->input('user');
         $countUser = $this->countOfUserInput($request);
 
-        for ($i=0; $i <= $countUser -1; ++$i) {
+        for ($i = 0; $i <= $countUser; ++$i) {
             $u = new User;
 
             $name = $user['name'][$i];
@@ -214,7 +211,7 @@ class MerchantController extends AdminController
     private function countOfUserInput(Request $request)
     {
         $count = count($request->input('user')['name']);
-        return 0 === $count ? 0 : $count-1;
+        return 0 === $count ? 0 : $count - 1;
     }
 
 
