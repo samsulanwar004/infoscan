@@ -21,6 +21,7 @@ class CreateMerchantsTable extends Migration
             $table->text('address')->nullable();
             $table->string('company_email', 100)->unique();
             $table->timestamps();
+            $table->softDeletes();
         });
 
         Schema::create('merchant_users', function (Blueprint $table) {
@@ -29,6 +30,7 @@ class CreateMerchantsTable extends Migration
             $table->integer('user_id')->unsigned();
             $table->foreign('merchant_id')->references('id')->on('merchants');
             $table->foreign('user_id')->references('id')->on('users');
+            $table->softDeletes();
         });
     }
 

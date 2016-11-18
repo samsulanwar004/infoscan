@@ -47,7 +47,7 @@
                             <td class="text-right vertical-middle">
                                 <div class="btn-group">
                                     @cando('User.Update')
-                                    <a href="{{ admin_route_url('merchantusers.edit', ['id' => $merchantuser->id]) }}"
+                                    <a href="{{ admin_route_url('merchantusers.edit', ['id' => $merchantuser->user->id]) }}"
                                        class="btn btn-info">
                                         <i class="fa fa-pencil"> </i>
                                     </a>
@@ -55,7 +55,7 @@
 
                                     @cando('User.Delete')
                                     <a class="btn btn-danger"
-                                       href="{{ admin_route_url('merchantusers.destroy', ['id' => $merchantuser->id]) }}"
+                                       href="{{ admin_route_url('merchantusers.destroy', ['id' => $merchantuser->user->id]) }}"
                                        data-toggle="modal"
                                        data-target="#"
                                        title="Delete this data"

@@ -42,10 +42,19 @@ class MerchantUserController extends AdminController
      */
     public function store(Request $request)
     {
+        $this->validate($request, [
+            'user.name' => 'required|max:50',
+            'user.email' => 'required|unique:users,email'
+        ]);
 
         try {
-            $this->persistMerchantUser($request);
+            \DB::beginTransaction();
+            $this->createNewUserMerchant($request);
+            \DB::commit();
         } catch (\Exception $e) {
+            \DB::rollback();
+
+            logger($e);
             return back()->with('errors', $e->getMessage());
         }
 
@@ -72,9 +81,7 @@ class MerchantUserController extends AdminController
     {
         $merchantUsers = $this->getMerchantUserById($id);
 
-        $merchants = $this->getMerchant();
-
-        return view('merchants.user_edit', compact('merchantUsers', 'merchants'));
+        return view('merchants.user_edit', compact('merchantUsers'));
     }
 
     /**
@@ -121,13 +128,46 @@ class MerchantUserController extends AdminController
 
     private function persistMerchantUser($request, $id = null)
     {
-        $mu = is_null($id) ? new MerchantUser : $this->getMerchantUserById($id);
-        $m  = $this->getMerchantById($request->input('merchant_id'));
-        $u  = $this->getUserById($request->input('user_id'));
-        $mu->merchant()->associate($m);
-        $mu->user()->associate($u);
+        $user = is_null($id) ? new User() : $this->getUserById($id);
+        $user->name = $request->input('name');
+        if (is_null($id)) {
+            $user->email = $request->input('email');
+        }
+        if ('******' !== $request->input('password')) {
+            $user->password = bcrypt($request->input('password'));
+        }
+        $user->is_active = $request->has('is_active') ? 1 : 0;
 
-        $mu->save();
+        return $user->save();
+    }
+
+    private function createNewUserMerchant($request)
+    {
+        //$userList = [];
+        $user = $request->input('user');
+        $countUser = $this->countOfUserInput($request);
+
+        for ($i = 0; $i <= $countUser; ++$i) {
+            $u = new User;
+            $mu = new MerchantUser;
+            $m = $this->getMerchantById($user['merchant'][$i]);
+            $name = $user['name'][$i];
+            $email = $user['email'][$i];
+            $password = bcrypt(strtolower(str_random(10)));
+
+            $u->name = $name;
+            $u->email = $email;
+            $u->password = $password;
+            $u->is_active = 1;
+            $u->save();
+
+            $mu->merchant()->associate($m);
+            $mu->user()->associate($u);
+
+            $mu->save();
+        }
+
+        return true;
     }
 
     /**
@@ -138,7 +178,7 @@ class MerchantUserController extends AdminController
 
     private function getMerchantUserById($id)
     {
-        return MerchantUser::with('user', 'merchant')->where('id', '=', $id)->first();
+        return MerchantUser::with('user', 'merchant')->where('user_id', '=', $id)->first();
     }
 
     private function getMerchantById($id)
@@ -146,7 +186,7 @@ class MerchantUserController extends AdminController
         return Merchant::where('id', '=', $id)->first();
     }
 
-    private function getUserById($d)
+    private function getUserById($id)
     {
         return User::where('id', '=', $id)->first();
     }
@@ -154,6 +194,12 @@ class MerchantUserController extends AdminController
     private function getMerchant()
     {
         return Merchant::all();
+    }
+
+    private function countOfUserInput(Request $request)
+    {
+        $count = count($request->input('user')['name']);
+        return 0 === $count ? 0 : $count - 1;
     }
 
 }
