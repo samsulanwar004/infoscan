@@ -30,6 +30,8 @@
                         <th>Active</th>
                         <th width="250"></th>
                     </tr>
+                    </thead>
+                    <tbody>
                     <tr>
                         @forelse($merchantUsers as $merchantuser)
                             <td>
@@ -45,7 +47,7 @@
                             <td class="text-right vertical-middle">
                                 <div class="btn-group">
                                     @cando('User.Update')
-                                    <a href="{{ admin_route_url('merchantusers.edit', ['id' => $merchantuser->user->id]) }}"
+                                    <a href="{{ admin_route_url('merchantusers.edit', ['id' => $merchantuser->id]) }}"
                                        class="btn btn-info">
                                         <i class="fa fa-pencil"> </i>
                                     </a>
@@ -53,7 +55,7 @@
 
                                     @cando('User.Delete')
                                     <a class="btn btn-danger"
-                                       href="{{ admin_route_url('merchantusers.destroy', ['id' => $merchantuser->user->id]) }}"
+                                       href="{{ admin_route_url('merchantusers.destroy', ['id' => $merchantuser->id]) }}"
                                        data-toggle="modal"
                                        data-target="#"
                                        title="Delete this data"
@@ -63,11 +65,11 @@
                                     @endcando
                                 </div>
                             </td>
+                        </tr>
                         @empty
                             <td colspan="4"> There is no record for merchant users data!</td>
                         @endforelse
-                    </tr>
-                    </thead>
+                    </tbody>
                 </table>
             </div>
         </div>

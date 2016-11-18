@@ -54,6 +54,15 @@
                                     @endforeach
                                 </select>
                             </div>
+                            <div class="form-group">
+                                <label for="merchant">Select Merchant</label>
+                                <select name="user[][merchant]" id="merchant" class="form-control">
+                                    <option disabled selected>Select merchant</option>
+                                    @foreach($merchants as $merchant)
+                                        <option value="{{ $merchant->id }}">{{ $merchant->company_name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
                         </div>
                     </div>
                     <!-- /.box-body -->

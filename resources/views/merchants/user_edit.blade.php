@@ -28,7 +28,7 @@
             </div>
             <div class="box-body">
                 <form role="form"
-                      action="{{ admin_route_url('merchantusers.update', ['id' => $merchantUsers->user->id]) }}"
+                      action="{{ admin_route_url('merchantusers.update', ['id' => $merchantUsers->id]) }}"
                       method="POST" enctype="multipart/form-data" class="form" accept-charset="utf-8">
                     {{ csrf_field() }}
                     {{ method_field('PUT') }}
@@ -67,8 +67,7 @@
 
                         <div class="checkbox">
                             <label>
-                                <input name="is_active"
-                                       {{ (bool)$merchantusers->user->is_active ? 'checked' : '' }} type="checkbox">
+                                <input name="is_active" {{ (bool)$merchantUsers->user->is_active ? 'checked' : '' }} type="checkbox">
                                 Is Active ?
                             </label>
                         </div>
