@@ -27,7 +27,7 @@
                         <i class="fa fa-times"></i></a>
                 </div>
             </div>
-            <div class="box-body">
+            <div class="box-body" id="form-body">
                 <form role="form" action="{{ admin_route_url('merchants.update', ['id' => $merchant->id]) }}"
                       method="POST" enctype="multipart/form-data" accept-charset="utf-8">
                     {{ csrf_field() }}
@@ -96,3 +96,39 @@
     </section>
     <!-- /.content -->
 @endsection
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script>
+    var counterform = 1;
+
+    function updateCounterForm(isRemove) {
+        if (isRemove) {
+            counterform = counterform - 1;
+        } else {
+            counterform = counterform + 1;
+        }
+
+        if (counterform > 1) {
+            $("button#remove").prop("disabled", false);
+        } else {
+            $("button#remove").prop("disabled", true);
+        }
+
+        console.log(counterform);
+    }
+
+    $(document).ready(function () {
+        $("button#add").on('click', function (e) {
+            e.preventDefault();
+            $("#user").clone().appendTo("#form-body");
+            updateCounterForm(false);
+            console.log("add");
+        });
+        $("button#remove").on('click', function (e) {
+            e.preventDefault();
+            $("#user").last().remove();
+            updateCounterForm(true);
+            console.log("remove");
+        });
+    });
+</script>
