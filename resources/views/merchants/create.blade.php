@@ -55,11 +55,11 @@
 
                         <hr>
                         <button class="btn btn-primary" id="add">Add user field</button>
-                        <button class="btn btn-danger" id="remove">Remove</button>
 
                         @for($i=0; $i <= session('countOfUser', 0); ++$i)
                             <div id="user">
                                 <hr>
+                                <button class="btn btn-box-tool" id="remove">x</button>
                                 <div class="form-group has-feedback">
                                     <label for="name">Name</label>
                                     <input type="text" class="form-control" name="user[name][]" id="name"
@@ -93,7 +93,7 @@
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 <script>
-    var counterform = 1;
+    var counterform = 2;
 
     function updateCounterForm(isRemove) {
         if (isRemove) {
@@ -112,17 +112,16 @@
     }
 
     $(document).ready(function () {
+        updateCounterForm(true);
         $("button#add").on('click', function (e) {
             e.preventDefault();
             $("#user").clone().appendTo("#form-body");
             updateCounterForm(false);
-            console.log("add");
         });
-        $("button#remove").on('click', function (e) {
+        $(document).on('click', 'button#remove', function (e) {
             e.preventDefault();
-            $("#user").last().remove();
+            $(e.target).closest('#user').remove();
             updateCounterForm(true);
-            console.log("remove");
         });
     });
 </script>
