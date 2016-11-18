@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers\Web;
 
-use App\Merchant;
 use App\User;
+use App\Merchant;
+use App\MerchantUser;
 use Illuminate\Http\Request;
 
 class MerchantController extends AdminController
@@ -59,7 +60,7 @@ class MerchantController extends AdminController
             \DB::rollback();
 
             logger($e);
-            return back()->with('exceptions', $e->getMessage());
+            return back()->with('errors', $e->getMessage());
         }
 
         return redirect($this->redirectAfterSave)->with('success', 'Merchant successfully saved!');
@@ -85,7 +86,9 @@ class MerchantController extends AdminController
     {
         $merchant = $this->getMerchantById($id);
 
-        return view('merchants.edit', compact('merchant'));
+        $merchantUsers = MerchantUser::with('user')->where('merchant_id', '=', $id)->get();
+
+        return view('merchants.edit', compact('merchant', 'merchantUsers'));
     }
 
     /**
@@ -99,12 +102,17 @@ class MerchantController extends AdminController
         $this->validate($request, [
             'company_name' => 'required|min:3|max:200',
             'address' => 'required',
-            'company_email' => 'required|email|unique:merchants,company_email',
+            'company_email' => 'required|email',
             'company_logo' => 'mimes:jpg,jpeg,png',
         ]);
 
         try {
+            $m = $this->getMerchantById($id);
+            if ($request->hasFile('company_logo') != null) {          
+                \Storage::delete('public/merchants/' . $m->company_logo);
+            }
             $this->createNewMerchant($request, $id);
+            $this->updateUser($request);
         } catch (\Exception $e) {
             return back()->with('errors', $e->getMessage());
         }
@@ -125,7 +133,7 @@ class MerchantController extends AdminController
             $m->delete();
 
             if ($m->company_logo != null) {
-                \Storage::delete('public/' . $m->company_logo);
+                \Storage::delete('public/merchants/' . $m->company_logo);
             }
 
         } catch (\Exception $e) {
@@ -208,6 +216,29 @@ class MerchantController extends AdminController
         return $userList;
     }
 
+    private function updateUser($request)
+    {
+        $userList = [];
+        $user = $request->input('user');
+        $countUser = $this->countOfUserInput($request);
+
+        for ($i = 0; $i <= $countUser; ++$i) {
+            $u = is_null($user['id'][$i]) ? new Merchant : $this->getUserById($user['id'][$i]);
+
+            $name = $user['name'][$i];
+            $email = $user['email'][$i];
+
+            $u->name = $name;
+            $u->email = $email;
+            $u->is_active = 1;
+            $u->save();
+
+            $userList[] = $u;
+        }
+
+        return $userList;
+    }
+
     private function countOfUserInput(Request $request)
     {
         $count = count($request->input('user')['name']);
@@ -224,5 +255,10 @@ class MerchantController extends AdminController
     private function getMerchantById($id)
     {
         return Merchant::where('id', '=', $id)->first();
+    }
+
+    private function getUserById($id)
+    {
+        return User::where('id', '=', $id)->first();
     }
 }
