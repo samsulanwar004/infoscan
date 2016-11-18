@@ -42,10 +42,19 @@ class MerchantUserController extends AdminController
      */
     public function store(Request $request)
     {
+        $this->validate($request, [
+            'user.name' => 'required|max:50',
+            'user.email' => 'required|unique:users,email'
+        ]);
 
         try {
-            $this->persistMerchantUser($request);
+            \DB::beginTransaction();
+            $this->createNewUserMerchant($request);
+            \DB::commit();
         } catch (\Exception $e) {
+            \DB::rollback();
+
+            logger($e);
             return back()->with('errors', $e->getMessage());
         }
 
@@ -130,6 +139,35 @@ class MerchantUserController extends AdminController
         $mu->save();
     }
 
+    private function createNewUserMerchant($request)
+    {
+        //$userList = [];
+        $user = $request->input('user');
+        $countUser = $this->countOfUserInput($request);
+
+        for ($i = 0; $i <= $countUser; ++$i) {
+            $u = new User;
+            $mu = new MerchantUser;
+            $m = $this->getMerchantById($user['merchant'][$i]);
+            $name = $user['name'][$i];
+            $email = $user['email'][$i];
+            $password = bcrypt(strtolower(str_random(10)));
+
+            $u->name = $name;
+            $u->email = $email;
+            $u->password = $password;
+            $u->is_active = 1;
+            $u->save();
+
+            $mu->merchant()->associate($m);
+            $mu->user()->associate($u);
+
+            $mu->save();
+        }
+
+        return true;
+    }
+
     /**
      * @param $id
      *
@@ -154,6 +192,12 @@ class MerchantUserController extends AdminController
     private function getMerchant()
     {
         return Merchant::all();
+    }
+
+    private function countOfUserInput(Request $request)
+    {
+        $count = count($request->input('user')['name']);
+        return 0 === $count ? 0 : $count - 1;
     }
 
 }

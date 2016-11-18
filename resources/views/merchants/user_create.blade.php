@@ -33,22 +33,23 @@
                     <div class="box-body" id="form-body">
                         <button class="btn btn-primary" id="add">Add user field</button>
                         <button class="btn btn-danger" id="remove">Remove</button>
+                        @for($i=0; $i <= session('countOfUser', 0); ++$i)
                         <div id="user">
                             <hr>
-                            <div class="form-group has-feedback{{ $errors->has('name') ? ' has-error' : '' }}">
+                            <div class="form-group has-feedback">
                                 <label for="name">Name</label>
-                                <input type="text" class="form-control" name="user[][name]" id="name"
-                                       value="{{ old('name') }}" placeholder="Enter user name" required>
+                                <input type="text" class="form-control" name="user[name][]" id="name"
+                                       value="{{ old('user.name.' . $i) }}" placeholder="Enter user name" required>
                             </div>
-                            <div class="form-group has-feedback{{ $errors->has('email') ? ' has-error' : '' }}">
+                            <div class="form-group has-feedback">
                                 <label for="email">Email</label>
-                                <input type="email" class="form-control" name="user[][email]" id="email"
-                                       value="{{ old('email') }}" placeholder="Enter email" required>
+                                <input type="email" class="form-control" name="user[email][]" id="email"
+                                       value="{{ old('user.email.' . $i) }}" placeholder="Enter email" required>
                             </div>
                             <div class="form-group">
                                 <label for="merchant">Select Merchant</label>
-                                <select name="user[][merchant]" id="merchant" class="form-control">
-                                    <option disabled selected>Select merchant</option>
+                                <select name="user[merchant][]" id="merchant" class="form-control">
+                                    <option selected>Select merchant</option>
                                     @foreach($merchants as $merchant)
                                         <option value="{{ $merchant->id }}"
                                         @if($merchant->id == $merchant->id) selected @endif>{{ $merchant->company_name }}</option>
@@ -56,6 +57,7 @@
                                 </select>
                             </div>
                         </div>
+                        @endfor
                     </div>
                     <!-- /.box-body -->
                     <div class="box-footer text-right">
