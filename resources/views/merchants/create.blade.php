@@ -39,12 +39,12 @@
                         <div class="form-group has-feedback{{ $errors->has('company_logo') ? ' has-error' : '' }}">
                             <label for="company_logo">Company Logo</label>
                             <input type="file" class="form-control" id="company_logo" name="company_logo"
-                                   placeholder="Enter company name" required>
+                                   placeholder="Enter company name">
                         </div>
                         <div class="form-group has-feedback{{ $errors->has('address') ? ' has-error' : '' }}">
                             <label for="address">Address</label>
-                            <textarea class="form-control" name="address" id="address" placeholder="Enter address"
-                                      required>{{ old('address') }}</textarea>
+                            <textarea class="form-control" name="address" id="address"
+                                      placeholder="Enter address">{{ old('address') }}</textarea>
                         </div>
                         <div class="form-group has-feedback{{ $errors->has('company_email') ? ' has-error' : '' }}">
                             <label for="company_email">Email</label>
@@ -109,12 +109,14 @@
     }
 
     $(document).ready(function () {
-        $("button#add").click(function () {
+        $("button#add").on('click', function (e) {
+            e.preventDefault();
             $("#user").clone().appendTo("#form-body");
             updateCounterForm(false);
             console.log("add");
         });
-        $("button#remove").click(function () {
+        $("button#remove").on('click', function (e ) {
+            e.preventDefault();
             $("#user").last().remove();
             updateCounterForm(true);
             console.log("remove");

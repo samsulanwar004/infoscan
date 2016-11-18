@@ -28,7 +28,7 @@
             </div>
             <div class="box-body">
                 <form role="form"
-                      action="{{ admin_route_url('merchantusers.update', ['id' => $merchantusers->user->id])) }}"
+                      action="{{ admin_route_url('merchantusers.update', ['id' => $merchantUsers->user->id]) }}"
                       method="POST" enctype="multipart/form-data" class="form" accept-charset="utf-8">
                     {{ csrf_field() }}
                     {{ method_field('PUT') }}
@@ -36,19 +36,20 @@
                         <div class="form-group">
                             <label for="name">Name</label>
                             <input type="text" class="form-control" id="name" name="name" placeholder="Enter name"
-                                   value="{{ old('name', $merchantusers->user->name) }}" required autofocus>
+                                   value="{{ old('name', $merchantUsers->user->name) }}" required autofocus>
                         </div>
                         <div class="form-group">
                             <label for="email">Email address</label>
                             <input type="email" class="form-control" id="email" name="email" placeholder="Enter email"
-                                   value="{{ old('email', $merchantusers->user->email) }}" required>
+                                   value="{{ old('email', $merchantUsers->user->email) }}" required>
                         </div>
 
                         <div class="form-group">
                             <label for="merchant">Select Role</label>
                             <select name="merchant" id="merchant" class="form-control">
-                                @foreach($merchantusers->merchant as $merchant)
-                                    <option value="{{ $merchant->id }}">{{ $merchant->company_name }}</option>
+                                @foreach($merchants as $merchant)
+                                    <option value="{{ $merchant->id }}"
+                                            @if($merchant->id == $merchantUsers->merchant_id) selected>{{ $merchant->company_name }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -66,7 +67,8 @@
 
                         <div class="checkbox">
                             <label>
-                                <input name="is_active" {{ (bool)$merchantusers->user->is_active ? 'checked' : '' }} type="checkbox">
+                                <input name="is_active"
+                                       {{ (bool)$merchantusers->user->is_active ? 'checked' : '' }} type="checkbox">
                                 Is Active ?
                             </label>
                         </div>
