@@ -28,7 +28,7 @@
             </div>
             <div class="box-body">
                 <form role="form"
-                      action="{{ admin_route_url('merchantusers.update', ['id' => $merchantUsers->id]) }}"
+                      action="{{ admin_route_url('merchantusers.update', ['id' => $merchantUsers->user->id]) }}"
                       method="POST" enctype="multipart/form-data" class="form" accept-charset="utf-8">
                     {{ csrf_field() }}
                     {{ method_field('PUT') }}
@@ -45,13 +45,9 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="merchant">Select Merchant</label>
-                            <select name="merchant" id="merchant" class="form-control">
-                                @foreach($merchants as $merchant)
-                                    <option value="{{ $merchant->id }}"
-                                            @if($merchant->id == $merchant->id) selected @endif>{{ $merchant->company_name }}</option>
-                                @endforeach
-                            </select>
+                            <label for="merchant">Merchant</label>
+                            <input type="text" class="form-control" id="merchant" name="merchant"
+                                   value="{{ $merchantUsers->merchant->company_name }}" disabled="disabled">
                         </div>
 
                         <div class="form-group">

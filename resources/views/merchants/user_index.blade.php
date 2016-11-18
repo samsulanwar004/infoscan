@@ -47,7 +47,7 @@
                             <td class="text-right vertical-middle">
                                 <div class="btn-group">
                                     @cando('User.Update')
-                                    <a href="{{ admin_route_url('merchantusers.edit', ['id' => $merchantuser->id]) }}"
+                                    <a href="{{ admin_route_url('merchantusers.edit', ['id' => $merchantuser->user->id]) }}"
                                        class="btn btn-info">
                                         <i class="fa fa-pencil"> </i>
                                     </a>
