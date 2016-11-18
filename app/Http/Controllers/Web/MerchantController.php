@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Web;
 
 use App\Merchant;
+use App\User;
 use Illuminate\Http\Request;
 
 class MerchantController extends AdminController
@@ -37,18 +38,29 @@ class MerchantController extends AdminController
      */
     public function store(Request $request)
     {
+        $request->session()->flash('countOfUser', $this->countOfUserInput($request));
+
         $this->validate($request, [
             'company_name' => 'required|min:3|max:200',
             'address' => 'required',
             'company_email' => 'required|email|unique:merchants,company_email',
             'company_logo' => 'mimes:jpg,jpeg,png',
-
+            'user.email.*' => 'required|unique:users,email',
         ]);
 
+
+
         try {
-            $this->persistMerchant($request);
+            \DB::beginTransaction();
+            $merchant = $this->createNewMerchant($request);
+            $users = $this->createNewUser($request);
+            $this->persistData($merchant, $users);
+            \DB::commit();
         } catch (\Exception $e) {
-            return back()->with('errors', $e->getMessage());
+            \DB::rollback();
+
+            logger($e);
+            return back()->with('exceptions', $e->getMessage());
         }
 
         return redirect($this->redirectAfterSave)->with('success', 'Merchant successfully saved!');
@@ -93,7 +105,7 @@ class MerchantController extends AdminController
         ]);
 
         try {
-            $this->persistMerchant($request, $id);
+            $this->createNewMerchant($request, $id);
         } catch (\Exception $e) {
             return back()->with('errors', $e->getMessage());
         }
@@ -124,13 +136,26 @@ class MerchantController extends AdminController
         return redirect($this->redirectAfterSave)->with('success', 'Merchant successfully deleted!');
     }
 
+    private function persistData($merchant, $users)
+    {
+        foreach ($users as $user) {
+            $mu = new \App\MerchantUser;
+            $mu->merchant()->associate($merchant);
+            $mu->user()->associate($user);
+
+            $mu->save();
+        }
+
+        return true;
+    }
+
     /**
      * @param $request
      * @param null $id
      *
      * @return bool
      */
-    private function persistMerchant($request, $id = null)
+    private function createNewMerchant($request, $id = null)
     {
         $memberCode = strtolower(str_random(10));
 
@@ -154,34 +179,44 @@ class MerchantController extends AdminController
             );
         }
 
-        return $m->save();
+        $m->save();
+
+        return $m;
     }
 
-    private function createNewUser(Request $request)
+
+
+    private function createNewUser($request)
     {
         $userList = [];
-        $u = new User;
-        foreach ($request->input('user') as $key => $user) {
-            $name = $user['name'];
-            $email = $user['email'];
+        $user = $request->input('user');
+        $countUser = $this->countOfUserInput($request);
+
+        for ($i=0; $i <= $countUser -1; ++$i) {
+            $u = new User;
+
+            $name = $user['name'][$i];
+            $email = $user['email'][$i];
             $password = bcrypt(strtolower(str_random(10)));
+
             $u->name = $name;
             $u->email = $email;
             $u->password = $password;
+            $u->is_active = 1;
             $u->save();
 
-            $userList[] = [
-                'id' => $u->id,
-                'name' => $name,
-                'email' => $email,
-                'password' => $password,
-            ];
-
-            $u->newInstance();
+            $userList[] = $u;
         }
 
         return $userList;
     }
+
+    private function countOfUserInput(Request $request)
+    {
+        $count = count($request->input('user')['name']);
+        return 0 === $count ? 0 : $count-1;
+    }
+
 
     /**
      * @param $id
