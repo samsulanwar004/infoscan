@@ -55,7 +55,7 @@
 
                                     @cando('User.Delete')
                                     <a class="btn btn-danger"
-                                       href="{{ admin_route_url('merchantusers.destroy', ['id' => $merchantuser->id]) }}"
+                                       href="{{ admin_route_url('merchantusers.destroy', ['id' => $merchantuser->user->id]) }}"
                                        data-toggle="modal"
                                        data-target="#"
                                        title="Delete this data"
