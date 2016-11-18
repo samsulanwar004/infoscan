@@ -13,10 +13,12 @@
                 </h3>
 
                 <div class="box-tools pull-right">
-                    <a href="{{ admin_route_url('merchantusers.index') }}" class="btn btn-box-tool"
+                    @cando('User.Create')
+                    <a href="{{ admin_route_url('merchantusers.create') }}" class="btn btn-box-tool"
                        data-toggle="tooltip"
-                       title="Back"> <i
-                                class="fa fa-times"></i></a>
+                       title="Create New">
+                        <i class="fa fa-plus-circle fa-btn"></i> Create New</a>
+                    @endcando
                 </div>
             </div>
             <div class="box-body">
@@ -65,7 +67,7 @@
                             </td>
                         </tr>
                         @empty
-                            <td colspan="4"> There is no record for merchants data!</td>
+                            <td colspan="4"> There is no record for merchant users data!</td>
                         @endforelse
                     </tbody>
                 </table>

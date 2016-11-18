@@ -48,7 +48,8 @@
                             <label for="merchant">Select Role</label>
                             <select name="merchant" id="merchant" class="form-control">
                                 @foreach($merchants as $merchant)
-                                    <option value="{{ $merchant->id }}">{{ $merchant->company_name }}</option>
+                                    <option value="{{ $merchant->id }}"
+                                            @if($merchant->id == $merchantUsers->merchant_id) selected>{{ $merchant->company_name }}</option>
                                 @endforeach
                             </select>
                         </div>
