@@ -25,6 +25,10 @@ Route::group([
         ['except' => ['show'], 'names' => route_resource_name($routePrefix, 'settings')]);
     Route::resource('/promotions', 'Web\PromotionController',
         ['except' => ['show'], 'names' => route_resource_name($routePrefix, 'promotions')]);
+    Route::resource('/merchants', 'Web\MerchantController',
+        ['except' => ['show'], 'names' => route_resource_name($routePrefix, 'merchants')]);
+    Route::resource('/merchants/users', 'Web\MerchantUserController',
+        ['except' => ['show'], 'names' => route_resource_name($routePrefix, 'merchantusers')]);
 
 });
 

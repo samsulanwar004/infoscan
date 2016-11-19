@@ -2,11 +2,11 @@
 
 @section('content')
     @include('partials.content_header', [
-        'pageTitle' => 'Users',
-        'pageDescription' => 'Edit user',
+        'pageTitle' => 'Merchant users',
+        'pageDescription' => 'Create a new merchant user',
         'breadcrumbs' => [
-            'Users' => admin_route_url('users.index'),
-            'Edit' => false]
+            'Merchant users' => admin_route_url('merchantusers.index'),
+            'Create' => false]
         ]
     )
 
@@ -17,40 +17,37 @@
         <div class="box">
             <div class="box-header with-border">
                 <h3 class="box-title">
-                    <!-- <a href="/users" class="btn btn-link btn-sm">
-                        <i class="fa fa-plus fa-arrow-circle-left"></i> back to user list</a> -->
                 </h3>
 
                 <div class="box-tools pull-right">
-                    <a href="{{ admin_route_url('users.index') }}" class="btn btn-box-tool"
-                       data-toggle="tooltip" title="Back">
-                        <i class="fa fa-times"></i></a>
+                    <a href="{{ admin_route_url('merchantusers.index') }}" class="btn btn-box-tool"
+                       data-toggle="tooltip"
+                       title="Back"> <i
+                                class="fa fa-times"></i></a>
                 </div>
             </div>
             <div class="box-body">
-                <form role="form" action="{{ admin_route_url('users.update', ['id' => $user->id]) }}" method="POST"
-                      enctype="multipart/form-data" class="form" accept-charset="utf-8">
+                <form role="form"
+                      action="{{ admin_route_url('merchantusers.update', ['id' => $merchantUsers->user->id]) }}"
+                      method="POST" enctype="multipart/form-data" class="form" accept-charset="utf-8">
                     {{ csrf_field() }}
                     {{ method_field('PUT') }}
                     <div class="box-body">
                         <div class="form-group">
                             <label for="name">Name</label>
                             <input type="text" class="form-control" id="name" name="name" placeholder="Enter name"
-                                   value="{{ old('name', $user->name) }}" required autofocus>
+                                   value="{{ old('name', $merchantUsers->user->name) }}" required autofocus>
                         </div>
                         <div class="form-group">
                             <label for="email">Email address</label>
                             <input type="email" class="form-control" id="email" name="email" placeholder="Enter email"
-                                   value="{{ old('email', $user->email) }}" required>
+                                   value="{{ old('email', $merchantUsers->user->email) }}" required>
                         </div>
 
                         <div class="form-group">
-                            <label for="role">Select Role</label>
-                            <select name="role" id="role" class="form-control">
-                                @foreach($roles as $role)
-                                    <option value="{{ $role->id }}">{{ $role->role_name }}</option>
-                                @endforeach
-                            </select>
+                            <label for="merchant">Merchant</label>
+                            <input type="text" class="form-control" id="merchant" name="merchant"
+                                   value="{{ $merchantUsers->merchant->company_name }}" disabled="disabled">
                         </div>
 
                         <div class="form-group">
@@ -66,20 +63,20 @@
 
                         <div class="checkbox">
                             <label>
-                                <input name="is_active" {{ (bool)$user->is_active ? 'checked' : '' }} type="checkbox">
+                                <input name="is_active" {{ (bool)$merchantUsers->user->is_active ? 'checked' : '' }} type="checkbox">
                                 Is Active ?
                             </label>
                         </div>
                     </div>
                     <!-- /.box-body -->
-
                     <div class="box-footer text-right">
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fa fa-save fa-btn"></i> Save User
+                        <button type="submit" class="btn btn-primary" id="submit">
+                            <i class="fa fa-save fa-btn"></i> Save All
                         </button>
                     </div>
                 </form>
             </div>
+
         </div>
         <!-- /.box -->
 
