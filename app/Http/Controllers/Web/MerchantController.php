@@ -110,7 +110,7 @@ class MerchantController extends AdminController
 
         try {
             $m = $this->getMerchantById($id);
-            if ($request->hasFile('company_logo') != null) {          
+            if ($request->hasFile('company_logo') != null && $m->company_logo == true) {          
                 \Storage::delete('public/merchants/' . $m->company_logo);
             }
             $this->createNewMerchant($request, $id);
