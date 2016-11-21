@@ -3,10 +3,10 @@
 @section('content')
     @include('partials.content_header', [
         'pageTitle' => 'Merchant users',
-        'pageDescription' => 'Create a new merchant user',
+        'pageDescription' => 'Edit merchant user',
         'breadcrumbs' => [
             'Merchant users' => admin_route_url('merchantusers.index'),
-            'Create' => false]
+            'Edit' => false]
         ]
     )
 

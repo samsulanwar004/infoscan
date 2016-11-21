@@ -46,7 +46,7 @@
                 </ul>
             </li>
 
-            <li class="merchants">
+            <li class="treeview">
                 <a href="#">
                     <i class="fa fa-university"></i>
                     <span>Merchants</span>
@@ -56,7 +56,7 @@
                 </a>
                 <ul class="treeview-menu">
                     <li><a href="/merchants"><i class="fa fa-circle-o"></i>Merchants List</a></li>
-                    <li><a href="/merchants/users"><i class="fa fa-circle-o"></i>Merchants Users</a></li>
+                    <li><a href="/merchants/user"><i class="fa fa-circle-o"></i>Merchants Users</a></li>
                 </ul>
             </li>
 

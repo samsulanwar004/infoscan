@@ -6,13 +6,15 @@ use App\MerchantUser;
 use Illuminate\Http\Request;
 use App\Merchant;
 use App\User;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\MerchantUser as MailMerchantUser;
 
 class MerchantUserController extends AdminController
 {
     /**
      * @var string
      */
-    protected $redirectAfterSave = 'merchants/users';
+    protected $redirectAfterSave = 'merchants/user';
 
     /**
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
@@ -153,7 +155,8 @@ class MerchantUserController extends AdminController
             $m = $this->getMerchantById($user['merchant'][$i]);
             $name = $user['name'][$i];
             $email = $user['email'][$i];
-            $password = bcrypt(strtolower(str_random(10)));
+            $password_str = strtolower(str_random(10));
+            $password = bcrypt($password_str);
 
             $u->name = $name;
             $u->email = $email;
@@ -165,6 +168,9 @@ class MerchantUserController extends AdminController
             $mu->user()->associate($u);
 
             $mu->save();
+
+            Mail::to($email)
+                ->send(new MailMerchantUser($u, $password_str));
         }
 
         return true;
