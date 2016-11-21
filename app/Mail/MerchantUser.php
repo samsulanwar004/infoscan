@@ -11,7 +11,7 @@ class MerchantUser extends Mailable
 {
     use Queueable, SerializesModels;
     protected $user;
-    protected $password;
+    protected $password_str;
     /**
      * Create a new message instance.
      *
