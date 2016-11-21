@@ -6,6 +6,8 @@ use App\User;
 use App\Merchant;
 use App\MerchantUser;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\MerchantUser as MailMerchantUser;
 
 class MerchantController extends AdminController
 {
@@ -108,7 +110,7 @@ class MerchantController extends AdminController
 
         try {
             $m = $this->getMerchantById($id);
-            if ($request->hasFile('company_logo') != null) {          
+            if ($request->hasFile('company_logo') != null && $m->company_logo == true) {          
                 \Storage::delete('public/merchants/' . $m->company_logo);
             }
             $this->createNewMerchant($request, $id);
@@ -202,7 +204,8 @@ class MerchantController extends AdminController
 
             $name = $user['name'][$i];
             $email = $user['email'][$i];
-            $password = bcrypt(strtolower(str_random(10)));
+            $password_str = strtolower(str_random(10));
+            $password = bcrypt($password_str);
 
             $u->name = $name;
             $u->email = $email;
@@ -210,6 +213,8 @@ class MerchantController extends AdminController
             $u->is_active = 1;
             $u->save();
 
+            Mail::to($email)
+                ->send(new MailMerchantUser($u, $password_str));
             $userList[] = $u;
         }
 

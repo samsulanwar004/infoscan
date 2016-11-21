@@ -33,25 +33,25 @@
                     {{ csrf_field() }}
                     {{ method_field('PUT') }}
                     <div class="box-body">
-                        <div class="form-group has-feedback{{ $errors->has('company_name') ? ' has-error' : '' }}">
+                        <div class="form-group has-feedback">
                             <label for="company_name">Company Name</label>
                             <input type="text" class="form-control" id="company_name" name="company_name"
                                    placeholder="Enter company name"
                                    value="{{ old('company_name', $merchant->company_name) }}" required>
                         </div>
 
-                        <div class="form-group has-feedback{{ $errors->has('company_logo') ? ' has-error' : '' }}">
+                        <div class="form-group has-feedback">
                             <label for="company_logo">Company Logo</label><br>
                             <img width="200" height="200" src="{{ '/storage/merchants/'.$merchant->company_logo }}">
                             <input type="file" class="form-control" id="company_logo" name="company_logo">
                         </div>
 
-                        <div class="form-group has-feedback{{ $errors->has('address') ? ' has-error' : '' }}">
+                        <div class="form-group has-feedback">
                             <label for="address">Address</label>
                             <textarea class="form-control" name="address" id="address" placeholder="Enter address"
                                       value="">{{ old('address', $merchant->address) }}</textarea>
                         </div>
-                        <div class="form-group has-feedback{{ $errors->has('company_email') ? ' has-error' : '' }}">
+                        <div class="form-group has-feedback">
                             <label for="company_email">Email</label>
                             <input type="email" class="form-control" name="company_email" id="company_email"
                                    value="{{ old('company_email', $merchant->company_email) }}"
@@ -69,14 +69,14 @@
                                                 data-token="{{ csrf_token() }}" id="remove"><i class="fa fa-remove"></i>
                                         </button>
                                     </div>
-                                    <div class="form-group has-feedback{{ $errors->has('name') ? ' has-error' : '' }}">
+                                    <div class="form-group has-feedback">
                                         <label for="name">Name</label>
                                         <input type="hidden" name="user[id][]" id="id" value="{{ $mu->user->id }}">
                                         <input type="text" class="form-control" name="user[name][]" id="name"
                                                value="{{ old('name', $mu->user->name) }}" placeholder="Enter user name"
                                                required>
                                     </div>
-                                    <div class="form-group has-feedback{{ $errors->has('email') ? ' has-error' : '' }}">
+                                    <div class="form-group has-feedback">
                                         <label for="email">Email</label>
                                         <input type="email" class="form-control" name="user[email][]" id="email"
                                                value="{{ old('email', $mu->user->email) }}" placeholder="Enter email"
@@ -141,7 +141,7 @@
             if (id != null) {
                 if (conf) {
                     $.ajax({
-                        url: '/merchants/users/' + id,
+                        url: '/merchants/user/' + id,
                         type: 'post',
                         data: {
                             '_token': token,
