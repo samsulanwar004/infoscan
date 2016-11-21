@@ -63,7 +63,9 @@
                             @foreach($merchantUsers as $mu)
                                 <div id="user">
                                     <hr>
-                                    <button class="btn btn-box-tool" id="remove">x</button>
+                                    <button class="btn btn-box-tool" data-id="{{ $mu->user->id }}"
+                                            data-token="{{ csrf_token() }}" id="remove">x
+                                    </button>
                                     <div class="form-group has-feedback{{ $errors->has('name') ? ' has-error' : '' }}">
                                         <label for="name">Name</label>
                                         <input type="hidden" name="user[id][]" id="id" value="{{ $mu->user->id }}">
@@ -118,16 +120,42 @@
     }
 
     $(document).ready(function () {
+
         updateCounterForm(true);
+
         $(document).on('click', 'button#add', function (e) {
             e.preventDefault();
             $('div#users').append('<div id="user"><hr><button class="btn btn-box-tool" id="remove">x</button><div class="form-group has-feedback"><label for="name">Name</label><input type="hidden" name="user[id][]" id="id"><input type="text" class="form-control" name="user[name][]" id="name" placeholder="Enter user name" required></div><div class="form-group has-feedback"><label for="email">Email</label><input type="email" class="form-control" name="user[email][]" id="email" placeholder="Enter email" required></div></div>');
             updateCounterForm(false);
         });
+
         $(document).on('click', 'button#remove', function (e) {
             e.preventDefault();
-            $(e.target).closest('#user').remove();
-            updateCounterForm(true);
+
+            var id = $(this).data('id');
+            var token = $(this).data('token');
+            console.log('id=' + id + ' // token=' + token);
+
+            if (id != null) {
+                if (confirm('Are you sure to delete this user?')) {
+                    $.ajax({
+                        url: '/merchants/users/' + id,
+                        type: 'post',
+                        data: {
+                            '_token': token,
+                            '_method': 'delete'
+                        },
+                        success: function () {
+                            $(e.target).closest('#user').remove();
+                            updateCounterForm(true);
+                            alert('User succesfully deleted.');
+                        }
+                    });
+                } else {
+                    $(e.target).closest('#user').remove();
+                    updateCounterForm(true);
+                }
+            }
         });
     });
 </script>

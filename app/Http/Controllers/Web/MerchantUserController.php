@@ -36,7 +36,7 @@ class MerchantUserController extends AdminController
     }
 
     /**
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
      *
      * @return \Illuminate\Http\RedirectResponse
      */
@@ -64,7 +64,7 @@ class MerchantUserController extends AdminController
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -104,7 +104,7 @@ class MerchantUserController extends AdminController
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
@@ -115,7 +115,6 @@ class MerchantUserController extends AdminController
         } catch (\Exception $e) {
             return back()->with('errors', $e->getMessage());
         }
-
         return redirect($this->redirectAfterSave)->with('success', 'Merchant User successfully deleted!');
     }
 
