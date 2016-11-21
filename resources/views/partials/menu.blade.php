@@ -46,7 +46,7 @@
                 </ul>
             </li>
 
-            <li class="merchants">
+            <li class="treeview">
                 <a href="#">
                     <i class="fa fa-university"></i>
                     <span>Merchants</span>
