@@ -14,7 +14,7 @@ class MerchantUserController extends AdminController
     /**
      * @var string
      */
-    protected $redirectAfterSave = 'merchants/users';
+    protected $redirectAfterSave = 'merchants/user';
 
     /**
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
