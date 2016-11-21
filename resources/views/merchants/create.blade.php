@@ -108,8 +108,6 @@
         } else {
             $("button#remove").prop("disabled", true);
         }
-
-        console.log(counterform);
     }
 
     $(document).ready(function () {

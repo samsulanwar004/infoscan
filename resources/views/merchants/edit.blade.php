@@ -63,9 +63,12 @@
                             @foreach($merchantUsers as $mu)
                                 <div id="user">
                                     <hr>
-                                    <button class="btn btn-box-tool" data-id="{{ $mu->user->id }}"
-                                            data-token="{{ csrf_token() }}" id="remove">x
-                                    </button>
+                                    <div class="text-right">
+                                        <button class="btn btn-box-tool" data-id="{{ $mu->user->id }}"
+                                                data-name="{{ $mu->user->name }}" data-email="{{ $mu->user->email }}"
+                                                data-token="{{ csrf_token() }}" id="remove"><i class="fa fa-remove"></i>
+                                        </button>
+                                    </div>
                                     <div class="form-group has-feedback{{ $errors->has('name') ? ' has-error' : '' }}">
                                         <label for="name">Name</label>
                                         <input type="hidden" name="user[id][]" id="id" value="{{ $mu->user->id }}">
@@ -101,7 +104,6 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 <script>
     var counterform = {{ count($merchantUsers)+1 }};
-    console.log("users = " + counterform);
 
     function updateCounterForm(isRemove) {
         if (isRemove) {
@@ -115,8 +117,6 @@
         } else {
             $("button#remove").prop("disabled", true);
         }
-
-        console.log(counterform);
     }
 
     $(document).ready(function () {
@@ -134,10 +134,12 @@
 
             var id = $(this).data('id');
             var token = $(this).data('token');
-            console.log('id=' + id + ' // token=' + token);
+            var name = $(this).data('name');
+            var email = $(this).data('email');
+            var conf = confirm('Are you sure want to delete user ' + name + ' (' + email + ') ?');
 
             if (id != null) {
-                if (confirm('Are you sure to delete this user?')) {
+                if (conf) {
                     $.ajax({
                         url: '/merchants/users/' + id,
                         type: 'post',
@@ -148,7 +150,6 @@
                         success: function () {
                             $(e.target).closest('#user').remove();
                             updateCounterForm(true);
-                            alert('User succesfully deleted.');
                         }
                     });
                 } else {
