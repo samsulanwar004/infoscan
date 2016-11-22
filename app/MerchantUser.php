@@ -8,7 +8,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class MerchantUser extends Model
 {
     use SoftDeletes;
+
     protected $table = 'merchant_users';
+
+    protected $fillable = ['merchant_id', 'user_id'];
 
     public $timestamps = false;
 
