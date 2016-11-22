@@ -28,7 +28,7 @@
             </div>
             <div class="box-body">
                 <form role="form" action="{{ admin_route_url('merchantusers.store') }}" method="POST"
-                      enctype="multipart/form-data" class="form" accept-charset="utf-8">
+                      enctype="multipart/form-data" class="form" accept-charset="utf-8" onsubmit="myLoading()">
                     {{ csrf_field() }}
                     <div class="box-body" id="form-body">
                         <button class="btn btn-primary" id="add">Add user field</button>
@@ -67,7 +67,7 @@
                     </div>
                 </form>
             </div>
-
+            <div id="loading"></div>
         </div>
         <!-- /.box -->
 
@@ -101,4 +101,9 @@
             updateCounterForm(true);
         });
     });
+
+    function myLoading() {
+        $('#loading').addClass('overlay');
+        document.getElementById("loading").innerHTML = '<i class="fa fa-refresh fa-spin"></i>';
+    }
 </script>
