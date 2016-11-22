@@ -1,14 +1,23 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-	<meta http-equiv="X-UA-Compatible" content="ie=edge">
-	<title>Merchant User</title>
-</head>
-<body>
-<h4>You got Mail</h4>
-Email : {{$user->email}} <br>
-Password : {{$password}} <br>
-</body>
-</html>
+@extends('emails.templates.app')
+
+@section('title')
+Merchant User Account
+@endsection
+
+@section('content')
+	<table>
+		<tr>
+			<td>
+				<h3>Hi, {{ $user->name }}</h3>
+				<p class="lead">Here is your access rights.</p>
+				<p>Name : {{ $user->name }}</p>
+				<p>Email : {{ $user->email }}</p>
+				<p>Password : {{ $password }}</p>
+				<!-- Callout Panel -->
+				<p class="callout">
+					Login here. <a href="#">Click it! &raquo;</a>
+				</p><!-- /Callout Panel -->						
+			</td>
+		</tr>
+	</table>
+@endsection
