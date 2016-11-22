@@ -10,11 +10,16 @@ use Storage;
 
 class SnapService
 {
-
     const IMAGE_FIELD_NAME = 'snap_images';
+
     const AUDIO_FIELD_NAME = 'snap_audios';
+
+    const TAGS_FIELD_NAME = 'snap_tags';
+
     const IMAGE_TYPE_NAME = 'images';
+
     const AUDIO_TYPE_NAME = 'audios';
+
     const DEFAULT_FILE_DRIVER = 's3';
 
     public function handle(Request $request)
@@ -25,7 +30,22 @@ class SnapService
         $data = $this->{$method}($request);
 
         // 1. Save all data into database.
-        // 2. Dispatch the OCR, audio, etc events.
+        // 2. Dispatch the OCR, audio, etc events
+        // save all data int.
+    }
+
+    public function billHandler(Request $request)
+    {
+    }
+
+    public function arrangeItemHandler(Request $request)
+    {
+
+    }
+
+    public function handwrittenHandler(Request $request)
+    {
+
     }
 
     /**
@@ -123,5 +143,10 @@ class SnapService
             [];
 
         return count($audios);
+    }
+
+    private function persistData(array $data)
+    {
+
     }
 }
