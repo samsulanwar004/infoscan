@@ -54,7 +54,7 @@ class MerchantController extends AdminController
 
         try {
             \DB::beginTransaction();
-            $merchant = $this->createNewMerchant($request);
+            $merchant = $this->persisteMerchant($request);
             $users = $this->createNewUser($request);
             $this->persistData($merchant, $users);
             \DB::commit();
@@ -99,7 +99,7 @@ class MerchantController extends AdminController
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(Request $request, $id = null)
+    public function update(Request $request, $id)
     {
         $this->validate($request, [
             'company_name' => 'required|min:3|max:200',
@@ -110,12 +110,12 @@ class MerchantController extends AdminController
 
         try {
             $m = $this->getMerchantById($id);
-            if ($request->hasFile('company_logo') != null && $m->company_logo == true) {          
+            if ($request->hasFile('company_logo') != null && $m->company_logo == true) {
                 \Storage::delete('public/merchants/' . $m->company_logo);
             }
             \DB::beginTransaction();
-            $this->createNewMerchant($request, $id);
-            $this->updateUser($request);
+            $this->persisteMerchant($request, $id);
+            $this->updateUser($request, $m->id);
             \DB::commit();
         } catch (\Exception $e) {
             \DB::rollback();
@@ -169,7 +169,7 @@ class MerchantController extends AdminController
      *
      * @return bool
      */
-    private function createNewMerchant($request, $id = null)
+    private function persisteMerchant($request, $id = null)
     {
         $memberCode = strtolower(str_random(10));
 
@@ -226,27 +226,44 @@ class MerchantController extends AdminController
         return $userList;
     }
 
-    private function updateUser($request)
+    private function updateUser($request, $merchantId)
     {
-        $userList = [];
-        $user = $request->input('user');
-        $countUser = $this->countOfUserInput($request);
+        $users = $request->input('user');
+        $userCount = count($users['name']);
+        $ids = $users['id'];
 
-        for ($i = 0; $i <= $countUser; ++$i) {
-            $u = is_null($user['id'][$i]) ? new Merchant : $this->getUserById($user['id'][$i]);
+        // Remove unnecessary user
+        MerchantUser::whereNotIn('user_id', $ids)->delete();
 
-            $name = $user['name'][$i];
-            $email = $user['email'][$i];
+        // update merchant user.
+        for ($i=0; $i < $userCount; ++$i) {
+            $userUpdateId = $users['id'][$i];
+            $u = User::where('id', '=', $userUpdateId)->first();
+            $u->name = $users['name'][$i];
 
-            $u->name = $name;
-            $u->email = $email;
+            // TODO: must add new field/input for is_active field!!!
+            $u->save();
+        }
+
+        // Create new User.
+        $newUser = $request->input('newuser');
+        $newUserCount = count($newUser['name']);
+        for ($i=0; $i < $newUserCount; ++$i) {
+            $password_str = strtolower(str_random(10));
+            $password = bcrypt($password_str);
+
+            $u = new User;
+            $u->name = $newUser['name'][$i];
+            $u->email = $newUser['email'][$i];
+            $u->password = $password;
             $u->is_active = 1;
             $u->save();
 
-            $userList[] = $u;
+            // add to merchant user
+            $mu = MerchantUser::create(['merchant_id' => $merchantId, 'user_id' => $u->id]);
         }
 
-        return $userList;
+        return true;
     }
 
     private function countOfUserInput(Request $request)
