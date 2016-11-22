@@ -55,25 +55,26 @@
 
                         <hr>
                         <button class="btn btn-primary" id="add">Add user field</button>
-
-                        @for($i=0; $i <= session('countOfUser', 0); ++$i)
-                            <div id="user">
-                                <hr>
-                                <button class="btn btn-box-tool" id="remove">x</button>
-                                <div class="form-group has-feedback">
-                                    <label for="name">Name</label>
-                                    <input type="text" class="form-control" name="user[name][]" id="name"
-                                           value="{{ old('user.name.' . $i) }}" placeholder="Enter user name"
-                                           required>
+                        <div id="users">
+                            @for($i=0; $i <= session('countOfUser', 0); ++$i)
+                                <div id="user">
+                                    <hr>
+                                    <button class="btn btn-box-tool" id="remove">x</button>
+                                    <div class="form-group has-feedback">
+                                        <label for="name">Name</label>
+                                        <input type="text" class="form-control" name="user[name][]" id="name"
+                                               value="{{ old('user.name.' . $i) }}" placeholder="Enter user name"
+                                               required>
+                                    </div>
+                                    <div class="form-group has-feedback">
+                                        <label for="email">Email</label>
+                                        <input type="email" class="form-control" name="user[email][]" id="email"
+                                               value="{{ old('user.email.' . $i) }}" placeholder="Enter email"
+                                               required>
+                                    </div>
                                 </div>
-                                <div class="form-group has-feedback">
-                                    <label for="email">Email</label>
-                                    <input type="email" class="form-control" name="user[email][]" id="email"
-                                           value="{{ old('user.email.' . $i) }}" placeholder="Enter email"
-                                           required>
-                                </div>
-                            </div>
-                        @endfor
+                            @endfor
+                        </div>
                     </div>
                     <!-- /.box-body -->
                     <div class="box-footer text-right">
@@ -107,15 +108,13 @@
         } else {
             $("button#remove").prop("disabled", true);
         }
-
-        console.log(counterform);
     }
 
     $(document).ready(function () {
         updateCounterForm(true);
         $("button#add").on('click', function (e) {
             e.preventDefault();
-            $("#user").clone().appendTo("#form-body");
+            $('div#users').append('<div id="user"><hr><button class="btn btn-box-tool" id="remove">x</button><div class="form-group has-feedback"><label for="name">Name</label><input type="hidden" name="user[id][]" id="id"><input type="text" class="form-control" name="user[name][]" id="name" placeholder="Enter user name" required></div><div class="form-group has-feedback"><label for="email">Email</label><input type="email" class="form-control" name="user[email][]" id="email" placeholder="Enter email" required></div></div>');
             updateCounterForm(false);
         });
         $(document).on('click', 'button#remove', function (e) {

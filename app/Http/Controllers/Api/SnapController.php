@@ -2,30 +2,34 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Services\SnapService;
 use Illuminate\Http\Request;
 
 class SnapController extends BaseApiController
 {
-    public function store(Request $request, $type = 'bill')
-    {
-        switch ($type) {
-            case 'arrange':
-                return $this->arrange($request);
-                break;
+    private $snapType = [
+        'images', 'audios', 'tags'
+    ];
 
-            case 'bill':
-            default:
-                return $this->bill($request);
-                break;
+    public function store(Request $request)
+    {
+        try {
+            $type = $request->input('snap_type');
+
+            $method = strtolower($type) . 'Handler';
+            $process = $this->{$method}($request);
+        } catch (Exception $e) {
+            dd($e->getMesssage());
         }
     }
 
-    private function bill(Request $request)
+    private function imagesHandler(Request $request)
     {
-        dd('masuk ke bill');
+        $services = (new SnapService)->handle($request);
+        dd($services);
     }
 
-    private function arrange(Request $request)
+    private function audiosHandler(Request $request)
     {
         dd('masuk ke arrange');
     }
