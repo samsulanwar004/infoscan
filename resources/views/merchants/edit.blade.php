@@ -139,7 +139,7 @@
             var email = $(this).data('email');
             var conf = confirm('Are you sure want to delete user ' + name + ' (' + email + ') ?');
 
-            if (!id) {
+            if (id === undefined) {
                 $(e.target).closest('#user').remove();
                 updateCounterForm(true);
             }
