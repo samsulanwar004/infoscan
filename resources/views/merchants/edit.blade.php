@@ -58,12 +58,18 @@
                                    placeholder="Enter email" required>
                         </div>
                         <hr>
+                        <h4>List of {{ $merchant->company_name }} users</h4>
                         <button class="btn btn-primary" id="add">Add user field</button>
                         <div id="users">
                             @foreach($merchantUsers as $mu)
                                 <div id="user">
                                     <hr>
-                                    <button class="btn btn-box-tool" id="remove">x</button>
+                                    <div class="text-right">
+                                        <button class="btn btn-box-tool" data-id="{{ $mu->user->id }}"
+                                                data-name="{{ $mu->user->name }}" data-email="{{ $mu->user->email }}"
+                                                data-token="{{ csrf_token() }}" id="remove"><i class="fa fa-remove"></i>
+                                        </button>
+                                    </div>
                                     <div class="form-group has-feedback">
                                         <label for="name">Name</label>
                                         <input type="hidden" name="user[id][]" id="id" value="{{ $mu->user->id }}">
@@ -99,7 +105,6 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 <script>
     var counterform = {{ count($merchantUsers)+1 }};
-    console.log("users = " + counterform);
 
     function updateCounterForm(isRemove) {
         if (isRemove) {
@@ -113,21 +118,46 @@
         } else {
             $("button#remove").prop("disabled", true);
         }
-
-        console.log(counterform);
     }
 
     $(document).ready(function () {
+
         updateCounterForm(true);
+
         $(document).on('click', 'button#add', function (e) {
             e.preventDefault();
             $('div#users').append('<div id="user"><hr><button class="btn btn-box-tool" id="remove">x</button><div class="form-group has-feedback"><label for="name">Name</label><input type="hidden" name="user[id][]" id="id"><input type="text" class="form-control" name="user[name][]" id="name" placeholder="Enter user name" required></div><div class="form-group has-feedback"><label for="email">Email</label><input type="email" class="form-control" name="user[email][]" id="email" placeholder="Enter email" required></div></div>');
             updateCounterForm(false);
         });
+
         $(document).on('click', 'button#remove', function (e) {
             e.preventDefault();
-            $(e.target).closest('#user').remove();
-            updateCounterForm(true);
+
+            var id = $(this).data('id');
+            var token = $(this).data('token');
+            var name = $(this).data('name');
+            var email = $(this).data('email');
+            var conf = confirm('Are you sure want to delete user ' + name + ' (' + email + ') ?');
+
+            if (id != null) {
+                if (conf) {
+                    $.ajax({
+                        url: '/merchants/user/' + id,
+                        type: 'post',
+                        data: {
+                            '_token': token,
+                            '_method': 'delete'
+                        },
+                        success: function () {
+                            $(e.target).closest('#user').remove();
+                            updateCounterForm(true);
+                        }
+                    });
+                } else {
+                    $(e.target).closest('#user').remove();
+                    updateCounterForm(true);
+                }
+            }
         });
     });
 </script>
