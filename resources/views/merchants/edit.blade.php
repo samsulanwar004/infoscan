@@ -58,7 +58,7 @@
                                    placeholder="Enter email" required>
                         </div>
                         <hr>
-                        <button class="btn btn-primary" id="add">Add user field</button>
+                        <h4>{{ $merchant->company_name }} users list</h4>
                         <div id="users">
                             @foreach($merchantUsers as $mu)
                                 <div id="user">
