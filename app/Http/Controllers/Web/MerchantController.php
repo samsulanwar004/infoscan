@@ -113,9 +113,14 @@ class MerchantController extends AdminController
             if ($request->hasFile('company_logo') != null && $m->company_logo == true) {          
                 \Storage::delete('public/merchants/' . $m->company_logo);
             }
+            \DB::beginTransaction();
             $this->createNewMerchant($request, $id);
             $this->updateUser($request);
+            \DB::commit();
         } catch (\Exception $e) {
+            \DB::rollback();
+
+            logger($e);
             return back()->with('errors', $e->getMessage());
         }
 
