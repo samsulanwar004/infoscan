@@ -2,6 +2,8 @@
 
 namespace App\Libraries;
 
+use Exception;
+
 class GoogleVision
 {
     const GV_URL = 'https://vision.googleapis.com/v1/images:annotate';
@@ -27,7 +29,8 @@ class GoogleVision
     {
         $result = [];
         foreach ($this->getImages() as $image) {
-            $body = $this->buildRequestBody($image); dd($body);
+            $body = $this->buildRequestBody($image);
+            dd($body);
             $result[] = $this->push($this->getGvUrl(), $body);
         }
 
@@ -43,6 +46,9 @@ class GoogleVision
      */
     public function setImages(array $images)
     {
+        if (empty($array)) {
+            throw new Exception('There is no images in parameter arguments setImage(array $images)');
+        }
         $this->images = $images;
 
         return $this;
@@ -85,7 +91,7 @@ class GoogleVision
         return json_encode([
             'requests' => [
                 'image' => [
-                    'content' => $image,
+                    'content' => base64_encode($image),
                 ],
                 'features' => [
                     'type' => $this->type,
@@ -120,12 +126,17 @@ class GoogleVision
         curl_close($curl);
         if ($status != 200) {
             throw new \Exception(
-                sprintf("Error: call to URL %s failed with status %s, response %s, curl_error: %s, curl_errno: %d",
-                    self::GV_URL, $status, $jsonResponse, curl_error($curl), curl_errno($curl)));
+                sprintf(
+                    "Error: call to URL %s failed with status %s, response %s, curl_error: %s, curl_errno: %d",
+                    self::GV_URL,
+                    $status,
+                    $jsonResponse,
+                    curl_error($curl),
+                    curl_errno($curl)
+                )
+            );
         }
 
         return $jsonResponse;
     }
-
-
 }

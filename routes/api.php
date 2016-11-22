@@ -22,5 +22,5 @@ Route::group([
     'prefix' => 'v1',
     //'middleware' => 'api:auth',
 ], function () {
-    Route::post('/snap/{type?}', 'Api\SnapController@store');
+    Route::post('/snap', 'Api\SnapController@store');
 });

@@ -15,7 +15,8 @@ class BaseApiController extends Controller
      */
     protected function error($message, $httpCode = 500)
     {
-        if ($message instanceof \Exception) {
+        logger($message);
+        if ($message instanceof \Exception || $message instanceof \InvalidArgumentException) {
             $message = $message->getMessage();
         }
 
@@ -27,27 +28,28 @@ class BaseApiController extends Controller
 
     protected function success($message = null, $httpCode = 200)
     {
-        if(null == $message) {
+        if (null == $message) {
             return response()->json(
                 $this->generateMessage('Ok', 'Success'),
                 $httpCode
             );
         }
 
-        if(is_string($message)) {
+        if (is_string($message)) {
             return response()->json(
                 $this->generateMessage('Ok', $message),
                 $httpCode
             );
         }
 
-        if(is_array($message)) {
+        if (is_array($message)) {
             $m = [
-                'status' => 'Ok',
-                'message' => 'Success'
+                'status'  => 'Ok',
+                'message' => 'Success',
             ];
 
             $message = array_merge($m, $message);
+
             return response()->json(
                 $message,
                 $httpCode
@@ -58,8 +60,8 @@ class BaseApiController extends Controller
     private function generateMessage($status, $message)
     {
         return [
-            'status' => $status,
-            'message' => $message
+            'status'  => $status,
+            'message' => $message,
         ];
     }
 }
