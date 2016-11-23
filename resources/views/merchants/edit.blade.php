@@ -126,8 +126,7 @@
 
         $(document).on('click', 'button#add', function (e) {
             e.preventDefault();
-
-            $('div#users').append('<div id="user"><hr><button class="btn btn-box-tool" id="remove">x</button><div class="form-group has-feedback"><label for="name">Name</label><input type="hidden" name="newuser[id][]" id="id"><input type="text" class="form-control" name="newuser[name][]" id="name" placeholder="Enter user name" required></div><div class="form-group has-feedback"><label for="email">Email</label><input type="email" class="form-control" name="newuser[email][]" id="email" placeholder="Enter email" required></div></div>');
+            $('div#users').append('<div id="user"><hr><div class="text-right"><button class="btn btn-box-tool" id="remove"><i class="fa fa-remove"></i></button></div><div class="form-group has-feedback"><label for="name">Name</label><input type="hidden" name="newuser[id][]" id="id"><input type="text" class="form-control" name="newuser[name][]" id="name" placeholder="Enter user name" required></div><div class="form-group has-feedback"><label for="email">Email</label><input type="email" class="form-control" name="newuser[email][]" id="email" placeholder="Enter email" required></div></div>');
             updateCounterForm(false);
         });
 
@@ -140,7 +139,11 @@
             var email = $(this).data('email');
             var conf = confirm('Are you sure want to delete user ' + name + ' (' + email + ') ?');
 
-            if (id != null) {
+            if (id === undefined) {
+                $(e.target).closest('#user').remove();
+                updateCounterForm(true);
+            }
+            else {
                 if (conf) {
                     $.ajax({
                         url: '/merchants/user/' + id,
@@ -154,9 +157,6 @@
                             updateCounterForm(true);
                         }
                     });
-                } else {
-                    $(e.target).closest('#user').remove();
-                    updateCounterForm(true);
                 }
             }
         });
