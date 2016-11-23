@@ -124,7 +124,7 @@ class MerchantController extends AdminController
             return back()->with('errors', $e->getMessage());
         }
 
-        return redirect($this->redirectAfterSave)->with('success', 'Merchant successfully updated');
+        return back()->with('success', 'Merchant successfully updated');
     }
 
     /**
@@ -230,18 +230,17 @@ class MerchantController extends AdminController
     {
         $users = $request->input('user');
         $userCount = count($users['name']);
-        $ids = $users['id'];
+        //$ids = $users['id'];
 
         // Remove unnecessary user
-        MerchantUser::whereNotIn('user_id', $ids)->delete();
+        //MerchantUser::whereNotIn('user_id', $ids)->delete();
 
         // update merchant user.
         for ($i=0; $i < $userCount; ++$i) {
             $userUpdateId = $users['id'][$i];
-            $u = User::where('id', '=', $userUpdateId)->first();
+            $u = $this->getUserById($userUpdateId);
             $u->name = $users['name'][$i];
-
-            // TODO: must add new field/input for is_active field!!!
+            $u->is_active = isset($users['is_active'][$i]) ? 1 : 0;
             $u->save();
         }
 

@@ -83,6 +83,12 @@
                                                value="{{ old('email', $mu->user->email) }}" placeholder="Enter email"
                                                required>
                                     </div>
+                                    <div class="checkbox">
+                                        <label>
+                                            <input name="user[is_active][]" {{ (bool)$mu->user->is_active ? 'checked' : '' }} type="checkbox">
+                                            Is Active ?
+                                        </label>
+                                    </div>
                                 </div>
                             @endforeach
                         </div>
