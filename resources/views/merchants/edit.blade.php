@@ -121,7 +121,7 @@
                         <button class="btn btn-primary" id="add">
                             <i class="fa fa-plus fa-btn"></i>Add User                        
                         </button>
-                        <button type="submit" class="btn btn-primary">
+                        <button type="submit" class="btn btn-primary" id="submit">
                             <i class="fa fa-save fa-btn"></i> Save Merchant
                         </button>
                     </div>
@@ -161,6 +161,8 @@
             e.preventDefault();
             $('div#users').append('<div id="user"><hr><div class="text-right"><button class="btn btn-box-tool" id="remove"><i class="fa fa-remove"></i></button></div><div class="form-group has-feedback"><label for="name">Name</label><input type="text" class="form-control" name="newuser[name][]" id="name" placeholder="Enter user name" required></div><div class="form-group has-feedback"><label for="email">Email</label><input type="email" class="form-control" name="newuser[email][]" id="email" placeholder="Enter email" required></div></div>');
             updateCounterForm(false);
+
+            window.location.href='#add';
         });
 
         $(document).on('click', 'button#remove', function (e) {
@@ -198,5 +200,6 @@
     function myLoading() {
         $('#loading').addClass('overlay');
         document.getElementById("loading").innerHTML = '<i class="fa fa-refresh fa-spin"></i>';
+        window.location.href='#loading';
     }
 </script>
