@@ -209,8 +209,8 @@ class MerchantController extends AdminController
 
             $name = $user['name'][$i];
             $email = $user['email'][$i];
-            $password_str = strtolower(str_random(10));
-            $password = bcrypt($password_str);
+            $passwordStr = strtolower(str_random(10));
+            $password = bcrypt($passwordStr);
 
             $u->name = $name;
             $u->email = $email;
@@ -219,7 +219,7 @@ class MerchantController extends AdminController
             $u->save();
 
             Mail::to($email)
-                ->send(new MailMerchantUser($u, $password_str));
+                ->send(new MailMerchantUser($u, $passwordStr));
             $userList[] = $u;
         }
 
@@ -248,8 +248,8 @@ class MerchantController extends AdminController
         $newUser = $request->input('newuser');
         $newUserCount = count($newUser['name']);
         for ($i=0; $i < $newUserCount; ++$i) {
-            $password_str = strtolower(str_random(10));
-            $password = bcrypt($password_str);
+            $passwordStr = strtolower(str_random(10));
+            $password = bcrypt($passwordStr);
 
             $u = new User;
             $u->name = $newUser['name'][$i];
@@ -257,6 +257,10 @@ class MerchantController extends AdminController
             $u->password = $password;
             $u->is_active = 1;
             $u->save();
+
+            //send mail new user account
+            Mail::to($u->email)
+                ->send(new MailMerchantUser($u, $passwordStr));
 
             // add to merchant user
             $mu = MerchantUser::create(['merchant_id' => $merchantId, 'user_id' => $u->id]);
