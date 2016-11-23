@@ -167,33 +167,13 @@
 
         $(document).on('click', 'button#remove', function (e) {
             e.preventDefault();
-
-            var id = $(this).data('id');
-            var token = $(this).data('token');
             var name = $(this).data('name');
             var email = $(this).data('email');
-            var conf = confirm('Are you sure want to delete user ' + name + ' (' + email + ') ?');
-
-            if (id === undefined) {
+            if(confirm('Are you sure want to delete user ' + name + ' (' + email + ') ?')) {
                 $(e.target).closest('#user').remove();
                 updateCounterForm(true);
             }
-            else {
-                if (conf) {
-                    $.ajax({
-                        url: '/merchants/user/' + id,
-                        type: 'post',
-                        data: {
-                            '_token': token,
-                            '_method': 'delete'
-                        },
-                        success: function () {
-                            $(e.target).closest('#user').remove();
-                            updateCounterForm(true);
-                        }
-                    });
-                }
-            }
+            
         });
     });
 
