@@ -54,7 +54,6 @@
                         </div>
 
                         <hr>
-                        <button class="btn btn-primary" id="add">Add user field</button>
                         <div id="users">
                             @for($i=0; $i <= session('countOfUser', 0); ++$i)
                                 <div id="user">
@@ -78,8 +77,11 @@
                     </div>
                     <!-- /.box-body -->
                     <div class="box-footer text-right">
+                        <button class="btn btn-primary" id="add">
+                            <i class="fa fa-plus fa-btn"></i>Add User field                        
+                        </button>
                         <button type="submit" class="btn btn-primary" id="submit">
-                            <i class="fa fa-save fa-btn"></i> Save All
+                            <i class="fa fa-save fa-btn"></i> Save Merchant
                         </button>
                     </div>
                 </form>
