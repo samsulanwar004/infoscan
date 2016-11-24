@@ -22,28 +22,22 @@ class SnapService
 
     const DEFAULT_FILE_DRIVER = 's3';
 
-    public function handle(Request $request)
+    public function receiptHandler(Request $request)
     {
-        $type = $request->input('snap_type');
-        $method = strtolower($type) . 'Process';
+        $images = $this->imagesProcess($request);
+        if(0 === count($images)) {
+            throw new SnapServiceException('There is no images was processed. Something wrong with the system!');
+        }
 
-        $data = $this->{$method}($request);
-
-        // 1. Save all data into database.
-        // 2. Dispatch the OCR, audio, etc events
-        // save all data int.
+        return $images;
     }
 
-    public function billHandler(Request $request)
-    {
-    }
-
-    public function arrangeItemHandler(Request $request)
+    public function generalTradeHandler(Request $request)
     {
 
     }
 
-    public function handwrittenHandler(Request $request)
+    public function handWrittenHandler(Request $request)
     {
 
     }
@@ -101,6 +95,7 @@ class SnapService
     private function filesUploads(array $files, $type)
     {
         $fileList = [];
+        $i = 0;
         foreach ($files as $file) {
             // format: "folderOnS3(type)/type-date-randomString.extension"
             $filename = sprintf(
@@ -120,7 +115,11 @@ class SnapService
                                             'ContentType' => $file->getMimeType()
                                         ])){
 
-                $fileList[] = $filename;
+                $fileList[$i]['filename'] = $filename;
+                $fileList[$i]['file_size'] = $file->getSize();
+                $fileList[$i]['file_mime'] = $file->getMimeType();
+
+                ++$i;
             }
         }
 
