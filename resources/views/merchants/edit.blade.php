@@ -100,13 +100,13 @@
                                             <i class="fa fa-remove"></i>
                                         </button>
                                     </div>
-                                    <div class="form-group has-feedback">
+                                    <div class="form-group has-feedback {{ $errors->has('newuser.name.'.$i) ? 'has-error' : false }}">
                                         <label for="name">Name</label>
                                         <input type="text" class="form-control" name="newuser[name][]" id="name"
                                                value="{{ old('newuser.name.' . $i) }}" placeholder="Enter user name"
                                                required>
                                     </div>
-                                    <div class="form-group has-feedback">
+                                    <div class="form-group has-feedback {{ $errors->has('newuser.email.'.$i) ? 'has-error' : false }}">
                                         <label for="email">Email</label>
                                         <input type="email" class="form-control" name="newuser[email][]" id="email"
                                                value="{{ old('newuser.email.' . $i) }}" placeholder="Enter email"
@@ -136,7 +136,6 @@
 @endsection
 
 @section('footer_scripts')
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 <script>
     var counterform = {{ count($merchantUsers)+1 }};
 

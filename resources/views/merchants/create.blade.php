@@ -30,7 +30,7 @@
                       enctype="multipart/form-data" class="form" accept-charset="utf-8" onsubmit="myLoading()">
                     {{ csrf_field() }}
                     <div class="box-body" id="form-body">
-                        <div class="form-group has-feedback">
+                        <div class="form-group has-feedback {{ $errors->has('company_name') ? 'has-error' : false }}">
                             <label for="company_name">Company Name</label>
                             <input type="text" class="form-control" id="company_name" name="company_name"
                                    value="{{ old('company_name') }}"
@@ -46,26 +46,29 @@
                             <textarea class="form-control" name="address" id="address"
                                       placeholder="Enter address" required>{{ old('address') }}</textarea>
                         </div>
-                        <div class="form-group has-feedback">
+                        <div class="form-group has-feedback {{ $errors->has('company_email') ? 'has-error' : false }}">
                             <label for="company_email">Email</label>
                             <input type="email" class="form-control" name="company_email" id="company_email"
                                    value="{{ old('company_email') }}"
-                                   placeholder="Enter email" required>
+                                   placeholder="Enter company email" required>
                         </div>
 
-                        <hr>
                         <div id="users">
                             @for($i=0; $i <= session('countOfUser', 0); ++$i)
                                 <div id="user">
                                     <hr>
-                                    <button class="btn btn-box-tool" id="remove">x</button>
-                                    <div class="form-group has-feedback">
+                                    <div class="text-right">
+                                        <button class="btn btn-box-tool" id="remove">
+                                            <i class="fa fa-remove"></i>
+                                        </button>
+                                    </div>
+                                    <div class="form-group has-feedback {{ $errors->has('user.name.'.$i) ? 'has-error' : false }}">
                                         <label for="name">Name</label>
                                         <input type="text" class="form-control" name="user[name][]" id="name"
                                                value="{{ old('user.name.' . $i) }}" placeholder="Enter user name"
                                                required>
                                     </div>
-                                    <div class="form-group has-feedback">
+                                    <div class="form-group has-feedback {{ $errors->has('user.email.'.$i) ? 'has-error' : false }}">
                                         <label for="email">Email</label>
                                         <input type="email" class="form-control" name="user[email][]" id="email"
                                                value="{{ old('user.email.' . $i) }}" placeholder="Enter email"
@@ -95,7 +98,6 @@
 @endsection
 
 @section('footer_scripts')
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 <script>
     var counterform = 2;
 
@@ -117,15 +119,19 @@
         updateCounterForm(true);
         $("button#add").on('click', function (e) {
             e.preventDefault();
-            $('div#users').append('<div id="user"><hr><button class="btn btn-box-tool" id="remove">x</button><div class="form-group has-feedback"><label for="name">Name</label><input type="hidden" name="user[id][]" id="id"><input type="text" class="form-control" name="user[name][]" id="name" placeholder="Enter user name" required></div><div class="form-group has-feedback"><label for="email">Email</label><input type="email" class="form-control" name="user[email][]" id="email" placeholder="Enter email" required></div></div>');
+            $('div#users').append('<div id="user"><hr><div class="text-right"><button class="btn btn-box-tool" id="remove"><i class="fa fa-remove"></i></button></div><div class="form-group has-feedback"><label for="name">Name</label><input type="hidden" name="user[id][]" id="id"><input type="text" class="form-control" name="user[name][]" id="name" placeholder="Enter user name" required></div><div class="form-group has-feedback"><label for="email">Email</label><input type="email" class="form-control" name="user[email][]" id="email" placeholder="Enter email" required></div></div>');
             updateCounterForm(false);
 
             window.location.href='#add';
         });
         $(document).on('click', 'button#remove', function (e) {
             e.preventDefault();
-            $(e.target).closest('#user').remove();
-            updateCounterForm(true);
+            var name = $(this).data('name');
+            var email = $(this).data('email');
+            if(confirm('Are you sure want to delete user ' + name + ' (' + email + ') ?')) {
+                $(e.target).closest('#user').remove();
+                updateCounterForm(true);
+            }
         });
     });
 

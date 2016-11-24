@@ -76,7 +76,6 @@
 @endsection
 
 @section('footer_scripts')
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 <script>
     var counterform = 1;
     function updateCounterForm(isRemove) {
