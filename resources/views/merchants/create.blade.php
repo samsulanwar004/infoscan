@@ -54,7 +54,6 @@
                         </div>
 
                         <hr>
-                        <button class="btn btn-primary" id="add">Add user field</button>
                         <div id="users">
                             @for($i=0; $i <= session('countOfUser', 0); ++$i)
                                 <div id="user">
@@ -78,8 +77,11 @@
                     </div>
                     <!-- /.box-body -->
                     <div class="box-footer text-right">
+                        <button class="btn btn-primary" id="add">
+                            <i class="fa fa-plus fa-btn"></i>Add User                        
+                        </button>
                         <button type="submit" class="btn btn-primary" id="submit">
-                            <i class="fa fa-save fa-btn"></i> Save All
+                            <i class="fa fa-save fa-btn"></i> Save Merchant
                         </button>
                     </div>
                 </form>
@@ -116,6 +118,8 @@
             e.preventDefault();
             $('div#users').append('<div id="user"><hr><button class="btn btn-box-tool" id="remove">x</button><div class="form-group has-feedback"><label for="name">Name</label><input type="hidden" name="user[id][]" id="id"><input type="text" class="form-control" name="user[name][]" id="name" placeholder="Enter user name" required></div><div class="form-group has-feedback"><label for="email">Email</label><input type="email" class="form-control" name="user[email][]" id="email" placeholder="Enter email" required></div></div>');
             updateCounterForm(false);
+
+            window.location.href='#add';
         });
         $(document).on('click', 'button#remove', function (e) {
             e.preventDefault();
