@@ -75,6 +75,7 @@
     <!-- /.content -->
 @endsection
 
+@section('footer_scripts')
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 <script>
     var counterform = 1;
@@ -107,3 +108,4 @@
         document.getElementById("loading").innerHTML = '<i class="fa fa-refresh fa-spin"></i>';
     }
 </script>
+@endsection

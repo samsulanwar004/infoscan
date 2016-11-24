@@ -154,8 +154,8 @@ class MerchantUserController extends AdminController
             $m = $this->getMerchantById($user['merchant'][$i]);
             $name = $user['name'][$i];
             $email = $user['email'][$i];
-            $password_str = strtolower(str_random(10));
-            $password = bcrypt($password_str);
+            $passwordStr = strtolower(str_random(10));
+            $password = bcrypt($passwordStr);
 
             $u->name = $name;
             $u->email = $email;
