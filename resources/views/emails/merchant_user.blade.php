@@ -8,11 +8,11 @@ Merchant User Account
 	<table>
 		<tr>
 			<td>
-				<h3>Hi, {{ $user->name }}</h3>
+				<h3>Hi, {{ $user['user']->name }}</h3>
 				<p class="lead">Here is your access rights.</p>
-				<p>Name : {{ $user->name }}</p>
-				<p>Email : {{ $user->email }}</p>
-				<p>Password : {{ $password }}</p>
+				<p>Name : {{ $user['user']->name }}</p>
+				<p>Email : {{ $user['user']->email }}</p>
+				<p>Password : {{ $user['password'] }}</p>
 				<!-- Callout Panel -->
 				<p class="callout">
 					Login here. <a href="#">Click it! &raquo;</a>

@@ -225,8 +225,9 @@ class MerchantController extends AdminController
             $u->is_active = 1;
             $u->save();
 
-            Mail::to($email)
-                ->send(new MailMerchantUser($u, $passwordStr));
+            //queue mail new user account
+            Mail::to($u->email)
+                ->queue(new MailMerchantUser($u, $passwordStr));
             $userList[] = $u;
         }
 
@@ -267,9 +268,9 @@ class MerchantController extends AdminController
                 $u->is_active = 1;
                 $u->save();
 
-                //send mail new user account
+                //queue mail new user account
                 Mail::to($u->email)
-                    ->send(new MailMerchantUser($u, $passwordStr));
+                    ->queue(new MailMerchantUser($u, $passwordStr));
 
                 // add to merchant user
                 $mu = MerchantUser::create(['merchant_id' => $merchantId, 'user_id' => $u->id]);

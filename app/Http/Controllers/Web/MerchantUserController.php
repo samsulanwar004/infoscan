@@ -168,8 +168,9 @@ class MerchantUserController extends AdminController
 
             $mu->save();
 
-            Mail::to($email)
-                ->send(new MailMerchantUser($u, $password_str));
+            //queue mail new user account
+            Mail::to($u->email)
+                ->queue(new MailMerchantUser($u, $passwordStr));
         }
 
         return true;
