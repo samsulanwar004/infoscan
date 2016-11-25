@@ -44,9 +44,11 @@ class MerchantUserController extends AdminController
      */
     public function store(Request $request)
     {
+        $request->session()->flash('countOfUser', $this->countOfUserInput($request));
+
         $this->validate($request, [
-            'user.name' => 'required|max:50',
-            'user.email' => 'required|unique:users,email'
+            'user.name.*' => 'required|max:200',
+            'user.email.*' => 'required|unique:users,email'
         ]);
 
         try {
