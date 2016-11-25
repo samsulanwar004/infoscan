@@ -22,6 +22,11 @@ class SnapService
 
     const DEFAULT_FILE_DRIVER = 's3';
 
+    /**
+     * @param \Illuminate\Http\Request $request
+     * @return array|mixed
+     * @throws \App\Exceptions\Services\SnapServiceException
+     */
     public function receiptHandler(Request $request)
     {
         $images = $this->imagesProcess($request);
@@ -32,11 +37,17 @@ class SnapService
         return $images;
     }
 
+    /**
+     * @param \Illuminate\Http\Request $request
+     */
     public function generalTradeHandler(Request $request)
     {
 
     }
 
+    /**
+     * @param \Illuminate\Http\Request $request
+     */
     public function handWrittenHandler(Request $request)
     {
 
@@ -46,7 +57,8 @@ class SnapService
      * Store all image to local storage and upload the to s3 by event jobs (queue).
      *
      * @param  Request $request
-     * @return mixed|array
+     * @return array|mixed
+     * @throws \App\Exceptions\Services\SnapServiceException
      */
     protected function imagesProcess(Request $request)
     {
@@ -64,6 +76,11 @@ class SnapService
         return $imageList;
     }
 
+    /**
+     * @param \Illuminate\Http\Request $request
+     * @return array
+     * @throws \App\Exceptions\Services\SnapServiceException
+     */
     protected function audiosProcess(Request $request)
     {
         if ($this->countOfAudio($request) < 1) {
@@ -80,6 +97,9 @@ class SnapService
         return $audioList;
     }
 
+    /**
+     * @param \Illuminate\Http\Request $request
+     */
     protected function tagsProcess(Request $request)
     {
 
@@ -126,6 +146,10 @@ class SnapService
         return $fileList;
     }
 
+    /**
+     * @param \Illuminate\Http\Request $request
+     * @return int
+     */
     private function countOfImage(Request $request)
     {
         $images = ($request->hasFile(self::IMAGE_FIELD_NAME) && null !== $request->file(self::IMAGE_FIELD_NAME)) ?
@@ -135,6 +159,10 @@ class SnapService
         return count($images);
     }
 
+    /**
+     * @param \Illuminate\Http\Request $request
+     * @return int
+     */
     private function countOfAudio(Request $request)
     {
         $audios = ($request->hasFile(self::AUDIO_FIELD_NAME) && null !== $request->file(self::AUDIO_FIELD_NAME)) ?
@@ -144,6 +172,9 @@ class SnapService
         return count($audios);
     }
 
+    /**
+     * @param array $data
+     */
     private function persistData(array $data)
     {
 
