@@ -137,7 +137,7 @@
 
     function myLoading() {
         $('#loading').addClass('overlay');
-        document.getElementById("loading").innerHTML = '<i class="fa fa-refresh fa-spin"></i>';
+        document.getElementById("loading").innerHTML = '<i class="fa fa-spinner fa-spin" style="font-size:50px; position: fixed;"></i>';
     }
 </script>
 @endsection
