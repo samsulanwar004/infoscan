@@ -53,8 +53,7 @@
                                         <label for="merchant">Select Merchant</label>
                                         <select name="user[merchant][]" id="merchant" class="form-control">
                                             @foreach($merchants as $merchant)
-                                                <option value="{{ $merchant->id }}"
-                                                @if($merchant->id == $merchant->id) selected @endif>{{ $merchant->company_name }}</option>
+                                                <option value="{{ $merchant->id }}">{{ $merchant->company_name }}</option>
                                             @endforeach
                                         </select>
                                     </div>
