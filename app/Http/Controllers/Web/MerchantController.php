@@ -48,7 +48,8 @@ class MerchantController extends AdminController
             'address' => 'required',
             'company_email' => 'required|email|unique:merchants,company_email',
             'company_logo' => 'mimes:jpg,jpeg,png',
-            'user.email.*' => 'required|unique:users,email',
+            'user.name.*' => 'required|max:50',
+            'user.email.*' => 'required|email|unique:users,email',
         ]);
 
 
@@ -101,11 +102,17 @@ class MerchantController extends AdminController
      */
     public function update(Request $request, $id)
     {
+        $request->session()->flash('countOfNewUser', $this->countOfNewUserInput($request));
+
         $this->validate($request, [
             'company_name' => 'required|min:3|max:200',
             'address' => 'required',
             'company_email' => 'required|email',
             'company_logo' => 'mimes:jpg,jpeg,png',
+            'user.name.*' => 'required|max:50',
+            'user.email.*' => 'email',
+            'newuser.name.*' => 'required|max:50',
+            'newuser.email.*' => 'required|unique:users,email'
         ]);
 
         try {
@@ -209,8 +216,8 @@ class MerchantController extends AdminController
 
             $name = $user['name'][$i];
             $email = $user['email'][$i];
-            $password_str = strtolower(str_random(10));
-            $password = bcrypt($password_str);
+            $passwordStr = strtolower(str_random(10));
+            $password = bcrypt($passwordStr);
 
             $u->name = $name;
             $u->email = $email;
@@ -218,8 +225,9 @@ class MerchantController extends AdminController
             $u->is_active = 1;
             $u->save();
 
-            Mail::to($email)
-                ->send(new MailMerchantUser($u, $password_str));
+            //queue mail new user account
+            Mail::to($u->email)
+                ->queue(new MailMerchantUser($u, $passwordStr));
             $userList[] = $u;
         }
 
@@ -233,35 +241,43 @@ class MerchantController extends AdminController
         $ids = $users['id'];
 
         // Remove unnecessary user
-        MerchantUser::whereNotIn('user_id', $ids)->delete();
+        MerchantUser::where('merchant_id', '=', $merchantId)
+                    ->whereNotIn('user_id', $ids)->delete(); 
 
         // update merchant user.
         for ($i=0; $i < $userCount; ++$i) {
             $userUpdateId = $users['id'][$i];
-            $u = User::where('id', '=', $userUpdateId)->first();
+            $u = $this->getUserById($userUpdateId);
             $u->name = $users['name'][$i];
-
-            // TODO: must add new field/input for is_active field!!!
+            $u->is_active = isset($users['is_active'][$i]) ? 1 : 0;
             $u->save();
         }
 
         // Create new User.
         $newUser = $request->input('newuser');
-        $newUserCount = count($newUser['name']);
-        for ($i=0; $i < $newUserCount; ++$i) {
-            $password_str = strtolower(str_random(10));
-            $password = bcrypt($password_str);
+        $newUserCount = $this->countOfNewUserInput($request);
+        if ($request->has('newuser')) {
+            for ($i=0; $i <= $newUserCount; ++$i) {
+                $passwordStr = strtolower(str_random(10));
+                $password = bcrypt($passwordStr);
 
-            $u = new User;
-            $u->name = $newUser['name'][$i];
-            $u->email = $newUser['email'][$i];
-            $u->password = $password;
-            $u->is_active = 1;
-            $u->save();
+                $u = new User;
+                $u->name = $newUser['name'][$i];
+                $u->email = $newUser['email'][$i];
+                $u->password = $password;
+                $u->is_active = 1;
+                $u->save();
 
-            // add to merchant user
-            $mu = MerchantUser::create(['merchant_id' => $merchantId, 'user_id' => $u->id]);
+                //queue mail new user account
+                Mail::to($u->email)
+                    ->queue(new MailMerchantUser($u, $passwordStr));
+
+                // add to merchant user
+                $mu = MerchantUser::create(['merchant_id' => $merchantId, 'user_id' => $u->id]);
+            }
         }
+
+        $request->session()->flash('countOfNewUser', null);
 
         return true;
     }
@@ -269,6 +285,12 @@ class MerchantController extends AdminController
     private function countOfUserInput(Request $request)
     {
         $count = count($request->input('user')['name']);
+        return 0 === $count ? 0 : $count - 1;
+    }
+
+    private function countOfNewUserInput(Request $request)
+    {
+        $count = count($request->input('newuser')['name']);
         return 0 === $count ? 0 : $count - 1;
     }
 

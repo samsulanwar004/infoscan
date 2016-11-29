@@ -11,16 +11,18 @@ class MerchantUser extends Mailable
 {
     use Queueable, SerializesModels;
     protected $user;
-    protected $password_str;
+    protected $passwordStr;
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct($user, $password_str)
+    public function __construct($user, $passwordStr)
     {
-        $this->user = $user;
-        $this->password = $password_str;
+        $this->user = array(
+            'user' => $user,
+            'password' => $passwordStr
+        );
     }
 
     /**
@@ -31,6 +33,7 @@ class MerchantUser extends Mailable
     public function build()
     {
         return $this->from('admin@rebelworks.co')
-            ->view('emails.merchant_user', ['user' => $this->user, 'password' => $this->password]);
+            ->subject('Your Merchant User Account')
+            ->view('emails.merchant_user', ['user' => $this->user]);
     }
 }
