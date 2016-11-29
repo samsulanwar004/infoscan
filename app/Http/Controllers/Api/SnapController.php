@@ -12,7 +12,9 @@ class SnapController extends BaseApiController
     const SNAP_MODE_AUDIO = 'audio';
 
     private $handlerType = [
-        'receipt', 'generalTrade', 'handWritten'
+        'receipt',
+        'generalTrade',
+        'handWritten',
     ];
 
     public function store(Request $request)
@@ -26,11 +28,13 @@ class SnapController extends BaseApiController
             $type = $request->input('snap_type');
             $method = strtolower($type) . 'Handler';
 
-            $process = (new SnapService)->{$method}($request);
+            (new SnapService)->{$method}($request);
 
-            dd($process);
+            return $this->success();
         } catch (Exception $e) {
-            dd($e->getMessage());
+            logger($e);
+
+            return $this->error($e);
         }
     }
 
@@ -47,20 +51,20 @@ class SnapController extends BaseApiController
 
         // declare new rules depend on handler type (snap_type)
         $newRules = [];
-        if('generaltrade' === $snapType || 'handwritten' === $snapType) {
+        if ('generaltrade' === $snapType || 'handwritten' === $snapType) {
             $modeType = strtotime($request->input('mode_type'));
 
             if ($modeType === self::SNAP_MODE_AUDIO) {
                 $newRules = [
                     'mode_type' => 'required',
-                    'snap.audios.*' => 'required|mimes:mp3'
+                    'snap.audios.*' => 'required|mimes:mp3',
                 ];
             } else {
                 $newRules = [
                     'mode_type' => 'required',
                     'snap.tags.*.name' => 'required',
                     'snap.tags.*.quantity' => 'present|numeric',
-                    'snap.tags.*.total_price' => 'present|numeric'
+                    'snap.tags.*.total_price' => 'present|numeric',
                 ];
             }
         }

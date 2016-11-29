@@ -172,6 +172,7 @@ return [
         Rebel\Component\Util\BladeDirectives\BladeDirectiveServiceProvider::class,
         Spatie\Fractal\FractalServiceProvider::class,
         Laravel\Socialite\SocialiteServiceProvider::class,
+        Dusterio\PlainSqs\Integrations\LaravelServiceProvider::class,
 
         Barryvdh\Debugbar\ServiceProvider::class,
 

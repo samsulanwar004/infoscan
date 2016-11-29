@@ -20,7 +20,7 @@ class CreateSnapsTable extends Migration
             $table->string('request_code', 10);
             $table->integer('member_id')->unsigned();
             $table->string('snap_type', 15);
-            $table->string('mode_type', 10);
+            $table->string('mode_type', 10)->nullable();
             $table->string('status', 10)->default('new');
             $table->string('approved_by', 100)->nullable()->index();
             $table->string('check_by', 100)->nullable()->index();
