@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "e0a20e739c29b3594e4210e8e54e0f48",
-    "content-hash": "e38c107d75c40998e377675bc536db71",
+    "hash": "9c090b4887bfb07bc5cd909f4358d573",
+    "content-hash": "d843cb759b23675dc385b932620a998d",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -347,6 +347,59 @@
                 "string"
             ],
             "time": "2015-11-06 14:35:42"
+        },
+        {
+            "name": "dusterio/laravel-plain-sqs",
+            "version": "v0.1.7",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/dusterio/laravel-plain-sqs.git",
+                "reference": "a81d562d6b59ef71cd9f3372fbfb3e743a7075e0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/dusterio/laravel-plain-sqs/zipball/a81d562d6b59ef71cd9f3372fbfb3e743a7075e0",
+                "reference": "a81d562d6b59ef71cd9f3372fbfb3e743a7075e0",
+                "shasum": ""
+            },
+            "require": {
+                "aws/aws-sdk-php": "~3.0",
+                "illuminate/bus": "5.*",
+                "illuminate/queue": "5.*",
+                "illuminate/support": "5.*",
+                "php": ">=5.5.0"
+            },
+            "require-dev": {
+                "codeclimate/php-test-reporter": "dev-master",
+                "phpunit/phpunit": "3.7.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Dusterio\\PlainSqs\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Denis Mysenko",
+                    "email": "denis@mysenko.com",
+                    "homepage": "https://www.mysenko.com"
+                }
+            ],
+            "description": "Custom SQS connector for Laravel that supports custom format JSON",
+            "homepage": "https://github.com/dusterio/laravel-plain-sqs",
+            "keywords": [
+                "aws",
+                "laravel",
+                "lumen",
+                "php",
+                "sqs"
+            ],
+            "time": "2016-11-03 03:01:45"
         },
         {
             "name": "guzzlehttp/guzzle",
