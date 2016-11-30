@@ -31,36 +31,41 @@
                       enctype="multipart/form-data" class="form" accept-charset="utf-8" onsubmit="myLoading()">
                     {{ csrf_field() }}
                     <div class="box-body" id="form-body">
-                        <button class="btn btn-primary" id="add">Add user field</button>
-                        <button class="btn btn-danger" id="remove">Remove</button>
-                        @for($i=0; $i <= session('countOfUser', 0); ++$i)
-                        <div id="user">
-                            <hr>
-                            <div class="form-group has-feedback">
-                                <label for="name">Name</label>
-                                <input type="text" class="form-control" name="user[name][]" id="name"
-                                       value="{{ old('user.name.' . $i) }}" placeholder="Enter user name" required>
-                            </div>
-                            <div class="form-group has-feedback">
-                                <label for="email">Email</label>
-                                <input type="email" class="form-control" name="user[email][]" id="email"
-                                       value="{{ old('user.email.' . $i) }}" placeholder="Enter email" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="merchant">Select Merchant</label>
-                                <select name="user[merchant][]" id="merchant" class="form-control">
-                                    <option selected>Select merchant</option>
-                                    @foreach($merchants as $merchant)
-                                        <option value="{{ $merchant->id }}"
-                                        @if($merchant->id == $merchant->id) selected @endif>{{ $merchant->company_name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
+                        <div id="users">
+                            @for($i=0; $i <= session('countOfUser', 0); ++$i)
+                                <div id="user">
+                                    <div class="text-right">
+                                        <button class="btn btn-box-tool" id="remove">
+                                            <i class="fa fa-remove"></i>
+                                        </button>
+                                    </div>
+                                    <div class="form-group has-feedback {{ $errors->has('user.name.'.$i) ? 'has-error' : false }}">
+                                        <label for="name">Name</label>
+                                        <input type="text" class="form-control" name="user[name][]" id="name"
+                                               value="{{ old('user.name.' . $i) }}" placeholder="Enter user name" required>
+                                    </div>
+                                    <div class="form-group has-feedback {{ $errors->has('user.email.'.$i) ? 'has-error' : false }}">
+                                        <label for="email">Email</label>
+                                        <input type="email" class="form-control" name="user[email][]" id="email"
+                                               value="{{ old('user.email.' . $i) }}" placeholder="Enter email" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="merchant">Select Merchant</label>
+                                        <select name="user[merchant][]" id="merchant" class="form-control">
+                                            @foreach($merchants as $merchant)
+                                                <option value="{{ $merchant->id }}">{{ $merchant->company_name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                            @endfor
                         </div>
-                        @endfor
                     </div>
                     <!-- /.box-body -->
                     <div class="box-footer text-right">
+                        <button class="btn btn-primary" id="add">
+                            <i class="fa fa-plus fa-btn"></i> Add User
+                        </button>
                         <button type="submit" class="btn btn-primary" id="submit">
                             <i class="fa fa-save fa-btn"></i> Save All
                         </button>
@@ -77,7 +82,7 @@
 
 @section('footer_scripts')
 <script>
-    var counterform = 1;
+    var counterform = 2;
     function updateCounterForm(isRemove) {
         if (isRemove) {
             counterform = counterform - 1;
@@ -92,19 +97,28 @@
         }
     }
     $(document).ready(function () {
-        $("button#add").click(function () {
-            $("#user").clone().appendTo("#form-body");
+        updateCounterForm(true);
+        $("button#add").on('click', function (e) {
+            e.preventDefault();
+            $('div#users').append('<div id="user"><div class="text-right"><button class="btn btn-box-tool" id="remove"><i class="fa fa-remove"></i></button></div><div class="form-group has-feedback"><label for="name">Name</label><input type="text" class="form-control" name="user[name][]" id="name" placeholder="Enter user name" required></div><div class="form-group has-feedback"><label for="email">Email</label><input type="email" class="form-control"  placeholder="Enter email" required></div><label for="merchant">Select Merchant</label><select name="user[merchant][]" id="merchant" class="form-control"><option selected>Select merchant</option>@foreach($merchants as $merchant)<option value="{{ $merchant->id }}" @if($merchant->id == $merchant->id) selected @endif>{{ $merchant->company_name }}</option>@endforeach</select></div></div>');
             updateCounterForm(false);
+
+            window.location.href='#add';
         });
-        $("button#remove").click(function () {
-            $("#user").last().remove();
-            updateCounterForm(true);
+        $(document).on('click', 'button#remove', function (e) {
+            e.preventDefault();
+            var name = $(this).data('name');
+            var email = $(this).data('email');
+            if(confirm('Are you sure want to delete user ' + name + ' (' + email + ') ?')) {
+                $(e.target).closest('#user').remove();
+                updateCounterForm(true);
+            }
         });
     });
 
     function myLoading() {
         $('#loading').addClass('overlay');
-        document.getElementById("loading").innerHTML = '<i class="fa fa-refresh fa-spin"></i>';
+        document.getElementById("loading").innerHTML = '<i class="fa fa-spinner fa-spin" style="font-size:50px; position: fixed;"></i>';
     }
 </script>
 @endsection
