@@ -8,12 +8,27 @@ class GoogleVision
 {
     const GV_URL = 'https://vision.googleapis.com/v1/images:annotate';
 
+    /**
+     * @var
+     */
     private $key;
 
+    /**
+     * @var array
+     */
     private $images = [];
 
+    /**
+     * @var string
+     */
     private $type;
 
+    /**
+     * GoogleVision constructor.
+     *
+     * @param $key
+     * @param string $type
+     */
     public function __construct($key, $type = 'TEXT_DETECTION')
     {
         $this->config = $key;
@@ -41,8 +56,8 @@ class GoogleVision
      * Set the images that we want to push.
      *
      * @param array $images
-     *
      * @return $this
+     * @throws \Exception
      */
     public function setImages(array $images)
     {

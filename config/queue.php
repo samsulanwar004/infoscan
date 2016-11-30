@@ -64,6 +64,15 @@ return [
             'retry_after' => 90,
         ],
 
+        'sqs-plain' => [
+            'driver' => 'sqs-plain',
+            'key'    => env('SQS_PLAIN_KEY', ''),
+            'secret' => env('SQS_PLAIN_SECRET', ''),
+            'prefix' => env('SQS_PLAIN_PREFIX', ''),
+            'queue'  => env('SQS_PLAIN_QUEUE', ''),
+            'region' => env('SQS_PLAIN_REGION', ''),
+        ],
+
     ],
 
     /*
