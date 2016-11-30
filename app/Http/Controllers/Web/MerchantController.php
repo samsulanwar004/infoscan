@@ -144,6 +144,11 @@ class MerchantController extends AdminController
     {
         try {
             $m = $this->getMerchantById($id);
+            // Deleting users relation with merchant
+            User::join('merchant_users as mu', 'users.id', '=', 'mu.user_id')
+                ->where('mu.merchant_id', $id)
+                ->delete();
+
             $m->delete();
 
             if ($m->company_logo != null) {
