@@ -45,14 +45,14 @@
                             <td class="text-right vertical-middle">
                                 <div class="btn-group">
                                     @cando('Promotion.Update')
-                                    <a href="{{ route('users.edit', ['id' => $promo->id]) }}" class="btn btn-info">
+                                    <a href="{{ route('promotions.edit', ['id' => $promo->id]) }}" class="btn btn-info">
                                         <i class="fa fa-pencil"> </i>
                                     </a>
                                     @endcando
 
                                     @cando('Promotion.Delete')
                                     <a class="btn btn-danger"
-                                       href="{{ route('users.destroy', ['id' => $promo->id]) }}"
+                                       href="{{ route('promotions.destroy', ['id' => $promo->id]) }}"
                                        data-toggle="modal"
                                        data-target="#"
                                        title="Delete this data"
