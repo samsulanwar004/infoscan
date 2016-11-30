@@ -16,11 +16,12 @@ class CreateSnapTagsTable extends Migration
         Schema::create('snap_files', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->increments('id');
+            $table->string('file_code', 10)->index();
             $table->integer('snap_id')->unsigned();
             $table->string('file_path', 255);
             $table->string('file_mimes', 45)->nullable();
             $table->string('file_dimension', 12)->nullable(); // json string
-            $table->string('mode_type', 5);
+            $table->string('mode_type', 5)->nullable()->default(NULL);
             $table->tinyInteger('is_need_recognition')->default('1');
             $table->text('recognition_text')->nullable();
             $table->integer('recognition_score')->default('0');

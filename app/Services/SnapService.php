@@ -5,8 +5,10 @@ namespace App\Services;
 use App\Exceptions\Services\SnapServiceException;
 use App\Jobs\UploadToS3;
 use Dusterio\PlainSqs\Jobs\DispatcherJob;
+use DB;
 use Illuminate\Http\Request;
 use Storage;
+use Exception;
 
 class SnapService
 {
@@ -51,10 +53,15 @@ class SnapService
 
         // build data
         $data = [
+            'request_code' => $request->input('request_code'),
             'snap_type' => 'receipt',
             'snap_mode' => 'images',
             'snap_files' => $images,
         ];
+
+        if(! $this->presistData($request, $images)) {
+            throw new Exception('Error when saving data in database!');
+        }
 
         // send dispatcher
         $job = $this->getPlainDispatcher($data);
@@ -162,6 +169,7 @@ class SnapService
                                 ])
             ) {
 
+                $fileList[$i]['file_code'] = str_random(10);
                 $fileList[$i]['filename'] = $filename;
                 $fileList[$i]['file_link'] = $this->completeImageLink($filename);
                 $fileList[$i]['file_size'] = $file->getSize();
@@ -206,10 +214,21 @@ class SnapService
      */
     public function presistData(Request $request, array $files)
     {
-        $snap = $this->createSnap($request);
-        $this->createFiles($request, $files, $snap);
+        DB::beginTransaction();
+        try {
+            $snap = $this->createSnap($request);
+            $this->createFiles($request, $files, $snap);
+        } catch (\Exception $e) {
+            DB::rollback();
 
-        return;
+            logger($e);
+
+            return false;
+        }
+
+        DB::commit();
+
+        return true;
     }
 
     /**
@@ -218,7 +237,7 @@ class SnapService
      */
     private function createSnap(Request $request)
     {
-        $snap = new Snap;
+        $snap = new \App\Snap;
         $snap->request_code = $request->input('request_code');
         $snap->member_id = 1; // TODO: must get who is posting this data
         $snap->snap_type = $request->input('snap_type');
@@ -265,8 +284,9 @@ class SnapService
     private function persistFile(Request $request, array $data, $snap)
     {
         $f = new \App\SnapFile();
-        $f->file_path = $data['file_name'];
-        $f->file_mimes = $data['file_mimes'];
+        $f->file_path = $data['filename'];
+        $f->file_code = $data['file_code'];
+        $f->file_mimes = $data['file_mime'];
         $f->file_dimension = null;
         if ($this->hasMode($request)) {
             $f->mode_type = $request->input('mode_type');
