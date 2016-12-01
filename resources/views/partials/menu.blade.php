@@ -60,6 +60,12 @@
                 </ul>
             </li>
 
+            <li class="ses">
+                <a href="/ses">
+                    <i class="fa fa-money"></i> <span>Socio Economic Status</span>
+                </a>
+            </li>
+
             <li class="treeview">
                 <a href="#">
                     <i class="fa fa-cogs"></i> <span>Settings</span>
