@@ -21,6 +21,11 @@ class Merchant extends Model
         return $this->hasMany(MerchantUser::class, 'merchant_id', 'id');
     }
 
+    public function promotions()
+    {
+        return $this->hasMany(Promotion::class, 'merchant_id', 'id');
+    }
+
     protected static function boot()
     {
         parent::boot();

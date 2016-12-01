@@ -1,7 +1,14 @@
 @extends('app')
 
 @section('content')
-    @include('partials.content_header', ['pageTitle' => 'Promotions', 'pageDescription' => 'Create a new promo', 'breadcrumbs' => ['Promotions' => '/promotions', 'Create' => false]])
+    @include('partials.content_header', [
+        'pageTitle' => 'Promotions',
+        'pageDescription' => 'Edit promotions',
+        'breadcrumbs' => [
+            'Promotions' => admin_route_url('promotions.index'),
+            'Edit' => false]
+        ]
+    )
 
     <!-- Main content -->
     <section class="content">
@@ -13,18 +20,21 @@
                 </h3>
 
                 <div class="box-tools pull-right">
-                    <a href="/users" class="btn btn-box-tool" data-toggle="tooltip" title="Back"> <i
-                            class="fa fa-times"></i></a>
+                    <a href="{{ admin_route_url('promotions.index') }}" class="btn btn-box-tool"
+                       data-toggle="tooltip" title="Back">
+                        <i class="fa fa-times"></i></a>
                 </div>
             </div>
-            <div class="box-body">
-                <form role="form" action="{{ route('promotions.store') }}" method="POST" onsubmit="myLoading()">
+            <div class="box-body" id="form-body">
+                <form role="form" action="{{ admin_route_url('promotions.update', ['id' => $promotion->id]) }}"
+                      method="POST" enctype="multipart/form-data" accept-charset="utf-8" onsubmit="myLoading()">
                     {{ csrf_field() }}
+                    {{ method_field('PUT') }}
                     <div class="box-body">
                         <div class="form-group">
                             <label for="title">Title</label>
                             <input type="text" class="form-control" id="title" name="title" placeholder="Enter title"
-                                   value="{{ old('title') }}" required autofocus>
+                                   value="{{ old('title', $promotion->title) }}" required autofocus>
                         </div>
 
                         <div class="form-group">
@@ -40,27 +50,25 @@
                         <div class="form-group">
                             <label for="description">Description</label>
                             <textarea name="description" id="description" class="form-control" cols="30"
-                                      rows="10" placeholder="Enter Description">{{ old('description') }}</textarea>
+                                      rows="10" placeholder="Enter Description">{{ old('description', $promotion->description) }}</textarea>
                         </div>
 
                         <div class="form-group">
                             <label for="url">Url</label>
-                            <input type="text" name="url" class="form-control" value="{{ old('url') }}" placeholder="Enter Url">
+                            <input type="text" name="url" class="form-control" value="{{ old('url', $promotion->url) }}" placeholder="Enter Url">
                         </div>
 
                         <div class="checkbox">
                             <label>
-                                <input name="is_active" checked="checked" type="checkbox">
+                                <input name="is_active" {{ (bool)$promotion->is_active ? 'checked' : '' }} type="checkbox">
                                 Is Active ?
                             </label>
                         </div>
-
                     </div>
                     <!-- /.box-body -->
-
                     <div class="box-footer text-right">
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fa fa-save fa-btn"></i> Save Promotion
+                        <button type="submit" class="btn btn-primary" id="submit">
+                            <i class="fa fa-save fa-btn"></i> Save Promotions
                         </button>
                     </div>
                 </form>
@@ -74,21 +82,22 @@
 @endsection
 
 @section('footer_scripts')
-    <script>
-        $(document).ready(function () {
-            $('.datepicker').daterangepicker({
-                timePicker: true,
-                timePicker24Hour: true,
-                locale: {
-                    format: 'YYYY-MM-DD HH:mm:ss'
-                }
-            });
+<script>
+    $(document).ready(function () {
+        $('.datepicker').daterangepicker({
+            timePicker: true,
+            timePicker24Hour: true,
+            locale: {
+                format: 'YYYY-MM-DD HH:mm:ss'
+            },
+            startDate: '{{ $promotion->start_at }}',
+            endDate: '{{ $promotion->end_at }}'
         });
+    });
 
-        function myLoading() {
-            $('#loading').addClass('overlay');
-            document.getElementById("loading").innerHTML = '<i class="fa fa-spinner fa-spin" style="font-size:50px; position: fixed;"></i>';
-        }
-    </script>
-
-@stop
+    function myLoading() {
+        $('#loading').addClass('overlay');
+        document.getElementById("loading").innerHTML = '<i class="fa fa-spinner fa-spin" style="font-size:50px; position: fixed;"></i>';
+    }
+</script>
+@endsection

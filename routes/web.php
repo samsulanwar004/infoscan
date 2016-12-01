@@ -29,6 +29,8 @@ Route::group([
         ['except' => ['show'], 'names' => route_resource_name($routePrefix, 'merchants')]);
     Route::resource('/merchants/user', 'Web\MerchantUserController',
         ['except' => ['show'], 'names' => route_resource_name($routePrefix, 'merchantusers')]);
+    Route::resource('/ses', 'Web\SesController',
+        ['except' => ['show'], 'names' => route_resource_name($routePrefix, 'ses')]);
 
 });
 
