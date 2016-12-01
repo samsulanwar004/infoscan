@@ -19,7 +19,8 @@ class CreateSnapFilesTable extends Migration
             $table->integer('snap_file_id')->unsigned();
             $table->string('name', 255);
             $table->decimal('total_price', 15, 2)->default('0.00');
-            $table->integer('quatity')->default('0');
+            $table->integer('quantity')->default('0');
+            $table->timestamps();
 
             $table->foreign('snap_file_id', 'FK_snap_files_id_in_snap_tags')
                 ->references('id')->on('snap_files')

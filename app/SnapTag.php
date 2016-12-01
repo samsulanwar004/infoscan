@@ -11,6 +11,6 @@ class SnapTag extends Model
 
     public function file()
     {
-        return $this->belongsTo(SnapFile::class, 'snap_tag_id');
+        return $this->belongsTo(SnapFile::class, 'snap_file_id');
     }
 }
