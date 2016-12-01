@@ -30,7 +30,7 @@ class SesController extends AdminController
     public function store(Request $request)
     {
         $this->validate($request, [
-            'code' => 'required|string|unique',
+            'code' => 'required|string|unique:code',
             'range_start' => 'required|numeric|different:range_end|min:0',
             'range_end' => 'required|numeric|min:0'
         ]);
@@ -51,7 +51,7 @@ class SesController extends AdminController
     public function update(Request $request, $id)
     {
         $this->validate($request, [
-            'code' => 'required|string',
+            'code' => 'required|string|unique:code',
             'range_start' => 'required|numeric|different:range_end|min:0',
             'range_end' => 'required|numeric|min:0'
         ]);
