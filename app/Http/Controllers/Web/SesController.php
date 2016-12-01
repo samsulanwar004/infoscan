@@ -34,6 +34,7 @@ class SesController extends AdminController
             'range_start' => 'required|numeric|different:range_end|min:0',
             'range_end' => 'required|numeric|min:0'
         ]);
+
         try {
             $input = $request->all();
             if ($input['range_start'] > $input['range_end']) {
@@ -42,7 +43,7 @@ class SesController extends AdminController
             SocioEconomicStatus::create($input);
             return redirect()->action('Web\SesController@index')->with('success', 'SES succesfully saved.');
         } catch (Exception $e) {
-
+            return back()->with('errors', $e->getMessage());
         }
 
     }
