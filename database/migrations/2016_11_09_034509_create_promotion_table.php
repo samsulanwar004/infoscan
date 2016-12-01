@@ -23,6 +23,8 @@ class CreatePromotionTable extends Migration
             $table->string('created_by', 150);
             $table->string('updated_by', 150)->nullable();
             $table->boolean('is_active')->default(1);
+            $table->integer('merchant_id')->unsigned();
+            $table->foreign('merchant_id')->references('id')->on('merchants');
             $table->timestamps();
         });
     }

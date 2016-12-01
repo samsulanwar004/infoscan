@@ -3,8 +3,11 @@
 namespace App\Http\Controllers\Web;
 
 use App\Promotion;
+use App\MerchantUser;
 use Illuminate\Http\Request;
+use App\Services\PromotionService;
 use Auth;
+use Illuminate\Support\Facades\DB;
 
 class PromotionController extends AdminController
 {
@@ -18,9 +21,19 @@ class PromotionController extends AdminController
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function index()
-    {
-        $promos = Promotion::where('is_active', '=', 1)->paginate(50);
-
+    { 
+        if (empty($mi = $this->getMerchantIdByAuth())){
+            $promos = Promotion::where('is_active', '=', 1)
+                ->orderBy('id', 'DESC')
+                ->paginate(50);
+        } else {
+            $promos = DB::table('merchants')
+                ->join('promotions', 'merchants.id', '=', 'promotions.merchant_id')
+                ->where('merchant_id', '=', $mi)
+                ->where('is_active', '=', 1)
+                ->orderBy('promotions.id', 'DESC')
+                ->paginate(50);
+        }
         return view('promotions.index', compact('promos'));
     }
 
@@ -45,7 +58,10 @@ class PromotionController extends AdminController
         ]);
 
         try {
-            $this->persistPromotion($request);
+            // Found merchant
+            $mi = $this->getMerchantIdByAuth();
+
+            (new PromotionService)->persistPromotion($request, $mi);
         } catch (\Exception $e) {
             return back()->with('errors', $e->getMessage());
         }
@@ -79,7 +95,10 @@ class PromotionController extends AdminController
         ]);
 
         try {
-            $this->persistPromotion($request, $id);
+            // Found merchant
+            $mi = $this->getMerchantIdByAuth();
+
+            (new PromotionService)->persistPromotion($request, $mi, $id);
         } catch (\Exception $e) {
             return back()->with('errors', $e->getMessage());
         }
@@ -100,29 +119,6 @@ class PromotionController extends AdminController
     }
 
     /**
-     * @param $request
-     * @param null $id
-     *
-     * @return bool
-     */
-    public function persistPromotion($request, $id = null)
-    {
-        $date = $request->input('start_at');
-        $dateArray = explode(' - ', $date);
-        $p = is_null($id) ? new Promotion : $this->getPromotionById($id);
-        $p->title = $request->input('title');
-        $p->description = $request->input('description');
-        $p->start_at = $dateArray[0];
-        $p->end_at = $dateArray[1];
-        $p->url = $request->input('url');
-        $p->created_by = Auth::user()->id;
-        $p->updated_by = isset($id) ? Auth::user()->id : null;
-        $p->is_active = $request->has('is_active') ? 1 : 0;
-
-        return $p->save();
-    }
-
-    /**
      * @param $id
      *
      * @return mixed
@@ -130,5 +126,11 @@ class PromotionController extends AdminController
     private function getPromotionById($id)
     {
         return Promotion::where('id', '=', $id)->first();
+    }
+
+    private function getMerchantIdByAuth()
+    {
+        $mu = MerchantUser::where('user_id', '=', Auth::user()->id)->first();
+        return isset($mu->merchant_id) ? $mu->merchant_id : null;
     }
 }
