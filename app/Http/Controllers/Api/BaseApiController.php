@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Events\MemberActivityEvent;
 use Illuminate\Routing\Controller;
 
 class BaseApiController extends Controller
@@ -55,6 +56,20 @@ class BaseApiController extends Controller
                 $httpCode
             );
         }
+    }
+
+    /**
+     * Record the member actovity action on database log
+     * @param  string $action
+     * @param  string $description
+     * @return
+     */
+    protected function activityLogger($action, $description = '')
+    {
+        $member = 'wxwuu9cqus'; // TODO: get the member by session request
+        event(new MemberActivityEvent($member, $action, $description));
+
+        return $this;
     }
 
     private function generateMessage($status, $message)
