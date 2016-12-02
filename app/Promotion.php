@@ -11,6 +11,6 @@ class Promotion extends Model
 
     public function merchant()
     {
-    	return hasOne(Merchant::class, 'merchant_id', 'id');
+    	return belongsTo(Merchant::class, 'merchant_id');
     }
 }
