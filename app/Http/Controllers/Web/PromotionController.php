@@ -7,7 +7,6 @@ use App\MerchantUser;
 use Illuminate\Http\Request;
 use App\Services\PromotionService;
 use Auth;
-use Illuminate\Support\Facades\DB;
 
 class PromotionController extends AdminController
 {
@@ -23,16 +22,9 @@ class PromotionController extends AdminController
     public function index()
     { 
         if (empty($mi = $this->getMerchantIdByAuth())){
-            $promos = Promotion::where('is_active', '=', 1)
-                ->orderBy('id', 'DESC')
-                ->paginate(50);
+            $promos = (new PromotionService)->getAllPromotion();
         } else {
-            $promos = DB::table('merchants')
-                ->join('promotions', 'merchants.id', '=', 'promotions.merchant_id')
-                ->where('merchant_id', '=', $mi)
-                ->where('is_active', '=', 1)
-                ->orderBy('promotions.id', 'DESC')
-                ->paginate(50);
+            $promos = (new PromotionService)->getPromotionByMerchantId($mi);
         }
         return view('promotions.index', compact('promos'));
     }

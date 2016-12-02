@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Promotion;
 use Auth;
 
@@ -32,6 +33,34 @@ class PromotionService
 		$p->save();
 
 		return $p;
+	}
+
+	/**
+     * @return mixed
+     */
+	public function getAllPromotion()
+	{
+		$p = Promotion::where('is_active', '=', 1)
+            ->orderBy('id', 'DESC')
+            ->paginate(50);
+
+ 		return $p;
+	}
+
+	/**
+     * @param  $mi
+     * @return mixed
+     */
+	public function getPromotionByMerchantId($mi)
+	{
+		$p = DB::table('merchants')
+            ->join('promotions', 'merchants.id', '=', 'promotions.merchant_id')
+            ->where('merchant_id', '=', $mi)
+            ->where('is_active', '=', 1)
+            ->orderBy('promotions.id', 'DESC')
+            ->paginate(50);
+
+        return $p;
 	}
 
 	private function getPromotionById($id)
