@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Web;
 
-use App\Promotion;
 use App\MerchantUser;
 use Illuminate\Http\Request;
 use App\Services\PromotionService;
@@ -68,7 +67,7 @@ class PromotionController extends AdminController
      */
     public function edit($id)
     {
-        $promotion = $this->getPromotionById($id);
+        $promotion = (new PromotionService)->getPromotionById($id);
 
         return view('promotions.edit', compact('promotion'));
     }
@@ -101,23 +100,13 @@ class PromotionController extends AdminController
     public function destroy($id)
     {
         try {
-            $p = $this->getPromotionById($id);
+            $p = (new PromotionService)->getPromotionById($id);
             $p->delete();
         } catch (\Exception $e) {
             return back()->with('errors'. $e->getMessage());
         }
 
         return redirect($this->redirectAfterSave)->with('success', 'Promotion successfully deleted!');
-    }
-
-    /**
-     * @param $id
-     *
-     * @return mixed
-     */
-    private function getPromotionById($id)
-    {
-        return Promotion::where('id', '=', $id)->first();
     }
 
     private function getMerchantIdByAuth()

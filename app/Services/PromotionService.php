@@ -63,7 +63,7 @@ class PromotionService
         return $p;
 	}
 
-	private function getPromotionById($id)
+	public function getPromotionById($id)
 	{
 		return Promotion::where('id', '=', $id)->first();
 	}
