@@ -50,6 +50,7 @@ class CreateLuckydrawTable extends Migration
      */
     public function down()
     {
+        Schema::dropIfExists('members_lucky_draws');
         Schema::dropIfExists('lucky_draws');
     }
 }
