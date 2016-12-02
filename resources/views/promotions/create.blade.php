@@ -13,7 +13,7 @@
                 </h3>
 
                 <div class="box-tools pull-right">
-                    <a href="/users" class="btn btn-box-tool" data-toggle="tooltip" title="Back"> <i
+                    <a href="/promotions" class="btn btn-box-tool" data-toggle="tooltip" title="Back"> <i
                             class="fa fa-times"></i></a>
                 </div>
             </div>

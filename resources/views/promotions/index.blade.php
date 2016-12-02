@@ -57,14 +57,14 @@
                                        data-target="#"
                                        title="Delete this data"
                                        for-delete="true"
-                                       data-message="Are you sure you want to delete this user ?"
+                                       data-message="Are you sure you want to delete this promotion ?"
                                     > <i class="fa fa-trash"></i> </a>
                                     @endcando
                                 </div>
                             </td>
                         </tr>
                     @empty
-                        <td colspan="5"> There is no record for users data!</td>
+                        <td colspan="5"> There is no record for promotions data!</td>
                     @endforelse
                     </tbody>
                 </table>
