@@ -10,16 +10,15 @@ class LuckyDrawService
 {
 	/**
      * @param $request
-     * @param null $id
      * @return bool
      */
-	public function persistLuckyDraw(Request $request, $id = null)
+	public function createLuckyDraw(Request $request)
 	{
 		$date = $request->input('start_at');
 		$dateArray = explode(' - ', $date);
 		$LuckyDrawCode = strtolower(str_random(10));
 
-		$l = is_null($id) ? new LuckyDraw : $this->getLuckyDrawById($id);
+		$l = new LuckyDraw;
 		$l->luckydraw_code = $LuckyDrawCode;
 		$l->title = $request->input('title');
 		$l->start_at = $dateArray[0];
@@ -45,6 +44,48 @@ class LuckyDrawService
 		$l->save();
 
 		return $l;
+	}
+
+	public function updateLuckyDraw(Request $request, $id)
+	{
+		/**
+	     * @param $request
+	     * @param null $id
+	     * @return bool
+	     */
+
+		$date = $request->input('start_at');
+		$dateArray = explode(' - ', $date);
+
+		$l = $this->getLuckyDrawById($id);
+		$l->title = $request->input('title');
+		$l->start_at = $dateArray[0];
+		$l->end_at = $dateArray[1];
+		$l->description = $request->input('description');
+		$l->point = $request->input('point');
+		$l->is_multiple = $request->has('is_multiple') ? 1 : 0;
+
+		if ($request->hasFile('image') != null && $l->image == true) {
+            \Storage::delete('public/luckydraws/' . $l->image);
+        }
+
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+            $filename = sprintf(
+                "%s-%s.%s",
+                $l->luckydraw_code,
+                date('Ymdhis'),
+                $file->getClientOriginalExtension()
+            );
+
+            $l->image = $filename;
+            $file->storeAs('luckydraws', $filename, 'public');
+        }
+
+		$l->update();
+
+		return $l;
+
 	}
 
 	/**
