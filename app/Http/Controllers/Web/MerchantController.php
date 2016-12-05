@@ -186,7 +186,7 @@ class MerchantController extends AdminController
         $memberCode = strtolower(str_random(10));
 
         $m = is_null($id) ? new Merchant : $this->getMerchantById($id);
-        $m->merchant_code = $memberCode;
+        $m->merchant_code = is_null($id) ? $memberCode : $m->merchant_code;
         $m->company_name = $request->input('company_name');
         $m->address = $request->input('address');
         $m->company_email = $request->input('company_email');
@@ -195,7 +195,7 @@ class MerchantController extends AdminController
             $file = $request->file('company_logo');
             $filename = sprintf(
                 "%s-%s.%s",
-                $memberCode,
+                is_null($id) ? $memberCode : $m->merchant_code,
                 date('Ymdhis'),
                 $file->getClientOriginalExtension()
             );
