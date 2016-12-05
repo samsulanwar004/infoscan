@@ -11,6 +11,6 @@ class Promotion extends Model
 
     public function merchant()
     {
-    	return belongsTo(Merchant::class, 'merchant_id');
+    	return $this->belongsTo(Merchant::class, 'merchant_id');
     }
 }
