@@ -6,9 +6,20 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Promotion;
 use Auth;
+use Carbon\Carbon;
+use Cache;
 
 class PromotionService
 {
+	/**
+     * @var string
+     */
+	protected $date;
+	
+	public function __construct()
+	{
+		$this->date = Carbon::now('Asia/Jakarta');
+	}
 	/**
      * @param $request
      * @param null $mi
@@ -86,9 +97,34 @@ class PromotionService
         return $p;
 	}
 
+	/**
+     * @param  $id
+     * @return mixed
+     */
 	public function getPromotionById($id)
 	{
 		return Promotion::where('id', '=', $id)->first();
+	}
+
+	/**
+     * @return mixed
+     */
+	public function getApiAllPromotion()
+	{
+		if (Cache::has('promotion')) {
+			return Cache::get('promotion');
+		} else {
+
+			$p = Promotion::where('is_active', '=', 1)
+				->where('start_at', '<=', $this->date)
+				->where('end_at', '>=', $this->date)
+				->get();
+			// save in promotion cache	
+			Cache::put('promotion', $p, $this->date->addMinutes(10));
+
+			return $p;
+		}
+
 	}
 
 }

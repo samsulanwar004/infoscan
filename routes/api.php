@@ -23,4 +23,5 @@ Route::group([
     //'middleware' => 'api:auth',
 ], function () {
     Route::post('/snap', 'Api\SnapController@store');
+    Route::get('/promotion', 'Api\PromotionController@index');
 });
