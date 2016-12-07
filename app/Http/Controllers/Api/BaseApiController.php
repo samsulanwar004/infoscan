@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Api;
 
 use App\Events\MemberActivityEvent;
 use Illuminate\Routing\Controller;
+use Illuminate\Validation\ValidationException;
+use Tymon\JWTAuth\Providers\Auth\Illuminate;
 
 class BaseApiController extends Controller
 {
@@ -27,6 +29,13 @@ class BaseApiController extends Controller
         );
     }
 
+    protected function notFound()
+    {
+        return response()->json(
+            $this->generateMessage('Error', 'Not Found'), 404
+        );
+    }
+
     protected function success($message = null, $httpCode = 200)
     {
         if (null == $message) {
@@ -45,7 +54,7 @@ class BaseApiController extends Controller
 
         if (is_array($message)) {
             $m = [
-                'status'  => 'Ok',
+                'status' => 'Ok',
                 'message' => 'Success',
             ];
 
@@ -60,9 +69,10 @@ class BaseApiController extends Controller
 
     /**
      * Record the member actovity action on database log
+     *
      * @param  string $action
      * @param  string $description
-     * @return
+     * @return $this
      */
     protected function activityLogger($action, $description = '')
     {
@@ -75,8 +85,18 @@ class BaseApiController extends Controller
     private function generateMessage($status, $message)
     {
         return [
-            'status'  => $status,
+            'status' => $status,
             'message' => $message,
         ];
+    }
+
+    /**
+     * Get the active member by bearer token
+     *
+     * @return \Illuminate\Contracts\Auth\Authenticatable|null|\Illuminate\Database\Eloquent\Model
+     */
+    protected function getActiveMember()
+    {
+        return auth('api')->user();
     }
 }
