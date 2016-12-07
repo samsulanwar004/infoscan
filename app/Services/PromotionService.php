@@ -8,6 +8,7 @@ use App\Promotion;
 use Auth;
 use Carbon\Carbon;
 use Cache;
+use App\Transformers\PromotionTransformer;
 
 class PromotionService
 {
@@ -15,7 +16,7 @@ class PromotionService
      * @var string
      */
 	protected $date;
-	
+
 	public function __construct()
 	{
 		$this->date = Carbon::now('Asia/Jakarta');
@@ -119,10 +120,15 @@ class PromotionService
 				->where('start_at', '<=', $this->date)
 				->where('end_at', '>=', $this->date)
 				->get();
-			// save in promotion cache	
-			Cache::put('promotion', $p, $this->date->addMinutes(10));
 
-			return $p;
+			$transform = fractal()
+				->collection($p)
+				->transformWith(new PromotionTransformer)
+				->toArray();
+			// save in promotion cache	
+			Cache::put('promotion', $transform, $this->date->addMinutes(10));
+
+			return $transform;
 		}
 
 	}
