@@ -141,7 +141,7 @@ class SnapService
 
         if ($this->isAudioMode($request)) {
             $mode = self::AUDIO_TYPE_NAME;
-            $audios = $this->audiosProcess($Request);
+            $audios = $this->audiosProcess($request);
 
             if (empty($audios)) {
                 throw new SnapServiceException('There is no audios was processed. Something wrong with the system!');
@@ -166,7 +166,7 @@ class SnapService
             return $data;
         }
 
-        throw new SnapService('Server Error');
+        throw new SnapServiceException('Server Error');
     }
 
     /**
@@ -228,7 +228,7 @@ class SnapService
      * @param  string $type
      * @return array
      */
-    private function filesUploads(array $files, $type)
+    private function filesUploads(array $files, $type, $mimes = null)
     {
         $fileList = [];
         $i = 0;
@@ -255,7 +255,7 @@ class SnapService
                 $fileList[$i]['filename'] = $filename;
                 $fileList[$i]['file_link'] = $this->completeImageLink($filename);
                 $fileList[$i]['file_size'] = $file->getSize();
-                $fileList[$i]['file_mime'] = $file->getMimeType();
+                $fileList[$i]['file_mime'] = (null === $mimes) ? $file->getMimeType() : $mimes;
 
                 ++$i;
             }
@@ -293,6 +293,7 @@ class SnapService
     /**
      * @param \Illuminate\Http\Request $request
      * @param array $files
+     * @return bool
      */
     public function presistData(Request $request, array $files)
     {
