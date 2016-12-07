@@ -31,7 +31,7 @@ Route::group([
         ['except' => ['show'], 'names' => route_resource_name($routePrefix, 'merchantusers')]);
     Route::resource('/ses', 'Web\SesController',
         ['except' => ['show'], 'names' => route_resource_name($routePrefix, 'ses')]);
-    Route::resource('lucky', 'Web\LuckyDrawController',
+    Route::resource('/lucky', 'Web\LuckyDrawController',
         ['except' => ['show'], 'names' => route_resource_name($routePrefix, 'lucky')]);
 
 });
