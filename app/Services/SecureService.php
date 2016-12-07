@@ -5,7 +5,7 @@ namespace App\Services;
 class SecureService
 {
     /**
-     * @var string
+     * @var MemberService
      */
     private $memberService;
 
@@ -30,14 +30,15 @@ class SecureService
 
         $member = $this->memberService->member($user['email']);
         if (!$member) {
-            $this->memberService->setName($user['name'])
-                                ->setEmail($user['email'])
-                                ->setGender($gender)
-                                ->setAvatar(isset($user['avatar']) ? $user['avatar'] : '')
-                                ->setIsLoginBySocialMedia(true)
-                                ->setSocialMediaUrl(isset($user['link']) ? $user['link'] : '')
-                                ->setSocialMediaType($social)
-                                ->register($user);
+            $this->memberService
+                ->setName($user['name'])
+                ->setEmail($user['email'])
+                ->setGender($gender)
+                ->setAvatar(isset($user['avatar']) ? $user['avatar'] : '')
+                ->setIsLoginBySocialMedia(true)
+                ->setSocialMediaUrl(isset($user['link']) ? $user['link'] : '')
+                ->setSocialMediaType($social)
+                ->register($user);
         }
 
         return $this->memberService->profile();
