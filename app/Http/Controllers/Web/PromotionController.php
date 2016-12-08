@@ -2,12 +2,10 @@
 
 namespace App\Http\Controllers\Web;
 
-use App\Promotion;
-use App\MerchantUser;
 use Illuminate\Http\Request;
 use App\Services\PromotionService;
-use Auth;
-use Illuminate\Support\Facades\DB;
+use App\Services\MerchantService;
+
 
 class PromotionController extends AdminController
 {
@@ -22,17 +20,10 @@ class PromotionController extends AdminController
      */
     public function index()
     { 
-        if (empty($mi = $this->getMerchantIdByAuth())){
-            $promos = Promotion::where('is_active', '=', 1)
-                ->orderBy('id', 'DESC')
-                ->paginate(50);
+        if (empty($mi = (new MerchantService)->getMerchantIdByAuth())){
+            $promos = (new PromotionService)->getAllPromotion();
         } else {
-            $promos = DB::table('merchants')
-                ->join('promotions', 'merchants.id', '=', 'promotions.merchant_id')
-                ->where('merchant_id', '=', $mi)
-                ->where('is_active', '=', 1)
-                ->orderBy('promotions.id', 'DESC')
-                ->paginate(50);
+            $promos = (new PromotionService)->getPromotionByMerchantId($mi);
         }
         return view('promotions.index', compact('promos'));
     }
@@ -59,9 +50,9 @@ class PromotionController extends AdminController
 
         try {
             // Found merchant
-            $mi = $this->getMerchantIdByAuth();
+            $mi = (new MerchantService)->getMerchantIdByAuth();
 
-            (new PromotionService)->persistPromotion($request, $mi);
+            (new PromotionService)->createPromotion($request, $mi);
         } catch (\Exception $e) {
             return back()->with('errors', $e->getMessage());
         }
@@ -76,7 +67,7 @@ class PromotionController extends AdminController
      */
     public function edit($id)
     {
-        $promotion = $this->getPromotionById($id);
+        $promotion = (new PromotionService)->getPromotionById($id);
 
         return view('promotions.edit', compact('promotion'));
     }
@@ -96,9 +87,9 @@ class PromotionController extends AdminController
 
         try {
             // Found merchant
-            $mi = $this->getMerchantIdByAuth();
+            $mi = (new MerchantService)->getMerchantIdByAuth();
 
-            (new PromotionService)->persistPromotion($request, $mi, $id);
+            (new PromotionService)->updatePromotion($request, $id, $mi);
         } catch (\Exception $e) {
             return back()->with('errors', $e->getMessage());
         }
@@ -109,7 +100,7 @@ class PromotionController extends AdminController
     public function destroy($id)
     {
         try {
-            $p = $this->getPromotionById($id);
+            $p = (new PromotionService)->getPromotionById($id);
             $p->delete();
         } catch (\Exception $e) {
             return back()->with('errors'. $e->getMessage());
@@ -118,19 +109,4 @@ class PromotionController extends AdminController
         return redirect($this->redirectAfterSave)->with('success', 'Promotion successfully deleted!');
     }
 
-    /**
-     * @param $id
-     *
-     * @return mixed
-     */
-    private function getPromotionById($id)
-    {
-        return Promotion::where('id', '=', $id)->first();
-    }
-
-    private function getMerchantIdByAuth()
-    {
-        $mu = MerchantUser::where('user_id', '=', Auth::user()->id)->first();
-        return isset($mu->merchant_id) ? $mu->merchant_id : null;
-    }
 }
