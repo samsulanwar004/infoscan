@@ -18,6 +18,8 @@ class CreateLuckydrawTable extends Migration
             $table->string('luckydraw_code', 10)->unique();
             $table->string('title', 150);
             $table->string('description')->nullable();
+            $table->dateTime('start_at');
+            $table->dateTime('end_at');
             $table->decimal('point', 15, 2)->default(0);
             $table->string('image')->nullable();
             $table->string('created_by', 150)->index();

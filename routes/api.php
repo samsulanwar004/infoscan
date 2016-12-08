@@ -23,5 +23,6 @@ Route::group([
     'middleware' => 'api',
 ], function () {
     Route::post('/snap', 'Api\SnapController@store');
+    Route::get('/promotion', 'Api\PromotionController@index');
     Route::get('/me', 'Api\MemberController@show');
 });

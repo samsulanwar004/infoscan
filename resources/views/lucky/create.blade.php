@@ -1,7 +1,7 @@
 @extends('app')
 
 @section('content')
-    @include('partials.content_header', ['pageTitle' => 'Promotions', 'pageDescription' => 'Create a new promo', 'breadcrumbs' => ['Promotions' => '/promotions', 'Create' => false]])
+    @include('partials.content_header', ['pageTitle' => 'Lucky Draws', 'pageDescription' => 'Create a new lucky draw', 'breadcrumbs' => ['Lucky draws' => '/lucky', 'Create' => false]])
 
     <!-- Main content -->
     <section class="content">
@@ -13,12 +13,13 @@
                 </h3>
 
                 <div class="box-tools pull-right">
-                    <a href="/promotions" class="btn btn-box-tool" data-toggle="tooltip" title="Back"> <i
+                    <a href="/lucky" class="btn btn-box-tool" data-toggle="tooltip" title="Back"> <i
                             class="fa fa-times"></i></a>
                 </div>
             </div>
             <div class="box-body">
-                <form role="form" action="{{ route('promotions.store') }}" method="POST" onsubmit="myLoading()">
+                <form role="form" action="{{ route('lucky.store') }}" method="POST" 
+                enctype="multipart/form-data" class="form" accept-charset="utf-8" onsubmit="myLoading()">
                     {{ csrf_field() }}
                     <div class="box-body">
                         <div class="form-group">
@@ -44,14 +45,19 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="url">Url</label>
-                            <input type="text" name="url" class="form-control" value="{{ old('url') }}" placeholder="Enter Url">
+                            <label for="point">Point</label>
+                            <input type="number" name="point" class="form-control" value="{{ old('point') }}" placeholder="Enter Point">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="image">Image</label>
+                            <input type="file" class="form-control" id="image" name="image">
                         </div>
 
                         <div class="checkbox">
                             <label>
-                                <input name="is_active" checked="checked" type="checkbox">
-                                Is Active ?
+                                <input name="is_multiple" {{ 'on' == old('is_active') ? 'checked' : '' }} type="checkbox">
+                                Is Multiple ?
                             </label>
                         </div>
 
@@ -60,7 +66,7 @@
 
                     <div class="box-footer text-right">
                         <button type="submit" class="btn btn-primary">
-                            <i class="fa fa-save fa-btn"></i> Save Promotion
+                            <i class="fa fa-save fa-btn"></i> Save Lucky Draw
                         </button>
                     </div>
                 </form>

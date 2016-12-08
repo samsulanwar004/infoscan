@@ -76,6 +76,7 @@
                 <ul class="treeview-menu">
                     <li><a href="/settings"><i class="fa fa-circle-o"></i>General</a></li>
                     <li><a href="/promotions"><i class="fa fa-circle-o"></i>Promotion</a></li>
+                    <li><a href="/lucky"><i class="fa fa-circle-o"></i>Lucky Draw</a></li>
                 </ul>
             </li>
             <li class="header">LABELS</li>
