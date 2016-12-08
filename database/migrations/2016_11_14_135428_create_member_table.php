@@ -25,6 +25,7 @@ class CreateMemberTable extends Migration
             $table->boolean('is_login_by_social_media')->default(0);
             $table->string('social_media_url')->nullable();
             $table->string('social_media_type')->nullable();
+            $table->string('api_token', 60)->unique();
             $table->timestamps();
         });
     }

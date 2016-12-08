@@ -13,15 +13,16 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:api');
+Route::post('v1/login', 'SecureController@login');
+
+
 
 
 Route::group([
     'prefix' => 'v1',
-    //'middleware' => 'api:auth',
+    'middleware' => 'api',
 ], function () {
     Route::post('/snap', 'Api\SnapController@store');
     Route::get('/promotion', 'Api\PromotionController@index');
+    Route::get('/me', 'Api\MemberController@show');
 });
