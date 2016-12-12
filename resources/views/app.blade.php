@@ -11,7 +11,7 @@
     <script src="{{ elixir('js/ie-support.js') }}"></script>
     <![endif]-->
 </head>
-<body class="hold-transition skin-blue sidebar-mini">
+<body class="hold-transition skin-red-light sidebar-mini">
 @include('partials.alert')
 <!-- Site wrapper -->
 <div class="wrapper">
@@ -29,7 +29,7 @@
         <div class="pull-right hidden-xs">
             <b>Version</b> 2.3.7
         </div>
-        <strong>Copyright &copy; 2014-2016 <a href="http://almsaeedstudio.com">Almsaeed Studio</a>.</strong> All rights
+        <strong>Copyright &copy; 2016 <a target="_blank" href="http://rebelworks.co">RebelWorks</a>.</strong> All rights
         reserved.
     </footer>
 
