@@ -21,10 +21,11 @@ elixir(mix => {
         assetPath + 'bootstrap/css/bootstrap.min.css',
         ltePath + 'css/font-awesome.css',
         ltePath + 'css/AdminLTE.css',
-        ltePath + 'css/skins/skin-blue.css',
+        ltePath + 'css/skins/skin-red-light.css',
         ltePath + 'plugins/icheck/square/blue.css',
         ltePath + 'plugins/datepicker/datepicker3.css',
-        ltePath + 'plugins/daterangepicker/daterangepicker.css'
+        ltePath + 'plugins/daterangepicker/daterangepicker.css',
+        ltePath + 'plugins/easyui/easyui.css'
     ], 'public/css/app.css');
 
     /*mix.webpack('app.js');*/
@@ -37,6 +38,8 @@ elixir(mix => {
         assetPath + 'bootstrap/js/bootstrap.js',
         ltePath + 'plugins/fastclick/fastclick.min.js',
         ltePath + 'plugins/form-serialize/jquery.serializejson.min.js',
+        ltePath + 'plugins/easyui/jquery.easyui.min.js',
+        ltePath + 'plugins/easyui/pivot/jquery.pivotgrid.js',
         ltePath + 'plugins/icheck/icheck.js',
     ], 'public/js/vendor.js');
 
@@ -55,6 +58,7 @@ elixir(mix => {
     mix.copy(ltePath + 'fonts/*', 'public/fonts');
 
     mix.copy(ltePath + 'img', 'public/img/lte'); // lte image
+    mix.copy(ltePath + 'plugins/easyui/images', 'public/img/easyui'); // lte image
     mix.copy(ltePath + 'plugins/icheck/square/blue.png', 'public/img');
 
     mix.version([
