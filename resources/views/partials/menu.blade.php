@@ -13,7 +13,7 @@
             </div>
         </div>
         <!-- search form -->
-        <form action="#" method="get" class="sidebar-form">
+        <!-- <form action="#" method="get" class="sidebar-form">
             <div class="input-group">
                 <input type="text" name="q" class="form-control" placeholder="Search...">
                 <span class="input-group-btn">
@@ -21,7 +21,7 @@
                 </button>
               </span>
             </div>
-        </form>
+        </form> -->
         <!-- /.search form -->
         <!-- sidebar menu: : style can be found in sidebar.less -->
         <ul class="sidebar-menu left-menu">
@@ -77,6 +77,7 @@
                     <li><a href="/settings"><i class="fa fa-circle-o"></i>General</a></li>
                     <li><a href="/promotions"><i class="fa fa-circle-o"></i>Promotion</a></li>
                     <li><a href="/lucky"><i class="fa fa-circle-o"></i>Lucky Draw</a></li>
+                    <li><a href="/points"><i class="fa fa-circle-o"></i>Points</a></li>
                 </ul>
             </li>
             <li class="header">LABELS</li>

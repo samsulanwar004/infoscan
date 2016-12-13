@@ -7,7 +7,7 @@
  * MIT Licensed
  */
 
-jQuery(function ($) {
+(function ($) {
 
     // Cached vars
     var _iCheck = 'iCheck',
