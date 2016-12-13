@@ -7,8 +7,8 @@ class CreateSnapFilesTable extends Migration
 {
     /**
      * Run the migrations.
-     * @table snap_files
      *
+     * @table snap_files
      * @return void
      */
     public function up()
@@ -23,9 +23,9 @@ class CreateSnapFilesTable extends Migration
             $table->timestamps();
 
             $table->foreign('snap_file_id', 'FK_snap_files_id_in_snap_tags')
-                ->references('id')->on('snap_files')
-                ->onDelete('no action')
-                ->onUpdate('no action');
+                  ->references('id')->on('snap_files')
+                  ->onDelete('no action')
+                  ->onUpdate('no action');
         });
     }
 
@@ -34,8 +34,8 @@ class CreateSnapFilesTable extends Migration
      *
      * @return void
      */
-     public function down()
-     {
-       Schema::dropIfExists('snap_tags');
-     }
+    public function down()
+    {
+        Schema::dropIfExists('snap_tags');
+    }
 }

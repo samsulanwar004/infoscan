@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Task;
 use DB;
 
 class PointService
@@ -42,5 +43,21 @@ inner join level_points as l on l.id = tlp.level_id;');
         cache()->forget(self::CACHE_NAME);
 
         return;
+    }
+
+    public function addLevel($name)
+    {
+        $level = new TaskLevelPoint;
+        $level->name = $name;
+
+        return $level->save();
+    }
+
+    public function addTask($name)
+    {
+        $task = new Task;
+        $task->name = $name;
+
+        return $task->save();
     }
 }
