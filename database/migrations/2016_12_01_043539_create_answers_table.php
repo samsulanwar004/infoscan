@@ -13,11 +13,11 @@ class CreateAnswersTable extends Migration
      */
     public function up()
     {
-        Schema::create('answers', function (Blueprint $table) {
+        Schema::create('questionnaire_answers', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('question_id')->unsigned();
-            $table->text('description');
-            $table->foreign('question_id')->references('id')->on('questions');
+            $table->string('description');
+            $table->foreign('question_id')->references('id')->on('questionnaire_questions');
         });
     }
 

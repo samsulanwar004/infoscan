@@ -15,10 +15,11 @@ class CreateQuestionnaireTemplatesTable extends Migration
     {
         Schema::create('questionnaire_templates', function (Blueprint $table) {
             $table->increments('id');
-            $table->text('questionnaire_template_code')->unique();
-            $table->dateTime('start_at');
-            $table->dateTime('end_at');
-            $table->text('created_by', 150);
+            $table->string('questionnaire_template_code', 5)->unique();
+            $table->string('description')->nullable();
+            $table->dateTime('start_at')->nullable();
+            $table->dateTime('end_at')->nullable();
+            $table->string('created_by', 150);
             $table->integer('total_point');
             $table->timestamps();
             $table->softDeletes();

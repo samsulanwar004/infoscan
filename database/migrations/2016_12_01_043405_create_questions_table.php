@@ -13,10 +13,10 @@ class CreateQuestionsTable extends Migration
      */
     public function up()
     {
-        Schema::create('questions', function (Blueprint $table) {
+        Schema::create('questionnaire_questions', function (Blueprint $table) {
             $table->increments('id');
-            $table->text('questionnaire_code', 5)->unique();
-            $table->text('description')->nullable();
+            $table->string('questionnaire_code', 5)->unique();
+            $table->string('description')->nullable();
             $table->enum('type', ['single', 'multiple']);
             $table->timestamps();
             $table->softDeletes();
