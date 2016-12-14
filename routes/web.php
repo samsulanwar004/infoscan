@@ -63,8 +63,9 @@ Route::group([
     Route::resource(
         '/points',
         'Web\PointController',
-        ['except' => ['show'], 'names' => route_resource_name($routePrefix, 'lucky')]
+        ['except' => ['show'], 'names' => route_resource_name($routePrefix, 'points')]
     );
+
 });
 
 Auth::routes();

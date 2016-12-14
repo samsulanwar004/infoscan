@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Web;
 use Illuminate\Http\Request;
 use App\Services\PromotionService;
 use App\Services\MerchantService;
+use App\Services\TransactionService;
 
 
 class PromotionController extends AdminController
@@ -20,10 +21,11 @@ class PromotionController extends AdminController
      */
     public function index()
     { 
+        $promotion = new PromotionService;
         if (empty($mi = (new MerchantService)->getMerchantIdByAuth())){
-            $promos = (new PromotionService)->getAllPromotion();
+            $promos = $promotion->getAllPromotion();
         } else {
-            $promos = (new PromotionService)->getPromotionByMerchantId($mi);
+            $promos = $promotion->getPromotionByMerchantId($mi);
         }
         return view('promotions.index', compact('promos'));
     }

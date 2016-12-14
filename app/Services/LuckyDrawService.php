@@ -4,10 +4,24 @@ namespace App\Services;
 
 use Illuminate\Http\Request;
 use App\LuckyDraw;
+use Carbon\Carbon;
+use Cache;
+use App\Transformers\LuckyDrawTransformer;
 use Auth;
 
 class LuckyDrawService
 {
+
+	/**
+     * @var string
+     */
+	protected $date;
+
+	public function __construct()
+	{
+		$this->date = Carbon::now('Asia/Jakarta');
+	}
+
 	/**
      * @param $request
      * @return bool
@@ -106,5 +120,29 @@ class LuckyDrawService
 	public function getLuckyDrawById($id)
 	{
 		return LuckyDraw::where('id', '=', $id)->first();
+	}
+
+	/**
+     * @return mixed
+     */
+	public function getApiAllLuckyDraw()
+	{
+		if (Cache::has('lucky')) {
+			return Cache::get('lucky');
+		} else {
+
+			$l = LuckyDraw::where('start_at', '<=', $this->date)
+				->where('end_at', '>=', $this->date)
+				->get();
+
+			$transform = fractal()
+				->collection($l)
+				->transformWith(new LuckyDrawTransformer)
+				->toArray();
+			// save in lucky cache	
+			Cache::put('lucky', $transform, $this->date->addMinutes(10));
+
+			return $transform;
+		}
 	}
 }
