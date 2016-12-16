@@ -84,7 +84,8 @@
                                     </div>
                                     <div class="checkbox">
                                         <label>
-                                            <input name="user[is_active][]" {{ (bool)$mu->user->is_active ? 'checked' : '' }} type="checkbox">
+                                            <input onclick='handleCheck(this, {{$mu->user->id}});' {{ (bool)$mu->user->is_active ? 'checked' : '' }} type="checkbox">
+                                            <input type="hidden" name="user[is_active][]" id="cbx{{$mu->user->id}}" {{ (bool)$mu->user->is_active ? 'value=1' : '' }}>
                                             Is Active ?
                                         </label>
                                     </div>
@@ -180,6 +181,15 @@
     function myLoading() {
         $('#loading').addClass('overlay');
         document.getElementById("loading").innerHTML = '<i class="fa fa-spinner fa-spin" style="font-size:50px; position: fixed;"></i>';
+    }
+
+    function handleCheck(cb, id) {
+        if (cb.checked == false)
+        {
+            $("#cbx"+id).val("0");
+        } else {
+            $("#cbx"+id).val("1");
+        }
     }
 </script>
 @endsection
