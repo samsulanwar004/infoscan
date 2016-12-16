@@ -3,13 +3,18 @@
 
 namespace App\Http\Controllers\Web;
 
+use App\Services\PointService;
 use Illuminate\Http\Request;
 
 class PointController extends AdminController
 {
-    public function index()
+    public function index(Request $request)
     {
+        if($request->wantsJson()) {
+            return (new PointService)->getPivotGrid();
+        }
 
+        return view('points.index');
     }
 
     public function show($id)

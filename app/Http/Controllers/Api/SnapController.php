@@ -17,6 +17,12 @@ class SnapController extends BaseApiController
         'handWritten',
     ];
 
+    /**
+     * Process the snap data.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Response
+     */
     public function store(Request $request)
     {
         try {
@@ -38,6 +44,12 @@ class SnapController extends BaseApiController
         }
     }
 
+    /**
+     * Validate the user request input data.
+     *
+     * @param  Request $request
+     * @return \Illuminate\Validation\Validator
+     */
     private function validRequest(Request $request)
     {
         $snapType = strtolower($request->input('snap_type'));
