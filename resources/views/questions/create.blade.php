@@ -2,10 +2,10 @@
 
 @section('content')
     @include('partials.content_header', [
-        'pageTitle' => 'Socio Economic Status',
-        'pageDescription' => 'Create a new SES',
+        'pageTitle' => 'Questionnaire Questions',
+        'pageDescription' => 'Create a new question',
         'breadcrumbs' => [
-            'SES' => admin_route_url('ses.index'),
+            'Question' => admin_route_url('questions.index'),
             'Create' => false]
         ]
     )
@@ -20,38 +20,42 @@
                 </h3>
 
                 <div class="box-tools pull-right">
-                    <a href="{{ admin_route_url('ses.index') }}" class="btn btn-box-tool" data-toggle="tooltip"
-                       title="Back"> <i
-                                class="fa fa-times"></i></a>
+                    <a href="{{ admin_route_url('questions.index') }}" class="btn btn-box-tool" data-toggle="tooltip"
+                       title="Back"> <i class="fa fa-times"></i></a>
                 </div>
             </div>
             <div class="box-body">
-                <form role="form" action="{{ admin_route_url('ses.store') }}" method="POST"
-                      enctype="multipart/form-data" class="form" accept-charset="utf-8">
+                <form role="form" action="{{ admin_route_url('questions.store') }}" method="POST" class="form">
                     {{ csrf_field() }}
                     <div class="box-body" id="form-body">
-                        <div class="form-group has-feedback ">
-                            <label for="code">Code</label>
-                            <input type="text" class="form-control" name="code" id="code"
-                                   placeholder="Enter code" value="{{ old('code') }}" required>
+                        <div class="form-group">
+                            <label for="description">Description</label>
+                            <input type="text" name="description" class="form-control" placeholder="Enter description" value="{{ old('description') }}" autofocus>
                         </div>
-                        <div class="form-group has-feedback">
-                            <label for="range_start">Start Range</label>
-                            <input type="number" class="form-control" name="range_start" id="range_start"
-                                   value="{{ old('range_start') }}"
-                                   placeholder="Enter start range" required>
+                        <div class="form-group">
+                            <label>Type</label>
+                            <label><input type="radio" name="type" value="single"> Single</label>
+                            <label><input type="radio" name="type" value="multiple"> Multiple</label>
                         </div>
-                        <div class="form-group has-feedback">
-                            <label for="range_end">End range:</label>
-                            <input type="number" class="form-control" name="range_end" id="range_end"
-                                   value="{{ old('range_end') }}"
-                                   placeholder="Enter end range" required>
+                        <div id="answers">
+                            <div class="text-right">
+                                <button class="btn btn-flat" id="addanswer">
+                                    <i class="fa fa-plus-circle"></i> Answer
+                                </button>
+                            </div>
+                            <div class="form-group answer">
+                                <label for="answer">Answer</label>
+                                <button class="btn btn-box-tool removeanswer">
+                                    <i class="fa fa-remove"></i>
+                                </button>
+                                <input type="text" class="form-control" name="answer[]" value="{{ old('answer') }}">
+                            </div>
                         </div>
                     </div>
                     <!-- /.box-body -->
                     <div class="box-footer text-right">
                         <button type="submit" class="btn btn-primary" id="submit">
-                            <i class="fa fa-save fa-btn"></i> Save SES
+                            <i class="fa fa-save fa-btn"></i> Save Question
                         </button>
                     </div>
                 </form>
@@ -65,5 +69,43 @@
 @endsection
 
 @section('footer_scripts')
+    <script>
+
+        var answercounter = 2;
+
+        $(document).ready(function () {
+
+            updateAnswerCounter(true);
+
+            $(document).on('click', 'button#addanswer', function (e) {
+                e.preventDefault();
+                $('div.answer').last().clone().appendTo('div#answers');
+                $('div.answer').last().find('input[type=text]').val('');
+                updateAnswerCounter(false);
+            });
+
+            $(document).on('click', 'button.removeanswer', function (e) {
+                e.preventDefault();
+                if (confirm('Are you sure want to delete answer?')) {
+                    $(this).closest('.answer').remove();
+                    updateAnswerCounter(true);
+                }
+            });
+        });
+
+        function updateAnswerCounter(isRemove) {
+            if (isRemove) {
+                answercounter = answercounter - 1;
+            } else {
+                answercounter = answercounter + 1;
+            }
+
+            if (answercounter > 1) {
+                $("button.removeanswer").prop("disabled", false);
+            } else {
+                $("button.removeanswer").prop("disabled", true);
+            }
+        }
+    </script>
 
 @endsection

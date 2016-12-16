@@ -33,88 +33,52 @@
                     <div class="box-body" id="form-body">
                         <div class="form-group has-feedback ">
                             <label for="descripton">Description</label>
-                            <input type="text" class="form-control" name="descripton" id="descripton"
-                                   placeholder="Enter descripton" value="{{ old('descripton') }}" required>
+                            <input type="text" class="form-control" name="description" id="description"
+                                   placeholder="Enter description" value="{{ old('description') }}" required>
                         </div>
                         <div class="form-group has-feedback">
                             <label for="period">Period</label>
                             <input class="form-control" type="text" name="period" id="datepicker"
-                                   value="{{ date("Y/m/d H:i:s") }} - {{ date("Y/m/d H:i:s") }}"/>
+                                   value="{{ old('period') }}"/>
                         </div>
 
                         <div class="form-group has-feedback">
                             <label for="total_point">Point</label>
                             <input type="number" class="form-control" name="total_point" id="total_point"
-                                   value="{{ old('total_point') }}"
-                                   placeholder="Enter point" required>
+                                   value="{{ old('total_point') }}" placeholder="Enter point" required>
                         </div>
                         <br>
                         <div id="questions">
                             <h2>Questions</h2>
                             <hr>
                             <div class="question">
-                                <div class="text-right">
-                                    <button class="btn btn-box-tool" class="removequestion">
-                                        <i class="fa fa-remove"></i>
-                                    </button>
-                                </div>
-                                <div class="exist">
-                                    <label><input type="radio" name="quest" value="new" id="newquestion"> New Question
-                                    </label> &nbsp;&nbsp;&nbsp;&nbsp;
-                                    <label><input type="radio" name="quest" value="existing" id="existingquestion">
-                                        Existing Question
-                                    </label>
-                                </div>
-                                <div class="new">
-                                    <div class="form-group">
-                                        <label for="descripton">Description</label>
-                                        <input class="form-control" type="text" name="question[description][]"
-                                               placeholder="Enter question description">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="type">Type</label>
-                                        <div class="radio">
-                                            <label><input type="radio" name="question[type][]" value="single"> Single
-                                            </label>
-                                        </div>
-                                        <div class="radio">
-                                            <label><input type="radio" name="question[type][]" value="multiple">
-                                                Multiple
-                                            </label></div>
-                                    </div>
-                                    <div id="answers">
-                                        <div class="text-right">
-                                            <button class="btn btn-flat" id="addanswer">
-                                                <i class="fa fa-plus-circle"></i> Answer
-                                            </button>
-                                        </div>
-                                        <div class="answer form-group">
-                                            <label for="answer">Answer</label>
-                                            <button class="btn btn-box-tool" class="removeanswer">
-                                                <i class="fa fa-remove"></i>
-                                            </button>
-                                            <input type="text" class="form-control" name="question[answer][]">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="existing">
-                                    <select name="question">
-                                        <option value="A">AAA</option>
-                                        <option value="B">BBB</option>
-                                        <option value="C">CCC</option>
-                                        <option value="D">DDD</option>
-                                        <option value="E">EEE</option>
+                                @if(count($questions) > 0)
+                                    <h4 class="questiontitle">Question 1</h4>
+                                    <select name="question[]" class="form-control">
+                                        @foreach($questions as $question)
+                                            <option value="{{ $question->id }}">{{ $question->description }}</option>
+                                        @endforeach
                                     </select>
-                                </div>
+                                    <div class="show"></div>
+                                @else
+                                    <p>No questions data, please <a href="{{ url('questions/create') }}">create
+                                            questions</a> first</p>
+                                @endif
+                                <hr>
                             </div>
-                            <hr>
                         </div>
                     </div>
                     <!-- /.box-body -->
+
                     <div class="box-footer text-right">
-                        <button class="btn btn-primary" id="addquestion">
-                            <i class="fa fa-plus fa-btn"></i>Add Question
-                        </button>
+                        <div class="pull-left">
+                            <button class="btn btn-primary" id="addquestion">
+                                <i class="fa fa-plus fa-btn"></i>Add Question
+                            </button>
+                            <button class="btn btn-danger" id="removequestion">
+                                <i class="fa fa-minus fa-btn"></i>Remove Last Question
+                            </button>
+                        </div>
                         <button type="submit" class="btn btn-primary" id="submit">
                             <i class="fa fa-save fa-btn"></i> Save
                         </button>
@@ -131,23 +95,8 @@
     <script type="text/javascript">
 
         var questioncounter = 2;
-        var answercounter = 2;
 
         $(document).ready(function () {
-            $("div.new").hide();
-            $("div.existing").hide();
-
-            $(".exist").on('change', function (e) {
-                e.preventDefault();
-                if ($("#newquestion").is(":checked")) {
-                    $("div.new").show();
-                    $("div.existing").hide();
-                } else if ($("#existingquestion").is(":checked")) {
-                    $("div.existing").show();
-                    $("div.new").hide();
-                }
-            });
-
             $(document).on('focus', 'input#datepicker', function (e) {
                 e.preventDefault();
                 console.log('datepicker');
@@ -161,37 +110,23 @@
             });
 
             updateQuestionCounter(true);
-            updateAnswerCounter(true);
 
             $(document).on('click', 'button#addquestion', function (e) {
                 e.preventDefault();
+                var counter = questioncounter + 1;
                 $('div.question').last().clone().appendTo('div#questions');
+                $('div.question h4').last().replaceWith('<h4 class="questiontitle">Question ' + counter + '</h4>');
                 updateQuestionCounter(false);
                 window.location.href = '#latest';
             });
 
-            $(document).on('click', 'button.removequestion', function (e) {
+            $(document).on('click', 'button#removequestion', function (e) {
                 e.preventDefault();
                 if (confirm('Are you sure want to delete question?')) {
-                    $(e.target).closest('.question').remove();
+                    $('div.question').last().remove();
                     updateQuestionCounter(true);
                 }
             });
-
-            $(document).on('click', 'button#addanswer', function (e) {
-                e.preventDefault();
-                $('div.answer').last().clone().appendTo('div#answers');
-                $('div.answer').last().find('input[type=text]').val('');
-                updateAnswerCounter(false);
-            });
-
-            $(document).on('click', 'button.removeanswer', function (e) {
-                e.preventDefault();
-                if (confirm('Are you sure want to delete answer?')) {
-                    $(e.target).closest('.answer').remove();
-                    updateAnswerCounter(true);
-                }
-            })
         });
 
         function updateQuestionCounter(isRemove) {
@@ -202,24 +137,11 @@
             }
 
             if (questioncounter > 1) {
-                $("button.removequestion").prop("disabled", false);
+                $("button#removequestion").prop("disabled", false);
             } else {
-                $("button.removequestion").prop("disabled", true);
+                $("button#removequestion").prop("disabled", true);
             }
         }
 
-        function updateAnswerCounter(isRemove) {
-            if (isRemove) {
-                answercounter = answercounter - 1;
-            } else {
-                answercounter = answercounter + 1;
-            }
-
-            if (questioncounter > 2) {
-                $("button.removeanswer").prop("disabled", false);
-            } else {
-                $("button.removeanswer").prop("disabled", true);
-            }
-        }
     </script>
 @endsection

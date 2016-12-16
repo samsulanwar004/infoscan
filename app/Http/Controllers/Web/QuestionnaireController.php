@@ -4,9 +4,10 @@ namespace App\Http\Controllers\Web;
 
 use App\QuestionnaireQuestion;
 use App\QuestionnaireTemplate;
-use App\QuestionnaireTemplateQuestions;
 use App\QuestionnaireAnswer;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use League\Flysystem\Exception;
 
 class QuestionnaireController extends AdminController
 {
@@ -14,144 +15,82 @@ class QuestionnaireController extends AdminController
 
     public function index()
     {
-        $questionnaire = QuestionnaireTemplate::paginate(50);
+        $questionnaire = QuestionnaireTemplate::all();
         return view('questionnaire.index', compact('questionnaire'));
     }
 
     public function create()
     {
-        return view('questionnaire.create');
+        $questions = QuestionnaireQuestion::all();
+        return view('questionnaire.create', compact('questions'));
     }
 
     public function edit($id)
     {
         $questionnaire = $this->getQuestionnaireTemplateById($id);
-        $template_question = QuestionnaireTemplateQuestions::with('question')->where('template_id', $id)->get();
-        return view('questionnaire.edit', compact('questionnaire', 'template_question'));
+        $questions = QuestionnaireQuestion::all();
+        return view('questionnaire.edit', compact('questionnaire', 'questions'));
     }
 
     public function store(Request $request)
     {
-        $request->session()->flash('countExistingQuestion', $this->countExistingQuestion($request));
+        $period = explode(' - ', $request->input('period'));
         $this->validate($request, [
-            'start_at' => '',
-            'end_at' => '',
-            'created_by' => '',
-            'total_point' => '',
-            'description' => '',
-            'question.description.*' => '',
-            'question.type.*' => '',
-            'question.*.answer.*' => ''
+            'period' => 'required',
+            'total_point' => 'required',
+            'description' => 'required',
+            'question.*' => 'required'
         ]);
 
-        try {
-            \DB::beginTransaction();
-            $template = $this->createNewTemplate($request);
-            $question = $this->createNewQuestion($request);
-            $answer = $this->createNewAnswer($request);
-            $this->persistData($template, $question);
-            \DB::commit();
-        } catch (\Exception $e) {
-            \DB::rollBack();
-            logger($e);
-            return back()->with('errors', $e->getMessage());
-        }
+        $input = $request->all();
+        $input['questionnaire_template_code'] = strtolower(str_random(5));
+        $input['start_at'] = $period[0];
+        $input['end_at'] = $period[1];
+        $input['created_by'] = auth()->user()->name;
+        $questionnaire = QuestionnaireTemplate::create($input);
+        $questionnaire->questions()->attach($request->input('question'));
 
         return redirect($this->redirectAfterSave)->with('success', 'Questionnaire successfully saved!');
     }
 
     public function update(Request $request, $id)
     {
+        try {
+            $questionnaire = QuestionnaireTemplate::where('id', $id)->first();
+            $input = $request->all();
+            $period = explode(' - ', $request->input('period'));
+            $input['start_at'] = $period[0];
+            $input['end_at'] = $period[1];
+            if (!is_null($request->input('question'))) {
+                $questionnaire->questions()->sync($request->input('question'));
+            }
+            $questionnaire->fill($input)->save();
+        } catch (Exception $e) {
+            return back()->with('errors', $e->getMessage());
+        }
+        return redirect()->action('Web\QuestionnaireController@index')->with('success',
+            'Questionnaire successfully updated');
     }
 
     public function show($id)
     {
+
     }
 
     public function destroy($id)
     {
-    }
-
-    private function createNewQuestion($request)
-    {
-    }
-
-    private function createNewAnswer($request, $question_id)
-    {
-    }
-
-    private function createNewTemplate($request, $id = null)
-    {
-        $code = strtolower(str_random(5));
-
-
-        $memberCode = strtolower(str_random(10));
-
-        $m = is_null($id) ? new Merchant : $this->getMerchantById($id);
-        $m->merchant_code = $memberCode;
-        $m->company_name = $request->input('company_name');
-        $m->address = $request->input('address');
-        $m->company_email = $request->input('company_email');
-
-        if ($request->hasFile('company_logo')) {
-            $file = $request->file('company_logo');
-            $filename = sprintf(
-                "%s-%s.%s",
-                $memberCode,
-                date('Ymdhis')
-            );
-
-            $m->company_logo = $filename;
+        try {
+            QuestionnaireTemplate::where('id', $id)->delete();
+            \DB::table('questionnaire_templates_questions')->where('template_id',
+                $id)->update(array('deleted_at' => \DB::raw('NOW()')));
+        } catch (Exception $e) {
+            return back()->with('errors', $e->getMessage());
         }
-
-        $m->save();
-
-        return $m;
-    }
-
-    private function persistData($template, $question)
-    {
-        foreach ($question as $item) {
-            $tq = new \App\QuestionnaireTemplateQuestions();
-            $tq->template()->associate($template);
-            $tq->question()->associate($question);
-            $tq->save();
-        }
-
-        return true;
-    }
-
-    private function countExistingQuestion($request)
-    {
-        $count = count($request->input('question')['description']);
-        return 0 === $count ? 0 : $count - 1;
-    }
-
-    private function countNewQuestion($request)
-    {
-        $count = count($request->input('newquestion')['description']);
-        return 0 === $count ? 0 : $count - 1;
+        return redirect()->action('Web\QuestionnaireController@index')->with('success', 'Data deleted');
     }
 
     private function getQuestionnaireTemplateById($id)
     {
         return QuestionnaireTemplate::where('id', $id)->first();
-    }
-
-    private function getQuestionById($id)
-    {
-        return QuestionnaireQuestion::where('id', $id)->first();
-    }
-
-    private function getAnswerById($id)
-    {
-        return QuestionnaireAnswer::where('id', $id)->first();
-    }
-
-    private function getQuestionAnswer($id)
-    {
-//        $question = QuestionnaireQuestion::where('id', $id)->first();
-        $answer = QuestionnaireAnswer::where('question_id', $id)->get();
-        return compact('question', 'answer');
     }
 }

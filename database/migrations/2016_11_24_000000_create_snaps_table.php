@@ -17,7 +17,7 @@ class CreateSnapsTable extends Migration
         Schema::create('snaps', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->increments('id');
-            $table->string('request_code', 10);
+            $table->string('request_code', 10)->unique();
             $table->integer('member_id')->unsigned();
             $table->string('snap_type', 15);
             $table->string('mode_type', 10)->nullable();

@@ -14,16 +14,16 @@ class QuestionnaireQuestion extends Model
     protected $fillable = [
         'description',
         'type',
-        'questionnaire_code'
+        'questionnaire_question_code'
     ];
 
     public function answer()
     {
-        return $this->hasMany(QuestionnaireAnswer::class, 'questionnaire_template_questions', 'template_id');
+        return $this->hasMany(QuestionnaireAnswer::class, 'question_id');
     }
 
     public function template()
     {
-        return $this->belongsToMany(QuestionnaireTemplateQuestions::class, 'questionnaire_template_questions', 'question_id', 'template_id');
+        return $this->belongsToMany(QuestionnaireTemplate::class, 'questionnaire_templates_questions', 'question_id', 'template_id');
     }
 }

@@ -1,7 +1,7 @@
 @extends('app')
 
 @section('content')
-    @include('partials.content_header', ['pageTitle' => 'Promotion', 'pageDescription' => 'List of promo', 'breadcrumbs' => ['Promotions' => false]])
+    @include('partials.content_header', ['pageTitle' => 'Lucky Draw', 'pageDescription' => 'List of lucky draws', 'breadcrumbs' => ['Lucky draws' => false]])
 
     <!-- Main content -->
     <section class="content">
@@ -13,8 +13,8 @@
                 </h3>
 
                 <div class="box-tools pull-right">
-                    @cando('Promotion.Create')
-                    <a href="{{ route('promotions.create') }}" class="btn btn-box-tool" data-toggle="tooltip"
+                    @cando('Lucky.Create')
+                    <a href="{{ route('lucky.create') }}" class="btn btn-box-tool" data-toggle="tooltip"
                        title="Create New">
                         <i class="fa fa-plus-circle fa-btn"></i> Create New</a>
                     @endcando
@@ -24,47 +24,51 @@
                 <table class="table table-striped">
                     <thead>
                     <tr>
-                        <th width="50">#</th>
-                        <th width="300">Title of Promo</th>
+                        <th>Lucky Draw Code</th>
+                        <th>Title of Lucky Draw</th>
+                        <th>Point</th>
+                        <th>Multiple</th>
                         <th>Start Date</th>
                         <th>End Date</th>
                         <th width="250"></th>
                     </tr>
                     </thead>
                     <tbody>
-                    @forelse($promos as $promo)
+                    @forelse($luckys as $lucky)
                         <tr>
+                            <td class="vertical-middle">{{ $lucky->luckydraw_code }}</td>
                             <td class="vertical-middle">
-                                <i class="fa fa-check-circle {{ $promo->is_active == 1 ? 'text-green' : 'text-default' }}"></i>
+                                {{ $lucky->title }} <br>
                             </td>
+                            <td class="vertical-middle">{{ $lucky->point }}
                             <td class="vertical-middle">
-                                {{ $promo->title }} <br>
+                                <i class="fa fa-check-circle {{ $lucky->is_multiple == 1 ? 'text-green' : 'text-default' }}"></i>
                             </td>
-                            <td class="vertical-middle">{{ date_format(date_create($promo->start_at), 'M, d Y') }}</td>
-                            <td class="vertical-middle">{{ date_format(date_create($promo->end_at), 'M, d Y') }}</td>
+                            <td class="vertical-middle">{{ date_format(date_create($lucky->start_at), 'M, d Y') }}</td>
+                            <td class="vertical-middle">{{ date_format(date_create($lucky->end_at), 'M, d Y') }}</td>
                             <td class="text-right vertical-middle">
                                 <div class="btn-group">
-                                    @cando('Promotion.Update')
-                                    <a href="{{ route('promotions.edit', ['id' => $promo->id]) }}" class="btn btn-info">
+                                    @cando('Lucky.Update')
+                                    <a href="{{ route('lucky.edit', ['id' => $lucky->id]) }}" class="btn btn-info">
                                         <i class="fa fa-pencil"> </i>
                                     </a>
                                     @endcando
 
-                                    @cando('Promotion.Delete')
+                                    @cando('Lucky.Delete')
                                     <a class="btn btn-danger"
-                                       href="{{ route('promotions.destroy', ['id' => $promo->id]) }}"
+                                       href="{{ route('lucky.destroy', ['id' => $lucky->id]) }}"
                                        data-toggle="modal"
                                        data-target="#"
                                        title="Delete this data"
                                        for-delete="true"
-                                       data-message="Are you sure you want to delete this promotion ?"
+                                       data-message="Are you sure you want to delete this lucky draw ?"
                                     > <i class="fa fa-trash"></i> </a>
                                     @endcando
                                 </div>
                             </td>
                         </tr>
                     @empty
-                        <td colspan="5"> There is no record for promotions data!</td>
+                        <td colspan="5"> There is no record for lucky draws data!</td>
                     @endforelse
                     </tbody>
                 </table>

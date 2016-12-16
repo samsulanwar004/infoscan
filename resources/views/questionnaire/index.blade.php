@@ -53,8 +53,9 @@
                             </td>
                             <td class="text-right vertical-middle">
                                 <div class="btn-group">
-                                    <a href="{{ admin_route_url('questionnaire.show', ['id' => $item->id]) }}"
-                                       class="btn btn-default" data-toggle="modal"><i class="fa fa-search"></i> </a>
+                                    <button class="btn btn-default" data-toggle="modal"
+                                            data-target="#dataquestionnaire{{ $item->id }}"><i class="fa fa-search"></i>
+                                    </button>
                                     <a href="{{ admin_route_url('questionnaire.edit', ['id' => $item->id]) }}"
                                        class="btn btn-info">
                                         <i class="fa fa-pencil"> </i>
@@ -65,11 +66,47 @@
                                        data-target="#"
                                        title="Delete this data"
                                        for-delete="true"
-                                       data-message="Are you sure you want to delete this SES ?"
+                                       data-message="Are you sure you want to delete this questionnaire ?"
                                     > <i class="fa fa-trash"></i> </a>
                                 </div>
                             </td>
                         </tr>
+
+                        <!-- show details -->
+                        <div class="modal fade" id="dataquestionnaire{{ $item->id }}" tabindex="-1" role="dialog"
+                             aria-labelledby="dataquestionnairelabel">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close"
+                                                data-dismiss="modal"
+                                                aria-label="Close">
+                                            <span aria-hidden="true">&times;</span></button>
+                                        <h4 class="modal-title dataquestionnairelabel">{{ $item->description }}</h4>
+                                        <p>Period: {{ $item->start_at }} - {{ $item->end_at }}</p>
+                                    </div>
+                                    <div class="modal-body">
+                                        <ol>
+                                            @foreach($item->questions as $question)
+                                                <li>
+                                                    <h5>{{ $question->description }}</h5>
+                                                    <ul>
+                                                        @foreach($question->answer as $answer)
+                                                            <li>
+                                                                {{ $answer->description }}
+                                                            </li>
+                                                        @endforeach
+                                                    </ul>
+                                                </li>
+                                            @endforeach
+                                        </ol>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /show details -->
+
                     @empty
                         <td colspan="4"> There is no record for questionnaire data!</td>
                     @endforelse
@@ -78,7 +115,6 @@
             </div>
         </div>
         <!-- /.box -->
-
     </section>
     <!-- /.content -->
 @endsection

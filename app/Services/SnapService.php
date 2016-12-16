@@ -5,8 +5,10 @@ namespace App\Services;
 use App\Exceptions\Services\SnapServiceException;
 use App\Jobs\UploadToS3;
 use Dusterio\PlainSqs\Jobs\DispatcherJob;
+use DB;
 use Illuminate\Http\Request;
 use Storage;
+use Exception;
 
 class SnapService
 {
@@ -21,6 +23,8 @@ class SnapService
     const AUDIO_TYPE_NAME = 'audios';
 
     const TAG_TYPE_NAME = 'tags';
+
+    const INPUT_TYPE_NAME = 'input';
 
     const DEFAULT_FILE_DRIVER = 's3';
     /**
@@ -51,10 +55,15 @@ class SnapService
 
         // build data
         $data = [
+            'request_code' => $request->input('request_code'),
             'snap_type' => 'receipt',
             'snap_mode' => 'images',
             'snap_files' => $images,
         ];
+
+        if (! $this->presistData($request, $images)) {
+            throw new Exception('Error when saving data in database!');
+        }
 
         // send dispatcher
         $job = $this->getPlainDispatcher($data);
@@ -68,15 +77,96 @@ class SnapService
      */
     public function generalTradeHandler(Request $request)
     {
+        $images = $this->imagesProcess($request);
+        if (0 === count($images)) {
+            throw new SnapServiceException('There is no images was processed. Something wrong with the system!');
+        }
 
+        if($this->isTagsMode($request)) {
+            $mode = self::TAG_TYPE_NAME;
+
+            DB::beginTransaction();
+            try {
+                $snap = $this->createSnap($request);
+                $this->createFiles($request, $images, $snap);
+
+                DB::commit();
+            } catch (Exception $e) {
+                DB::rollback();
+            }
+
+            return [];
+        }
+
+        if($this->isAudioMode()) {
+            $mode = self::AUDIO_TYPE_NAME;
+
+
+        }
+
+        throw new Exception('Server Error');
     }
 
     /**
-     * @param \Illuminate\Http\Request $request
+     * Snap handler for handwritten with input & audio mode
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @return array|mixed
+     * @throws \App\Exceptions\Services\SnapServiceException
      */
     public function handWrittenHandler(Request $request)
     {
+        $images = $this->imagesProcess($request);
+        if (0 === count($images)) {
+            throw new SnapServiceException('There is no images was processed. Something wrong with the system!');
+        }
 
+        if ($this->isInputMode($request)) {
+            $mode = self::INPUT_TYPE_NAME;
+
+            // just save data into database and return
+            DB::beginTransaction();
+            try {
+                $snap = $this->createSnap($request);
+                $this->createFiles($request, $images, $snap);
+
+                DB::commit();
+            } catch (Exception $e) {
+                DB::rollback();
+                throw new SnapServiceException($e->getMessage());
+            }
+
+            return [];
+        }
+
+        if ($this->isAudioMode($request)) {
+            $mode = self::AUDIO_TYPE_NAME;
+            $audios = $this->audiosProcess($request);
+
+            if (empty($audios)) {
+                throw new SnapServiceException('There is no audios was processed. Something wrong with the system!');
+            }
+
+            // build data
+            $data = [
+                'request_code' => $request->input('request_code'),
+                'snap_type' => 'handwritten',
+                'snap_mode' => $mode,
+                'snap_files' => $audios,
+            ];
+
+            if (! $this->presistData($request, $images)) {
+                throw new SnapServiceException('Error when saving data in database!');
+            }
+
+            // send dispatcher
+            $job = $this->getPlainDispatcher($data);
+            dispatch($job);
+
+            return $data;
+        }
+
+        throw new SnapServiceException('Server Error');
     }
 
     /**
@@ -117,7 +207,7 @@ class SnapService
         $audioList = $this->filesUploads($files, self::AUDIO_TYPE_NAME);
 
         if (empty($audioList)) {
-            throw new SnapServiceException('There is no image to process!');
+            throw new SnapServiceException('There is no audio to process!');
         }
 
         return $audioList;
@@ -138,7 +228,7 @@ class SnapService
      * @param  string $type
      * @return array
      */
-    private function filesUploads(array $files, $type)
+    private function filesUploads(array $files, $type, $mimes = null)
     {
         $fileList = [];
         $i = 0;
@@ -161,11 +251,11 @@ class SnapService
                                     'ContentType' => $file->getMimeType(),
                                 ])
             ) {
-
+                $fileList[$i]['file_code'] = str_random(10);
                 $fileList[$i]['filename'] = $filename;
                 $fileList[$i]['file_link'] = $this->completeImageLink($filename);
                 $fileList[$i]['file_size'] = $file->getSize();
-                $fileList[$i]['file_mime'] = $file->getMimeType();
+                $fileList[$i]['file_mime'] = (null === $mimes) ? $file->getMimeType() : $mimes;
 
                 ++$i;
             }
@@ -203,13 +293,25 @@ class SnapService
     /**
      * @param \Illuminate\Http\Request $request
      * @param array $files
+     * @return bool
      */
     public function presistData(Request $request, array $files)
     {
-        $snap = $this->createSnap($request);
-        $this->createFiles($request, $files, $snap);
+        DB::beginTransaction();
+        try {
+            $snap = $this->createSnap($request);
+            $this->createFiles($request, $files, $snap);
+        } catch (\Exception $e) {
+            DB::rollback();
 
-        return;
+            logger($e);
+
+            return false;
+        }
+
+        DB::commit();
+
+        return true;
     }
 
     /**
@@ -218,7 +320,7 @@ class SnapService
      */
     private function createSnap(Request $request)
     {
-        $snap = new Snap;
+        $snap = new \App\Snap;
         $snap->request_code = $request->input('request_code');
         $snap->member_id = 1; // TODO: must get who is posting this data
         $snap->snap_type = $request->input('snap_type');
@@ -240,16 +342,18 @@ class SnapService
     private function createFiles($request, array $files, \App\Snap $snap)
     {
         if ($this->isMultidimensiArray($files)) {
-            foreach ($files as $file) {
-                $file = $this->persistFile($request, $file, $snap);
 
-                $this->createTag($request, $file);
+            foreach ($files as $file) {
+                $snapFile = $this->persistFile($request, $file, $snap);
+
+                $this->createTag($request, $snapFile);
             }
 
             return true;
         }
 
-        $this->persistFile($request, $files, $snap);
+        $file = $this->persistFile($request, $files, $snap);
+        $this->createTag($request, $file);
 
         return true;
     }
@@ -265,8 +369,9 @@ class SnapService
     private function persistFile(Request $request, array $data, $snap)
     {
         $f = new \App\SnapFile();
-        $f->file_path = $data['file_name'];
-        $f->file_mimes = $data['file_mimes'];
+        $f->file_path = $data['filename'];
+        $f->file_code = $data['file_code'];
+        $f->file_mimes = $data['file_mime'];
         $f->file_dimension = null;
         if ($this->hasMode($request)) {
             $f->mode_type = $request->input('mode_type');
@@ -285,7 +390,7 @@ class SnapService
      */
     private function createTag(Request $request, \App\SnapFile $file)
     {
-        if (!$this->hasMode($request) || !$this->isTagsMode($request)) {
+        if (!$this->hasMode($request) && (!$this->isTagsMode($request) || !$this->isInputMode($request))) {
             return [];
         }
 
@@ -329,6 +434,19 @@ class SnapService
      * @param \Illuminate\Http\Request $request
      * @return bool
      */
+    private function isInputMode(Request $request)
+    {
+        if ($this->hasMode($request)) {
+            return strtolower(self::INPUT_TYPE_NAME) === strtolower($request->input('mode_type')) ? true : false;
+        }
+
+        return false;
+    }
+
+    /**
+     * @param \Illuminate\Http\Request $request
+     * @return bool
+     */
     private function isAudioMode(Request $request)
     {
         if ($this->hasMode($request)) {
@@ -348,7 +466,6 @@ class SnapService
         if ('generaltrade' === strtolower($request->snap_type) ||
             'handwritten' === strtolower($request->snap_type)
         ) {
-
             return true;
         }
 

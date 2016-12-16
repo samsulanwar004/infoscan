@@ -12,6 +12,7 @@ class QuestionnaireTemplate extends Model
     protected $table = 'questionnaire_templates';
     protected $fillable = [
         'questionnaire_template_code',
+        'description',
         'start_at',
         'end_at',
         'created_by',
@@ -21,6 +22,7 @@ class QuestionnaireTemplate extends Model
 
     public function questions()
     {
-        return $this->belongsToMany(QuestionnaireTemplateQuestions::class, 'questionnaire_template_questions', 'template_id', 'question_id');
+        return $this->belongsToMany(QuestionnaireQuestion::class, 'questionnaire_templates_questions', 'template_id',
+            'question_id');
     }
 }
