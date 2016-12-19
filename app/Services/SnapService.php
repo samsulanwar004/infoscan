@@ -4,11 +4,12 @@ namespace App\Services;
 
 use App\Exceptions\Services\SnapServiceException;
 use App\Jobs\UploadToS3;
-use Dusterio\PlainSqs\Jobs\DispatcherJob;
+use App\Snap;
 use DB;
+use Dusterio\PlainSqs\Jobs\DispatcherJob;
+use Exception;
 use Illuminate\Http\Request;
 use Storage;
-use Exception;
 
 class SnapService
 {
@@ -39,6 +40,21 @@ class SnapService
     public function __construct()
     {
         $this->s3Url = env('S3_URL', '');
+    }
+
+    public function getAvailableSnaps($code = null)
+    {
+        $snap = new Snap;
+        if ($code) {
+            return $snap->where('transaction_code', $code)->first();
+        }
+
+        return $snap->paginate();
+    }
+
+    public function getSnapByid($id)
+    {
+        return Snap::with(['files'])->where('id', $id)->first();
     }
 
     /**

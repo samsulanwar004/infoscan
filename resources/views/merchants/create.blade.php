@@ -81,7 +81,7 @@
                     <!-- /.box-body -->
                     <div class="box-footer text-right">
                         <button class="btn btn-primary" id="add">
-                            <i class="fa fa-plus fa-btn"></i>Add User                        
+                            <i class="fa fa-plus fa-btn"></i>Add User
                         </button>
                         <button type="submit" class="btn btn-primary" id="submit">
                             <i class="fa fa-save fa-btn"></i> Save Merchant
@@ -89,7 +89,8 @@
                     </div>
                 </form>
             </div>
-                <div id="loading"></div>
+
+            <div id="loading"></div>
         </div>
         <!-- /.box -->
 
