@@ -82,6 +82,16 @@ Route::group([
         'Web\MemberController',
         ['names' => route_resource_name($routePrefix, 'members')]
     );
+
+    Route::get(
+        '/history/transactions',
+        'Web\HistoryController@transactions'
+    )->name('transaction.index');
+
+    Route::get(
+        'history/{id}/transactions',
+        'Web\HistoryController@showTransaction'
+    )->name('transaction.show');
 });
 
 Auth::routes();
