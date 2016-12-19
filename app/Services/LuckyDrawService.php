@@ -153,9 +153,12 @@ class LuckyDrawService
 		$member_code = '123'; //dummy
 		$point = (new TransactionService)->getCreditMember($member_code);
 
-		if ($point < $request->input('point') || $request->input('point') == 0)
+		if ($point < $request->input('point'))
 		{
 			$message = "Point not enough";
+			return $message;
+		} else if ($request->input('point') == 0) {
+			$message = "Request point is not 0";
 			return $message;
 		}
 
