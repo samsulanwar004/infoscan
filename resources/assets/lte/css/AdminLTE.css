@@ -5960,3 +5960,7 @@ td.vertical-middle {
 .modal-body {
     overflow: hidden !important;
 }
+
+.ml10 {
+    margin-left: 10px;
+}

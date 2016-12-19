@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Http\Controllers\Web;
 
 use App\Services\PointService;
@@ -10,7 +9,7 @@ class PointController extends AdminController
 {
     public function index(Request $request)
     {
-        if($request->wantsJson()) {
+        if ($request->wantsJson()) {
             return (new PointService)->getPivotGrid();
         }
 
@@ -24,7 +23,9 @@ class PointController extends AdminController
 
     public function create()
     {
+        $categories = $this->getSnapCategory();
 
+        return view('points.edit', compact($categories));
     }
 
     public function store(Request $request)
@@ -45,5 +46,14 @@ class PointController extends AdminController
     public function destroy($id)
     {
 
+    }
+
+    protected function getSnapCategory($key = null)
+    {
+        if($key) {
+            return config("common.snap_category.$key");
+        }
+
+        return config('common.snap_category');
     }
 }

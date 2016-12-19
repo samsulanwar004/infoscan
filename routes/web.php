@@ -8,9 +8,9 @@ Route::group([
 
     // dashboard
     Route::get('/', 'Web\AdminController@dashboard')
-         ->name($routePrefix == null ? 'dashboard' : '.dashboard');
+        ->name($routePrefix == null ? 'dashboard' : '.dashboard');
     Route::post('/transfer', 'Web\AssetController@transferImages')
-         ->name($routePrefix == null ? 'transfer' : '.transfer');
+        ->name($routePrefix == null ? 'transfer' : '.transfer');
 
     Route::resource(
         '/users',
@@ -66,6 +66,32 @@ Route::group([
         ['except' => ['show'], 'names' => route_resource_name($routePrefix, 'points')]
     );
 
+    Route::resource('/questionnaire', 'Web\QuestionnaireController',
+        ['except' => ['show'], 'names' => route_resource_name($routePrefix, 'questionnaire')]);
+    Route::resource('/questions', 'Web\QuestionController',
+        ['except' => ['show'], 'names' => route_resource_name($routePrefix, 'questions')]);
+
+    Route::resource(
+        '/snaps',
+        'Web\SnapController',
+        ['names' => route_resource_name($routePrefix, 'snaps')]
+    );
+
+    Route::resource(
+        '/members',
+        'Web\MemberController',
+        ['names' => route_resource_name($routePrefix, 'members')]
+    );
+
+    Route::get(
+        '/history/transactions',
+        'Web\HistoryController@transactions'
+    )->name('transaction.index');
+
+    Route::get(
+        'history/{id}/transactions',
+        'Web\HistoryController@showTransaction'
+    )->name('transaction.show');
 });
 
 Auth::routes();

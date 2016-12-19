@@ -68,6 +68,19 @@
 
             <li class="treeview">
                 <a href="#">
+                    <i class="fa fa-sticky-note"></i> <span>Questionnaire</span>
+                    <span class="pull-right-container">
+                      <i class="fa fa-angle-left pull-right"></i>
+                    </span>
+                </a>
+                <ul class="treeview-menu">
+                    <li><a href="/questionnaire"><i class="fa fa-circle-o"></i>Questionnaire</a></li>
+                    <li><a href="/questions"><i class="fa fa-circle-o"></i>Questions</a></li>
+                </ul>
+            </li>
+
+            <li class="treeview">
+                <a href="#">
                     <i class="fa fa-cogs"></i> <span>Settings</span>
                     <span class="pull-right-container">
                       <i class="fa fa-angle-left pull-right"></i>
@@ -80,10 +93,24 @@
                     <li><a href="/points"><i class="fa fa-circle-o"></i>Points</a></li>
                 </ul>
             </li>
+
+            <li class="treeview">
+                <a href="#">
+                    <i class="fa fa-history"></i> <span>History</span>
+                    <span class="pull-right-container">
+                      <i class="fa fa-angle-left pull-right"></i>
+                    </span>
+                </a>
+                <ul class="treeview-menu">
+                    <li><a href="/history/transactions"><i class="fa fa-circle-o"></i>Transactions</a></li>
+                </ul>
+            </li>
+
             <li class="header">LABELS</li>
+            <!-- <li class="header">LABELS</li>
             <li><a href="#"><i class="fa fa-circle-o text-red"></i> <span>Important</span></a></li>
             <li><a href="#"><i class="fa fa-circle-o text-yellow"></i> <span>Warning</span></a></li>
-            <li><a href="#"><i class="fa fa-circle-o text-aqua"></i> <span>Information</span></a></li>
+            <li><a href="#"><i class="fa fa-circle-o text-aqua"></i> <span>Information</span></a></li> -->
         </ul>
     </section>
     <!-- /.sidebar -->
