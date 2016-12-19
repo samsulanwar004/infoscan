@@ -174,7 +174,7 @@ return [
         Laravel\Socialite\SocialiteServiceProvider::class,
         Dusterio\PlainSqs\Integrations\LaravelServiceProvider::class,
 
-        //Barryvdh\Debugbar\ServiceProvider::class,
+        Barryvdh\Debugbar\ServiceProvider::class,
 
         //
 

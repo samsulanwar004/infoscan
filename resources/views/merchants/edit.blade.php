@@ -58,7 +58,7 @@
                                    placeholder="Enter email" required>
                         </div>
                         <hr>
-                        <h4>List of {{ $merchant->company_name }} users</h4>                        
+                        <h4>List of {{ $merchant->company_name }} users</h4>
                         <div id="users">
                             @foreach($merchantUsers as $mu)
                                 <div id="user">
@@ -79,7 +79,7 @@
                                     <div class="form-group has-feedback">
                                         <label for="email">Email</label>
                                         <input type="email" class="form-control" name="user[email][]" id="email"
-                                               value="{{ old('email', $mu->user->email) }}" disabled="disabled" 
+                                               value="{{ old('email', $mu->user->email) }}" disabled="disabled"
                                                required>
                                     </div>
                                     <div class="checkbox">
@@ -120,7 +120,7 @@
                     <!-- /.box-body -->
                     <div class="box-footer text-right">
                         <button class="btn btn-primary" id="add">
-                            <i class="fa fa-plus fa-btn"></i>Add User                        
+                            <i class="fa fa-plus fa-btn"></i>Add User
                         </button>
                         <button type="submit" class="btn btn-primary" id="submit">
                             <i class="fa fa-save fa-btn"></i> Save Merchant
@@ -128,7 +128,9 @@
                     </div>
                 </form>
             </div>
+
             <div id="loading"></div>
+
         </div>
         <!-- /.box -->
 
@@ -174,13 +176,13 @@
                 $(e.target).closest('#user').remove();
                 updateCounterForm(true);
             }
-            
+
         });
     });
 
     function myLoading() {
         $('#loading').addClass('overlay');
-        document.getElementById("loading").innerHTML = '<i class="fa fa-spinner fa-spin" style="font-size:50px; position: fixed;"></i>';
+        document.getElementById("loading").innerHTML = '<i class="fa fa-spinner fa-spin" style="font-size:50px;"></i>';
     }
 
     function handleCheck(cb, id) {
