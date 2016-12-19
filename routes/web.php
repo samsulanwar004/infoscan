@@ -69,6 +69,14 @@ Route::group([
         ['except' => ['show'], 'names' => route_resource_name($routePrefix, 'questionnaire')]);
     Route::resource('/questions', 'Web\QuestionController',
         ['except' => ['show'], 'names' => route_resource_name($routePrefix, 'questions')]);
+    Route::get(
+        '/history/transactions',
+        'Web\HistoryController@transactions'
+    )->name('transaction.index');
+    Route::get(
+        'history/{id}/transactions',
+        'Web\HistoryController@showTransaction'
+    )->name('transaction.show');
 });
 
 Auth::routes();
