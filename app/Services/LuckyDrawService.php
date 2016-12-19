@@ -7,6 +7,7 @@ use App\LuckyDraw;
 use Carbon\Carbon;
 use Cache;
 use App\Transformers\LuckyDrawTransformer;
+use App\Services\TransactionService;
 use Auth;
 
 class LuckyDrawService
@@ -145,4 +146,42 @@ class LuckyDrawService
 			return $transform;
 		}
 	}
+
+	public function redeemPoint(Request $request)
+	{
+		//check point member
+		$member_code = '123'; //dummy
+		$point = (new TransactionService)->getCreditMember($member_code);
+
+		if ($point < $request->input('point'))
+		{
+			$message = "Point not enough";
+			return $message;
+		}
+
+		$data = [
+            'member_code' => 123,
+            'transaction_type' => 102,
+            'transaction_detail' =>
+            [
+                '0' => array (
+                'member_code_from' => 'kasir',
+                'member_code_to' => 'member',
+                'amount' => $request->input('point'),
+                'detail_type' => 'cr'
+                ),
+                '1' => array (
+                    'member_code_from' => 'member',
+                    'member_code_to' => 'kasir',
+                    'amount' => $request->input('point'),
+                    'detail_type' => 'db'
+                ),
+            ]
+        ];  
+		//save to transaction
+		(new TransactionService($data))->create();
+		//TODO: undian voucher
+		return "ok";
+	}
+
 }
