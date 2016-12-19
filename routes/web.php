@@ -66,6 +66,18 @@ Route::group([
         ['except' => ['show'], 'names' => route_resource_name($routePrefix, 'points')]
     );
 
+    Route::resource(
+        '/snaps',
+        'Web\SnapController',
+        ['names' => route_resource_name($routePrefix, 'snaps')]
+    );
+
+    Route::resource(
+        '/members',
+        'Web\MemberController',
+        ['names' => route_resource_name($routePrefix, 'members')]
+    );
+
 });
 
 Auth::routes();

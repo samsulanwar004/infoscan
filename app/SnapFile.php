@@ -17,6 +17,6 @@ class SnapFile extends Model
 
     public function tag()
     {
-        return $this->hasOne(SnapTag::class, 'snap_file_id', 'id');
+        return $this->hasMany(SnapTag::class, 'snap_file_id', 'id');
     }
 }
