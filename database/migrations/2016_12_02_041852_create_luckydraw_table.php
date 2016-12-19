@@ -25,6 +25,7 @@ class CreateLuckydrawTable extends Migration
             $table->string('created_by', 150)->index();
             $table->boolean('is_multiple')->default(0);
             $table->timestamps();
+            $table->softDeletes();
         });
 
         Schema::create('members_lucky_draws', function(Blueprint $t) {

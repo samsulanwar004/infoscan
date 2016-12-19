@@ -13,7 +13,7 @@
                 </h3>
 
                 <div class="box-tools pull-right">
-                    @cando('User.Create')
+                    @cando('Questions.Create')
                     <a href="{{ admin_route_url('questions.create') }}" class="btn btn-box-tool"
                        data-toggle="tooltip"
                        title="Create New">
@@ -49,10 +49,13 @@
                             </td>
                             <td class="text-right vertical-middle">
                                 <div class="btn-group">
+                                    @cando('Questions.Update')
                                     <a href="{{ admin_route_url('questions.edit', ['id' => $question->id]) }}"
                                        class="btn btn-info">
                                         <i class="fa fa-pencil"> </i>
                                     </a>
+                                    @endcando
+                                    @cando('Questions.Delete')
                                     <a class="btn btn-danger"
                                        href="{{ admin_route_url('questions.destroy', ['id' => $question->id]) }}"
                                        data-toggle="modal"
@@ -61,6 +64,7 @@
                                        for-delete="true"
                                        data-message="Are you sure you want to delete this question ?"
                                     > <i class="fa fa-trash"></i> </a>
+                                    @endcando
                                 </div>
                             </td>
                         </tr>

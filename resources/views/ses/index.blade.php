@@ -13,7 +13,7 @@
                 </h3>
 
                 <div class="box-tools pull-right">
-                    @cando('User.Create')
+                    @cando('Ses.Create')
                     <a href="{{ admin_route_url('ses.create') }}" class="btn btn-box-tool" data-toggle="tooltip"
                        title="Create New">
                         <i class="fa fa-plus-circle fa-btn"></i> Create New</a>
@@ -43,11 +43,13 @@
                             </td>
                             <td class="text-right vertical-middle">
                                 <div class="btn-group">
+                                    @cando('Ses.Update')
                                     <a href="{{ admin_route_url('ses.edit', ['id' => $item->id]) }}"
                                        class="btn btn-info">
                                         <i class="fa fa-pencil"> </i>
                                     </a>
-
+                                    @endcando
+                                    @cando('Ses.Delete')
                                     <a class="btn btn-danger"
                                        href="{{ admin_route_url('ses.destroy', ['id' => $item->id]) }}"
                                        data-toggle="modal"
@@ -56,6 +58,7 @@
                                        for-delete="true"
                                        data-message="Are you sure you want to delete this SES ?"
                                     > <i class="fa fa-trash"></i> </a>
+                                    @endcando
                                 </div>
                             </td>
                         </tr>
