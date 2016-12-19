@@ -12,18 +12,22 @@
 
         <!-- Default box -->
         <div class="box">
-            <div class="box-header with-border form-inline" style="overflow: hidden; height: 0px; padding: 0px; margin-bottom: 25px;">
+            <div class="box-header with-border form-inline" style="overflow: hidden; height: 0px; padding: 0px; margin-bottom: 0px;">
                 <!-- <i class="fa fa-camera fa-btn"></i> Snap Code: {-- strtoupper($snap->request_code) --} -->
             </div>
             <div class="box-body">
                 <div class="row">
+
                     <div class="{{ $snap->snap_type == 'receipt' ? 'col-md-12' : 'col-md-8' }}">
-                        <div class="timeline-item">
+                        <p class="text-muted well well-sm no-shadow">
+                            Terimakasih Misbach
+                        </p>
+                        <div class="timeline-item ">
                             <ul class="timeline timeline-inverse">
-                                <li>
+                                <li class="no-margin-right">
                                     <i class="fa fa-camera bg-purple"></i>
 
-                                    <div class="timeline-item">
+                                    <div class="timeline-item no-margin-right">
                                         <span class="time"><i class="fa fa-clock-o"></i> 2 days ago</span>
                                         <h3 class="timeline-header">
                                             <a href="{{ admin_route_url('members.show', ['id' => $snap->member->id]) }}">{{ $snap->member->name }}</a> uploaded new photos

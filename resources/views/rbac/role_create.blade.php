@@ -56,13 +56,15 @@
                     </h3>
 
                     <div class="box-tools pull-right">
-                        <span title="Create New" data-toggle="tooltip">
-                            <a href="{{ admin_route_url('permissions.create') }}" class="btn btn-box-tool"
-                               data-toggle="modal"
-                               data-target="#"
-                            >
-                                <i class="fa fa-plus-circle fa-btn"></i> Add New Permissions</a>
-                        </span>
+                        @cando('Permission.Create')
+                            <span title="Create New" data-toggle="tooltip">
+                                <a href="{{ admin_route_url('permissions.create') }}" class="btn btn-box-tool"
+                                   data-toggle="modal"
+                                   data-target="#"
+                                >
+                                    <i class="fa fa-plus-circle fa-btn"></i> Add New Permissions</a>
+                            </span>
+                        @endcando
                     </div>
                 </div>
                 <div class="box-body">
