@@ -143,7 +143,7 @@ class MerchantService {
             $userUpdateId = $users['id'][$i];
             $u = $this->getUserById($userUpdateId);
             $u->name = $users['name'][$i];
-            $u->is_active = isset($users['is_active'][$i]) ? 1 : 0;
+            $u->is_active = $users['is_active'][$i];
             $u->save();
         }
 

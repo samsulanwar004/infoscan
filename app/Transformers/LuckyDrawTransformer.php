@@ -13,6 +13,7 @@ class LuckyDrawTransformer extends TransformerAbstract
             'code'   => $lucky->luckydraw_code,
             'title'   => $lucky->title,
             'description'  => $lucky->description,
+            'point' => $lucky->point,
             'image' => $lucky->image,
         ];
     }

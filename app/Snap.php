@@ -3,7 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use SnapFile;
+use App\SnapFile;
 
 class Snap extends Model
 {
@@ -13,4 +13,9 @@ class Snap extends Model
     {
         return $this->hasMany(SnapFile::class, 'snap_id', 'id');
     }
+
+   	public function member()
+   	{
+   		return $this->belongsTo(\App\Member::class, 'member_id');
+   	}
 }
