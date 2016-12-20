@@ -5964,3 +5964,7 @@ td.vertical-middle {
 .ml10 {
     margin-left: 10px;
 }
+
+.no-margin-right {
+    margin-right: 0px !important;
+}
