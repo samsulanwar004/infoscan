@@ -9,6 +9,7 @@ use App\User;
 use Auth;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\MerchantUser as MailMerchantUser;
+use Rebel\Component\Rbac\Models\Role;
 
 class MerchantService {
 
@@ -104,6 +105,7 @@ class MerchantService {
         $userList = [];
         $user = $request->input('user');
         $countUser = $this->countOfUserInput($request);
+        $role = $this->getRoleMerchant();
 
         for ($i = 0; $i <= $countUser; ++$i) {
             $u = new User;
@@ -118,6 +120,7 @@ class MerchantService {
             $u->password = $password;
             $u->is_active = 1;
             $u->save();
+            $u->roles()->attach($role->id);
 
             //queue mail new user account
             Mail::to($u->email)
@@ -150,6 +153,8 @@ class MerchantService {
         // Create new User.
         $newUser = $request->input('newuser');
         $newUserCount = $this->countOfNewUserInput($request);
+        $role = $this->getRoleMerchant();
+
         if ($request->has('newuser')) {
             for ($i=0; $i <= $newUserCount; ++$i) {
                 $passwordStr = strtolower(str_random(10));
@@ -161,6 +166,7 @@ class MerchantService {
                 $u->password = $password;
                 $u->is_active = 1;
                 $u->save();
+                $u->roles()->attach($role->id);
 
                 //queue mail new user account
                 Mail::to($u->email)
@@ -186,5 +192,10 @@ class MerchantService {
     private function getUserById($id)
     {
         return User::where('id', '=', $id)->first();
+    }
+
+    public function getRoleMerchant()
+    {
+        return Role::where('id', '=', 2)->first();
     }
 }

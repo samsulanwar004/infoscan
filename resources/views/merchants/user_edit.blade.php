@@ -45,12 +45,6 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="merchant">Merchant</label>
-                            <input type="text" class="form-control" id="merchant" name="merchant"
-                                   value="{{ $merchantUsers->merchant->company_name }}" disabled="disabled">
-                        </div>
-
-                        <div class="form-group">
                             <label for="password">Password</label>
                             <input type="password" class="form-control" id="password" name="password"
                                    value="{{ old('password', '******') }}" placeholder="Password" required>
