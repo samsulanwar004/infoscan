@@ -29,7 +29,7 @@
             </div>
             <div class="box-body">
                 <form role="form" action="{{ admin_route_url('users.update', ['id' => $user->id]) }}" method="POST"
-                      enctype="multipart/form-data" class="form" accept-charset="utf-8">
+                      enctype="multipart/form-data" class="form" accept-charset="utf-8" onsubmit="return passwordMatch()">
                     {{ csrf_field() }}
                     {{ method_field('PUT') }}
                     <div class="box-body">
@@ -80,9 +80,30 @@
                     </div>
                 </form>
             </div>
+            <div id="loading"></div>
         </div>
         <!-- /.box -->
 
     </section>
     <!-- /.content -->
+@endsection
+
+@section('footer_scripts')
+<script>
+    function passwordMatch() {
+        var pass1 = document.getElementById("password").value;
+        var pass2 = document.getElementById("confirm_password").value;
+        var ok = true;
+        if (pass1 != pass2) {
+            document.getElementById("password").style.borderColor = "#E34234";
+            document.getElementById("confirm_password").style.borderColor = "#E34234";
+            ok = false;
+        } else {
+            $('#loading').addClass('overlay');
+            document.getElementById("loading").innerHTML = '<i class="fa fa-spinner fa-spin" style="font-size:50px;"></i>';
+            ok = true;
+        }
+        return ok;
+    }
+</script>
 @endsection

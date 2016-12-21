@@ -22,7 +22,7 @@ class MerchantUserController extends AdminController
      */
     public function index()
     {
-
+        $this->isAllowed('MerchantUser.List');
         if (empty($mi = (new MerchantService)->getMerchantIdByAuth()))
         {
             $mu = $this->getMerchantUserByMerchant();
@@ -38,6 +38,7 @@ class MerchantUserController extends AdminController
      */
     public function create()
     {
+        $this->isAllowed('MerchantUser.Create');
         return view('merchants.user_create');
     }
 
@@ -218,22 +219,17 @@ class MerchantUserController extends AdminController
 
     private function getMerchantUserByMerchant($mi = null)
     {
+        $merchantUsers = \DB::table('users')
+                            ->join('merchant_users', 'users.id', '=', 'merchant_users.user_id')
+                            ->where('merchant_users.deleted_at', '=', null)
+                            ->orderBy('merchant_users.id', 'DESC')  
+                            ->paginate(50);
         if ($mi)
         {
-            $mu = \DB::table('users')
-                    ->join('merchant_users', 'users.id', '=', 'merchant_users.user_id')
-                    ->where('merchant_id', '=', $mi->id)
-                    ->where('merchant_users.deleted_at', '=', null)
-                    ->orderBy('merchant_users.id', 'DESC')                    
-                    ->paginate(50);
+            $mu = $merchantUsers->where('merchant_id', '=', $mi->id);
             return $mu;
         } else {
-            $mu = \DB::table('users')
-                    ->join('merchant_users', 'users.id', '=', 'merchant_users.user_id')
-                    ->where('merchant_users.deleted_at', '=', null)
-                    ->orderBy('merchant_users.id', 'DESC')                    
-                    ->paginate(50);
-            return $mu;
+            return $merchantUsers;
         }
     }
 

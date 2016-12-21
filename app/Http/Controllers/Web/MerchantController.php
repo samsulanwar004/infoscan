@@ -17,6 +17,7 @@ class MerchantController extends AdminController
      */
     public function index()
     {
+        $this->isAllowed('Merchant.List');
         $merchants = (new MerchantService)->getAllMerchant();
 
         return view('merchants.index', compact('merchants'));
@@ -27,6 +28,7 @@ class MerchantController extends AdminController
      */
     public function create()
     {
+        $this->isAllowed('Merchant.Create');
         return view('merchants.create');
     }
 
@@ -84,6 +86,8 @@ class MerchantController extends AdminController
      */
     public function edit($id)
     {
+        $this->isAllowed('Merchant.Update');
+
         $merchants = new MerchantService;
         $merchant = $merchants->getMerchantById($id);
 

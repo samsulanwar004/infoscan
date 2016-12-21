@@ -9,6 +9,7 @@ class PointController extends AdminController
 {
     public function index(Request $request)
     {
+        $this->isAllowed('Point.List');
         if ($request->wantsJson()) {
             return (new PointService)->getPivotGrid();
         }

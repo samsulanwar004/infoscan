@@ -17,6 +17,7 @@ class ExchangeController extends AdminController
      */
     public function index()
     {
+        $this->isAllowed('Exchange.List');
         $rates = Exchange::orderBy('created_at', 'DESC')->get();
 
         return view('exchange.index', compact('rates'));
@@ -27,6 +28,7 @@ class ExchangeController extends AdminController
      */
     public function create()
     {
+        $this->isAllowed('Exchange.Create');
         return view('exchange.create');
     }
 
@@ -53,6 +55,7 @@ class ExchangeController extends AdminController
      */
     public function edit($id)
     {
+        $this->isAllowed('Exchange.Update');
         $rate = $this->getRateById($id);
 
         return view('exchange.edit', compact($rate));

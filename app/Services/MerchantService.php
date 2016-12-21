@@ -196,6 +196,6 @@ class MerchantService {
 
     public function getRoleMerchant()
     {
-        return Role::where('id', '=', 2)->first();
+        return Role::where('role_name', 'like', '%merchant user')->first();
     }
 }
