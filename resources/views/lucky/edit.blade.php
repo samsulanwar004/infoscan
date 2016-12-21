@@ -60,7 +60,9 @@
 
                         <div class="form-group">
                             <label for="image">Image</label><br>
-                            <img width="200" height="200" src="{{ '/storage/luckydraws/'.$lucky->image }}">
+                            @if($lucky->image)
+                                <img width="200" height="200" src="{{ '/storage/luckydraws/'.$lucky->image }}">
+                            @endif
                             <input type="file" class="form-control" id="image" name="image">
                         </div>
 

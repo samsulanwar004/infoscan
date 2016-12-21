@@ -157,6 +157,9 @@ class LuckyDrawService
 		{
 			$message = "Point not enough";
 			return $message;
+		} else if ($request->input('point') == 0) {
+			$message = "Request point is not 0";
+			return $message;
 		}
 
 		$data = [

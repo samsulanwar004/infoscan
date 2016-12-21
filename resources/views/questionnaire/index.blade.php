@@ -13,7 +13,7 @@
                 </h3>
 
                 <div class="box-tools pull-right">
-                    @cando('User.Create')
+                    @cando('Questionnaire.Create')
                     <a href="{{ admin_route_url('questionnaire.create') }}" class="btn btn-box-tool"
                        data-toggle="tooltip"
                        title="Create New">
@@ -56,10 +56,13 @@
                                     <button class="btn btn-default" data-toggle="modal"
                                             data-target="#dataquestionnaire{{ $item->id }}"><i class="fa fa-search"></i>
                                     </button>
+                                    @cando('Questionnaire.Update')
                                     <a href="{{ admin_route_url('questionnaire.edit', ['id' => $item->id]) }}"
                                        class="btn btn-info">
                                         <i class="fa fa-pencil"> </i>
                                     </a>
+                                    @endcando
+                                    @cando('Questionnaire.Delete')
                                     <a class="btn btn-danger"
                                        href="{{ admin_route_url('questionnaire.destroy', ['id' => $item->id]) }}"
                                        data-toggle="modal"
@@ -68,6 +71,7 @@
                                        for-delete="true"
                                        data-message="Are you sure you want to delete this questionnaire ?"
                                     > <i class="fa fa-trash"></i> </a>
+                                    @endcando
                                 </div>
                             </td>
                         </tr>
