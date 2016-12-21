@@ -6,10 +6,19 @@ class CreateUserSeeder extends Seeder
 {
 
     protected $createPermissions = [
-        'User.List',
-        'User.Create',
-        'User.Update',
-        'User.Delete',
+        'User.List','User.Create','User.Update','User.Delete',
+        'Role.List','Role.Create','Role.Update','Role.Delete',
+        'Permission.List','Permission.Create',
+        'Merchant.List','Merchant.Create','Merchant.Update','Merchant.Delete',
+        'Promotion.List','Promotion.Create','Promotion.Update','Promotion.Delete',
+        'Questionnaire.List','Questionnaire.Create','Questionnaire.Update','Questionnaire.Delete',
+        'Questions.List','Questions.Create','Questions.Update','Questions.Delete',
+        'Ses.List','Ses.Create','Ses.Update','Ses.Delete',
+        'Point.List','Settings.List','Snaps.List','Transactions.List',
+    ];
+
+    protected $createPermissionsMerchant = [
+        'MerchantUser.List','MerchantUser.Create','MerchantUser.Update','MerchantUser.Delete',
     ];
 
     /**
@@ -43,8 +52,26 @@ class CreateUserSeeder extends Seeder
             $r->addPermissions($p);
         }
 
-
         // assign role for this user;
         $u->assignRole($r);
+
+        // create merchant role
+        $m = new \Rebel\Component\Rbac\Models\Role();
+        $m->role_name = 'Merchant User';
+        $m->role_label = 'Merchant User';
+        $m->is_active = 1;
+        $m->save();
+
+        foreach ($this->createPermissionsMerchant as $permission) {
+            $p = new \Rebel\Component\Rbac\Models\Permission();
+            $p->permission_name = $permission;
+            $p->permission_label = $permission;
+            $p->permission_group = 'users';
+            $p->save();
+
+            // add permission for current role {merchant user}
+            $m->addPermissions($p);
+        }
+
     }
 }
