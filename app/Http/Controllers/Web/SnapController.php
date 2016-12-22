@@ -17,6 +17,7 @@ class SnapController extends AdminController
 
     public function show(Request $request, $id)
     {
+        $this->isAllowed('Snaps.Show');
         $snap = (new SnapService)->getSnapById($id);
 
         return view('snaps.show', compact('snap'));

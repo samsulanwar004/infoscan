@@ -45,11 +45,11 @@ Route::group([
         'Web\MerchantController',
         ['except' => ['show'], 'names' => route_resource_name($routePrefix, 'merchants')]
     );
-    Route::resource(
-        '/merchants/user',
-        'Web\MerchantUserController',
-        ['except' => ['show'], 'names' => route_resource_name($routePrefix, 'merchantusers')]
-    );
+    // Route::resource(
+    //     '/merchants/user',
+    //     'Web\MerchantUserController',
+    //     ['except' => ['show'], 'names' => route_resource_name($routePrefix, 'merchantusers')]
+    // );
     Route::resource(
         '/ses',
         'Web\SesController',
