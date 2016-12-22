@@ -9,16 +9,15 @@ class SnapController extends AdminController
 {
     public function index()
     {
-        $snaps = (new SnapService)->getAvailableSnaps();
+        $snaps = ( new SnapService)->getAvailableSnaps();
 
         return view('snaps.index', compact('snaps'));
     }
 
     public function show(Request $request, $id)
     {
-    	$snap = (new SnapService)->getSnapById($id);
+        $snap = (new SnapService)->getSnapById($id);
 
-    	return view('snaps.show', compact('snap'));
+        return view('snaps.show', compact('snap'));
     }
-
 }
