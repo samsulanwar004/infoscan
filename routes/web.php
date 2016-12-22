@@ -92,9 +92,31 @@ Route::group([
         'history/{id}/transactions',
         'Web\HistoryController@showTransaction'
     )->name('transaction.show');
+
+    Route::resource(
+        '/report',
+        'Web\ReportController',
+        ['except' => ['show'], 'names' => route_resource_name($routePrefix, 'report')]
+    );
 });
 
 Auth::routes();
 
 Route::get('/secure/{requestCode}/{social}', 'SecureController@redirect');
+//Route::get('/report/filters',
+//    ['as' => 'report.filters', 'uses' => 'Web\ReportController@filters']);
+Route::get(
+    '/report/filters',
+    'Web\ReportController@filters'
+)->name('report.filters');
+
+Route::get(
+    '/report/filterStore',
+    'Web\ReportController@filterStore'
+)->name('report.filterStore');
+
+/*Route::get('/report/filterStore/{attributes?}', function($attributes = null) {
+    return Redirect::to('/report/index/' . $attributes);
+});*/
+
 Route::get('/callback/{social}', 'SecureController@callback');
