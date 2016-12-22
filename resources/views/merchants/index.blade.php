@@ -13,7 +13,7 @@
                 </h3>
 
                 <div class="box-tools pull-right">
-                    @cando('User.Create')
+                    @cando('Merchant.Create')
                     <a href="{{ admin_route_url('merchants.create') }}" class="btn btn-box-tool" data-toggle="tooltip"
                        title="Create New">
                         <i class="fa fa-plus-circle fa-btn"></i> Create New</a>
@@ -45,14 +45,14 @@
                             </td>
                             <td class="text-right vertical-middle">
                                 <div class="btn-group">
-                                    @cando('User.Update')
+                                    @cando('Merchant.Update')
                                     <a href="{{ admin_route_url('merchants.edit', ['id' => $merchant->id]) }}"
                                        class="btn btn-info">
                                         <i class="fa fa-pencil"> </i>
                                     </a>
                                     @endcando
 
-                                    @cando('User.Delete')
+                                    @cando('Merchant.Delete')
                                     <a class="btn btn-danger"
                                        href="{{ admin_route_url('merchants.destroy', ['id' => $merchant->id]) }}"
                                        data-toggle="modal"

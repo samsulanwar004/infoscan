@@ -42,7 +42,9 @@
 
                         <div class="form-group has-feedback">
                             <label for="company_logo">Company Logo</label><br>
-                            <img width="200" height="200" src="{{ '/storage/merchants/'.$merchant->company_logo }}">
+                            @if($merchant->company_logo)
+                                <img width="200" height="200" src="{{ '/storage/merchants/'.$merchant->company_logo }}">
+                            @endif
                             <input type="file" class="form-control" id="company_logo" name="company_logo">
                         </div>
 
@@ -85,7 +87,7 @@
                                     <div class="checkbox">
                                         <label>
                                             <input onclick='handleCheck(this, {{$mu->user->id}});' {{ (bool)$mu->user->is_active ? 'checked' : '' }} type="checkbox">
-                                            <input type="hidden" name="user[is_active][]" id="cbx{{$mu->user->id}}" {{ (bool)$mu->user->is_active ? 'value=1' : '' }}>
+                                            <input type="hidden" name="user[is_active][]" id="cbx{{$mu->user->id}}" {{ (bool)$mu->user->is_active ? 'value=1' : 'value=0' }}>
                                             Is Active ?
                                         </label>
                                     </div>
