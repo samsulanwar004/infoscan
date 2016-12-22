@@ -69,17 +69,17 @@
                         'attributes' => $request->input(trim('attributes'))
                      ];
             $attributes = $input['attributes'];
-            $attributes = Crypt::encrypt($attributes);  
+            $attributes = Crypt::encrypt($attributes);      
             return redirect()->route('report.index', ['attributes' => $attributes]);
         }
 
         public function formatPdf() {                           
-            /*if(isset($_GET['attributes'])) {
+            if(isset($_GET['attributes'])) {
                 $getAttributes = $_GET['attributes'];
                 //$getAttributes = Crypt::encrypt($getAttributes);  
                 //$getAttributes = Crypt::decrypt($getAttributes);  
                 $dataAttributes = $getAttributes;
-            } else {*/
+            } else {
                 $dataAttributes = [
                                     "0" => "Outlet Name",
                                     "1" => "Outlet Area",
@@ -92,7 +92,7 @@
                                     "8" => "SEC",
                                     "9" => "Outlet Type"
                                   ];    
-            //}
+            }
             $dataAttributesCount = count($dataAttributes)-1;                           
             $view = \View::make('report.pdf', compact('dataAttributes', 'dataAttributesCount'));
             $html = $view->render();        
