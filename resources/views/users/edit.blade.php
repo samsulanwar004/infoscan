@@ -29,7 +29,7 @@
             </div>
             <div class="box-body">
                 <form role="form" action="{{ admin_route_url('users.update', ['id' => $user->id]) }}" method="POST"
-                      enctype="multipart/form-data" class="form" accept-charset="utf-8" onsubmit="return passwordMatch()">
+                      enctype="multipart/form-data" class="form" accept-charset="utf-8">
                     {{ csrf_field() }}
                     {{ method_field('PUT') }}
                     <div class="box-body">
@@ -74,7 +74,7 @@
                     <!-- /.box-body -->
 
                     <div class="box-footer text-right">
-                        <button type="submit" class="btn btn-primary">
+                        <button type="submit" class="btn btn-primary" id="save">
                             <i class="fa fa-save fa-btn"></i> Save User
                         </button>
                     </div>
@@ -90,20 +90,19 @@
 
 @section('footer_scripts')
 <script>
-    function passwordMatch() {
+    $("#password, #confirm_password").keyup(function() {
         var pass1 = document.getElementById("password").value;
         var pass2 = document.getElementById("confirm_password").value;
-        var ok = true;
+
         if (pass1 != pass2) {
             document.getElementById("password").style.borderColor = "#E34234";
             document.getElementById("confirm_password").style.borderColor = "#E34234";
-            ok = false;
+            document.getElementById("save").disabled = true;
         } else {
-            $('#loading').addClass('overlay');
-            document.getElementById("loading").innerHTML = '<i class="fa fa-spinner fa-spin" style="font-size:50px;"></i>';
-            ok = true;
+            document.getElementById("password").style.borderColor = "#00ff00";
+            document.getElementById("confirm_password").style.borderColor = "#00ff00";
+            document.getElementById("save").disabled = false;
         }
-        return ok;
-    }
+    });
 </script>
 @endsection
