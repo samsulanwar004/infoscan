@@ -5,8 +5,8 @@
                 <h3>Customizable Attributes</h3>
                 <div class="box-body" id="form-body">
                     <div id="multiCheck">
-                        @for ($i = 1; $i <= $dataAttributesCount; $i ++)
-                            <input type="checkbox" id="attributes" name="attributes[]" class="attributes" value="{!! $dataAttributes[$i] !!}" /> {!! $dataAttributes[$i] !!}
+                        @for ($i = 1; $i <= $dataAttributesCountAs; $i ++)
+                            <input style="cursor:pointer" type="checkbox" checked id="attributes" name="attributes[]" class="attributes" value="{!! $dataAttributesAs[$i] !!}" /> {!! $dataAttributesAs[$i] !!}
                             <br>
                         @endfor                                        
                     </div>
@@ -25,26 +25,6 @@
 </section>
 @section('footer_scripts')
     <script>
-        i = 0;
-        $('#submit').click(function() {
-            var arr = [];
-            $('.attributes:checked').each(function() {
-                arr[i++] = $(this).val();
-            });
-            console.log(arr);
-        });        
-        function getChecked() { 
-            var chkArray = [];
-            $("#multiCheck input:checked").each(function() {
-                chkArray.push($(this).val());
-            });
-            var selected;
-            selected = chkArray.join(',') + ",";
-            if(selected.length > 1){
-                alert("You have selected " + selected); 
-            } else {
-                alert("Please at least one of the checkbox");   
-            }
-        }
+        alert('tes');
     </script>
 @endsection

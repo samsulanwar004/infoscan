@@ -9,7 +9,12 @@
                     <div class="box-body" id="form-body">
                         <div class="text-right">
                             <div class="btn-group">
-                                <a class="btn btn-primary btn-sm" href="{{ admin_route_url('report.filters') }}" data-toggle="modal" data-target="#" title="Filters"> 
+                                <a class="btn btn-primary btn-sm" id="filters" href="{{ admin_route_url('report.filters') }}?attributes=@for($i = 0; $i <= $dataAttributesCount; $i ++){!! $dataAttributes[$i] !!},@endfor" data-toggle="modal" data-target="#" title="Filters"> 
+                                    <i class="fa fa-pencil"></i> 
+                                </a>
+                            </div>
+                            <div class="btn-group">
+                                <a class="btn btn-warning btn-sm" id="format" href="{{ admin_route_url('report.formatPdf') }}?attributes=@for($i = 0; $i <= $dataAttributesCount; $i ++){!! $dataAttributes[$i] !!},@endfor" title="Formats"> 
                                     <i class="fa fa-pencil"></i> 
                                 </a>
                             </div>
@@ -17,14 +22,14 @@
                         <table class="table table-striped">
                             <thead>
                                 <tr>
-                                    @for ($i = 1; $i <= $dataAttributesCount; $i ++)
+                                    @for ($i = 0; $i <= $dataAttributesCount; $i ++)
                                         <th>{!! $dataAttributes[$i] !!}</th>
                                     @endfor
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    @for ($i = 1; $i <= $dataAttributesCount; $i ++)
+                                    @for ($j = 0; $j <= $dataAttributesCount; $j ++)
                                         <td>&nbsp;</td>
                                     @endfor
                                 </tr>

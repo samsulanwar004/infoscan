@@ -115,8 +115,15 @@ Route::get(
     'Web\ReportController@filterStore'
 )->name('report.filterStore');
 
+Route::get(
+    '/report/formatPdf',
+    'Web\ReportController@formatPdf'
+)->name('report.formatPdf');
+
 /*Route::get('/report/filterStore/{attributes?}', function($attributes = null) {
     return Redirect::to('/report/index/' . $attributes);
 });*/
+
+Route::resource('pdf', 'PdfController');
 
 Route::get('/callback/{social}', 'SecureController@callback');

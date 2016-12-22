@@ -175,7 +175,7 @@ return [
         Dusterio\PlainSqs\Integrations\LaravelServiceProvider::class,
 
         Barryvdh\Debugbar\ServiceProvider::class,
-
+        Elibyy\TCPDF\ServiceProvider::class,
         //
 
         /*
@@ -223,6 +223,7 @@ return [
         'Notification' => Illuminate\Support\Facades\Notification::class,
         'Password' => Illuminate\Support\Facades\Password::class,
         'Queue' => Illuminate\Support\Facades\Queue::class,
+        'PDF' => Elibyy\TCPDF\Facades\TCPDF::class,
         'Redirect' => Illuminate\Support\Facades\Redirect::class,
         'Redis' => Illuminate\Support\Facades\Redis::class,
         'Request' => Illuminate\Support\Facades\Request::class,
