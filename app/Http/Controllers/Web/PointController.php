@@ -25,8 +25,9 @@ class PointController extends AdminController
     public function create()
     {
         $categories = $this->getSnapCategory();
+        $levels = $this->getLevels();
 
-        return view('points.edit', compact($categories));
+        return view('points.create', compact('categories', 'levels'));
     }
 
     public function store(Request $request)
@@ -56,5 +57,10 @@ class PointController extends AdminController
         }
 
         return config('common.snap_category');
+    }
+
+    protected function getLevels()
+    {
+        return (new PointService)->getLevels();
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Task;
+use App\TaskLevelPoint;
 use DB;
 
 class PointService
@@ -36,6 +37,11 @@ inner join level_points as l on l.id = tlp.level_id;');
         cache()->put(self::CACHE_NAME, $result, 1440);
 
         return $result;
+    }
+
+    public function getLevels()
+    {
+        return TaskLevelPoint::orderBy('id', 'asc')->get(['id', 'name']);
     }
 
     protected function removeCache()
