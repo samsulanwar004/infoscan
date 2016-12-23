@@ -9,7 +9,7 @@ class PointController extends AdminController
 {
     public function index(Request $request)
     {
-        $this->isAllowed('Point.List');
+        $this->isAllowed('Points.List');
         if ($request->wantsJson()) {
             return (new PointService)->getPivotGrid();
         }
@@ -32,7 +32,19 @@ class PointController extends AdminController
 
     public function store(Request $request)
     {
+        try {
+            (new PointService)->addTaskLevelPoint($request);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
 
+        return response()->json([
+            'status' => 'ok',
+            'message' => 'Task Level Point created!',
+        ]);
     }
 
     public function edit($id)
