@@ -47,6 +47,9 @@
                         <div class="form-group">
                             <label for="role">Select Role</label>
                             <select name="role" id="role" class="form-control">
+                                @if($user->roles[0]->id)
+                                    <option selected="selected" value="{{ $user->roles[0]->id }}">{{ $user->roles[0]->role_name }}</option>
+                                @endif
                                 @foreach($roles as $role)
                                     <option value="{{ $role->id }}">{{ $role->role_name }}</option>
                                 @endforeach

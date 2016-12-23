@@ -164,7 +164,13 @@ class UserController extends AdminController
         $user->is_active = $request->has('is_active') ? 1 : 0;
 
         DB::beginTransaction();
-        if ($user->save()) {
+        if ($user->save() && is_null($id)) {
+            $user->roles()->attach($request->input('role'));
+            DB::commit();
+
+            return true;
+        } else if ($user->save() && isset($id)) {
+            $user->roles()->detach($user->roles[0]->id);
             $user->roles()->attach($request->input('role'));
             DB::commit();
 
@@ -183,7 +189,7 @@ class UserController extends AdminController
      */
     private function getUserById($id)
     {
-        return User::where('id', '=', $id)->first();
+        return User::with('roles')->where('id', '=', $id)->first();
     }
 
     private function getRoles()
