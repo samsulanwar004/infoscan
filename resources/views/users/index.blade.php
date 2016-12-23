@@ -25,6 +25,7 @@
                     <thead>
                     <tr>
                         <th width="50">#</th>
+                        <th width="150">Role</th>
                         <th>Username & Email</th>
                         <th>Activity</th>
                         <th width="250"></th>
@@ -35,6 +36,9 @@
                         <tr>
                             <td class="vertical-middle">
                                 <i class="fa fa-check-circle {{ $user->is_active == 1 ? 'text-green' : 'text-default' }}"></i>
+                            </td>
+                            <td class="vertical-middle">
+                                {{ (!$user->roles->first()) ? '' : $user->roles->first()->role_name }}
                             </td>
                             <td>
                                 {{ $user->name }} <br>

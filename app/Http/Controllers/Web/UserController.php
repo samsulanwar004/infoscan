@@ -41,10 +41,10 @@ class UserController extends AdminController
     { 
         $this->isAllowed('User.List');
         $userObject = new User;
+        $userObject = $userObject->with('roles');
         $filters = $this->uriExtractor($request, 'filter');
 
         if (!empty($filters)) {
-
             foreach ($filters as $key => $value) {
                 $identifier = $userObject->filterIdentifier[$key];
 
@@ -164,14 +164,10 @@ class UserController extends AdminController
         $user->is_active = $request->has('is_active') ? 1 : 0;
 
         DB::beginTransaction();
-        if ($user->save() && is_null($id)) {
-            $user->roles()->attach($request->input('role'));
-            DB::commit();
 
-            return true;
-        } else if ($user->save() && isset($id)) {
-            $user->roles()->detach($user->roles[0]->id);
-            $user->roles()->attach($request->input('role'));
+        if ($user->save()) {
+            $user->roles()->sync([$request->input('role')]);
+
             DB::commit();
 
             return true;
@@ -189,7 +185,7 @@ class UserController extends AdminController
      */
     private function getUserById($id)
     {
-        return User::with('roles')->where('id', '=', $id)->first();
+        return User::where('id', '=', $id)->first();
     }
 
     private function getRoles()
