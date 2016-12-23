@@ -40,10 +40,10 @@ class UserController extends AdminController
     public function index(Request $request)
     {
         $userObject = new User;
+        $userObject = $userObject->with('roles');
         $filters = $this->uriExtractor($request, 'filter');
 
         if (!empty($filters)) {
-
             foreach ($filters as $key => $value) {
                 $identifier = $userObject->filterIdentifier[$key];
 
@@ -162,7 +162,7 @@ class UserController extends AdminController
 
         DB::beginTransaction();
         if ($user->save()) {
-            $user->roles()->attach($request->input('role'));
+            $user->roles()->sync([$request->input('role')]);
             DB::commit();
 
             return true;

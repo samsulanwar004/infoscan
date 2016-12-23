@@ -68,7 +68,7 @@
                             </td>
                         </tr>
                     @empty
-                        <td colspan="5"> There is no record for lucky draws data!</td>
+                        <td colspan="8"> There is no record for lucky draws data!</td>
                     @endforelse
                     </tbody>
                 </table>
