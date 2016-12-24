@@ -85,11 +85,7 @@
                 "s3",
                 "sdk"
             ],
-<<<<<<< HEAD
             "time": "2016-12-22 01:03:54"
-=======
-            "time": "2016-12-15 21:05:32"
->>>>>>> upstream/master
         },
         {
             "name": "barryvdh/laravel-cors",
