@@ -9,12 +9,27 @@
                     <div class="box-body" id="form-body">
                         <div class="text-right">
                             <div class="btn-group">
-                                <a class="btn btn-primary btn-sm" id="filters" href="{{ admin_route_url('report.filters') }}?attributes=@foreach($dataAttributes as $data){!! $data !!},@endforeach" data-toggle="modal" data-target="#" title="Filters"> 
+                                <a class="btn btn-primary btn-sm" id="filters" href="{{ admin_route_url('reports.filters') }}?attributes=@foreach($dataAttributes as $data){!! $data !!},@endforeach" data-toggle="modal" data-target="#" title="Filters"> 
                                     <i class="fa fa-pencil"></i> 
                                 </a>
                             </div>
                             <div class="btn-group">
-                                <a class="btn btn-warning btn-sm" id="pdf" href="{{ admin_route_url('report.formatPdf') }}?attributes=@foreach($dataAttributes as $data){!! $data !!},@endforeach" title="PDF"> 
+                                <a class="btn btn-warning btn-sm" id="pdf" href="{{ admin_route_url('reports.formatPdf') }}?attributes=@foreach($dataAttributes as $data){!! $data !!},@endforeach" title="PDF"> 
+                                    <i class="fa fa-pencil"></i> 
+                                </a>
+                            </div>
+                            <div class="btn-group">
+                                <a class="btn btn-warning btn-sm" id="excel" href="{{ admin_route_url('reports.formatExcel') }}?attributes=@foreach($dataAttributes as $data){!! $data !!},@endforeach" title="Excel"> 
+                                    <i class="fa fa-pencil"></i> 
+                                </a>
+                            </div>
+                            <div class="btn-group">
+                                <a class="btn btn-warning btn-sm" id="word" href="{{ admin_route_url('reports.formatWord') }}?attributes=@foreach($dataAttributes as $data){!! $data !!},@endforeach" title="Word"> 
+                                    <i class="fa fa-pencil"></i> 
+                                </a>
+                            </div>
+                            <div class="btn-group">
+                                <a class="btn btn-warning btn-sm" id="image" href="{{ admin_route_url('reports.formatImage') }}?attributes=@foreach($dataAttributes as $data){!! $data !!},@endforeach" title="Image"> 
                                     <i class="fa fa-pencil"></i> 
                                 </a>
                             </div>

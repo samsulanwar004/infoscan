@@ -18,7 +18,9 @@
         "spatie/laravel-fractal": "^2.0",
         "laravel/socialite": "^2.0",
         "dusterio/laravel-plain-sqs": "^0.1.7",
-        "elibyy/tcpdf-laravel": "5.3.*"
+        "elibyy/tcpdf-laravel": "5.3.*",
+        "maatwebsite/excel": "~2.0.0",
+        "phpoffice/phpword": "dev-master"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

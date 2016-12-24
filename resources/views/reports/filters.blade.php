@@ -1,7 +1,7 @@
 <section class="content">
     <div class="box">
         <div class="box-body" id="form-body">
-            <form role="form" action="{{ admin_route_url('report.filterStore') }}" method="post" enctype="multipart/form-data" class="form" accept-charset="utf-8">
+            <form role="form" action="{{ admin_route_url('reports.filterStore') }}" method="post" enctype="multipart/form-data" class="form" accept-charset="utf-8">
                 {!! csrf_field() !!}
                 <h3>Customizable Attributes</h3>
                 <?php
@@ -39,7 +39,7 @@
         $(document).ready(function() {
             $('#submit').click(function() {            
                 $.ajax({
-                    url: '/report',
+                    url: '/reports',
                     type: "post",
                     data: { 'attributes':$('input[name=attributes]').val(), '_token': $('input[name=_token]').val() },
                     success: function(data) {
