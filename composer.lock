@@ -9,16 +9,16 @@
     "packages": [
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.20.10",
+            "version": "3.20.11",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "68dcc63ec43d3e1d4fdf51e97f70f062009af6a6"
+                "reference": "39d122b903813da2f53312fd3146acaa83a6d9f6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/68dcc63ec43d3e1d4fdf51e97f70f062009af6a6",
-                "reference": "68dcc63ec43d3e1d4fdf51e97f70f062009af6a6",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/39d122b903813da2f53312fd3146acaa83a6d9f6",
+                "reference": "39d122b903813da2f53312fd3146acaa83a6d9f6",
                 "shasum": ""
             },
             "require": {
@@ -85,7 +85,7 @@
                 "s3",
                 "sdk"
             ],
-            "time": "2016-12-22 01:03:54"
+            "time": "2016-12-22 20:47:16"
         },
         {
             "name": "barryvdh/laravel-cors",
@@ -3001,12 +3001,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/tymondesigns/jwt-auth.git",
-                "reference": "13cabf4824b3f7ab2e3a23c1979bcc6a60fcb884"
+                "reference": "6ac8699818affe333ad46e3380b183029fe5c91b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tymondesigns/jwt-auth/zipball/13cabf4824b3f7ab2e3a23c1979bcc6a60fcb884",
-                "reference": "13cabf4824b3f7ab2e3a23c1979bcc6a60fcb884",
+                "url": "https://api.github.com/repos/tymondesigns/jwt-auth/zipball/6ac8699818affe333ad46e3380b183029fe5c91b",
+                "reference": "6ac8699818affe333ad46e3380b183029fe5c91b",
                 "shasum": ""
             },
             "require": {
@@ -3059,7 +3059,7 @@
                 "jwt",
                 "laravel"
             ],
-            "time": "2016-12-15 21:48:19"
+            "time": "2016-12-23 23:08:37"
         },
         {
             "name": "vlucas/phpdotenv",
@@ -3262,16 +3262,16 @@
         },
         {
             "name": "mockery/mockery",
-            "version": "0.9.6",
+            "version": "0.9.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/padraic/mockery.git",
-                "reference": "65d4ca18e15cb02eeb1e5336f884e46b9b905be0"
+                "reference": "4de7969f4664da3cef1ccd83866c9f59378c3371"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/padraic/mockery/zipball/65d4ca18e15cb02eeb1e5336f884e46b9b905be0",
-                "reference": "65d4ca18e15cb02eeb1e5336f884e46b9b905be0",
+                "url": "https://api.github.com/repos/padraic/mockery/zipball/4de7969f4664da3cef1ccd83866c9f59378c3371",
+                "reference": "4de7969f4664da3cef1ccd83866c9f59378c3371",
                 "shasum": ""
             },
             "require": {
@@ -3323,7 +3323,7 @@
                 "test double",
                 "testing"
             ],
-            "time": "2016-09-30 12:09:40"
+            "time": "2016-12-19 14:50:55"
         },
         {
             "name": "myclabs/deep-copy",
