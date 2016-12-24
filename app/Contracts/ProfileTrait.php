@@ -2,6 +2,8 @@
 
 namespace App\Contracts;
 
+use Illuminate\Http\Request;
+
 trait ProfileTrait
 {
     public function getProfile($id)
@@ -18,7 +20,7 @@ trait ProfileTrait
             $user->name = $request->input('name');
             $user->email = $request->input('email');
             if ($request->input('password') !== '******') {
-                $user->password = $request->input('password');
+                $user->password = bcrypt($request->input('password'));
             }
 
             $user->save();
@@ -26,7 +28,7 @@ trait ProfileTrait
             logger($e->getMessage());
 
             return response()->json([
-                'status' => 'ok',
+                'status' => 'error',
                 'message' => $e->getMessage(),
             ], 500);
         }
@@ -34,6 +36,6 @@ trait ProfileTrait
         return response()->json([
             'status' => 'ok',
             'message' => 'Credentials successfully updated!',
-        ]);
+        ], 200);
     }
 }

@@ -49,14 +49,6 @@
                                         <input type="email" class="form-control" name="user[email][]" id="email"
                                                value="{{ old('user.email.' . $i) }}" placeholder="Enter email" required>
                                     </div>
-                                    <div class="form-group">
-                                        <label for="merchant">Select Merchant</label>
-                                        <select name="user[merchant][]" id="merchant" class="form-control">
-                                            @foreach($merchants as $merchant)
-                                                <option value="{{ $merchant->id }}">{{ $merchant->company_name }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
                                 </div>
                             @endfor
                         </div>
@@ -100,7 +92,7 @@
         updateCounterForm(true);
         $("button#add").on('click', function (e) {
             e.preventDefault();
-            $('div#users').append('<div id="user"><div class="text-right"><button class="btn btn-box-tool" id="remove"><i class="fa fa-remove"></i></button></div><div class="form-group has-feedback"><label for="name">Name</label><input type="text" class="form-control" name="user[name][]" id="name" placeholder="Enter user name" required></div><div class="form-group has-feedback"><label for="email">Email</label><input type="email" class="form-control"  placeholder="Enter email" required></div><label for="merchant">Select Merchant</label><select name="user[merchant][]" id="merchant" class="form-control"><option selected>Select merchant</option>@foreach($merchants as $merchant)<option value="{{ $merchant->id }}" @if($merchant->id == $merchant->id) selected @endif>{{ $merchant->company_name }}</option>@endforeach</select></div></div>');
+            $('div#users').append('<div id="user"><div class="text-right"><button class="btn btn-box-tool" id="remove"><i class="fa fa-remove"></i></button></div><div class="form-group has-feedback"><label for="name">Name</label><input type="text" class="form-control" name="user[name][]" id="name" placeholder="Enter user name" required></div><div class="form-group has-feedback"><label for="email">Email</label><input type="email" class="form-control"  placeholder="Enter email" required></div></div></div>');
             updateCounterForm(false);
 
             window.location.href='#add';
@@ -118,7 +110,7 @@
 
     function myLoading() {
         $('#loading').addClass('overlay');
-        document.getElementById("loading").innerHTML = '<i class="fa fa-spinner fa-spin" style="font-size:50px; position: fixed;"></i>';
+        document.getElementById("loading").innerHTML = '<i class="fa fa-spinner fa-spin" style="font-size:50px;"></i>';
     }
 </script>
 @endsection

@@ -29,7 +29,7 @@ class UserController extends AdminController
      */
     public function __construct(Role $role)
     {
-        $this->role = $role;
+        $this->role = $role; 
     }
 
     /**
@@ -38,7 +38,8 @@ class UserController extends AdminController
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function index(Request $request)
-    {
+    { 
+        $this->isAllowed('User.List');
         $userObject = new User;
         $userObject = $userObject->with('roles');
         $filters = $this->uriExtractor($request, 'filter');
@@ -73,6 +74,7 @@ class UserController extends AdminController
      */
     public function create()
     {
+        $this->isAllowed('User.Create');
         $roles = $this->getRoles();
 
         return view('users.create', compact('roles'));
@@ -85,6 +87,7 @@ class UserController extends AdminController
      */
     public function edit($id)
     {
+        $this->isAllowed('User.Update');
         $user = $this->getUserById($id);
         $roles = $this->getRoles();
 
@@ -161,8 +164,10 @@ class UserController extends AdminController
         $user->is_active = $request->has('is_active') ? 1 : 0;
 
         DB::beginTransaction();
+
         if ($user->save()) {
             $user->roles()->sync([$request->input('role')]);
+
             DB::commit();
 
             return true;

@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Rebel\Component\Setting\Contracts\Setting;
 
-class SettingController extends Controller
+class SettingController extends AdminController
 {
     const GENERAL_GROUP_NAME = 'general';
 
@@ -22,6 +22,7 @@ class SettingController extends Controller
 
     public function index()
     {
+        $this->isAllowed('Settings.List');
         $settings = $this->setting->all([self::GENERAL_GROUP_NAME]);
 
         return view('settings.index', compact('settings'));

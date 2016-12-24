@@ -7,7 +7,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Rebel\Component\Rbac\Contracts\Permission;
 
-class PermissionController extends Controller
+class PermissionController extends AdminController
 {
 
     /**
@@ -30,6 +30,7 @@ class PermissionController extends Controller
      */
     public function create()
     {
+        $this->isAllowed('Permission.Create');
         $groupOfPermissions = $this->permission->distinctGroup();
 
         return view('rbac.permission_create', compact('groupOfPermissions'));
@@ -64,6 +65,7 @@ class PermissionController extends Controller
      */
     public function edit($id)
     {
+        $this->isAllowed('Permission.Update');
         $permission = $this->getPermissionById($id);
         $groupOfPermissions = $this->permission->distinctGroup();
 

@@ -12,17 +12,20 @@ class SesController extends AdminController
 {
     public function index()
     {
+        $this->isAllowed('Ses.List');
         $ses = SocioEconomicStatus::orderBy('range_start')->paginate(50);
         return view('ses.index', compact('ses'));
     }
 
     public function create()
     {
+        $this->isAllowed('Ses.Create');
         return view('ses.create');
     }
 
     public function edit($id)
     {
+        $this->isAllowed('Ses.Update');
         $ses = SocioEconomicStatus::where('id', $id)->first();
         return view('ses.edit', compact('ses'));
     }
