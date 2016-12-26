@@ -8,6 +8,7 @@ use App\Merchant;
 use App\User;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\MerchantUser as MailMerchantUser;
+use App\Services\MerchantService;
 
 class MerchantUserController extends AdminController
 {
@@ -21,10 +22,15 @@ class MerchantUserController extends AdminController
      */
     public function index()
     {
+        $this->isAllowed('MerchantUser.List');
+        if (empty($mi = (new MerchantService)->getMerchantIdByAuth()))
+        {
+            $mu = $this->getMerchantUserByMerchant();
+        } else {
+            $mu = $this->getMerchantUserByMerchant($mi);
+        }
 
-        $merchantUsers = MerchantUser::with('user', 'merchant')->paginate(50);
-
-        return view('merchants.user_index', compact('merchantUsers'));
+        return view('merchants.user_index', compact('mu'));
     }
 
     /**
@@ -32,9 +38,8 @@ class MerchantUserController extends AdminController
      */
     public function create()
     {
-        $merchants = $this->getMerchant();
-
-        return view('merchants.user_create', compact('merchants'));
+        $this->isAllowed('MerchantUser.Create');
+        return view('merchants.user_create');
     }
 
     /**
@@ -148,12 +153,14 @@ class MerchantUserController extends AdminController
     {
         //$userList = [];
         $user = $request->input('user');
-        $countUser = $this->countOfUserInput($request);
+        $countUser = $this->countOfUserInput($request);        
 
         for ($i = 0; $i <= $countUser; ++$i) {
+            $role = (new MerchantService)->getRoleMerchant();
+            $mi = (new MerchantService)->getMerchantIdByAuth();
             $u = new User;
             $mu = new MerchantUser;
-            $m = $this->getMerchantById($user['merchant'][$i]);
+            $m = $this->getMerchantById($mi->id);
             $name = $user['name'][$i];
             $email = $user['email'][$i];
             $passwordStr = strtolower(str_random(10));
@@ -169,7 +176,7 @@ class MerchantUserController extends AdminController
             $mu->user()->associate($u);
 
             $mu->save();
-
+            $u->roles()->attach($role->id);
             //queue mail new user account
             Mail::to($u->email)
                 ->queue(new MailMerchantUser($u, $passwordStr));
@@ -208,6 +215,22 @@ class MerchantUserController extends AdminController
     {
         $count = count($request->input('user')['name']);
         return 0 === $count ? 0 : $count - 1;
+    }
+
+    private function getMerchantUserByMerchant($mi = null)
+    {
+        $merchantUsers = \DB::table('users')
+                            ->join('merchant_users', 'users.id', '=', 'merchant_users.user_id')
+                            ->where('merchant_users.deleted_at', '=', null)
+                            ->orderBy('merchant_users.id', 'DESC')  
+                            ->paginate(50);
+        if ($mi)
+        {
+            $mu = $merchantUsers->where('merchant_id', '=', $mi->id);
+            return $mu;
+        } else {
+            return $merchantUsers;
+        }
     }
 
 }

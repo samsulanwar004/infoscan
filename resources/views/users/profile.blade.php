@@ -12,7 +12,7 @@
                 <h3 class="box-title"><i class="fa fa-btn fa-lock"></i> Update Credential</h3>
             </div>
             <div class="box-body">
-                <form role="form" action="/users/{{ $user->id }}/profile" method="POST">
+                <form role="form" action="/users/{{ $user->id }}/credential" method="POST" id="profile">
                     {{ csrf_field() }}
                     {{ method_field('PUT') }}
                     <div class="box-body">
@@ -41,7 +41,7 @@
                     <!-- /.box-body -->
 
                     <div class="box-footer text-right">
-                        <button type="submit" class="btn btn-primary">
+                        <button type="submit" class="btn btn-primary" id="save">
                             <i class="fa fa-save fa-btn"></i> Update Credential
                         </button>
                     </div>
@@ -49,8 +49,52 @@
             </div>
         </div>
         <!-- /.box -->
-
     </section>
     <!-- /.content -->
 @endsection
 
+@section('footer_scripts')
+<script>
+
+    $("#password, #confirm_password").keyup(function() {
+        var pass1 = document.getElementById("password").value;
+        var pass2 = document.getElementById("confirm_password").value;
+
+        if (pass1 != pass2) {
+            document.getElementById("password").style.borderColor = "#E34234";
+            document.getElementById("confirm_password").style.borderColor = "#E34234";
+            document.getElementById("save").disabled = true;
+        } else {
+            document.getElementById("password").style.borderColor = "#00ff00";
+            document.getElementById("confirm_password").style.borderColor = "#00ff00";
+            document.getElementById("save").disabled = false;
+        }
+    });
+
+    jQuery( document ).ready( function( $ ) {
+
+        $( '#profile' ).on( 'submit', function() {
+
+            $.ajax({
+              url: '/users/{{ $user->id }}/credential',
+              type: "put",
+              data: {
+                '_token':$('input[name=_token]').val(),
+                '_method':$('input[name=_method]').val(),  
+                'name':$('input[name=name]').val(), 
+                'email':$('input[name=email]').val(), 
+                'password':$('input[name=password]').val(),                   
+            },
+                success: function(msg){
+                    alert(msg.message);
+                },
+                error: function (msg) {
+                    alert(msg.responseText);
+                }
+            });                        
+            return false;
+        } );
+     
+    } );
+</script>
+@endsection

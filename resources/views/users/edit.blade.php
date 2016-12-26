@@ -47,6 +47,9 @@
                         <div class="form-group">
                             <label for="role">Select Role</label>
                             <select name="role" id="role" class="form-control">
+                                @if($user->roles[0]->id)
+                                    <option selected="selected" value="{{ $user->roles[0]->id }}">{{ $user->roles[0]->role_name }}</option>
+                                @endif
                                 @foreach($roles as $role)
                                     <option value="{{ $role->id }}">{{ $role->role_name }}</option>
                                 @endforeach
@@ -74,15 +77,35 @@
                     <!-- /.box-body -->
 
                     <div class="box-footer text-right">
-                        <button type="submit" class="btn btn-primary">
+                        <button type="submit" class="btn btn-primary" id="save">
                             <i class="fa fa-save fa-btn"></i> Save User
                         </button>
                     </div>
                 </form>
             </div>
+            <div id="loading"></div>
         </div>
         <!-- /.box -->
 
     </section>
     <!-- /.content -->
+@endsection
+
+@section('footer_scripts')
+<script>
+    $("#password, #confirm_password").keyup(function() {
+        var pass1 = document.getElementById("password").value;
+        var pass2 = document.getElementById("confirm_password").value;
+
+        if (pass1 != pass2) {
+            document.getElementById("password").style.borderColor = "#E34234";
+            document.getElementById("confirm_password").style.borderColor = "#E34234";
+            document.getElementById("save").disabled = true;
+        } else {
+            document.getElementById("password").style.borderColor = "#00ff00";
+            document.getElementById("confirm_password").style.borderColor = "#00ff00";
+            document.getElementById("save").disabled = false;
+        }
+    });
+</script>
 @endsection

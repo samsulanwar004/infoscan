@@ -49,7 +49,7 @@
                             </td>
                         </tr>
                     @empty
-                        <td colspan="5"> There is no record for promotions data!</td>
+                        <td colspan="5"> There is no record for transactions data!</td>
                     @endforelse
                     </tbody>
                 </table>

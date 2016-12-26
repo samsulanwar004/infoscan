@@ -21,6 +21,7 @@ class PromotionController extends AdminController
      */
     public function index()
     { 
+        $this->isAllowed('Promotion.List');
         $promotion = new PromotionService;
         if (empty($mi = (new MerchantService)->getMerchantIdByAuth())){
             $promos = $promotion->getAllPromotion();
@@ -35,6 +36,7 @@ class PromotionController extends AdminController
      */
     public function create()
     {
+        $this->isAllowed('Promotion.Create');
         return view('promotions.create');
     }
 
@@ -69,6 +71,7 @@ class PromotionController extends AdminController
      */
     public function edit($id)
     {
+        $this->isAllowed('Promotion.Update');
         $promotion = (new PromotionService)->getPromotionById($id);
 
         return view('promotions.edit', compact('promotion'));

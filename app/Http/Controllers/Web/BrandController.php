@@ -17,6 +17,7 @@ class BrandController extends AdminController
      */
     public function index()
     {
+        $this->isAllowed('Brand.List');
         $brands = Brand::paginate();
 
         return view('brand.index', compact('brands'));
@@ -27,6 +28,7 @@ class BrandController extends AdminController
      */
     public function create()
     {
+        $this->isAllowed('Brand.Create');
         return view('brand.create');
     }
 

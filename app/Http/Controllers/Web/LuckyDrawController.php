@@ -18,6 +18,7 @@ class LuckyDrawController extends AdminController
      */
     public function index()
     {
+        $this->isAllowed('LuckyDraw.List');
         $luckys = (new LuckyDrawService)->getAllLuckyDraw();
 
         return view('lucky.index', compact('luckys'));
@@ -30,6 +31,7 @@ class LuckyDrawController extends AdminController
      */
     public function create()
     {
+        $this->isAllowed('LuckyDraw.Create');
         return view('lucky.create');
     }
 
@@ -76,6 +78,7 @@ class LuckyDrawController extends AdminController
      */
     public function edit($id)
     {
+        $this->isAllowed('LuckyDraw.Update');
         $lucky = (new LuckyDrawService)->getLuckyDrawById($id);
 
         return view('lucky.edit', compact('lucky'));

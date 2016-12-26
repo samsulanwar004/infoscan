@@ -13,7 +13,7 @@
                 </h3>
 
                 <div class="box-tools pull-right">
-                    @cando('User.Create')
+                    @cando('MerchantUser.Create')
                     <a href="{{ admin_route_url('merchantusers.create') }}" class="btn btn-box-tool"
                        data-toggle="tooltip"
                        title="Create New">
@@ -25,37 +25,38 @@
                 <table class="table table-striped">
                     <thead>
                     <tr>
-                        <th>User</th>
-                        <th>Merchant</th>
-                        <th>Active</th>
+                        <th>#</th>
+                        <th>Username & Email</th>
+                        <th>Activity</th>
+ 
                         <th width="250"></th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr>
-                        @forelse($merchantUsers as $merchantuser)
+                        @forelse($mu as $merchantuser)
                             <td>
-                                {{ $merchantuser->user->name }}<br>
-                                <small>{{ $merchantuser->user->email }}</small>
+                                <i class="fa fa-check-circle {{ $merchantuser->is_active == 1 ? 'text-green' : 'text-default' }}"></i>
                             </td>
                             <td>
-                                {{ $merchantuser->merchant->company_name }}
+                                {{ $merchantuser->name }}<br>
+                                <small>{{ $merchantuser->email }}</small>
                             </td>
                             <td>
-                                <i class="fa fa-check-circle {{ $merchantuser->user->is_active == 1 ? 'text-green' : 'text-default' }}"></i>
-                            </td>
+                                <a href="#"><i class="fa fa-list-alt fa-btn"></i> See activity</a>
+                            </td>                            
                             <td class="text-right vertical-middle">
                                 <div class="btn-group">
-                                    @cando('User.Update')
-                                    <a href="{{ admin_route_url('merchantusers.edit', ['id' => $merchantuser->user->id]) }}"
+                                    @cando('MerchantUser.Update')
+                                    <a href="{{ admin_route_url('merchantusers.edit', ['id' => $merchantuser->user_id]) }}"
                                        class="btn btn-info">
                                         <i class="fa fa-pencil"> </i>
                                     </a>
                                     @endcando
 
-                                    @cando('User.Delete')
+                                    @cando('MerchantUser.Delete')
                                     <a class="btn btn-danger"
-                                       href="{{ admin_route_url('merchantusers.destroy', ['id' => $merchantuser->user->id]) }}"
+                                       href="{{ admin_route_url('merchantusers.destroy', ['id' => $merchantuser->user_id]) }}"
                                        data-toggle="modal"
                                        data-target="#"
                                        title="Delete this data"

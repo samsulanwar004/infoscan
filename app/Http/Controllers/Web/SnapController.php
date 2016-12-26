@@ -9,6 +9,7 @@ class SnapController extends AdminController
 {
     public function index()
     {
+        $this->isAllowed('Snaps.List');
         $snaps = ( new SnapService)->getAvailableSnaps();
 
         return view('snaps.index', compact('snaps'));
@@ -16,6 +17,7 @@ class SnapController extends AdminController
 
     public function show(Request $request, $id)
     {
+        $this->isAllowed('Snaps.Show');
         $snap = (new SnapService)->getSnapById($id);
 
         return view('snaps.show', compact('snap'));
