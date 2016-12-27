@@ -106,6 +106,15 @@
                 </ul>
             </li>
 
+            <li class="treeview">
+                <a href="/report">
+                    <i class="fa fa-file"></i> <span>Report</span>
+                    <span class="pull-right-container">
+                      <i class="fa fa-angle-left pull-right"></i>
+                    </span>
+                </a>
+            </li>
+
             <li class="header">LABELS</li>
             <!-- <li class="header">LABELS</li>
             <li><a href="#"><i class="fa fa-circle-o text-red"></i> <span>Important</span></a></li>
