@@ -9,7 +9,7 @@
                     <div class="box-body" id="form-body">
                         <div class="text-right">
                             <div class="btn-group">
-                                <a class="btn btn-primary btn-sm" id="filters" href="{{ admin_route_url('reports.filters') }}?attributes=@foreach($dataAttributes as $data){!! $data !!},@endforeach" data-toggle="modal" data-target="#" title="Filters"> 
+                                <a class="btn btn-primary btn-sm" id="filters" href="{{ admin_route_url('reports.filters') }}" data-toggle="modal" data-target="#" title="Filters"> 
                                     Filters 
                                 </a>
                             </div>
@@ -19,16 +19,13 @@
                                 </button>
                                 <ul class="dropdown-menu" role="menu" style="width: 200px">
                                     <li role="presentation">
-                                        <a role="menuitem" id="pdf" title="PDF" href="{{ admin_route_url('reports.formatPdf') }}?attributes=@foreach($dataAttributes as $data){!! $data !!},@endforeach">PDF</a>
+                                        <a role="menuitem" id="pdf" title="PDF" href="{{ admin_route_url('reports.formatPdf') }}">PDF</a>
                                     </li>
                                     <li role="presentation">
-                                        <a role="menuitem" id="excel" title="Excel" href="{{ admin_route_url('reports.formatExcel') }}?attributes=@foreach($dataAttributes as $data){!! $data !!},@endforeach">Excel</a>
+                                        <a role="menuitem" id="excel" title="Excel" href="{{ admin_route_url('reports.formatExcel') }}">Excel</a>
                                     </li>
                                     <li role="presentation">
-                                        <a role="menuitem" id="word" title="Word" href="{{ admin_route_url('reports.formatWord') }}?attributes=@foreach($dataAttributes as $data){!! $data !!},@endforeach">Word</a>
-                                    </li>
-                                    <li role="presentation">
-                                        <a role="menuitem" id="image" title="Image" href="{{ admin_route_url('reports.formatImage') }}?attributes=@foreach($dataAttributes as $data){!! $data !!},@endforeach">Image</a>
+                                        <a role="menuitem" id="word" title="Word" href="{{ admin_route_url('reports.formatWord') }}">Word</a>
                                     </li>
                                 <ul>                                        
                             </div>

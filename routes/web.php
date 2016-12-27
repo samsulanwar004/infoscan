@@ -104,16 +104,14 @@ Auth::routes();
 
 Route::get('/secure/{requestCode}/{social}', 'SecureController@redirect');
 
+Route::post('/reports/filters', 'Web\ReportsController@filters')->name('reports.filters');
+
 Route::get(
     '/reports/filters',
     'Web\ReportsController@filters'
 )->name('reports.filters');
 
-Route::post('/reports/filterStore', 'Web\ReportsController@filterStore');
-Route::get(
-    '/reports/filterStore',
-    'Web\ReportsController@filterStore'
-)->name('reports.filterStore');
+Route::post('/reports/filterStore', 'Web\ReportsController@filterStore')->name('reports.filterStore');
 
 Route::get(
     '/reports/formatPdf',
@@ -129,11 +127,6 @@ Route::get(
     '/reports/formatWord',
     'Web\ReportsController@formatWord'
 )->name('reports.formatWord');
-
-Route::get(
-    '/reports/formatImage',
-    'Web\ReportsController@formatImage'
-)->name('reports.formatImage');
 
 Route::resource('pdf', 'PdfController');
 

@@ -4,9 +4,6 @@
             <form role="form" action="{{ admin_route_url('reports.filterStore') }}" method="post" enctype="multipart/form-data" class="form" accept-charset="utf-8">
                 {!! csrf_field() !!}
                 <h3>Customizable Attributes</h3>
-                <?php
-                    //dd($dataAttributesAll);                 
-                ?>
                 <div class="box-body" id="form-body">
                     <div id="multiCheck">
                         @foreach ($dataAttributes as $data => $value)
@@ -17,7 +14,7 @@
                                     $checked = '';                                     
                                 }
                             ?>
-                            <input style="cursor:pointer" type="checkbox" id="attributes" <?php echo $checked; ?> name="attributes[]" class="attributes" value="{!! $data !!}" /> {!! $data !!}
+                            <input style="cursor:pointer" type="checkbox" id="attributess" <?php echo $checked; ?> name="attributes[]" class="attributes" value="{!! $data !!}" /> {!! $data !!}
                             <br>
                         @endforeach                                        
                     </div>

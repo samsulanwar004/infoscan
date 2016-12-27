@@ -7,53 +7,73 @@
     use \Crypt;
     use PDF;
     use Excel;
+    use Session;
 
     class ReportsController extends AdminController {
 
         public function index() {
-            if(isset($_GET['attributes'])) {
-                $getAttributes = $_GET['attributes'];
-                $getAttributes = Crypt::decrypt($getAttributes);  
+            dd($this->dataValueAttributes());
+            $getAttributes = Session::get('attributes');
+            if(isset($getAttributes)) {
                 $dataAttributes = $getAttributes;
             } else {
-                $dataAttributes = [
-                                    "0" => "Outlet Name",
-                                    "1" => "Outlet Area",
-                                    "2" => "Products",
-                                    "3" => "User's City",
-                                    "4" => "Province",
-                                    "5" => "Age",
-                                    "6" => "Gender",
-                                    "7" => "Usership",
-                                    "8" => "SEC",
-                                    "9" => "Outlet Type"
-                                  ];    
+                $dataAttributes = $this->dataAttributes();
             }
-            $dataFormat = [
-                            "0" => "PDF",
-                            "1" => "Word",
-                            "2" => "Excel",
-                            "3" => "Image"
-                          ];    
             return view('reports.index', compact('dataAttributes'));
         }
 
+        public function dataAttributes() {
+            $dataAttributes = [
+                                "0" => "Outlet Name",
+                                "1" => "Outlet Area",
+                                "2" => "Products",
+                                "3" => "User's City",
+                                "4" => "Province",
+                                "5" => "Age",
+                                "6" => "Gender",
+                                "7" => "Usership",
+                                "8" => "SEC",
+                                "9" => "Outlet Type"
+                              ];    
+            return $dataAttributes;
+        }
+
+        public function dataValueAttributes() {
+            $dataValueAttributes = [
+                                        "0" => [
+                                                "0" => "Indomaret",
+                                                "1" => "",
+                                                "2" => "Chitos",
+                                                "3" => "Bekasi",
+                                                "4" => "Jawa Barat",
+                                                "5" => "18",
+                                                "6" => "Male",
+                                                "7" => "",
+                                                "8" => "",
+                                                "9" => "Convenience"
+                                               ],     
+                                        "1" => 
+                                               [
+                                                "0" => "Alfamart",
+                                                "1" => "",
+                                                "2" => "Bimoli",
+                                                "3" => "Jakarta Selatan",
+                                                "4" => "DKI Jakarta",
+                                                "5" => "18",
+                                                "6" => "Male",
+                                                "7" => "",
+                                                "8" => "",
+                                                "9" => ""
+                                               ]                                                    
+                                   ];    
+            return $dataValueAttributes;
+        }
+
         public function filters() {
-            $dataAttributesAs = [
-                                    "0" => "Outlet Name",
-                                    "1" => "Outlet Area",
-                                    "2" => "Products",
-                                    "3" => "User's City",
-                                    "4" => "Province",
-                                    "5" => "Age",
-                                    "6" => "Gender",
-                                    "7" => "Usership",
-                                    "8" => "SEC",
-                                    "9" => "Outlet Type"
-                                ];    
-            if(isset($_GET['attributes'])) {
-                $getAttributes = $_GET['attributes'];
-                $dataAttributes2 = explode(',', $getAttributes);
+            $dataAttributesAs = $this->dataAttributes();
+            $getAttributes = Session::get('attributes');
+            if(isset($getAttributes)) {
+                $dataAttributes2 = $getAttributes;
             } else {
                 $dataAttributes2 = $dataAttributesAs;    
             }
@@ -64,34 +84,20 @@
         }
 
         public function filterStore(Request $request) {
-            $input = [
-                        'attributes' => $request->input(trim('attributes'))
-                     ];
+            $input = ['attributes' => $request->input(trim('attributes'))];
             $attributes = $input['attributes'];
-            $attributes = Crypt::encrypt($attributes);      
+            $value = $request->session()->put('attributes', $attributes);            
+            $attributes = $request->session()->get('attributes', $value);
 
-            return redirect()->route('reports.index', ['attributes' => $attributes]);
+            return redirect()->route('reports.index');
         }
 
         public function formatPdf() {                           
-            if(isset($_GET['attributes'])) {
-                $getAttributes = $_GET['attributes'];
-                $getAttributes = explode(',', $getAttributes);
-                $getAttributes = array_filter($getAttributes, 'strlen');
+            $getAttributes = Session::get('attributes');
+            if(isset($getAttributes)) {
                 $dataAttributes = $getAttributes;
             } else {
-                $dataAttributes = [
-                                    "0" => "Outlet Name",
-                                    "1" => "Outlet Area",
-                                    "2" => "Products",
-                                    "3" => "User's City",
-                                    "4" => "Province",
-                                    "5" => "Age",
-                                    "6" => "Gender",
-                                    "7" => "Usership",
-                                    "8" => "SEC",
-                                    "9" => "Outlet Type"
-                                  ];    
+                $dataAttributes = $this->dataAttributes();    
             }
             $view = \View::make('reports.pdf', compact('dataAttributes'));
             $html = $view->render();        
@@ -102,24 +108,11 @@
         }
 
         public function formatExcel() {                           
-            if(isset($_GET['attributes'])) {
-                $getAttributes = $_GET['attributes'];
-                $getAttributes = explode(',', $getAttributes);
-                $getAttributes = array_filter($getAttributes, 'strlen');
+            $getAttributes = Session::get('attributes');
+            if(isset($getAttributes)) {
                 $dataAttributes = $getAttributes;
             } else {
-                $dataAttributes = [
-                                    "0" => "Outlet Name",
-                                    "1" => "Outlet Area",
-                                    "2" => "Products",
-                                    "3" => "User's City",
-                                    "4" => "Province",
-                                    "5" => "Age",
-                                    "6" => "Gender",
-                                    "7" => "Usership",
-                                    "8" => "SEC",
-                                    "9" => "Outlet Type"
-                                  ];    
+                $dataAttributes = $this->dataAttributes();    
             }
             Excel::create('SnapReportTable', function($excel) use ($dataAttributes) {
                 $excel->sheet('Snap Report Table', function($sheet) use ($dataAttributes) {
@@ -129,24 +122,11 @@
         }
 
         public function formatWord() {                           
-            if(isset($_GET['attributes'])) {
-                $getAttributes = $_GET['attributes'];
-                $getAttributes = explode(',', $getAttributes);
-                $getAttributes = array_filter($getAttributes, 'strlen');
+            $getAttributes = Session::get('attributes');
+            if(isset($getAttributes)) {
                 $dataAttributes = $getAttributes;
             } else {
-                $dataAttributes = [
-                                    "0" => "Outlet Name",
-                                    "1" => "Outlet Area",
-                                    "2" => "Products",
-                                    "3" => "User's City",
-                                    "4" => "Province",
-                                    "5" => "Age",
-                                    "6" => "Gender",
-                                    "7" => "Usership",
-                                    "8" => "SEC",
-                                    "9" => "Outlet Type"
-                                  ];    
+                $dataAttributes = $this->dataAttributes();    
             }
             $headers = array(
                                 "Content-type"=>"text/html",
@@ -158,34 +138,26 @@
                                 <meta charset="utf-8">
                             </head>
                             <body>
-                                <section class="content">
-                                    <div class="box">
-                                        <div class="box-body" id="form-body">
-                                            <div class="box-body" id="form-body">
-                                                <table class="table table-striped" border="1">
-                                                    <thead>
-                                                        <tr>
+                                <table border="1">
+                                    <thead>
+                                        <tr>
                         ';
             foreach ($dataAttributes as $data) {
                 $content .= '<th align="center">'.$data.'</th>';
             }
             $content .= '               
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <tr>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
                         ';
             foreach ($dataAttributes as $data) {
                 $content .= '<th>&nbsp;</th>';
             }
             $content .= '
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </section>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </body>
                         </html>';
             return \Response::make($content,200, $headers);        
