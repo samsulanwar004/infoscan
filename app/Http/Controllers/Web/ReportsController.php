@@ -12,14 +12,14 @@
     class ReportsController extends AdminController {
 
         public function index() {
-            dd($this->dataValueAttributes());
             $getAttributes = Session::get('attributes');
             if(isset($getAttributes)) {
                 $dataAttributes = $getAttributes;
             } else {
                 $dataAttributes = $this->dataAttributes();
             }
-            return view('reports.index', compact('dataAttributes'));
+            $dataValueAttributes = $this->dataValueAttributes();
+            return view('reports.index', compact('dataAttributes', 'dataValueAttributes'));
         }
 
         public function dataAttributes() {
@@ -40,7 +40,6 @@
 
         public function dataValueAttributes() {
             $dataValueAttributes = [
-                                        "0" => [
                                                 "0" => "Indomaret",
                                                 "1" => "",
                                                 "2" => "Chitos",
@@ -51,20 +50,6 @@
                                                 "7" => "",
                                                 "8" => "",
                                                 "9" => "Convenience"
-                                               ],     
-                                        "1" => 
-                                               [
-                                                "0" => "Alfamart",
-                                                "1" => "",
-                                                "2" => "Bimoli",
-                                                "3" => "Jakarta Selatan",
-                                                "4" => "DKI Jakarta",
-                                                "5" => "18",
-                                                "6" => "Male",
-                                                "7" => "",
-                                                "8" => "",
-                                                "9" => ""
-                                               ]                                                    
                                    ];    
             return $dataValueAttributes;
         }
@@ -84,7 +69,7 @@
         }
 
         public function filterStore(Request $request) {
-            $input = ['attributes' => $request->input(trim('attributes'))];
+            $input = ['attributes' => $request->input('attributes')];
             $attributes = $input['attributes'];
             $value = $request->session()->put('attributes', $attributes);            
             $attributes = $request->session()->get('attributes', $value);

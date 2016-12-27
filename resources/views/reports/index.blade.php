@@ -34,14 +34,14 @@
                             <thead>
                                 <tr>
                                     @foreach ($dataAttributes as $data)
-                                        <th>{!! $data !!}</th>
+                                        <th>{{ $data }}</th>
                                     @endforeach
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    @foreach ($dataAttributes as $data)
-                                        <th>&nbsp;</th>
+                                    @foreach ($dataValueAttributes as $dataValue)
+                                        <th>{{ $dataValue }}</th>
                                     @endforeach
                                 </tr>
                             </tbody>
