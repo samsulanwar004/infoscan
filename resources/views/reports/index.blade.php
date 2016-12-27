@@ -5,7 +5,7 @@
     <section class="content">
         <div class="box">
             <div class="box-body" id="form-body">
-                <form role="form" action="" method="" accept-charset="utf-8">
+                <form role="form" action="" method="post" accept-charset="utf-8">
                     <div class="box-body" id="form-body">
                         <div class="text-right">
                             <div class="btn-group">
