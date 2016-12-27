@@ -9,6 +9,7 @@ class PointController extends AdminController
 {
     public function index(Request $request)
     {
+        $this->isAllowed('Points.List');
         if ($request->wantsJson()) {
             return (new PointService)->getPivotGrid();
         }
@@ -24,13 +25,26 @@ class PointController extends AdminController
     public function create()
     {
         $categories = $this->getSnapCategory();
+        $levels = $this->getLevels();
 
-        return view('points.edit', compact($categories));
+        return view('points.create', compact('categories', 'levels'));
     }
 
     public function store(Request $request)
     {
+        try {
+            (new PointService)->addTaskLevelPoint($request);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
 
+        return response()->json([
+            'status' => 'ok',
+            'message' => 'Task Level Point created!',
+        ]);
     }
 
     public function edit($id)
@@ -55,5 +69,10 @@ class PointController extends AdminController
         }
 
         return config('common.snap_category');
+    }
+
+    protected function getLevels()
+    {
+        return (new PointService)->getLevels();
     }
 }

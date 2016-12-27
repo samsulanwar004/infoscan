@@ -1,5 +1,5 @@
 <div class="col-md-4">
-	<button type="button" class="btn btn-success btn-block btn-lg"><i class="fa fa-check-circle-o fa-btn"></i> Approve This Snap</button>
+	<button type="button" class="btn btn-success btn-block btn-lg"><i class="fa fa-check-circle-o fa-btn"></i> Approve This Content</button>
 	<table class="table">
 		<thead>
 			<tr>

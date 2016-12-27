@@ -9,6 +9,7 @@ class HistoryController extends AdminController
 {
     public function transactions()
     {
+        $this->isAllowed('Transactions.List');
     	$transactions = (new TransactionService)->getAllTransaction();
 
     	return view('transactions.index_transactions', compact('transactions'));

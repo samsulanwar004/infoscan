@@ -45,11 +45,11 @@ Route::group([
         'Web\MerchantController',
         ['except' => ['show'], 'names' => route_resource_name($routePrefix, 'merchants')]
     );
-    Route::resource(
-        '/merchants/user',
-        'Web\MerchantUserController',
-        ['except' => ['show'], 'names' => route_resource_name($routePrefix, 'merchantusers')]
-    );
+    // Route::resource(
+    //     '/merchants/user',
+    //     'Web\MerchantUserController',
+    //     ['except' => ['show'], 'names' => route_resource_name($routePrefix, 'merchantusers')]
+    // );
     Route::resource(
         '/ses',
         'Web\SesController',
@@ -92,9 +92,38 @@ Route::group([
         'history/{id}/transactions',
         'Web\HistoryController@showTransaction'
     )->name('transaction.show');
+
+    Route::resource(
+        '/report',
+        'Web\ReportController',
+        ['except' => ['show'], 'names' => route_resource_name($routePrefix, 'report')]
+    );
 });
 
 Auth::routes();
 
 Route::get('/secure/{requestCode}/{social}', 'SecureController@redirect');
+//Route::get('/report/filters',
+//    ['as' => 'report.filters', 'uses' => 'Web\ReportController@filters']);
+Route::get(
+    '/report/filters',
+    'Web\ReportController@filters'
+)->name('report.filters');
+
+Route::get(
+    '/report/filterStore',
+    'Web\ReportController@filterStore'
+)->name('report.filterStore');
+
+Route::get(
+    '/report/formatPdf',
+    'Web\ReportController@formatPdf'
+)->name('report.formatPdf');
+
+/*Route::get('/report/filterStore/{attributes?}', function($attributes = null) {
+    return Redirect::to('/report/index/' . $attributes);
+});*/
+
+Route::resource('pdf', 'PdfController');
+
 Route::get('/callback/{social}', 'SecureController@callback');

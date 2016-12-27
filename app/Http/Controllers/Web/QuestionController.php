@@ -19,17 +19,20 @@ class QuestionController extends AdminController
 
     public function index()
     {
+        $this->isAllowed('Questions.List');
         $questions = QuestionnaireQuestion::all();
         return view('questions.index', compact('questions'));
     }
 
     public function create()
     {
+        $this->isAllowed('Questions.Create');
         return view('questions.create');
     }
 
     public function edit($id)
     {
+        $this->isAllowed('Questions.Update');
         $question = QuestionnaireQuestion::where('id', $id)->first();
         $answers = QuestionnaireAnswer::where('question_id', $id)->get();
         return view('questions.edit', compact('question', 'answers'));

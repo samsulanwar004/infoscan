@@ -13,7 +13,7 @@
                 </h3>
 
                 <div class="box-tools pull-right">
-                    @cando('Lucky.Create')
+                    @cando('LuckyDraw.Create')
                     <a href="{{ route('lucky.create') }}" class="btn btn-box-tool" data-toggle="tooltip"
                        title="Create New">
                         <i class="fa fa-plus-circle fa-btn"></i> Create New</a>
@@ -48,13 +48,13 @@
                             <td class="vertical-middle">{{ date_format(date_create($lucky->end_at), 'M, d Y') }}</td>
                             <td class="text-right vertical-middle">
                                 <div class="btn-group">
-                                    @cando('Lucky.Update')
+                                    @cando('LuckyDraw.Update')
                                     <a href="{{ route('lucky.edit', ['id' => $lucky->id]) }}" class="btn btn-info">
                                         <i class="fa fa-pencil"> </i>
                                     </a>
                                     @endcando
 
-                                    @cando('Lucky.Delete')
+                                    @cando('LuckyDraw.Delete')
                                     <a class="btn btn-danger"
                                        href="{{ route('lucky.destroy', ['id' => $lucky->id]) }}"
                                        data-toggle="modal"
@@ -68,7 +68,7 @@
                             </td>
                         </tr>
                     @empty
-                        <td colspan="5"> There is no record for lucky draws data!</td>
+                        <td colspan="8"> There is no record for lucky draws data!</td>
                     @endforelse
                     </tbody>
                 </table>

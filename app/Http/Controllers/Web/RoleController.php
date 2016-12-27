@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 use Rebel\Component\Rbac\Contracts\Permission;
 use Rebel\Component\Rbac\Contracts\Role;
 
-class RoleController extends Controller
+class RoleController extends AdminController
 {
     /**
      * @var \Rebel\Component\Rbac\Contracts\Role
@@ -45,6 +45,7 @@ class RoleController extends Controller
      */
     public function index()
     {
+        $this->isAllowed('Role.List');
         $roles = $this->role->with('permissions')->paginate();
 
         return view('rbac.role_index', compact('roles'));
@@ -70,6 +71,7 @@ class RoleController extends Controller
      */
     public function create()
     {
+        $this->isAllowed('Role.Create');
         $permissions = $this->getPermissions(false);
 
         return view('rbac.role_create', compact('permissions'));
@@ -102,10 +104,11 @@ class RoleController extends Controller
      */
     public function edit($id)
     {
+        $this->isAllowed('Role.Update');
         $role = $this->role->with('permissions')->where('id', '=', $id)->first();
         $currentPermissions = $role->permissions;
 
-        $permissions = $this->getPermissions();
+        $permissions = $this->getPermissions(false);
 
         return view('rbac.role_edit', compact('role', 'permissions', 'currentPermissions'));
     }

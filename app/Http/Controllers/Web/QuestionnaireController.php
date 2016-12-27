@@ -15,18 +15,21 @@ class QuestionnaireController extends AdminController
 
     public function index()
     {
+        $this->isAllowed('Questionnaire.List');
         $questionnaire = QuestionnaireTemplate::all();
         return view('questionnaire.index', compact('questionnaire'));
     }
 
     public function create()
     {
+        $this->isAllowed('Questionnaire.Create');
         $questions = QuestionnaireQuestion::all();
         return view('questionnaire.create', compact('questions'));
     }
 
     public function edit($id)
     {
+        $this->isAllowed('Questionnaire.Update');
         $questionnaire = $this->getQuestionnaireTemplateById($id);
         $questions = QuestionnaireQuestion::all();
         return view('questionnaire.edit', compact('questionnaire', 'questions'));
