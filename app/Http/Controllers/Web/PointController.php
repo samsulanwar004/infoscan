@@ -26,13 +26,28 @@ class PointController extends AdminController
     {
         $categories = $this->getSnapCategory();
         $levels = $this->getLevels();
+        $lastLevels = (new PointService)->lastLevel();
 
-        return view('points.create', compact('categories', 'levels'));
+        if ($lastLevels) {
+            $arrayLevel = explode(' ', $lastLevels->name);
+            $lastLevel = $arrayLevel[1];
+        } else {
+            $lastLevel = 0;
+        }
+
+        return view('points.create', compact('categories', 'levels', 'lastLevel'));
     }
 
     public function store(Request $request)
-    {
+    {        
+
+        $this->validate($request, [
+            'name' => 'required|unique:tasks,name',
+            'levels.*' => 'required'
+        ]);
+
         try {
+
             (new PointService)->addTaskLevelPoint($request);
         } catch (Exception $e) {
             return response()->json([
@@ -45,6 +60,7 @@ class PointController extends AdminController
             'status' => 'ok',
             'message' => 'Task Level Point created!',
         ]);
+
     }
 
     public function edit($id)
