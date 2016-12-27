@@ -136,6 +136,5 @@ Route::get(
 )->name('reports.formatImage');
 
 Route::resource('pdf', 'PdfController');
-//Route::resource('excel', 'ExcelController');
 
 Route::get('/callback/{social}', 'SecureController@callback');
