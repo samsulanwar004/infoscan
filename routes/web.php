@@ -113,6 +113,8 @@ Route::get(
 
 Route::post('/reports/filterStore', 'Web\ReportsController@filterStore')->name('reports.filterStore');
 
+Route::post('/reports/formatPdf', 'Web\ReportsController@formatPdf')->name('reports.formatPdf');
+
 Route::get(
     '/reports/formatPdf',
     'Web\ReportsController@formatPdf'

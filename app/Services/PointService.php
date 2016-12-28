@@ -56,8 +56,9 @@ inner join level_points as l on l.id = tlp.level_id;');
     {
         $level = new TaskLevelPoint;
         $level->name = $name;
+        $level->save();
 
-        return $level->save();
+        return $level;
     }
 
     public function addTask($name)
@@ -76,13 +77,16 @@ inner join level_points as l on l.id = tlp.level_id;');
         $task = $this->addTask($request->input('name'));
 
         if ($task) {
-            foreach ($request->input('levels') as $level => $point) {
+            foreach ($request->input('levels') as $levelName => $point) {
                 $taskLevelPoint = new TaskLevelPoints;
                 $taskLevelPoint->point = $point;
-                $taskLevelPoint->levelPoint()->associate($this->getLevelById($level));
+                $level = $this->findLevel($levelName);
+                $taskLevelPoint->levelPoint()->associate($level);
                 $taskLevelPoint->task()->associate($task);
                 $taskLevelPoint->save();
             }
+
+            $this->removeCache();
 
             DB::commit();
 
@@ -94,9 +98,27 @@ inner join level_points as l on l.id = tlp.level_id;');
         return false;        
     }
 
-    public function getLevelById($id)
+    public function lastLevel()
     {
-        return TaskLevelPoint::where('id', '=', $id)->first();
+        return TaskLevelPoint::orderBy('id', 'desc')->first();
+    }
+
+    public function getLevelByName($name)
+    {
+        return TaskLevelPoint::where('name', '=', 'Level ' . $name)->first();
+    }
+
+    public function findLevel($levelName)
+    {
+        if ($level = $this->getLevelByName($levelName))
+        {
+            return $level;
+        } else {
+            $name = 'Level ' . $levelName;
+            $level = $this->addLevel($name);
+
+            return $level;
+        }
     }
 
 }
