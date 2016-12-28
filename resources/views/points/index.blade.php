@@ -24,6 +24,7 @@
                 </div>
             </div>
             <div class="box-body">
+                <a href="#" class="edit">edit selected row</a>
                 <table id="point-pivot" style="width:700px;height:300px"></table>
             </div>
             <a href="points/4/edit" 
@@ -41,7 +42,7 @@
 @section('footer_scripts')
 <script type="text/javascript">
     $(function() {
-        $('#point-pivot').pivotgrid({
+        var pivot = $('#point-pivot').pivotgrid({
             //url:'/js/pivotgrid_data1.json',
             url:'/points',
             method:'get',
@@ -61,8 +62,13 @@
                 if (/Point$/.test(this.field) && value<1){
                     return 'background:#dd4b39;color:#ffffff'
                 }
+            },
+            onDblClickRow: function(row) {
+                console.log(row.id, row._tree_field, row);
             }
         });
     });
+
+
 </script>
 @stop
