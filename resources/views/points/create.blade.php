@@ -61,18 +61,7 @@
 <script type="text/javascript">
 
     $(document).ready(function () {
-        $('#modalForm').on('submit', function (e) {
-            e.preventDefault();
-            REBEL.onSubmit($(this), function (responseData) {
-                if(responseData.status == 'ok') {
-                    $('#modalForm')[0].reset();
-                }
-                setTimeout(function () {
-                    REBEL.removeAllMessageAlert();
-                }, 2000)
-            });
-        });
-
+        
         $('form').on('focus', 'input[type=number]', function (e) {
           $(this).on('mousewheel.disableScroll', function (e) {
             e.preventDefault()

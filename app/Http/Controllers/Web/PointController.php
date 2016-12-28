@@ -7,6 +7,11 @@ use Illuminate\Http\Request;
 
 class PointController extends AdminController
 {
+    /**
+     * @var string
+     */
+    protected $redirectAfterSave = 'points';
+
     public function index(Request $request)
     {
         $this->isAllowed('Points.List');
@@ -48,19 +53,14 @@ class PointController extends AdminController
         ]);
 
         try {
-
             (new PointService)->addTaskLevelPoint($request);
         } catch (Exception $e) {
-            return response()->json([
-                'status' => 'error',
-                'message' => $e->getMessage(),
-            ], 500);
-        }
+            return redirect()->back()->withInput()->withErrors($e->getMessage());
+        } catch (\PDOException $e) {
+            return redirect()->back()->withInput()->withErrors($e->getMessage());
+        } 
 
-        return response()->json([
-            'status' => 'ok',
-            'message' => 'Task Level Point created!',
-        ]);
+        return redirect($this->redirectAfterSave)->with('success', 'Task Level Points successfully created!');
 
     }
 
@@ -81,19 +81,14 @@ class PointController extends AdminController
         ]);
 
         try {
-
             (new PointService)->updateTaskLevelPoint($request, $id);
         } catch (Exception $e) {
-            return response()->json([
-                'status' => 'error',
-                'message' => $e->getMessage(),
-            ], 500);
+            return redirect()->back()->withInput()->withErrors($e->getMessage());
+        } catch (\PDOException $e) {
+            return redirect()->back()->withInput()->withErrors($e->getMessage());
         }
 
-        return response()->json([
-            'status' => 'ok',
-            'message' => 'Task Level Point updated!',
-        ]);
+        return redirect($this->redirectAfterSave)->with('success', 'Task Level Points successfully updated!');
 
     }
 

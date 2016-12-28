@@ -20,7 +20,7 @@
                             <?php
                                 $levelArray = explode(' ', $level->name);
                             ?>
-                            <div class="form-group">
+                            <div class="form-group name">
                                 <label for="name" class="col-sm-4 control-label">{{ $level->name }}</label>
                                 <div class="col-sm-8">
                                     <input type="number" class="form-control level-name" name="levels[{{ $levelArray[1] }}]" value="{{ $level->pivot->point }}" placeholder="Point {{ $level->name }}" required="required">
@@ -53,14 +53,6 @@
 <script type="text/javascript">
 
     $(document).ready(function () {
-        $('#modalForm').on('submit', function (e) {
-            e.preventDefault();
-            REBEL.onSubmit($(this), function (responseData) {
-                setTimeout(function () {
-                    REBEL.removeAllMessageAlert();
-                }, 2000)
-            });
-        });
 
         $('form').on('focus', 'input[type=number]', function (e) {
           $(this).on('mousewheel.disableScroll', function (e) {
