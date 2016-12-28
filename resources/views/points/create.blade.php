@@ -14,7 +14,7 @@
             </div>
             <div class="col-md-4" style="overflow-y:scroll;max-height: 250px;">
                 <div id="levels" style="overflow: hidden;padding-top: 25px;">
-                    @foreach($levels as $level)
+                    @forelse($levels as $level)
                         <div id="level">
                             <?php
                                 $levelArray = explode(' ', $level->name);
@@ -26,7 +26,16 @@
                                 </div>
                             </div>
                         </div>
-                    @endforeach
+                    @empty
+                        <div id="level">
+                            <div class="form-group">
+                                <label for="name" class="col-sm-4 control-label">Level 1</label>
+                                <div class="col-sm-8">
+                                    <input type="number" class="form-control level-name" name="levels[1]" placeholder="Point Level 1" required="required">
+                                </div>
+                            </div>
+                        </div>
+                    @endforelse
                 </div>
             </div>
         </div>
