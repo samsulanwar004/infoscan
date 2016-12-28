@@ -14,7 +14,7 @@
                     @endforeach
                 </select>
 
-                <input type="text" class="form-control group-text" style="display: none;">
+                <input type="text" class="form-control group-text" name="group_text" style="display: none;">
                 <input type="checkbox" name="is_new" style="display: none;">
             </div>
             <div class="col-sm-2">
