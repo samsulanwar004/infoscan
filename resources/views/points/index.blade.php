@@ -13,17 +13,24 @@
                 </h3>
 
                 <div class="box-tools pull-right">
+                    @cando('Points.Create')
                     <a href="{{ admin_route_url('points.create') }}" class="btn btn-box-tool"
                         data-toggle="modal"
                         data-target="#"
                         modal-size="modal-lg"
                         title="Create New">
                         <i class="fa fa-plus-circle fa-btn"></i> Create New</a>
+                    @endcando
                 </div>
             </div>
             <div class="box-body">
                 <table id="point-pivot" style="width:700px;height:300px"></table>
             </div>
+            <a href="points/4/edit" 
+                    data-toggle="modal"
+                    data-target="#"
+                    modal-size="modal-lg"
+                    title="Edit">edit</a>
         </div>
         <!-- /.box -->
 

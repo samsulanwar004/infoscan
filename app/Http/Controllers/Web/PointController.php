@@ -24,6 +24,7 @@ class PointController extends AdminController
 
     public function create()
     {
+        $this->isAllowed('Points.Create');
         $categories = $this->getSnapCategory();
         $levels = $this->getLevels();
         $lastLevels = (new PointService)->lastLevel();
@@ -65,11 +66,34 @@ class PointController extends AdminController
 
     public function edit($id)
     {
+        $this->isAllowed('Points.Update');
+        $task = (new PointService)->getTaskById($id);
+        $levels = $task->levels;
 
+        return view('points.edit', compact('task', 'levels'));
     }
 
     public function update(Request $request, $id)
     {
+        $this->validate($request, [
+            'name' => 'required',
+            'levels.*' => 'required'
+        ]);
+
+        try {
+
+            (new PointService)->updateTaskLevelPoint($request, $id);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+
+        return response()->json([
+            'status' => 'ok',
+            'message' => 'Task Level Point updated!',
+        ]);
 
     }
 
