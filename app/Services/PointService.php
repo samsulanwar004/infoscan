@@ -23,12 +23,13 @@ class PointService
             return $pivots;
         }
 
-        $points = DB::select('select t.name as task_name, l.name as level_name, tlp.point from tasks_level_points as tlp
+        $points = DB::select('select t.id, t.name as task_name, l.name as level_name, tlp.point from tasks_level_points as tlp
 inner join tasks as t on t.id = tlp.task_id
 inner join level_points as l on l.id = tlp.level_id;');
         $result = [];
         foreach ($points as $pivot) {
             $result[] = [
+                'Id' => $pivot->id,
                 'Task' => $pivot->task_name,
                 'Level' => $pivot->level_name,
                 'Point' => $pivot->point,
@@ -95,7 +96,7 @@ inner join level_points as l on l.id = tlp.level_id;');
 
         DB::rollBack();
 
-        return false;        
+        return false;
     }
 
     public function lastLevel()
