@@ -25,40 +25,7 @@
                 </div>
             </div>
             <div class="box-body">
-                <form role="form" action="{{ admin_route_url('questions.store') }}" method="POST" class="form">
-                    {{ csrf_field() }}
-                    <div class="box-body" id="form-body">
-                        <div class="form-group">
-                            <label for="description">Description</label>
-                            <input type="text" name="description" class="form-control" placeholder="Enter description" value="{{ old('description') }}" autofocus>
-                        </div>
-                        <div class="form-group">
-                            <label>Type</label>
-                            <label><input type="radio" name="type" value="single"> Single</label>
-                            <label><input type="radio" name="type" value="multiple"> Multiple</label>
-                        </div>
-                        <div id="answers">
-                            <div class="text-right">
-                                <button class="btn btn-flat" id="addanswer">
-                                    <i class="fa fa-plus-circle"></i> Answer
-                                </button>
-                            </div>
-                            <div class="form-group answer">
-                                <label for="answer">Answer</label>
-                                <button class="btn btn-box-tool removeanswer">
-                                    <i class="fa fa-remove"></i>
-                                </button>
-                                <input type="text" class="form-control" name="answer[]" value="{{ old('answer') }}">
-                            </div>
-                        </div>
-                    </div>
-                    <!-- /.box-body -->
-                    <div class="box-footer text-right">
-                        <button type="submit" class="btn btn-primary" id="submit">
-                            <i class="fa fa-save fa-btn"></i> Save Question
-                        </button>
-                    </div>
-                </form>
+                @include('questionnaire.question_form_create', ['from' => 'question'])
             </div>
             <div id="loading"></div>
         </div>
@@ -91,6 +58,16 @@
                     updateAnswerCounter(true);
                 }
             });
+
+            $('input[type=radio]').change(function(){
+                var value = $( 'input[name=type]:checked' ).val();
+                if(value == 'input'){
+                    $('div#answers').hide();
+                    $('.answer input[type=text]').val('');
+                } else {
+                    $('div#answers').show();
+                }
+            });
         });
 
         function updateAnswerCounter(isRemove) {
@@ -107,5 +84,4 @@
             }
         }
     </script>
-
 @endsection

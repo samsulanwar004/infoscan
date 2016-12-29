@@ -25,7 +25,6 @@
                 <table class="table table-striped">
                     <thead>
                     <tr>
-                        <th>Code</th>
                         <th>Description</th>
                         <th>Period</th>
                         <th>Author</th>
@@ -36,9 +35,6 @@
                     <tbody>
                     @forelse($questionnaire as $item)
                         <tr>
-                            <td>
-                                {{ $item->questionnaire_template_code }}
-                            </td>
                             <td>
                                 {{ $item->description }}
                             </td>
@@ -112,7 +108,7 @@
                         <!-- /show details -->
 
                     @empty
-                        <td colspan="4"> There is no record for questionnaire data!</td>
+                        <td colspan="9"> There is no record for questionnaire data!</td>
                     @endforelse
                     </tbody>
                 </table>
