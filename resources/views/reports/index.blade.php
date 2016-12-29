@@ -3,7 +3,17 @@
     @include('partials.content_header', ['pageTitle' => 'Report', 'pageDescription' => 'List of Report Table', 'breadcrumbs' => ['Report' => false]])
     <section class="content">
         <div class="box">
-            <span id="results"></span>
+            <span><input type="hidden" id="results" value=""></span>            
+            <?php
+                //$doc = new DOMDocument();
+                //$doc->loadHTML('<input type="text" id="results">');
+                //$str = $doc->saveHTML();
+                //$data = $doc->getElementById("results");
+                //echo $strs = $data->nodeValue."\n";
+                echo $strs = '';
+                //echo "<input type='text' value='.$str.'>";
+                //$strs = '';
+            ?>
             <div class="box-header with-border">
                 <h3 class="box-title"></h3>
                 <div class="btn-group pull-right">
@@ -15,8 +25,7 @@
                     </button>
                     <ul class="dropdown-menu" role="menu" style="width: 200px">
                         <li role="presentation">
-                            <a role="menuitem" id="pdf" title="PDF" href="{{ admin_route_url('reports.formatPdf') }}">PDF</a>
-                            <!--<button type="submit" class="btn btn-default" id="submit">PDF</button>-->
+                            <a role="menuitem" id="pdf" class="pdf" title="PDF" href="{{ admin_route_url('reports.formatPdf') }}?attributes={{ $strs }}">PDF</a>
                         </li>
                         <li role="presentation">
                             <a role="menuitem" id="excel" title="Excel" href="{{ admin_route_url('reports.formatExcel') }}">Excel</a>
@@ -111,15 +120,106 @@
             });
         });
         function showValues() {
-            var fields = $(":input").serializeArray();
+            var fields = $("input:checkbox").serializeArray();
             $("#results").empty();
             jQuery.each( fields, function(i, field) {
-                $("#results").append(field.value + " ");
+                $("#results").append(field.value + ",");
             });
         }
         $(":checkbox").click(showValues);
-        showValues();
-        var formData = JSON.parse(JSON.stringify(jQuery('#results').serializeArray())) 
+
+        var tes = $(":checkbox").click(showValues);
+        alert(JSON.stringify(tes['id']));
+
+        $('.pdf').click(tes);
+
+/*$(function() {
+    $(":checkbox").click(showValues);
+    showValues();
+});
+    $("#results").text(str);
+
+$(function() {
+    $(".pdf").click(showValues);
+    showValues();
+});
+
+function showValues() {
+    var str = $("form").serialize();
+    $("#results").text(str);
+}*/
+
+
+        /*$('.pdf').click(function() {  
+            alert(showValues());
+        });
+
+        //alert(showValues());
+
+        //showValues();
+
+        //var str = showValues();
+        //alert(atr);
+
+    /*$.ajax({
+           type: 'post',
+           url: 'inc/data.php',
+           data: {
+                     source1: data_str
+                    },
+           success: function( data ) {
+                     console.log( data );
+                    }
+           });*/ 
+
+        /*$('.pdf').click(function() {            
+            $.ajax({
+                url: '/reports/formatPdf',
+                type: "post",
+                data: { 'attributes':'data' },
+                success: function(data) {
+                    alert(data);
+                }
+            });      
+        });*/ 
+
+        /*$(".pdf").click(function() {
+            var id = $(this).attr('id');
+            var dataString = 'id='+ id ;
+            var parent = $(this);
+            $.ajax({
+                type: "post",
+                url: "/reports/formatPdf",
+                data:  dataString,
+                cache: false,
+                success: function(data) {
+                    alert(data);
+                }
+            });      
+
+            $.ajax({
+                url: '/reports',
+                type: "post",
+                data: { 'attributes':$('input[name=attributes]').val(), '_token': $('input[name=_token]').val() },
+                success: function(data) {
+                    alert(data);
+                }
+            });      
+
+        });*/
+        
+        /*var values = {};
+        $.each($("form").serializeArray(), function (i, field) {
+            values[field.name] = field.value;
+        });
+        var getValue = function (valueName) {
+            return values[valueName];
+        };
+        var first = getValue("FirstName");
+        var last = getValue("LastName");
+        $("#results").append(first + " & ");
+        $("#results").append(last);*/        
+        //var formData = JSON.parse(JSON.stringify(jQuery('#results').serializeArray())) 
         /*function setCookie(cname, cvalue, exdays) {
             var d = new Date();
             d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));

@@ -28,7 +28,8 @@
             return redirect()->route('reports.index');
         }
 
-        public function formatPdf() {                           
+        public function formatPdf() { 
+            dd($_GET['attributes']);
             $this->isAllowed('Reports.List');
             $reports = Reports::orderBy('id')->paginate(25);
             $view = \View::make('reports.pdf', compact('reports'));
