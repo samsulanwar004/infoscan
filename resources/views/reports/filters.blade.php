@@ -4,7 +4,6 @@
         <h4><i class="fa fa-tag fa-btn"></i> Customizable Attributes</h4>
     </div>
     <div class="modal-body">                    
-        {!! csrf_field() !!}
         <div class="form-group">
             @foreach ($dataAttributes as $data => $value)
                 <?php 

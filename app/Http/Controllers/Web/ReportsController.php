@@ -42,7 +42,6 @@
         public function formatExcel() {                           
             $this->isAllowed('Reports.List');
             $reports = Reports::orderBy('id');
-            //dd($reports);
             Excel::create('SnapReportTable', function($excel) use ($reports) {
                 $excel->sheet('Snap Report Table', function($sheet) use ($reports) {
                     $sheet->fromArray($reports);

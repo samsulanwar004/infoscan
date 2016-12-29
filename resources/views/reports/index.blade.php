@@ -3,8 +3,7 @@
     @include('partials.content_header', ['pageTitle' => 'Report', 'pageDescription' => 'List of Report Table', 'breadcrumbs' => ['Report' => false]])
     <section class="content">
         <div class="box">
-            <form role="form" action="{{ admin_route_url('reports.store') }}" method="post" enctype="multipart/form-data" class="form" accept-charset="utf-8">
-            {!! csrf_field() !!}
+            <span id="results"></span>
             <div class="box-header with-border">
                 <h3 class="box-title"></h3>
                 <div class="btn-group pull-right">
@@ -43,16 +42,6 @@
                                 <th class="usership" name="usership">Usership</th>
                                 <th class="sec" name="sec">SEC</th>
                                 <th class="outlet_type" name="outlet_type">Outlet Type</th>
-                                <input type="hidden" id="outlet_name" name="outlet_name" value="outlet_name">                                
-                                <input type="hidden" id="products" name="products" value="products">
-                                <input type="hidden" id="users_city" name="users_city" value="users_city">
-                                <input type="hidden" id="age" name="age" value="age">
-                                <input type="hidden" id="outlet_area" name="outlet_area" value="outlet_area">
-                                <input type="hidden" id="province" name="province" value="province">
-                                <input type="hidden" id="gender" name="gender" value="gender">
-                                <input type="hidden" id="usership" name="usership" value="usership">
-                                <input type="hidden" id="sec" name="sec" value="sec">
-                                <input type="hidden" id="outlet_type" name="outlet_type" value="outlet_type">
                             </tr>
                         </thead>
                         <tbody>
@@ -76,7 +65,6 @@
                     </table>
                 </div>
             </div>
-            </form>
         </div>
         <div class="modal fade" id="myModal" role="dialog">
             <div class="modal-dialog">
@@ -85,7 +73,7 @@
                         <button type="button" class="close" data-dismiss="modal">&times;</button>
                         <h4 class="modal-title">Customizable Atributes</h4>
                     </div>
-                    <form role="form" action="{{ admin_route_url('reports.filters') }}" method="post" enctype="multipart/form-data" class="form" accept-charset="utf-8">
+                    <form role="form" action="#" method="post" enctype="multipart/form-data" class="form" accept-charset="utf-8">
                         <div class="modal-body">
                             <div class="form-group" id="checkAttributes">
                                 <input style="cursor:pointer" type="checkbox" id="outlet_name" name="outlet_name" class="outlet_name" value="outlet_name" /> Outlet Name<br>
@@ -122,5 +110,40 @@
                 $tbl.find('tr :nth-child(' + (index + 1) + ')').toggle();
             });
         });
+        function showValues() {
+            var fields = $(":input").serializeArray();
+            $("#results").empty();
+            jQuery.each( fields, function(i, field) {
+                $("#results").append(field.value + " ");
+            });
+        }
+        $(":checkbox").click(showValues);
+        showValues();
+        var formData = JSON.parse(JSON.stringify(jQuery('#results').serializeArray())) 
+        /*function setCookie(cname, cvalue, exdays) {
+            var d = new Date();
+            d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+            var expires = "expires=" + d.toUTCString();
+            document.cookie = cname + "=" + cvalue + "; " + expires + ";path=/";
+        }
+        function getCookie(cname) {
+            var name = cname + "=";
+            var ca = document.cookie.split(';');
+            for (var i = 0; i < ca.length; i++) {
+                var c = ca[i];
+                while (c.charAt(0) == ' ') {
+                    c = c.substring(1);
+                }
+                if (c.indexOf(name) == 0) {
+                    return c.substring(name.length, c.length);
+                }
+            }
+            return "";
+        }
+        function setAttributesCookie(id) {
+            var currentFav = getCookie('fav_cars');
+            var newValue = constructDataString(currentFav, id);
+            setCookie('fav_cars', newValue, 30);
+        }*/
     </script>
 @endsection
