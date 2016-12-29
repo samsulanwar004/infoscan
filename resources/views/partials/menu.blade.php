@@ -59,6 +59,12 @@
                     <!-- <li><a href="/merchants/user"><i class="fa fa-circle-o"></i>Merchants Users</a></li> -->
                 </ul>
             </li>
+      
+            <li class="snaps">
+                <a href="/snaps">
+                    <i class="fa fa-file-o"></i> <span>Snaps Management</span>
+                </a>
+            </li>
 
             <li class="ses">
                 <a href="/ses">
