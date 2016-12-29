@@ -15,22 +15,20 @@
             <div class="box-header with-border form-inline" style="overflow: hidden; height: 45px;">
 
                 <div class="box-tools pull-right ">
-                    Filter type:
-                    <select class="form-control">
-                        <option value="0">File by Type</option>
-                        <option value="rc">Receipt</option>
-                        <option value="gt">General Trade</option>
-                        <option value="ai">Arange Items</option>
-                        <option value="hw">Hand Written</option>
+                    Filter Snap type: 
+                    <select class="form-control" onchange="filterBySnap(this.value)">
+                        <option value="all" id="all">All</option>
+                        @foreach($snapCategorys as $id => $name)
+                            <option value="{{$id}}" id="{{$id}}">{{$name}}</option>
+                        @endforeach                                                                   
                     </select>
 
-                    Filter type:
-                    <select class="form-control">
-                        <option value="0">File by Type</option>
-                        <option value="rc">Receipt</option>
-                        <option value="gt">General Trade</option>
-                        <option value="ai">Arange Items</option>
-                        <option value="hw">Hand Written</option>
+                    Filter Mode type:
+                    <select class="form-control" onchange="filterByMode(this.value)">
+                        <option value="all">All</option>
+                        @foreach($snapCategoryModes as $id => $name)
+                            <option value="{{$id}}" id="{{$id}}">{{$name}}</option>
+                        @endforeach 
                     </select>
                 </div>
             </div>
@@ -66,7 +64,7 @@
                             </td>
                             <td class="text-right vertical-middle">
                                 <div class="btn-group">
-                                    @cando('User.Update')
+                                    @cando('Snaps.Show')
                                     <a href="{{ admin_route_url('snaps.show', ['id' => $snap->id]) }}" class="btn btn-primary">
                                         <i class="fa fa-search"> </i>
                                     </a>
@@ -76,7 +74,7 @@
                         </tr>
                     @empty
                         <td colspan="4"> There is no record for snaps data!</td>
-                    @endforelse
+                    @endforelse                    
                     </tbody>
                 </table>
             </div>
@@ -86,3 +84,41 @@
     </section>
     <!-- /.content -->
 @endsection
+
+@section('footer_scripts')
+<script>
+    $(function() {
+       getSelected();
+    });
+
+    function getSelected()
+    {
+        document.getElementById("{{$type}}").selected = true;
+    }
+    
+    function filterBySnap(attr)
+    {
+        if (attr == 'all')
+        {
+            return window.location.href = '/snaps';
+        }
+        console.log(attr);
+        var attr = attr;
+        var link = '/snaps/'+attr+'/filter';
+        window.location.href = link;
+    }
+
+    function filterByMode(attr)
+    {
+        if (attr == 'all')
+        {
+            return window.location.href = '/snaps';
+        }
+        console.log(attr);
+        var attr = attr;
+        var link = '/snaps/'+attr+'/filter';
+        window.location.href = link;
+    }
+
+</script>
+@stop

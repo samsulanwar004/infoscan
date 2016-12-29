@@ -7,6 +7,11 @@ use Illuminate\Http\Request;
 
 class PointController extends AdminController
 {
+    /**
+     * @var string
+     */
+    protected $redirectAfterSave = 'points';
+
     public function index(Request $request)
     {
         $this->isAllowed('Points.List');
@@ -24,6 +29,7 @@ class PointController extends AdminController
 
     public function create()
     {
+        $this->isAllowed('Points.Create');
         $categories = $this->getSnapCategory();
         $levels = $this->getLevels();
         $lastLevels = (new PointService)->lastLevel();
@@ -47,29 +53,42 @@ class PointController extends AdminController
         ]);
 
         try {
-
             (new PointService)->addTaskLevelPoint($request);
         } catch (Exception $e) {
-            return response()->json([
-                'status' => 'error',
-                'message' => $e->getMessage(),
-            ], 500);
-        }
+            return redirect()->back()->withInput()->withErrors($e->getMessage());
+        } catch (\PDOException $e) {
+            return redirect()->back()->withInput()->withErrors($e->getMessage());
+        } 
 
-        return response()->json([
-            'status' => 'ok',
-            'message' => 'Task Level Point created!',
-        ]);
+        return redirect($this->redirectAfterSave)->with('success', 'Task Level Points successfully created!');
 
     }
 
     public function edit($id)
     {
+        $this->isAllowed('Points.Update');
+        $task = (new PointService)->getTaskById($id);
+        $levels = $task->levels;
 
+        return view('points.edit', compact('task', 'levels'));
     }
 
     public function update(Request $request, $id)
     {
+        $this->validate($request, [
+            'name' => 'required',
+            'levels.*' => 'required'
+        ]);
+
+        try {
+            (new PointService)->updateTaskLevelPoint($request, $id);
+        } catch (Exception $e) {
+            return redirect()->back()->withInput()->withErrors($e->getMessage());
+        } catch (\PDOException $e) {
+            return redirect()->back()->withInput()->withErrors($e->getMessage());
+        }
+
+        return redirect($this->redirectAfterSave)->with('success', 'Task Level Points successfully updated!');
 
     }
 

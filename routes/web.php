@@ -106,6 +106,11 @@ Route::get('/secure/{requestCode}/{social}', 'SecureController@redirect');
 //Route::get('/report/filters',
 //    ['as' => 'report.filters', 'uses' => 'Web\ReportController@filters']);
 Route::get(
+    '/snaps/{attr}/filter',
+    'Web\SnapController@filter'
+)->name('snaps.filter');
+
+Route::get(
     '/report/filters',
     'Web\ReportController@filters'
 )->name('report.filters');

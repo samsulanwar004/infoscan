@@ -1,5 +1,6 @@
-<form id="modalForm" action="{{ admin_route_url('points.store') }}"  method="POST">
+<form id="modalForm" action="{{ admin_route_url('points.update', ['id' => $task->id]) }}"  method="POST">
     {{ csrf_field() }}
+    {{ method_field('PUT') }}
     <div class="modal-header">
         <a class="close" data-dismiss="modal">&times;</a>
         <h4><i class="fa fa-tasks fa-btn"></i> <span class="action-title">Add </span> Task</h4>
@@ -9,33 +10,24 @@
             <div class="col-md-8">
                 <div class="form-group name">
                     <label for="name">Task Name</label>
-                    <input type="text" class="form-control" id="name" name="name" placeholder="Task Name" required="required">
+                    <input type="text" class="form-control" id="name" name="name" value="{{ $task->name }}" placeholder="Task Name" required="required">
                 </div>
             </div>
             <div class="col-md-4" style="overflow-y:scroll;max-height: 250px;">
                 <div id="levels" style="overflow: hidden;padding-top: 25px;">
-                    @forelse($levels as $level)
+                    @foreach($levels as $level)
                         <div id="level">
                             <?php
                                 $levelArray = explode(' ', $level->name);
                             ?>
-                            <div class="form-group">
+                            <div class="form-group name">
                                 <label for="name" class="col-sm-4 control-label">{{ $level->name }}</label>
                                 <div class="col-sm-8">
-                                    <input type="number" class="form-control level-name" name="levels[{{ $levelArray[1] }}]" placeholder="Point {{ $level->name }}" required="required">
+                                    <input type="number" class="form-control level-name" name="levels[{{ $levelArray[1] }}]" value="{{ $level->pivot->point }}" placeholder="Point {{ $level->name }}" required="required">
                                 </div>
                             </div>
                         </div>
-                    @empty
-                        <div id="level">
-                            <div class="form-group">
-                                <label for="name" class="col-sm-4 control-label">Level 1</label>
-                                <div class="col-sm-8">
-                                    <input type="number" class="form-control level-name" name="levels[1]" placeholder="Point Level 1" required="required">
-                                </div>
-                            </div>
-                        </div>
-                    @endforelse
+                    @endforeach
                 </div>
             </div>
         </div>
@@ -61,7 +53,7 @@
 <script type="text/javascript">
 
     $(document).ready(function () {
-        
+
         $('form').on('focus', 'input[type=number]', function (e) {
           $(this).on('mousewheel.disableScroll', function (e) {
             e.preventDefault()

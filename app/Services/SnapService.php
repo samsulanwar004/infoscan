@@ -52,6 +52,18 @@ class SnapService
         return $snap->paginate();
     }
 
+    public function getSnapsByType($attr)
+    {
+        return Snap::where('snap_type', '=', $attr)
+            ->paginate(50);
+    }
+
+    public function getSnapsByMode($attr)
+    {
+        return Snap::where('mode_type', '=', $attr)
+            ->paginate(50);
+    }
+
     public function getSnapByid($id)
     {
         return Snap::with(['files'])->where('id', $id)->first();
