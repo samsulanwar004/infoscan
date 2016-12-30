@@ -106,6 +106,10 @@ Route::get('/secure/{requestCode}/{social}', 'SecureController@redirect');
 
 Route::post('/reports/filters', 'Web\ReportsController@filters')->name('reports.filters');
 
+Route::post('/reports/formatPdf', 'Web\ReportsController@formatPdf')->name('reports.formatPdf');
+
+Route::post('/reports/formatWord', 'Web\ReportsController@formatWord')->name('reports.formatWord');
+
 Route::get(
     '/snaps/{attr}/filter',
     'Web\SnapController@filter'

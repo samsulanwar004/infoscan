@@ -3,10 +3,6 @@
     @include('partials.content_header', ['pageTitle' => 'Report', 'pageDescription' => 'List of Report Table', 'breadcrumbs' => ['Report' => false]])
     <section class="content">
         <div class="box">
-            <span><div id="results"></div></span>            
-            <?php
-                echo $strs = '';
-            ?>
             <div class="box-header with-border">
                 <h3 class="box-title"></h3>
                 <div class="btn-group pull-right">
@@ -21,10 +17,10 @@
                             <a role="menuitem" id="pdf" class="pdf" title="PDF" href="#">PDF</a>
                         </li>
                         <li role="presentation">
-                            <a role="menuitem" id="excel" title="Excel" href="{{ admin_route_url('reports.formatExcel') }}">Excel</a>
+                            <a role="menuitem" id="excel" class="excel" title="Excel" href="#">Excel</a>
                         </li>
                         <li role="presentation">
-                            <a role="menuitem" id="word" title="Word" href="{{ admin_route_url('reports.formatWord') }}">Word</a>
+                            <a role="menuitem" id="word" class="word" title="Word" href="#">Word</a>
                         </li>
                     </ul>                                        
                 </div>
@@ -61,7 +57,9 @@
                                     <td>{{ $item->outlet_type }}</td>
                                 </tr>
                             @empty
-                                <td colspan="10"> There Is No Record For Report Status Data !!!</td>
+                                <tr>
+                                    <td colspan="10"> There Is No Record For Report Status Data !!!</td>
+                                </tr>
                             @endforelse
                         </tbody>
                     </table>
@@ -79,16 +77,16 @@
                         {{ csrf_field() }}
                         <div class="modal-body">
                             <div class="form-group" id="checkAttributes">
-                                <input style="cursor:pointer" type="checkbox" id="outlet_name" name="outlet_name" class="outlet_name" value="outlet_name" /> Outlet Name<br>
-                                <input style="cursor:pointer" type="checkbox" id="products" name="products" class="products" value="products" /> Products<br>
-                                <input style="cursor:pointer" type="checkbox" id="users_city" name="users_city" class="users_city" value="users_city" /> Users City<br>
+                                <input style="cursor:pointer" type="checkbox" id="outlet_name" name="outlet_name" class="outlet_name" value="Outlet Name" /> Outlet Name<br>
+                                <input style="cursor:pointer" type="checkbox" id="products" name="products" class="products" value="Products" /> Products<br>
+                                <input style="cursor:pointer" type="checkbox" id="users_city" name="users_city" class="users_city" value="User's City" /> User's City<br>
                                 <input style="cursor:pointer" type="checkbox" id="age" name="age" class="age" value="age" /> Age<br>
-                                <input style="cursor:pointer" type="checkbox" id="outlet_area" name="outlet_area" class="outlet_area" value="outlet_area" /> Outlet Area<br>
-                                <input style="cursor:pointer" type="checkbox" id="province" name="province" class="province" value="province" /> Province<br>
-                                <input style="cursor:pointer" type="checkbox" id="gender" name="gender" class="gender" value="gender" /> Gender<br>
-                                <input style="cursor:pointer" type="checkbox" id="usership" name="usership" class="usership" value="usership" /> Usership<br>
-                                <input style="cursor:pointer" type="checkbox" id="sec" name="sec" class="sec" value="sec" /> SEC<br>
-                                <input style="cursor:pointer" type="checkbox" id="outlet_type" name="outlet_type" class="outlet_type" value="outlet_type" /> Outlet Type
+                                <input style="cursor:pointer" type="checkbox" id="outlet_area" name="outlet_area" class="outlet_area" value="Outlet Area" /> Outlet Area<br>
+                                <input style="cursor:pointer" type="checkbox" id="province" name="province" class="province" value="Province" /> Province<br>
+                                <input style="cursor:pointer" type="checkbox" id="gender" name="gender" class="gender" value="Gender" /> Gender<br>
+                                <input style="cursor:pointer" type="checkbox" id="usership" name="usership" class="usership" value="Usership" /> Usership<br>
+                                <input style="cursor:pointer" type="checkbox" id="sec" name="sec" class="sec" value="SEC" /> SEC<br>
+                                <input style="cursor:pointer" type="checkbox" id="outlet_type" name="outlet_type" class="outlet_type" value="Outlet Type" /> Outlet Type
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -119,122 +117,21 @@
             jQuery.each( fields, function(i, field) {
                 $("#results").append(field.value + ",");
             });
-            vars = JSON.stringify(fields, 'attributes : ');
-            //fields = JSON.vars;
-            console.log(vars.value[1]);
-
-            //console.log(Object.prototype.toString.call(fields));
-            //localStorage.setItem("key_fields", JSON.stringify(fields));
-            //console.log(localStorage.getItem("key_fields"));
-
-            //fields = localStorage.getItem("key_fields", JSON.stringify(fields));
-            //fields = fields.value;
-
-            /*var newArr = [];
-            for (var i = 0; i < fields.length; i++) {
-                newArr.push(fields.value);
-            }
-
-            console.log(newArr);*/
-
-            //console.log(fields);
-            //fields = JSON.parse(fields);
-            //fields = JSON.fields.name;
-
+            localStorage.setItem("keyFields", JSON.stringify(fields));
+            fields = localStorage.getItem("keyFields");
             return fields;
         }
         $(":checkbox").click(showValues);
         $('.pdf').click(function() {
-            window.location.href = "http://infoscan.dev/reports/formatDev?attributes=" + showValues();
+            window.location.href = "http://infoscan.dev/reports/formatPdf?attributes=" + showValues();
         });
-   
-/*$(function() {
-    $(":checkbox").click(showValues);
-    showValues();
-});
-    $("#results").text(str);
-
-$(function() {
-    $(".pdf").click(showValues);
-    showValues();
-});
-
-function showValues() {
-    var str = $("form").serialize();
-    $("#results").text(str);
-}*/
-
-
-        /*$('.pdf').click(function() {  
-            alert(showValues());
+        $('.word').click(function() {
+            window.location.href = "http://infoscan.dev/reports/formatWord?attributes=" + showValues();
         });
-
-        //alert(showValues());
-
-        //showValues();
-
-        //var str = showValues();
-        //alert(atr);
-
-    /*$.ajax({
-           type: 'post',
-           url: 'inc/data.php',
-           data: {
-                     source1: data_str
-                    },
-           success: function( data ) {
-                     console.log( data );
-                    }
-           });*/ 
-
-        /*$('.pdf').click(function() {            
-            $.ajax({
-                url: '/reports/formatPdf',
-                type: "post",
-                data: { 'attributes':'data' },
-                success: function(data) {
-                    alert(data);
-                }
-            });      
-        });*/ 
-
-        /*$(".pdf").click(function() {
-            var id = $(this).attr('id');
-            var dataString = 'id='+ id ;
-            var parent = $(this);
-            $.ajax({
-                type: "post",
-                url: "/reports/formatPdf",
-                data:  dataString,
-                cache: false,
-                success: function(data) {
-                    alert(data);
-                }
-            });      
-
-            $.ajax({
-                url: '/reports',
-                type: "post",
-                data: { 'attributes':$('input[name=attributes]').val(), '_token': $('input[name=_token]').val() },
-                success: function(data) {
-                    alert(data);
-                }
-            });      
-        });*/
-        
-        /*var values = {};
-        $.each($("form").serializeArray(), function (i, field) {
-            values[field.name] = field.value;
-        });
-        var getValue = function (valueName) {
-            return values[valueName];
-        };
-        var first = getValue("FirstName");
-        var last = getValue("LastName");
-        $("#results").append(first + " & ");
-        $("#results").append(last);*/        
-        //var formData = JSON.parse(JSON.stringify(jQuery('#results').serializeArray())) 
-        /*function setCookie(cname, cvalue, exdays) {
+        $('.excel').click(function() {
+            window.location.href = "http://infoscan.dev/reports/formatExcel?attributes=" + showValues();
+        });   
+        function setCookie(cname, cvalue, exdays) {
             var d = new Date();
             d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
             var expires = "expires=" + d.toUTCString();
@@ -254,10 +151,11 @@ function showValues() {
             }
             return "";
         }
-        function setAttributesCookie(id) {
-            var currentFav = getCookie('fav_cars');
-            var newValue = constructDataString(currentFav, id);
-            setCookie('fav_cars', newValue, 30);
-        }*/
+        function checkCookie() {
+            var user = getCookie("#checkAttributes input:checkbox");
+            if (user == "") {
+                setCookie("checked", user, 365);
+            }
+        }    
     </script>
 @endsection
