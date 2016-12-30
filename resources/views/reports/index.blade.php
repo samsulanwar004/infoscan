@@ -3,16 +3,9 @@
     @include('partials.content_header', ['pageTitle' => 'Report', 'pageDescription' => 'List of Report Table', 'breadcrumbs' => ['Report' => false]])
     <section class="content">
         <div class="box">
-            <span><input type="hidden" id="results" value=""></span>            
+            <span><div id="results"></div></span>            
             <?php
-                //$doc = new DOMDocument();
-                //$doc->loadHTML('<input type="text" id="results">');
-                //$str = $doc->saveHTML();
-                //$data = $doc->getElementById("results");
-                //echo $strs = $data->nodeValue."\n";
                 echo $strs = '';
-                //echo "<input type='text' value='.$str.'>";
-                //$strs = '';
             ?>
             <div class="box-header with-border">
                 <h3 class="box-title"></h3>
@@ -25,7 +18,7 @@
                     </button>
                     <ul class="dropdown-menu" role="menu" style="width: 200px">
                         <li role="presentation">
-                            <a role="menuitem" id="pdf" class="pdf" title="PDF" href="{{ admin_route_url('reports.formatPdf') }}?attributes={{ $strs }}">PDF</a>
+                            <a role="menuitem" id="pdf" class="pdf" title="PDF" href="#">PDF</a>
                         </li>
                         <li role="presentation">
                             <a role="menuitem" id="excel" title="Excel" href="{{ admin_route_url('reports.formatExcel') }}">Excel</a>
@@ -83,6 +76,7 @@
                         <h4 class="modal-title">Customizable Atributes</h4>
                     </div>
                     <form role="form" action="#" method="post" enctype="multipart/form-data" class="form" accept-charset="utf-8">
+                        {{ csrf_field() }}
                         <div class="modal-body">
                             <div class="form-group" id="checkAttributes">
                                 <input style="cursor:pointer" type="checkbox" id="outlet_name" name="outlet_name" class="outlet_name" value="outlet_name" /> Outlet Name<br>
@@ -120,19 +114,40 @@
             });
         });
         function showValues() {
-            var fields = $("input:checkbox").serializeArray();
+            var fields = $("input:checkbox").serializeArray();           
             $("#results").empty();
             jQuery.each( fields, function(i, field) {
                 $("#results").append(field.value + ",");
             });
+            vars = JSON.stringify(fields, 'attributes : ');
+            //fields = JSON.vars;
+            console.log(vars.value[1]);
+
+            //console.log(Object.prototype.toString.call(fields));
+            //localStorage.setItem("key_fields", JSON.stringify(fields));
+            //console.log(localStorage.getItem("key_fields"));
+
+            //fields = localStorage.getItem("key_fields", JSON.stringify(fields));
+            //fields = fields.value;
+
+            /*var newArr = [];
+            for (var i = 0; i < fields.length; i++) {
+                newArr.push(fields.value);
+            }
+
+            console.log(newArr);*/
+
+            //console.log(fields);
+            //fields = JSON.parse(fields);
+            //fields = JSON.fields.name;
+
+            return fields;
         }
         $(":checkbox").click(showValues);
-
-        var tes = $(":checkbox").click(showValues);
-        alert(JSON.stringify(tes['id']));
-
-        $('.pdf').click(tes);
-
+        $('.pdf').click(function() {
+            window.location.href = "http://infoscan.dev/reports/formatDev?attributes=" + showValues();
+        });
+   
 /*$(function() {
     $(":checkbox").click(showValues);
     showValues();
@@ -205,7 +220,6 @@ function showValues() {
                     alert(data);
                 }
             });      
-
         });*/
         
         /*var values = {};

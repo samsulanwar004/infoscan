@@ -107,13 +107,14 @@ Route::get('/secure/{requestCode}/{social}', 'SecureController@redirect');
 Route::post('/reports/filters', 'Web\ReportsController@filters')->name('reports.filters');
 
 Route::get(
-    '/reports/filters',
-    'Web\ReportsController@filters'
-)->name('reports.filters');
+    '/snaps/{attr}/filter',
+    'Web\SnapController@filter'
+)->name('snaps.filter');
 
-Route::post('/reports/filterStore', 'Web\ReportsController@filterStore')->name('reports.filterStore');
-
-Route::post('/reports/formatPdf', 'Web\ReportsController@formatPdf')->name('reports.formatPdf');
+Route::get(
+    '/report/filters',
+    'Web\ReportController@filters'
+)->name('report.filters');
 
 Route::get(
     '/reports/formatPdf',

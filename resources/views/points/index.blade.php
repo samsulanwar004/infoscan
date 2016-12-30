@@ -13,16 +13,24 @@
                 </h3>
 
                 <div class="box-tools pull-right">
+                    @cando('Points.Create')
                     <a href="{{ admin_route_url('points.create') }}" class="btn btn-box-tool"
                         data-toggle="modal"
                         data-target="#"
                         modal-size="modal-lg"
                         title="Create New">
                         <i class="fa fa-plus-circle fa-btn"></i> Create New</a>
+                    @endcando
                 </div>
             </div>
             <div class="box-body">
-                <a href="#" class="edit">edit selected row</a>
+                <a href="#"  style="display: none;" 
+                data-toggle="modal"
+                data-target="#"
+                modal-size="modal-lg" 
+                id="modal-edit" 
+                title="Edit">
+                Edit Select Row</a>
                 <table id="point-pivot" style="width:700px;height:300px"></table>
             </div>
         </div>
@@ -35,7 +43,11 @@
 @section('footer_scripts')
 <script type="text/javascript">
     $(function() {
-        var pivot = $('#point-pivot').pivotgrid({
+         loadPointData();
+    });
+
+    function loadPointData() {
+        $('#point-pivot').pivotgrid({
             //url:'/js/pivotgrid_data1.json',
             url:'/points',
             method:'get',
@@ -57,11 +69,15 @@
                 }
             },
             onDblClickRow: function(row) {
-                console.log(row.id, row._tree_field, row);
+                var link = $('#modal-edit');
+                var mystr = row._tree_field;
+                var myarr = mystr.split(" ");
+                var nameLink = 'points/'+myarr[0]+'/edit';
+                link.attr('href', nameLink);
+
+                link.trigger('click');
             }
         });
-    });
-
-
+    }
 </script>
 @stop
