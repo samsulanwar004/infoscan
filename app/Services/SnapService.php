@@ -5,6 +5,8 @@ namespace App\Services;
 use App\Exceptions\Services\SnapServiceException;
 use App\Jobs\UploadToS3;
 use App\Snap;
+use App\SnapFile;
+use App\SnapTag;
 use DB;
 use Dusterio\PlainSqs\Jobs\DispatcherJob;
 use Exception;
@@ -64,9 +66,45 @@ class SnapService
             ->paginate(50);
     }
 
+    public function getSnapFileById($id)
+    {
+        return SnapFile::with(['tag'])->where('id', '=', $id)->first();
+    }
+
     public function getSnapByid($id)
     {
         return Snap::with(['files'])->where('id', $id)->first();
+    }
+
+    public function getSnapTagById($id)
+    {
+        return SnapTag::where('id', '=', $id)->first();
+    }
+
+    public function updateSnap(Request $request, $id)
+    {
+
+        $snaps = $this->getSnapByid($id);
+        $snaps->approved_by = auth()->user()->id;
+
+        $snaps->update();
+    }
+
+    public function updateSnapTags(Request $request)
+    {
+        $tags = $request->input('tag');
+        $tagCount = count($tags['name']);
+
+        // update tag.
+        for ($i=0; $i < $tagCount; ++$i) {
+            $tagId = $tags['id'][$i];
+            $t = $this->getSnapTagById($tagId);
+            $t->name = $tags['name'][$i];
+            $t->quantity = $tags['qty'][$i];
+            $t->total_price = $tags['total'][$i];
+
+            $t->update();
+        }
     }
 
     /**
