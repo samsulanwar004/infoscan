@@ -78,17 +78,4 @@ class SnapController extends AdminController
         return redirect()->back()->with('success', 'Snaps successfully updated!');
     }
 
-    public function updateTag(Request $request)
-    {
-        try {
-            (new SnapService)->updateSnapTags($request);
-        } catch (Exception $e) {
-            return redirect()->back()->withInput()->withErrors($e->getMessage());
-        } catch (PDOException $e) {
-            return redirect()->back()->withInput()->withErrors($e->getMessage());
-        }
-
-        return redirect()->back()->with('success', 'Tags successfully updated!');
-    }
-
 }

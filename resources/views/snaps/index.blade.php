@@ -46,7 +46,7 @@
                     @forelse($snaps as $snap)
                         <tr>
                             <td class="vertical-middle">
-                                <i class="fa fa-check-circle {{ $snap->is_active == 1 ? 'text-green' : 'text-default' }}"></i>
+                                <i class="fa fa-check-circle {{ $snap->approved_by != null ? 'text-green' : 'text-default' }}"></i>
                             </td>
                             <td class="vertical-middle">
                                 {{ strtoupper($snap->request_code) }} <br>
