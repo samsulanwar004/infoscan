@@ -80,7 +80,7 @@
                                 <input style="cursor:pointer" type="checkbox" id="outlet_name" name="outlet_name" class="outlet_name" value="Outlet Name" /> Outlet Name<br>
                                 <input style="cursor:pointer" type="checkbox" id="products" name="products" class="products" value="Products" /> Products<br>
                                 <input style="cursor:pointer" type="checkbox" id="users_city" name="users_city" class="users_city" value="User's City" /> User's City<br>
-                                <input style="cursor:pointer" type="checkbox" id="age" name="age" class="age" value="age" /> Age<br>
+                                <input style="cursor:pointer" type="checkbox" id="age" name="age" class="age" value="Age" /> Age<br>
                                 <input style="cursor:pointer" type="checkbox" id="outlet_area" name="outlet_area" class="outlet_area" value="Outlet Area" /> Outlet Area<br>
                                 <input style="cursor:pointer" type="checkbox" id="province" name="province" class="province" value="Province" /> Province<br>
                                 <input style="cursor:pointer" type="checkbox" id="gender" name="gender" class="gender" value="Gender" /> Gender<br>
@@ -112,13 +112,17 @@
             });
         });
         function showValues() {
+            //var fields = checkCookie();
+            //console.log(fields);
             var fields = $("input:checkbox").serializeArray();           
+            //console.log(fields);
             $("#results").empty();
             jQuery.each( fields, function(i, field) {
                 $("#results").append(field.value + ",");
             });
-            localStorage.setItem("keyFields", JSON.stringify(fields));
-            fields = localStorage.getItem("keyFields");
+            //localStorage.setItem("keyFields", JSON.stringify(fields));
+            //fields = localStorage.getItem("keyFields");
+            fields = JSON.stringify(fields);
             return fields;
         }
         $(":checkbox").click(showValues);
@@ -152,10 +156,8 @@
             return "";
         }
         function checkCookie() {
-            var user = getCookie("#checkAttributes input:checkbox");
-            if (user == "") {
-                setCookie("checked", user, 365);
-            }
+            var user = getCookie($("input:checkbox").serializeArray());
+            setCookie($("input:checkbox").serializeArray(), user, 365);
         }    
     </script>
 @endsection
