@@ -90,10 +90,12 @@ class SnapService
         $snaps->update();
     }
 
-    public function updateSnapTags(Request $request)
+    public function updateSnapModeInput(Request $request)
     {
         $tags = $request->input('tag');
+        $newTags = $request->input('newtag');
         $tagCount = count($tags['name']);
+        $newTagCount = count($newTags['name']);
 
         // update tag.
         for ($i=0; $i < $tagCount; ++$i) {
@@ -105,6 +107,18 @@ class SnapService
 
             $t->update();
         }
+
+        // create new tag
+        for ($i=0; $i < $newTagCount; $i++) { 
+            $t = new SnapTag;
+            $t->name = $newTags['name'][$i];
+            $t->quantity = $newTags['qty'][$i];
+            $t->total_price = $newTags['total'][$i];
+            $t->file()->associate($newTags['fileId'][$i]);
+
+            $t->save();
+        }
+
     }
 
     /**

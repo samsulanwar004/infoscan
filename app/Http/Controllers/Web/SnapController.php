@@ -61,10 +61,23 @@ class SnapController extends AdminController
 
     public function update(Request $request, $id)
     {
+        $this->validate($request, [
+            'tag.name.*' => 'required|max:255',
+            'tag.qty.*' => 'required|max:11',
+            'tag.total.*' => 'required|max:15',
+            'newtag.name.*' => 'required|max:255',
+            'newtag.qty.*' => 'required|max:11',
+            'newtag.total.*' => 'required|max:15',
+        ]);
+
         try {
-            if ($id === 'tag')
+            if ($id === 'input')
             {
-                (new SnapService)->updateSnapTags($request);
+                (new SnapService)->updateSnapModeInput($request);
+            } else if ($id === 'tags') {
+
+            } else if ($id === 'audio') {
+
             } else {
                 (new SnapService)->updateSnap($request, $id);
             }
