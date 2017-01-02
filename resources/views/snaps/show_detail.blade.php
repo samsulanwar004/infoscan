@@ -3,7 +3,7 @@
 		{{ csrf_field() }}
     	{{ method_field('PUT') }}
     	@if($snap->approved_by == null)
-			<button type="submit" class="btn btn-success btn-block btn-lg"><i class="fa fa-check-circle-o fa-btn"></i> Approve This Content</button>
+			<button type="submit" class="btn btn-success btn-block btn-lg" id="approve"><i class="fa fa-check-circle-o fa-btn"></i> Approve This Content</button>
 		@else
 			<button class="btn btn-danger btn-block btn-lg" disabled=""><i class="fa fa-check-circle-o fa-btn"></i> This Content Approved</button>
 		@endif

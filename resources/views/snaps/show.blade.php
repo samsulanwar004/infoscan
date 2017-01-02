@@ -65,13 +65,27 @@
 
 @section('footer_scripts')
 <script type="text/javascript">
-    $( ".img-tag" ).dblclick(function(img) {
+    $( ".img-tag" ).on('click', function(img) {
         console.log(img.toElement.id);
         var link = $('#modal-edit');
         var nameLink = img.toElement.id+'/edit';
         link.attr('href', nameLink);
 
         link.trigger('click');
-    });   
+    });  
+
+    $("#approve").on('click', function() {
+        if (confirm('Are you sure want to approve this snap ?'))
+        {
+            return true;
+        }
+        return false;
+    });
+
 </script>
+<style type="text/css">
+    img.img-tag {
+        cursor: pointer;
+    }
+</style>
 @stop
