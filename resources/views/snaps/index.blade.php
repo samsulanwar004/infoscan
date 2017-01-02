@@ -16,7 +16,7 @@
 
                 <div class="box-tools pull-right ">
                     Filter Snap type: 
-                    <select class="form-control" onchange="filterBySnap(this.value)">
+                    <select class="form-control snap-type">
                         <option value="all" id="all">All</option>
                         @foreach($snapCategorys as $id => $name)
                             <option value="{{$id}}" id="{{$id}}">{{$name}}</option>
@@ -24,7 +24,7 @@
                     </select>
 
                     Filter Mode type:
-                    <select class="form-control" onchange="filterByMode(this.value)">
+                    <select class="form-control snap-mode">
                         <option value="all">All</option>
                         @foreach($snapCategoryModes as $id => $name)
                             <option value="{{$id}}" id="{{$id}}">{{$name}}</option>
@@ -46,7 +46,7 @@
                     @forelse($snaps as $snap)
                         <tr>
                             <td class="vertical-middle">
-                                <i class="fa fa-check-circle {{ $snap->is_active == 1 ? 'text-green' : 'text-default' }}"></i>
+                                <i class="fa fa-check-circle {{ $snap->approved_by != null ? 'text-green' : 'text-default' }}"></i>
                             </td>
                             <td class="vertical-middle">
                                 {{ strtoupper($snap->request_code) }} <br>
@@ -91,34 +91,32 @@
        getSelected();
     });
 
+    $(".snap-type").on("change", function() {
+        var attr = this.value;
+        if (attr == 'all')
+        {
+            return window.location.href = '/snaps';
+        }
+        var link = '/snaps/'+attr+'/filter';
+        window.location.href = link;
+
+    });
+
+    $(".snap-mode").on("change", function() {
+        var attr = this.value;
+        if (attr == 'all')
+        {
+            return window.location.href = '/snaps';
+        }
+        var link = '/snaps/'+attr+'/filter';
+        window.location.href = link;
+
+    });
+
     function getSelected()
     {
         document.getElementById("{{$type}}").selected = true;
     }
     
-    function filterBySnap(attr)
-    {
-        if (attr == 'all')
-        {
-            return window.location.href = '/snaps';
-        }
-        console.log(attr);
-        var attr = attr;
-        var link = '/snaps/'+attr+'/filter';
-        window.location.href = link;
-    }
-
-    function filterByMode(attr)
-    {
-        if (attr == 'all')
-        {
-            return window.location.href = '/snaps';
-        }
-        console.log(attr);
-        var attr = attr;
-        var link = '/snaps/'+attr+'/filter';
-        window.location.href = link;
-    }
-
 </script>
 @stop

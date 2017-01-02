@@ -1,5 +1,13 @@
 <div class="col-md-4">
-	<button type="button" class="btn btn-success btn-block btn-lg"><i class="fa fa-check-circle-o fa-btn"></i> Approve This Content</button>
+	<form action="{{ admin_route_url('snaps.update', ['id' => $snap->id]) }}" method="POST">
+		{{ csrf_field() }}
+    	{{ method_field('PUT') }}
+    	@if($snap->approved_by == null)
+			<button type="submit" class="btn btn-success btn-block btn-lg"><i class="fa fa-check-circle-o fa-btn"></i> Approve This Content</button>
+		@else
+			<button class="btn btn-danger btn-block btn-lg" disabled=""><i class="fa fa-check-circle-o fa-btn"></i> This Content Approved</button>
+		@endif
+	</form>
 	<table class="table">
 		<thead>
 			<tr>

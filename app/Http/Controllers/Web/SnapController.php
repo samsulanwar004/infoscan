@@ -4,9 +4,12 @@ namespace App\Http\Controllers\Web;
 
 use App\Services\SnapService;
 use Illuminate\Http\Request;
+use Exception;
+use PDOException;
 
 class SnapController extends AdminController
 {
+
     public function index()
     {
         $this->isAllowed('Snaps.List');
@@ -47,6 +50,32 @@ class SnapController extends AdminController
         $snapCategoryModes = config("common.snap_category_mode");
 
         return view('snaps.index', compact('snaps', 'type', 'snapCategorys', 'snapCategoryModes'));
+    }
+
+    public function edit($id)
+    {
+        $this->isAllowed('Points.Update');
+        $snapFile = (new SnapService)->getSnapFileById($id);
+        return view('snaps.edit', compact('snapFile'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        try {
+            if ($id === 'tag')
+            {
+                (new SnapService)->updateSnapTags($request);
+            } else {
+                (new SnapService)->updateSnap($request, $id);
+            }
+            
+        } catch (Exception $e) {
+            return redirect()->back()->withInput()->withErrors($e->getMessage());
+        } catch (PDOException $e) {
+            return redirect()->back()->withInput()->withErrors($e->getMessage());
+        }
+
+        return redirect()->back()->with('success', 'Snaps successfully updated!');
     }
 
 }

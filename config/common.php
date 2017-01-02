@@ -7,14 +7,14 @@ return [
         'hw' => 'Hand Written',
     ],
     'snap_category_mode' => [
-        'im' => 'Images',
         'in' => 'Input',
         'ta' => 'Tags',
+        'au' => 'Audios'
     ],
     'snap_mode' => [
-        'im' => 'images',
         'in' => 'input',
         'ta' => 'tags',
+        'au' => 'audios',
     ],
     'snap_type' => [
     	'rc' => 'receipt',

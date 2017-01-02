@@ -34,7 +34,7 @@
                                         </h3>
                                         <div class="timeline-body">
                                             @foreach($snap->files as $file)
-                                                <img src="http://placehold.it/150x100" alt="..." class="margin">
+                                                <img src="http://placehold.it/150x100" alt="..." class="margin @if($snap->snap_type != 'receipt') img-tag @endif"  id="{{$file->id}}">
                                             @endforeach
                                         </div>
                                     </div>
@@ -52,7 +52,26 @@
             </div>
         </div>
         <!-- /.box -->
-
+        <a href="#"  style="display: none;" 
+        data-toggle="modal"
+        data-target="#"
+        modal-size="modal-lg" 
+        id="modal-edit" 
+        title="Edit">
+        Edit Select Image</a>
     </section>
     <!-- /.content -->
 @endsection
+
+@section('footer_scripts')
+<script type="text/javascript">
+    $( ".img-tag" ).dblclick(function(img) {
+        console.log(img.toElement.id);
+        var link = $('#modal-edit');
+        var nameLink = img.toElement.id+'/edit';
+        link.attr('href', nameLink);
+
+        link.trigger('click');
+    });   
+</script>
+@stop

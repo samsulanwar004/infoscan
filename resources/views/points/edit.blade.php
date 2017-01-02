@@ -52,7 +52,7 @@
 
 <script type="text/javascript">
 
-    $(document).ready(function () {
+    $("modalForm").ready(function () {
 
         $('form').on('focus', 'input[type=number]', function (e) {
           $(this).on('mousewheel.disableScroll', function (e) {
