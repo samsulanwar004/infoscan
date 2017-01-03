@@ -8,9 +8,11 @@
 
     class ReportsController extends AdminController {
 
+        const PER_PAGE_PAGINATION = 10;
+        
         public function index() {
             $this->isAllowed('Reports.List');
-            $reports = Reports::orderBy('id')->paginate(25);
+            $reports = Reports::orderBy('id')->paginate(1000);
             return view('reports.index', compact('reports'));
         }
 
@@ -20,7 +22,7 @@
             $attributes = $attributes['attributes'];
             $attributesKeys = json_decode($attributes);
             $attributesCounts = count($attributesKeys);
-            $attributesValues = Reports::orderBy('id')->paginate(25);
+            $attributesValues = Reports::orderBy('id')->paginate(1000);
             $view = \View::make('reports.pdf', compact('attributesKeys', 'attributesCounts', 'attributesValues'));
             $html = $view->render();        
             PDF::SetTitle('Snap Report Table');
@@ -63,7 +65,7 @@
             $attributes = $attributes['attributes'];
             $attributesKeys = json_decode($attributes);
             $attributesCounts = count($attributesKeys);
-            $attributesValues = Reports::orderBy('id')->paginate(25);
+            $attributesValues = Reports::orderBy('id')->paginate(1000);
             $headers = array(
                                 "Content-Type"=>"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                                 "Content-Disposition"=>"attachment;filename=SnapReportTable.xlsx",
@@ -79,7 +81,7 @@
             $attributes = $attributes['attributes'];
             $attributesKeys = json_decode($attributes);
             $attributesCounts = count($attributesKeys);
-            $attributesValues = Reports::orderBy('id')->paginate(25);
+            $attributesValues = Reports::orderBy('id')->paginate(1000);
             $headers = array(
                                 "Content-type"=>"text/html",
                                 "Content-Disposition"=>"attachment;Filename=SnapReportTable.doc"
