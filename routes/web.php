@@ -98,41 +98,31 @@ Route::group([
         'Web\ReportsController',
         ['except' => ['show'], 'names' => route_resource_name($routePrefix, 'reports')]
     );
+
+    Route::get(
+        '/reports/formatPdf',
+        'Web\ReportsController@formatPdf'
+    )->name('reports.formatPdf');
+
+    Route::get(
+        '/reports/formatExcel',
+        'Web\ReportsController@formatExcel'
+    )->name('reports.formatExcel');
+
+    Route::get(
+        '/reports/formatWord',
+        'Web\ReportsController@formatWord'
+    )->name('reports.formatWord');
+
+    Route::get('/secure/{requestCode}/{social}', 'SecureController@redirect');
+
+    Route::get(
+        '/snaps/{attr}/filter',
+        'Web\SnapController@filter'
+    )->name('snaps.filter');
+
+    Route::get('/callback/{social}', 'SecureController@callback');
+
 });
 
 Auth::routes();
-
-Route::get('/secure/{requestCode}/{social}', 'SecureController@redirect');
-
-Route::post('/reports/formatPdf', 'Web\ReportsController@formatPdf')->name('reports.formatPdf');
-
-Route::post('/reports/formatWord', 'Web\ReportsController@formatWord')->name('reports.formatWord');
-
-Route::get(
-    '/snaps/{attr}/filter',
-    'Web\SnapController@filter'
-)->name('snaps.filter');
-
-Route::get(
-    '/report/filters',
-    'Web\ReportController@filters'
-)->name('report.filters');
-
-Route::get(
-    '/reports/formatPdf',
-    'Web\ReportsController@formatPdf'
-)->name('reports.formatPdf');
-
-Route::get(
-    '/reports/formatExcel',
-    'Web\ReportsController@formatExcel'
-)->name('reports.formatExcel');
-
-Route::get(
-    '/reports/formatWord',
-    'Web\ReportsController@formatWord'
-)->name('reports.formatWord');
-
-Route::resource('pdf', 'PdfController');
-
-Route::get('/callback/{social}', 'SecureController@callback');

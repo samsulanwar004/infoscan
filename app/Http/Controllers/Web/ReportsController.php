@@ -28,7 +28,7 @@
             PDF::SetTitle('Snap Report Table');
             PDF::AddPage();
             PDF::writeHTML($html, true, false, true, false, '');
-            PDF::Output('snapReportTable.pdf');        
+            PDF::Output('SnapReportTable.pdf');        
         }
 
         public function formatWord(Request $request) {                           
@@ -43,17 +43,17 @@
                                 "Content-Disposition"=>"attachment;Filename=SnapReportTable.doc"
                             );
             $content  = '<html>
-                            <head>
-                                <meta charset="utf-8">
-                            </head>
-                            <body>
-                                <table class="table table-striped" border="1">
-                                    <thead>';
+                         <head>
+                         <meta charset="utf-8">
+                         </head>
+                         <body>
+                         <table class="table table-striped" border="1">
+                         <thead>';
             for($i=0; $i<$attributesCounts; $i++) {
                 $content .= '<th class="'.$attributesKeys[$i]->name.'" name="'.$attributesKeys[$i]->name.'">'.$attributesKeys[$i]->value.'</th>';
             }
             $content .= '</thead>
-                                <tbody>';
+                         <tbody>';
             foreach($attributesValues as $item) {
                 $content .= '<tr align="center">';
                 for($i=0; $i< $attributesCounts;$i++) {
@@ -62,9 +62,9 @@
                 }
                 $content .= '</tr>';
             }
-            $content .= '           </tbody>
-                                </table>
-                            </body>
+            $content .= '</tbody>
+                         </table>
+                         </body>
                          </html>';
             return \Response::make($content,200, $headers);        
         }
@@ -82,17 +82,17 @@
                                 "Cache-Control"=>"max-age=0"
                             );
             $content  = '<html>
-                            <head>
-                                <meta charset="utf-8">
-                            </head>
-                            <body>
-                                <table class="table table-striped" border="1">
-                                    <thead>';
+                         <head>
+                         <meta charset="utf-8">
+                         </head>
+                         <body>
+                         <table class="table table-striped" border="1">
+                         <thead>';
             for($i=0; $i<$attributesCounts; $i++) {
                 $content .= '<th class="'.$attributesKeys[$i]->name.'" name="'.$attributesKeys[$i]->name.'">'.$attributesKeys[$i]->value.'</th>';
             }
             $content .= '</thead>
-                                <tbody>';
+                         <tbody>';
             foreach($attributesValues as $item) {
                 $content .= '<tr align="center">';
                 for($i=0; $i< $attributesCounts;$i++) {
@@ -101,9 +101,9 @@
                 }
                 $content .= '</tr>';
             }
-            $content .= '           </tbody>
-                                </table>
-                            </body>
+            $content .= '</tbody>
+                         </table>
+                         </body>
                          </html>';
             return \Response::make(rtrim($content, "\n"), 200, $headers);        
         }        
