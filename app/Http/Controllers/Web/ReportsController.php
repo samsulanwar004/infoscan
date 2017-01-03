@@ -16,10 +16,10 @@
             return view('reports.index', compact('reports'));
         }
 
-        public function formatPdf() { 
+        public function formatPdf(Request $request) { 
             $this->isAllowed('Reports.List');
-            $attributes = $_GET['attributes'];
-            //$attributes = Crypt::decrypt($attributes);
+            $attributes = $request->all();
+            $attributes = $attributes['attributes'];
             $attributesKeys = json_decode($attributes);
             $attributesCounts = count($attributesKeys);
             $attributesValues = Reports::orderBy('id')->paginate(25);
@@ -31,9 +31,10 @@
             PDF::Output('snapReportTable.pdf');        
         }
 
-        public function formatWord() {                           
+        public function formatWord(Request $request) {                           
             $this->isAllowed('Reports.List');
-            $attributes = $_GET['attributes'];
+            $attributes = $request->all();
+            $attributes = $attributes['attributes'];
             $attributesKeys = json_decode($attributes);
             $attributesCounts = count($attributesKeys);
             $attributesValues = Reports::orderBy('id')->paginate(25);
@@ -68,9 +69,10 @@
             return \Response::make($content,200, $headers);        
         }
 
-        public function formatExcel() {                           
+        public function formatExcel(Request $request) {                           
             $this->isAllowed('Reports.List');
-            $attributes = $_GET['attributes'];
+            $attributes = $request->all();
+            $attributes = $attributes['attributes'];
             $attributesKeys = json_decode($attributes);
             $attributesCounts = count($attributesKeys);
             $attributesValues = Reports::orderBy('id')->paginate(25);
