@@ -107,12 +107,12 @@ Route::group([
     Route::get(
         '/reports/formatExcel',
         'Web\ReportsController@formatExcel'
-    )->name('reports.formatExcel');
+    );
 
     Route::get(
         '/reports/formatWord',
         'Web\ReportsController@formatWord'
-    )->name('reports.formatWord');
+    );
 
     Route::get('/secure/{requestCode}/{social}', 'SecureController@redirect');
 

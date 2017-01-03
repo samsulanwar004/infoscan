@@ -5,8 +5,6 @@
     use App\Reports;
     use League\Flysystem\Exception;
     use PDF;
-    use Excel;
-    use Session;
 
     class ReportsController extends AdminController {
 
@@ -31,17 +29,7 @@
             PDF::Output('SnapReportTable.pdf');        
         }
 
-        public function formatWord(Request $request) {                           
-            $this->isAllowed('Reports.List');
-            $attributes = $request->all();
-            $attributes = $attributes['attributes'];
-            $attributesKeys = json_decode($attributes);
-            $attributesCounts = count($attributesKeys);
-            $attributesValues = Reports::orderBy('id')->paginate(25);
-            $headers = array(
-                                "Content-type"=>"text/html",
-                                "Content-Disposition"=>"attachment;Filename=SnapReportTable.doc"
-                            );
+        public function setContentFile($keys, $counts, $values) {
             $content  = '<html>
                          <head>
                          <meta charset="utf-8">
@@ -49,15 +37,15 @@
                          <body>
                          <table class="table table-striped" border="1">
                          <thead>';
-            for($i=0; $i<$attributesCounts; $i++) {
-                $content .= '<th class="'.$attributesKeys[$i]->name.'" name="'.$attributesKeys[$i]->name.'">'.$attributesKeys[$i]->value.'</th>';
+            for($i=0; $i<$counts; $i++) {
+                $content .= '<th class="'.$keys[$i]->name.'" name="'.$keys[$i]->name.'">'.$keys[$i]->value.'</th>';
             }
             $content .= '</thead>
                          <tbody>';
-            foreach($attributesValues as $item) {
+            foreach($values as $item) {
                 $content .= '<tr align="center">';
-                for($i=0; $i< $attributesCounts;$i++) {
-                    $name = $attributesKeys[$i]->name;
+                for($i=0; $i<$counts; $i++) {
+                    $name = $keys[$i]->name;
                     $content .= '<td>'.$item->$name.'</td>';
                 }
                 $content .= '</tr>';
@@ -66,7 +54,7 @@
                          </table>
                          </body>
                          </html>';
-            return \Response::make($content,200, $headers);        
+            return $content;
         }
 
         public function formatExcel(Request $request) {                           
@@ -81,31 +69,23 @@
                                 "Content-Disposition"=>"attachment;filename=SnapReportTable.xlsx",
                                 "Cache-Control"=>"max-age=0"
                             );
-            $content  = '<html>
-                         <head>
-                         <meta charset="utf-8">
-                         </head>
-                         <body>
-                         <table class="table table-striped" border="1">
-                         <thead>';
-            for($i=0; $i<$attributesCounts; $i++) {
-                $content .= '<th class="'.$attributesKeys[$i]->name.'" name="'.$attributesKeys[$i]->name.'">'.$attributesKeys[$i]->value.'</th>';
-            }
-            $content .= '</thead>
-                         <tbody>';
-            foreach($attributesValues as $item) {
-                $content .= '<tr align="center">';
-                for($i=0; $i< $attributesCounts;$i++) {
-                    $name = $attributesKeys[$i]->name;
-                    $content .= '<td>'.$item->$name.'</td>';
-                }
-                $content .= '</tr>';
-            }
-            $content .= '</tbody>
-                         </table>
-                         </body>
-                         </html>';
+            $content = $this->setContentFile($attributesKeys, $attributesCounts, $attributesValues);
             return \Response::make(rtrim($content, "\n"), 200, $headers);        
         }        
+
+        public function formatWord(Request $request) {                           
+            $this->isAllowed('Reports.List');
+            $attributes = $request->all();
+            $attributes = $attributes['attributes'];
+            $attributesKeys = json_decode($attributes);
+            $attributesCounts = count($attributesKeys);
+            $attributesValues = Reports::orderBy('id')->paginate(25);
+            $headers = array(
+                                "Content-type"=>"text/html",
+                                "Content-Disposition"=>"attachment;Filename=SnapReportTable.doc"
+                            );
+            $content = $this->setContentFile($attributesKeys, $attributesCounts, $attributesValues);
+            return \Response::make($content,200, $headers);        
+        }
     
     }

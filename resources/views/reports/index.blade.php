@@ -122,16 +122,11 @@
             });
         });
         function showValues() {
-            //var fields = checkCookie();
-            //console.log(fields);
             var fields = $("input:checkbox").serializeArray();           
-            //console.log(fields);
             $("#results").empty();
             jQuery.each( fields, function(i, field) {
                 $("#results").append(field.value + ",");
             });
-            //localStorage.setItem("keyFields", JSON.stringify(fields));
-            //fields = localStorage.getItem("keyFields");
             fields = JSON.stringify(fields);
             return fields;
         }

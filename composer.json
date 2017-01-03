@@ -18,9 +18,7 @@
         "spatie/laravel-fractal": "^2.0",
         "laravel/socialite": "^2.0",
         "dusterio/laravel-plain-sqs": "^0.1.7",
-        "elibyy/tcpdf-laravel": "5.3.*",
-        "maatwebsite/excel": "~2.0.0",
-        "phpoffice/phpword": "dev-master"
+        "elibyy/tcpdf-laravel": "5.3.*"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
@@ -52,8 +50,7 @@
     ],
     "autoload": {
         "classmap": [
-            "database",
-            "database/seeds"
+            "database"
         ],
         "psr-4": {
             "App\\": "app/"
