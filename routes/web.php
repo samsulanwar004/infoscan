@@ -99,38 +99,28 @@ Route::group([
     )->name('transaction.show');
 
     Route::resource(
-        '/report',
-        'Web\ReportController',
-        ['except' => ['show'], 'names' => route_resource_name($routePrefix, 'report')]
+        '/reports',
+        'Web\ReportsController',
+        ['except' => ['show'], 'names' => route_resource_name($routePrefix, 'reports')]
     );
 
-    Route::get('/secure/{requestCode}/{social}', 'SecureController@redirect');
-    //Route::get('/report/filters',
-    //    ['as' => 'report.filters', 'uses' => 'Web\ReportController@filters']);
     Route::get(
-        '/snaps/{attr}/filter',
-        'Web\SnapController@filter'
-    )->name('snaps.filter');
+    '/reports/formatPdf',
+    'Web\ReportsController@formatPdf'
+    )->name('reports.formatPdf');
 
     Route::get(
-        '/report/filters',
-        'Web\ReportController@filters'
-    )->name('report.filters');
+        '/reports/formatExcel',
+        'Web\ReportsController@formatExcel'
+    )->name('reports.formatExcel');
 
     Route::get(
-        '/report/filterStore',
-        'Web\ReportController@filterStore'
-    )->name('report.filterStore');
+        '/reports/formatWord',
+        'Web\ReportsController@formatWord'
+    )->name('reports.formatWord');
 
-    Route::get(
-        '/report/formatPdf',
-        'Web\ReportController@formatPdf'
-    )->name('report.formatPdf');
-
-    /*Route::get('/report/filterStore/{attributes?}', function($attributes = null) {
-        return Redirect::to('/report/index/' . $attributes);
-    });*/
 });
 
 Auth::routes();
-Route::get('/callback/{social}', 'SecureController@callback');
+
+Route::get('/secure/{requestCode}/{social}', 'SecureController@redirect');
