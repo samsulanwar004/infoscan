@@ -156,8 +156,8 @@
             return "";
         }
         function checkCookie() {
-            var user = getCookie($("input:checkbox").serializeArray());
-            setCookie($("input:checkbox").serializeArray(), user, 365);
+            var getCookies = getCookie(showValues());
+            setCookie(showValues(), getCookies, 365);
         }    
     </script>
 @endsection

@@ -7,7 +7,6 @@
     use PDF;
     use Excel;
     use Session;
-    use Crypt;
 
     class ReportsController extends AdminController {
 
@@ -105,25 +104,6 @@
                             </body>
                          </html>';
             return \Response::make(rtrim($content, "\n"), 200, $headers);        
-            /*$this->isAllowed('Reports.List');
-            $reports = Reports::orderBy('id');
-            Excel::create('SnapReportTable', function($excel) use ($reports) {
-                $excel->sheet('Snap Report Table', function($sheet) use ($reports) {
-                    $sheet->fromArray($reports);
-                });
-            })->export('xls');*/
         }        
-
-        public function store(Request $request) {
-            //$input = $request->all();
-            //dd($input);
-            $input = ['attributes' => $request->input('attributes')];
-            $attributes = $input['attributes'];
-            dd($attributes);
-            $value = $request->session()->put('attributes', $attributes);            
-            $attributes = $request->session()->get('attributes', $value);
-
-            return redirect()->route('reports.index');
-        }
     
     }
