@@ -6,21 +6,31 @@
             <div class="box-header with-border">
                 <h3 class="box-title"></h3>
                 <div class="btn-group pull-right">
-                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal" title="Filters"> 
-                        Filters 
+                    <button type="button" class="btn btn-default" data-toggle="modal" data-target="#myModal" title="Filters"> 
+                        <a id="filters" class="filters" title="Filters" href="#">
+                            <img src="/img/icon/filter.png" width="24" height="24">
+                        </a>
                     </button>
                     <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-expended="false">
-                        Format                                   
+                        <a id="downloads" class="downloads" title="Downloads" href="#">
+                            <img src="/img/icon/download.png" width="24" height="24">
+                        </a>
                     </button>
-                    <ul class="dropdown-menu" role="menu" style="width: 200px">
+                    <ul class="dropdown-menu" role="menu" style="width:10px; text-align:center;">
                         <li role="presentation">
-                            <a role="menuitem" id="pdf" class="pdf" title="PDF" href="#">PDF</a>
+                            <a role="menuitem" id="pdf" class="pdf" title="PDF" href="#">
+                                <img src="/img/icon/pdf.png">
+                            </a>
                         </li>
                         <li role="presentation">
-                            <a role="menuitem" id="excel" class="excel" title="Excel" href="#">Excel</a>
+                            <a role="menuitem" id="excel" class="excel" title="Excel" href="#">
+                                <img src="/img/icon/excel.png">
+                            </a>                                
                         </li>
                         <li role="presentation">
-                            <a role="menuitem" id="word" class="word" title="Word" href="#">Word</a>
+                            <a role="menuitem" id="word" class="word" title="Word" href="#">
+                                <img src="/img/icon/word.png">
+                            </a>                                
                         </li>
                     </ul>                                        
                 </div>
