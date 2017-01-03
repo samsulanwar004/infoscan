@@ -77,6 +77,11 @@ Route::group([
         ['names' => route_resource_name($routePrefix, 'snaps')]
     );
 
+    Route::get(
+        '/snaps/{id}/edit-snap-file',
+        'Web\SnapController@editSnapFile'
+    )->name('snaps.editSnapFile');
+
     Route::resource(
         '/members',
         'Web\MemberController',
@@ -98,37 +103,34 @@ Route::group([
         'Web\ReportController',
         ['except' => ['show'], 'names' => route_resource_name($routePrefix, 'report')]
     );
+
+    Route::get('/secure/{requestCode}/{social}', 'SecureController@redirect');
+    //Route::get('/report/filters',
+    //    ['as' => 'report.filters', 'uses' => 'Web\ReportController@filters']);
+    Route::get(
+        '/snaps/{attr}/filter',
+        'Web\SnapController@filter'
+    )->name('snaps.filter');
+
+    Route::get(
+        '/report/filters',
+        'Web\ReportController@filters'
+    )->name('report.filters');
+
+    Route::get(
+        '/report/filterStore',
+        'Web\ReportController@filterStore'
+    )->name('report.filterStore');
+
+    Route::get(
+        '/report/formatPdf',
+        'Web\ReportController@formatPdf'
+    )->name('report.formatPdf');
+
+    /*Route::get('/report/filterStore/{attributes?}', function($attributes = null) {
+        return Redirect::to('/report/index/' . $attributes);
+    });*/
 });
 
 Auth::routes();
-
-Route::get('/secure/{requestCode}/{social}', 'SecureController@redirect');
-//Route::get('/report/filters',
-//    ['as' => 'report.filters', 'uses' => 'Web\ReportController@filters']);
-Route::get(
-    '/snaps/{attr}/filter',
-    'Web\SnapController@filter'
-)->name('snaps.filter');
-
-Route::get(
-    '/report/filters',
-    'Web\ReportController@filters'
-)->name('report.filters');
-
-Route::get(
-    '/report/filterStore',
-    'Web\ReportController@filterStore'
-)->name('report.filterStore');
-
-Route::get(
-    '/report/formatPdf',
-    'Web\ReportController@formatPdf'
-)->name('report.formatPdf');
-
-/*Route::get('/report/filterStore/{attributes?}', function($attributes = null) {
-    return Redirect::to('/report/index/' . $attributes);
-});*/
-
-Route::resource('pdf', 'PdfController');
-
 Route::get('/callback/{social}', 'SecureController@callback');
