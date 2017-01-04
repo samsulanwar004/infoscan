@@ -30,7 +30,7 @@
         <div class="pull-right hidden-xs">
             <b>Version</b> 2.3.7
         </div>
-        <strong>Copyright &copy; 2016 <a target="_blank" href="http://rebelworks.co">RebelWorks</a>.</strong> All rights
+        <strong>Copyright &copy; {{ date('Y') }} <a target="_blank" href="http://rebelworks.co">RebelWorks</a>.</strong> All rights
         reserved.
     </footer>
 

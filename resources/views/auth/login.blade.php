@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>AdminLTE 2 | Blank Page</title>
+    <title>Infoscan | Admin Panel</title>
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <link rel="stylesheet" href="{{ elixir('css/app.css') }}">
     <!--[if lt IE 9]>
@@ -13,7 +13,10 @@
 <body class="hold-transition login-page">
 <div class="login-box">
     <div class="login-logo">
-        <a href="/"><b>Admin</b>Panel</a>
+        <!-- <a href="/"><b>Rekan</b>Raffi</a> -->
+        <a href="#">
+            <img src="/img/lte/logo.png" width="150">
+        </a>
     </div>
     <!-- /.login-logo -->
     <div class="login-box-body">

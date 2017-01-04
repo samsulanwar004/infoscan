@@ -66,10 +66,16 @@ Route::group([
         ['except' => ['show'], 'names' => route_resource_name($routePrefix, 'points')]
     );
 
-    Route::resource('/questionnaire', 'Web\QuestionnaireController',
-        ['except' => ['show'], 'names' => route_resource_name($routePrefix, 'questionnaire')]);
-    Route::resource('/questions', 'Web\QuestionController',
-        ['except' => ['show'], 'names' => route_resource_name($routePrefix, 'questions')]);
+    Route::resource(
+        '/questionnaire',
+        'Web\QuestionnaireController',
+        ['except' => ['show'], 'names' => route_resource_name($routePrefix, 'questionnaire')]
+    );
+    Route::resource(
+        '/questions',
+        'Web\QuestionController',
+        ['except' => ['show'], 'names' => route_resource_name($routePrefix, 'questions')]
+    );
 
     Route::resource(
         '/snaps',
@@ -98,43 +104,38 @@ Route::group([
         'Web\ReportsController',
         ['except' => ['show'], 'names' => route_resource_name($routePrefix, 'reports')]
     );
+
+    Route::get('/secure/{requestCode}/{social}', 'SecureController@redirect');
+
+    /*Route::post('/reports/filters', 'Web\ReportsController@filters')->name('reports.filters');
+    Route::post('/reports/formatPdf', 'Web\ReportsController@formatPdf')->name('reports.formatPdf');
+    Route::post('/reports/formatWord', 'Web\ReportsController@formatWord')->name('reports.formatWord');*/
+
+    Route::get(
+        '/snaps/{attr}/filter',
+        'Web\SnapController@filter'
+    )->name('snaps.filter');
+
+    Route::get(
+        '/report/filters',
+        'Web\ReportsController@filters'
+    )->name('report.filters');
+
+    Route::get(
+        '/reports/formatPdf',
+        'Web\ReportsController@formatPdf'
+    )->name('reports.formatPdf');
+
+    Route::get(
+        '/reports/formatExcel',
+        'Web\ReportsController@formatExcel'
+    )->name('reports.formatExcel');
+
+    Route::get(
+        '/reports/formatWord',
+        'Web\ReportsController@formatWord'
+    )->name('reports.formatWord');
 });
 
 Auth::routes();
-
-Route::get('/secure/{requestCode}/{social}', 'SecureController@redirect');
-
-Route::post('/reports/filters', 'Web\ReportsController@filters')->name('reports.filters');
-
-Route::post('/reports/formatPdf', 'Web\ReportsController@formatPdf')->name('reports.formatPdf');
-
-Route::post('/reports/formatWord', 'Web\ReportsController@formatWord')->name('reports.formatWord');
-
-Route::get(
-    '/snaps/{attr}/filter',
-    'Web\SnapController@filter'
-)->name('snaps.filter');
-
-Route::get(
-    '/report/filters',
-    'Web\ReportController@filters'
-)->name('report.filters');
-
-Route::get(
-    '/reports/formatPdf',
-    'Web\ReportsController@formatPdf'
-)->name('reports.formatPdf');
-
-Route::get(
-    '/reports/formatExcel',
-    'Web\ReportsController@formatExcel'
-)->name('reports.formatExcel');
-
-Route::get(
-    '/reports/formatWord',
-    'Web\ReportsController@formatWord'
-)->name('reports.formatWord');
-
-Route::resource('pdf', 'PdfController');
-
 Route::get('/callback/{social}', 'SecureController@callback');

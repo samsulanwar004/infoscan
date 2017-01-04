@@ -80,7 +80,6 @@ class MemberController extends BaseApiController
             }
 
             // send forgot password email
-
         } catch (Exception $e) {
             $this->error($e);
         }

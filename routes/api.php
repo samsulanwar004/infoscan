@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 */
 
 Route::post('v1/login', 'SecureController@login');
+Route::post('v1/register', 'SecureController@register');
 
 
 

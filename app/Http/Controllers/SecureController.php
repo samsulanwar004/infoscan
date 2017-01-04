@@ -6,7 +6,7 @@ use App\Http\Controllers\Api\BaseApiController;
 use App\Services\SecureService;
 use Illuminate\Http\Request;
 use Laravel\Socialite\Facades\Socialite;
-
+use Validator;
 class SecureController extends BaseApiController
 {
     public function redirect($requestCode, $social)
@@ -50,7 +50,6 @@ class SecureController extends BaseApiController
             'password' => $request->input('password'),
         ])
         ) {
-
             return response()->json([
                 'status' => 'ok',
                 'message' => 'Authenticated',
@@ -59,5 +58,30 @@ class SecureController extends BaseApiController
                 ],
             ]);
         }
+    }
+
+    /**
+     * @param  Register member manualy
+     * @return \Response
+     */
+    public function register(Request $request)
+    {
+        $validation = Validator::make($request->all(), [
+            'name' => 'required',
+            'email' => 'required|email',
+            'social_media_type' => 'required|in:facebook,linkedin,instagram,google'
+        ]);
+
+        if($validation->passes()) {
+            try {
+                $secure = (new SecureService)->registerManualHandle($request);
+
+                return $this->success($secure);
+            } catch (\Exception $e) {
+                return $this->error($e);
+            }
+        }
+
+        return $this->error($validation->errors());
     }
 }

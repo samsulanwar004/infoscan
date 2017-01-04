@@ -17,7 +17,7 @@
             return view('reports.index', compact('reports'));
         }
 
-        public function formatPdf() { 
+        public function formatPdf() {
             $this->isAllowed('Reports.List');
             $attributes = $_GET['attributes'];
             //$attributes = Crypt::decrypt($attributes);
@@ -25,14 +25,14 @@
             $attributesCounts = count($attributesKeys);
             $attributesValues = Reports::orderBy('id')->paginate(25);
             $view = \View::make('reports.pdf', compact('attributesKeys', 'attributesCounts', 'attributesValues'));
-            $html = $view->render();        
+            $html = $view->render();
             PDF::SetTitle('Snap Report Table');
             PDF::AddPage();
             PDF::writeHTML($html, true, false, true, false, '');
-            PDF::Output('snapReportTable.pdf');        
+            PDF::Output('snapReportTable.pdf');
         }
 
-        public function formatWord() {                           
+        public function formatWord() {
             $this->isAllowed('Reports.List');
             $attributes = $_GET['attributes'];
             $attributesKeys = json_decode($attributes);
@@ -66,10 +66,10 @@
                                 </table>
                             </body>
                          </html>';
-            return \Response::make($content,200, $headers);        
+            return \Response::make($content,200, $headers);
         }
 
-        public function formatExcel() {                           
+        public function formatExcel() {
             $this->isAllowed('Reports.List');
             $attributes = $_GET['attributes'];
             $attributesKeys = json_decode($attributes);
@@ -104,7 +104,7 @@
                                 </table>
                             </body>
                          </html>';
-            return \Response::make(rtrim($content, "\n"), 200, $headers);        
+            return \Response::make(rtrim($content, "\n"), 200, $headers);
             /*$this->isAllowed('Reports.List');
             $reports = Reports::orderBy('id');
             Excel::create('SnapReportTable', function($excel) use ($reports) {
@@ -112,7 +112,7 @@
                     $sheet->fromArray($reports);
                 });
             })->export('xls');*/
-        }        
+        }
 
         public function store(Request $request) {
             //$input = $request->all();
@@ -120,10 +120,10 @@
             $input = ['attributes' => $request->input('attributes')];
             $attributes = $input['attributes'];
             dd($attributes);
-            $value = $request->session()->put('attributes', $attributes);            
+            $value = $request->session()->put('attributes', $attributes);
             $attributes = $request->session()->get('attributes', $value);
 
             return redirect()->route('reports.index');
         }
-    
+
     }

@@ -60,6 +60,16 @@ class MemberService
     private $status = 'active';
 
     /**
+     * @var string
+     */
+    private $apiToken;
+
+    /**
+     * @var string
+     */
+    private $bankAccount;
+
+    /**
      * Add new a member into database.
      *
      * @param array $data
@@ -81,6 +91,7 @@ class MemberService
         $member->is_login_by_social_media = $this->getIsLoginBySocialMedia();
         $member->social_media_type = $this->getSocialMediaType();
         $member->social_media_url = $this->getSocialMediaUrl();
+        $member->api_token = $this->getApiToken();
 
         if (!$member->save()) {
             DB::rollback();
@@ -286,6 +297,44 @@ class MemberService
     public function setPassword($password)
     {
         $this->password = $password;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getApiToken()
+    {
+        return $this->apiToken;
+    }
+
+    /**
+     * @param string
+     * @return $this
+     */
+    public function setApiToken($token)
+    {
+        $this->apiToken = strtolower(trim($token));
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getBankAccount()
+    {
+        return $this->bankAccount;
+    }
+
+    /**
+     * @param string
+     * @return $this
+     */
+    public function setBankAccount($bankAccount)
+    {
+        $this->bankAccount = $bankAccount;
 
         return $this;
     }
