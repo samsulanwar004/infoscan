@@ -33,9 +33,15 @@
                                             <a href="{{ admin_route_url('members.show', ['id' => $snap->member->id]) }}">{{ $snap->member->name }}</a> uploaded new photos
                                         </h3>
                                         <div class="timeline-body">
+                                        @if ($snap->mode_type != 'audios')
                                             @foreach($snap->files as $file)
-                                                <img src="http://placehold.it/150x100" alt="..." class="margin @if($snap->snap_type != 'receipt') img-tag @endif"  id="{{$file->id}}">
+                                                <img src="{{ $file->file_path }}" alt="{{ $file ->file_code }}" class="margin img-responsive @if($snap->snap_type != 'receipt') img-tag @endif"  id="{{$file->id}}">
                                             @endforeach
+                                        @else
+                                            @foreach($snap->files as $file)
+                                                <img src="http://logicalmoon.com/wp-content/uploads/2015/07/wmp-logo.png" alt="{{ $file ->file_code }}" class="margin img-responsive @if($snap->snap_type != 'receipt') img-tag @endif"  id="{{$file->id}}">
+                                            @endforeach
+                                        @endif
                                         </div>
                                     </div>
                                 </li>
@@ -58,28 +64,20 @@
         modal-size="modal-lg" 
         id="modal-edit" 
         title="Edit">
-        Edit Select Image</a>
+        Edit Select Image</a>        
     </section>
     <!-- /.content -->
 @endsection
 
 @section('footer_scripts')
 <script type="text/javascript">
-    $( ".img-tag" ).on('click', function(img) {
-        console.log(img.toElement.id);
+    $(".img-tag").on('click', function(img) {
+        //console.log(img.toElement.id);
         var link = $('#modal-edit');
-        var nameLink = img.toElement.id+'/edit';
+        var nameLink = img.toElement.id+'/edit-snap-file';
         link.attr('href', nameLink);
 
         link.trigger('click');
-    });  
-
-    $("#approve").on('click', function() {
-        if (confirm('Are you sure want to approve this snap ?'))
-        {
-            return true;
-        }
-        return false;
     });
 
 </script>

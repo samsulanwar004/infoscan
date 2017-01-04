@@ -35,8 +35,7 @@ class SnapController extends AdminController
 
         $snaps = ( new SnapService);
 
-        if (config("common.snap_type.$attr"))
-        {
+        if (config("common.snap_type.$attr")) {
             $att = config("common.snap_type.$attr");
             $snaps = $snaps->getSnapsByType($att);
             $type = $attr;
@@ -54,9 +53,22 @@ class SnapController extends AdminController
 
     public function edit($id)
     {
-        $this->isAllowed('Points.Update');
+        $snap = (new SnapService)->getSnapByid($id);
+
+        return view('snaps.edit', compact('snap'));
+    }
+
+    public function editSnapFile($id)
+    {
+        $modeView = [
+            'input' => 'modal_inputs',
+            'tags' => 'modal_tags',
+            'audio' => 'modal_audios'
+        ];
+
         $snapFile = (new SnapService)->getSnapFileById($id);
-        return view('snaps.edit', compact('snapFile'));
+        $mode = $modeView[$snapFile->mode_type];
+        return view("snaps.$mode", compact('snapFile'));
     }
 
     public function update(Request $request, $id)
@@ -71,11 +83,10 @@ class SnapController extends AdminController
         ]);
 
         try {
-            if ($id === 'input')
-            {
+            if ($id === 'input') {
                 (new SnapService)->updateSnapModeInput($request);
             } else if ($id === 'tags') {
-
+                (new SnapService)->updateSnapModeTags($request);
             } else if ($id === 'audio') {
 
             } else {
@@ -89,6 +100,13 @@ class SnapController extends AdminController
         }
 
         return redirect()->back()->with('success', 'Snaps successfully updated!');
+    }
+
+    public function tagging($id)
+    {
+        $rs = (new SnapService)->getSnapFileById($id);
+
+        return response()->json($rs->tag);
     }
 
 }
