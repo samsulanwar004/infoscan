@@ -173,7 +173,6 @@ return [
         Spatie\Fractal\FractalServiceProvider::class,
         Laravel\Socialite\SocialiteServiceProvider::class,
         Dusterio\PlainSqs\Integrations\LaravelServiceProvider::class,
-        Anam\PhantomMagick\ConverterServiceProvider::class,
         Barryvdh\Debugbar\ServiceProvider::class,
         Elibyy\TCPDF\ServiceProvider::class,
         Maatwebsite\Excel\ExcelServiceProvider::class,
