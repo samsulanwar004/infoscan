@@ -82,6 +82,16 @@ Route::group([
         'Web\SnapController@editSnapFile'
     )->name('snaps.editSnapFile');
 
+    Route::get(
+        '/snaps/{attr}/filter',
+        'Web\SnapController@filter'
+    )->name('snaps.filter');
+
+    Route::get(
+        '/snaps/{id}/tagging',
+        'Web\SnapController@tagging'
+    )->name('snaps.tagging');
+
     Route::resource(
         '/members',
         'Web\MemberController',
