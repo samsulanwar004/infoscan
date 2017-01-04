@@ -130,6 +130,15 @@ class MemberService
                         ->toArray();
     }
 
+    public function getToken()
+    {
+        if(null === $this->member) {
+            throw new MemberServiceException('Can not get Token');
+        }
+
+        return $this->member->api_token;
+    }
+
     /**
      * @return mixed
      */

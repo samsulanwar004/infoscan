@@ -44,7 +44,7 @@ class SecureService
                 ->register($user);
         }
 
-        return $this->memberService->profile();
+        return ['data' => ['token' => $this->memberService->getToken()]];
     }
 
     public function registerManualHandle(Request $request)
@@ -69,6 +69,6 @@ class SecureService
                 ->register($request->all());
         }
 
-        return $this->memberService->profile();
+        return ['data' => ['token' => $this->memberService->getToken()]];
     }
 }

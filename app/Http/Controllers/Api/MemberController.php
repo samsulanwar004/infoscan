@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Transformers\MemberTransformer;
 use DB;
-use Illuminate\Http\Request;
 use Exception;
+use Illuminate\Http\Request;
 use Validator;
 
 class MemberController extends BaseApiController
@@ -22,14 +23,11 @@ class MemberController extends BaseApiController
             return $this->notFound();
         }
 
-        $backAccount = is_null($member->bank_account) ?:decrypt($member->bank_account);
-
-        return $this->success([
-            'member_code' => $member->member_code,
-            'member_name' => $member->name,
-            'bank_account' => $backAccount['bank_account'],
-            'account_number' => substr($backAccount['account_number'], 0, 3) . '-xxx-xxxx',
-        ]);
+        return $this->success(
+            fractal()->item(
+                $member, new MemberTransformer
+            )->toArray()
+        );
     }
 
     /**
@@ -39,23 +37,30 @@ class MemberController extends BaseApiController
      * @param $memberCode
      * @return \Illuminate\Http\JsonResponse
      */
-    function update(Request $request, $memberCode)
+    function update(Request $request)
     {
         try {
             DB::beginTransaction();
             $m = $this->getActiveMember();
-            $m->name = $request->input('name');
-            $m->gender = $request->input('gender');
+
+            $m->name = $request->input('member_name');
+            $m->gender = 'female' === $request->input('gender') ? 'f' : 'm';
+            $m->dob = date_format(date_create($request->input('dob')), 'Y-m-d');
+            $m->monthly_expense = $request->input('monthly_expense');
+            $m->person_in_house = $request->input('person_in_house');
+            $m->city = $request->input('city');
+            $m->occupation = $request->input('occupation');
+            $m->last_education = $request->input('last_education');
 
             $m->save();
             DB::commit();
+
+            return $this->success('Member successfully updated!');
         } catch (Exception $e) {
             DB::rollBack();
 
             $this->error($e);
         }
-
-        return $this->success('Member successfully updated!');
     }
 
     public function forgotPassword(Request $request)
