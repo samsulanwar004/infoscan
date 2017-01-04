@@ -18,11 +18,12 @@ Route::post('v1/register', 'SecureController@register');
 
 Route::group([
     'prefix' => 'v1',
-    'middleware' => 'auth:api',
+    'middleware' => 'api',
 ], function () {
     Route::post('/snap', 'Api\SnapController@store');
     Route::get('/promotion', 'Api\PromotionController@index');
     Route::get('/lucky', 'Api\LuckyDrawController@index');
     Route::post('/lucky', 'Api\LuckyDrawController@store');
     Route::get('/me', 'Api\MemberController@show');
+    Route::put('/me', 'Api\MemberController@update');
 });
