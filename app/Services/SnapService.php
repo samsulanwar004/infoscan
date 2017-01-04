@@ -91,12 +91,16 @@ class SnapService
         $snaps->update();
     }
 
-    public function updateSnapModeInput(Request $request)
+    public function updateSnapModeInput(Request $request, $id)
     {
         $tags = $request->input('tag');
         $newTags = $request->input('newtag');
         $tagCount = count($tags['name']);
         $newTagCount = count($newTags['name']);
+        $ids = $tags['id'];
+
+        // Remove unnecessary snap tags
+        $this->deleteSnapTags($ids, $id);
 
         // update tag.
         for ($i=0; $i < $tagCount; ++$i) {
@@ -140,6 +144,12 @@ class SnapService
             $t->save();
         }
 
+    }
+
+    public function deleteSnapTags($ids, $snapFileId)
+    {
+        SnapTag::where('snap_file_id', '=', $snapFileId)
+                    ->whereNotIn('id', $ids)->delete(); 
     }
 
     /**

@@ -1,6 +1,7 @@
-<form id="modalForm" action="{{ admin_route_url('snaps.update', ['id' => $snapFile->mode_type]) }}"  method="POST">
+<form id="modalForm" action="{{ admin_route_url('snaps.update', ['id' => $snapFile->id]) }}"  method="POST">
     {{ csrf_field() }}
     {{ method_field('PUT') }}
+    <input type="hidden" name="mode" value="{{ $snapFile->mode_type }}">
     <div class="modal-header">
         <a class="close" data-dismiss="modal">&times;</a>
         <h4><i class="fa fa-file-o fa-btn"></i> <span class="action-title">Snap </span> File</h4>
@@ -14,7 +15,7 @@
                 <table class="table">
                     <thead>
                         <tr>
-                            <th width="50">No</th>
+                            <th width="50"></th>
                             <th width="300">Product Item</th>
                             <th width="100">Qty</th>
                             <th width="200" class="text-right">Price</th>
@@ -23,8 +24,12 @@
 
                     <tbody id="inputs">
                         @foreach($snapFile->tag as $tag)
-                            <tr>
-                                <td>#</td>
+                            <tr id="input">
+                                <td>
+                                    <a class="btn btn-box-tool" id="remove">
+                                        <i class="fa fa-remove"></i>
+                                    </a>
+                                </td>
                                 <td width="300"><input type="text" name="tag[name][]" class="form-control input-sm tag-name" value="{{ $tag->name }}" placeholder="Product Name" required="required"></td>
                                 <td width="100"><input type="number" name="tag[qty][]" class="form-control input-sm" value="{{ $tag->quantity }}" placeholder="QTY" required="required"></td>
                                 <td width="200" class="text-right"><input type="number" name="tag[total][]" class="form-control input-sm" value="{{ $tag->total_price }}" placeholder="Total Price" required="required"></td>
@@ -68,15 +73,30 @@
 
         $('a#add').on('click', function (e) {
             e.preventDefault();
-            var countOfTextbox = $('.tag-name').length; console.log(countOfTextbox);
+            var countOfTextbox = $('.tag-name').length;
 
             if(countOfTextbox >= 25) {
                 $(this).attr('disabled', 'disabled');
                 return;
             }
 
-            $('tbody#inputs').append('<tr><td>#</td><td width="300"><input type="text" name="newtag[name][]" class="form-control input-sm tag-name" placeholder="Product Name" required="required"></td><td width="100"><input type="number" name="newtag[qty][]" class="form-control input-sm" placeholder="QTY" required="required"></td><td width="200" class="text-right"><input type="number" name="newtag[total][]" class="form-control input-sm" placeholder="Total Price" required="required"><input type="hidden" name="newtag[fileId][]" value="{{ $snapFile->id }}"></td></tr>');
+            $('tbody#inputs').append('<tr id="input'+countOfTextbox+'"><td><a class="btn btn-box-tool" onclick="deleteTag('+countOfTextbox+')"><i class="fa fa-remove"></i></a></td><td width="300"><input type="text" name="newtag[name][]" class="form-control input-sm tag-name" placeholder="Product Name" required="required"></td><td width="100"><input type="number" name="newtag[qty][]" class="form-control input-sm" placeholder="QTY" required="required"></td><td width="200" class="text-right"><input type="number" name="newtag[total][]" class="form-control input-sm" placeholder="Total Price" required="required"><input type="hidden" name="newtag[fileId][]" value="{{ $snapFile->id }}"></td></tr>');
         });
+
+        $('a#remove').on('click', function (e) {
+            e.preventDefault();
+            if(confirm('Are you sure want to delete this item ?')) {
+                $(e.target).closest('#input').remove();
+            }
+        });
+        
     });
+
+    function deleteTag(e)
+    {
+        if(confirm('Are you sure want to delete this item ?')) {
+            $('#input'+e).remove();
+        }
+    }
 
 </script>

@@ -83,8 +83,8 @@ class SnapController extends AdminController
         ]);
 
         try {
-            if ($id === 'input') {
-                (new SnapService)->updateSnapModeInput($request);
+            if ($request->input('mode') === 'input') {
+                (new SnapService)->updateSnapModeInput($request, $id);
             } else if ($id === 'tags') {
                 (new SnapService)->updateSnapModeTags($request);
             } else if ($id === 'audio') {
