@@ -16,12 +16,9 @@ use Illuminate\Http\Request;
 Route::post('v1/login', 'SecureController@login');
 Route::post('v1/register', 'SecureController@register');
 
-
-
-
 Route::group([
     'prefix' => 'v1',
-    'middleware' => 'api',
+    'middleware' => 'auth:api',
 ], function () {
     Route::post('/snap', 'Api\SnapController@store');
     Route::get('/promotion', 'Api\PromotionController@index');

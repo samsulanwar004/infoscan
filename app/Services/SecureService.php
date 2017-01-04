@@ -40,6 +40,7 @@ class SecureService
                 ->setIsLoginBySocialMedia(true)
                 ->setSocialMediaUrl(isset($user['link']) ? $user['link'] : '')
                 ->setSocialMediaType($social)
+                ->setApiToken(str_random(60))
                 ->register($user);
         }
 

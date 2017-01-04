@@ -22,7 +22,7 @@ class MemberController extends BaseApiController
             return $this->notFound();
         }
 
-        $backAccount = decrypt($member->bank_account);
+        $backAccount = is_null($member->bank_account) ?:decrypt($member->bank_account);
 
         return $this->success([
             'member_code' => $member->member_code,
