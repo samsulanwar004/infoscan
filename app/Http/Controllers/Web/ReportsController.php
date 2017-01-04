@@ -64,7 +64,7 @@
                                     paginate(25);
             }
             $view = \View::make('reports.pdf', compact('attributesKeys', 'attributesCounts', 'attributesValues'));
-            $html = $view->render();        
+            $html = $view->render();
             PDF::SetTitle('Snap Report Table');
             PDF::AddPage();
             PDF::writeHTML($html, true, false, true, false, '');
@@ -99,7 +99,7 @@
             return $content;
         }
 
-        public function formatExcel(Request $request) {                           
+        public function formatExcel(Request $request) {
             $this->isAllowed('Reports.List');
             $attributes = $request->all();
             $attributes = $attributes['attributes'];
@@ -157,5 +157,5 @@
             $content = $this->setContentFile($attributesKeys, $attributesCounts, $attributesValues);
             return \Response::make($content, 200, $headers);        
         }
-    
+
     }

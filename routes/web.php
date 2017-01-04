@@ -66,10 +66,16 @@ Route::group([
         ['except' => ['show'], 'names' => route_resource_name($routePrefix, 'points')]
     );
 
-    Route::resource('/questionnaire', 'Web\QuestionnaireController',
-        ['except' => ['show'], 'names' => route_resource_name($routePrefix, 'questionnaire')]);
-    Route::resource('/questions', 'Web\QuestionController',
-        ['except' => ['show'], 'names' => route_resource_name($routePrefix, 'questions')]);
+    Route::resource(
+        '/questionnaire',
+        'Web\QuestionnaireController',
+        ['except' => ['show'], 'names' => route_resource_name($routePrefix, 'questionnaire')]
+    );
+    Route::resource(
+        '/questions',
+        'Web\QuestionController',
+        ['except' => ['show'], 'names' => route_resource_name($routePrefix, 'questions')]
+    );
 
     Route::resource(
         '/snaps',
@@ -100,6 +106,11 @@ Route::group([
     );
 
     Route::get(
+        '/snaps/{attr}/filter',
+        'Web\SnapController@filter'
+    )->name('snaps.filter');
+
+    Route::get(
         '/reports/formatPdf',
         'Web\ReportsController@formatPdf'
     )->name('reports.formatPdf');
@@ -113,16 +124,8 @@ Route::group([
         '/reports/formatWord',
         'Web\ReportsController@formatWord'
     );
-
-    Route::get('/secure/{requestCode}/{social}', 'SecureController@redirect');
-
-    Route::get(
-        '/snaps/{attr}/filter',
-        'Web\SnapController@filter'
-    )->name('snaps.filter');
-
-    Route::get('/callback/{social}', 'SecureController@callback');
-
 });
 
 Auth::routes();
+Route::get('/secure/{requestCode}/{social}', 'SecureController@redirect');
+Route::get('/callback/{social}', 'SecureController@callback');
