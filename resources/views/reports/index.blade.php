@@ -1,6 +1,6 @@
 @extends('app')
 @section('content')
-    @include('partials.content_header', ['pageTitle' => 'Report', 'pageDescription' => 'List of Report Table', 'breadcrumbs' => ['Report' => false]])
+    @include('partials.content_header', ['pageTitle' => 'Snaps Report', 'pageDescription' => 'List of Snaps Report Table', 'breadcrumbs' => ['Report' => false]])
     <section class="content">
         <div class="box">
             <form role="form" action="#" method="post" enctype="multipart/form-data" class="form" accept-charset="utf-8">
@@ -8,9 +8,9 @@
                 <div class="box-header with-border">
                     <h3 class="box-title"></h3>
                     <div class="btn-group pull-left">
-                        <button type="button" class="btn btn-default" title="Snaps Date"> 
+                        <button type="button" class="btn btn-default" title="Snaps Date" style="height: 38px;"> 
                             <a id="snapsDate" class="snapsDate" title="Snaps Date" href="#">
-                                <img src="/img/icon/calendar.png" width="24" height="24">
+                                <i class="fa fa-calendar"></i>
                             </a>
                         </button>
                         <button class="btn btn-default" type="button" aria-expended="false" style="height: 38px;">
@@ -21,35 +21,35 @@
                         </button>
                         <button class="btn btn-default" type="text" aria-expended="false" style="height: 38px;">
                             <a id="search" class="search" title="Submit Snaps Date" href="#">
-                                <img src="/img/icon/search.png" width="24" height="24">
+                                <i class="fa fa-search"></i>
                             </a>
                         </button>                    
                     </div>
                     <div class="btn-group pull-right">
-                        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#myModal" title="Filters"> 
+                        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#myModal" title="Filters" style="height: 38px;"> 
                             <a id="filters" class="filters" title="Filters" href="#">
-                                <img src="/img/icon/filter.png" width="24" height="24">
+                                <i class="fa fa-filter"></i>                            
                             </a>
                         </button>
-                        <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-expended="false">
+                        <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-expended="false" style="height: 38px; width: 36px;">
                             <a id="downloads" class="downloads" title="Downloads" href="#">
-                                <img src="/img/icon/download.png" width="24" height="24">
+                                <i class="fa fa-download"></i>
                             </a>
                         </button>
                         <ul class="dropdown-menu" role="menu" style="width:10px; text-align:center;">
                             <li role="presentation">
                                 <a role="menuitem" id="pdf" class="pdf" title="PDF" href="#">
-                                    <img src="/img/icon/pdf.png">
+                                    <i class="fa fa-file-pdf-o"></i><span>PDF</span>
                                 </a>
                             </li>
                             <li role="presentation">
                                 <a role="menuitem" id="excel" class="excel" title="Excel" href="#">
-                                    <img src="/img/icon/excel.png">
+                                    <i class="fa fa-file-excel-o"></i><span>Excel</span>
                                 </a>                                
                             </li>
                             <li role="presentation">
                                 <a role="menuitem" id="word" class="word" title="Word" href="#">
-                                    <img src="/img/icon/word.png">
+                                    <i class="fa fa-file-word-o"></i><span>Word</span>
                                 </a>                                
                             </li>
                         </ul>                                        
