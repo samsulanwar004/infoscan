@@ -29,27 +29,21 @@
         "symfony/css-selector": "3.1.*",
         "symfony/dom-crawler": "3.1.*"
     },
-    "repositories": [
-        {
-            "type": "git",
-            "url": "https://pieter-rebel-works@bitbucket.org/rebelworksco/rebel-component-utilities.git"
-        },
-        {
-            "type": "git",
-            "url": "https://pieter-rebel-works@bitbucket.org/rebelworksco/rebel-component-rbac.git"
-        },
-        {
-            "type": "git",
-            "url": "https://pieter-rebel-works@bitbucket.org/rebelworksco/rebel-component-setting.git"
-        },
-        {
-            "type": "composer",
-            "url": "https://packagist.org"
-        },
-        {
-            "packagist": false
-        }
-    ],
+    "repositories": [{
+        "type": "git",
+        "url": "git@bitbucket.org:rebelworksco/rebel-component-utilities.git"
+    }, {
+        "type": "git",
+        "url": "git@bitbucket.org:rebelworksco/rebel-component-rbac.git"
+    }, {
+        "type": "git",
+        "url": "git@bitbucket.org:rebelworksco/rebel-component-setting.git"
+    }, {
+        "type": "composer",
+        "url": "https://packagist.org"
+    }, {
+        "packagist": false
+    }],
     "autoload": {
         "classmap": [
             "database"
