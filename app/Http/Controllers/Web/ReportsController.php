@@ -8,21 +8,61 @@
 
     class ReportsController extends AdminController {
 
-        const PER_PAGE_PAGINATION = 10;
+        const PER_PAGE_PAGINATION = 25;
         
         public function index() {
+            if(isset($_GET['startDate']) && isset($_GET['endDate'])) {
+                $startDate = date("Y-m-d", strtotime($_GET['startDate']));
+                $endDate = date("Y-m-d", strtotime($_GET['endDate']));
+                $reports = Reports::
+                           where('snap_at', '>=', $startDate)->
+                           where('snap_at', '<=', $endDate)->
+                           orderBy('id')->
+                           paginate(25);
+            } else {
+                $startDate = date("Y-m-d");                
+                $endDate = date("Y-m-d");                
+                $reports = Reports::
+                           orderBy('id')->
+                           paginate(25);
+            }
             $this->isAllowed('Reports.List');
-            $reports = Reports::orderBy('id')->paginate(1000);
-            return view('reports.index', compact('reports'));
+            $startDate = date("d-m-Y", strtotime($startDate));
+            $endDate = date("d-m-Y", strtotime($endDate));
+            return view('reports.index', compact('reports', 'startDate', 'endDate'));
+        }
+
+        public function store(Request $request) {
+            $snapDate = $request->all();
+            $startDate = $snapDate['startDate'];
+            $endDate = $snapDate['endDate'];
+            return redirect()->action('Web\ReportsController@index', compact('startDate', 'endDate'));
         }
 
         public function formatPdf(Request $request) { 
+            set_time_limit(0);
+            ini_set('memory_limit', '256M');
+
             $this->isAllowed('Reports.List');
             $attributes = $request->all();
             $attributes = $attributes['attributes'];
             $attributesKeys = json_decode($attributes);
             $attributesCounts = count($attributesKeys);
-            $attributesValues = Reports::orderBy('id')->paginate(1000);
+            if(isset($_GET['startDate']) && isset($_GET['endDate'])) {
+                $startDate = date("Y-m-d", strtotime($_GET['startDate']));
+                $endDate = date("Y-m-d", strtotime($_GET['endDate']));
+                $attributesValues = Reports::
+                                    where('snap_at', '>=', $startDate)->
+                                    where('snap_at', '<=', $endDate)->
+                                    orderBy('id')->
+                                    paginate(25);
+            } else {
+                $startDate = date("Y-m-d");                
+                $endDate = date("Y-m-d");                
+                $attributesValues = Reports::
+                                    orderBy('id')->
+                                    paginate(25);
+            }
             $view = \View::make('reports.pdf', compact('attributesKeys', 'attributesCounts', 'attributesValues'));
             $html = $view->render();        
             PDF::SetTitle('Snap Report Table');
@@ -65,7 +105,21 @@
             $attributes = $attributes['attributes'];
             $attributesKeys = json_decode($attributes);
             $attributesCounts = count($attributesKeys);
-            $attributesValues = Reports::orderBy('id')->paginate(1000);
+            if(isset($_GET['startDate']) && isset($_GET['endDate'])) {
+                $startDate = date("Y-m-d", strtotime($_GET['startDate']));
+                $endDate = date("Y-m-d", strtotime($_GET['endDate']));
+                $attributesValues = Reports::
+                                    where('snap_at', '>=', $startDate)->
+                                    where('snap_at', '<=', $endDate)->
+                                    orderBy('id')->
+                                    paginate(25);
+            } else {
+                $startDate = date("Y-m-d");                
+                $endDate = date("Y-m-d");                
+                $attributesValues = Reports::
+                                    orderBy('id')->
+                                    paginate(25);
+            }
             $headers = array(
                                 "Content-Type"=>"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                                 "Content-Disposition"=>"attachment;filename=SnapReportTable.xlsx",
@@ -81,13 +135,27 @@
             $attributes = $attributes['attributes'];
             $attributesKeys = json_decode($attributes);
             $attributesCounts = count($attributesKeys);
-            $attributesValues = Reports::orderBy('id')->paginate(1000);
+            if(isset($_GET['startDate']) && isset($_GET['endDate'])) {
+                $startDate = date("Y-m-d", strtotime($_GET['startDate']));
+                $endDate = date("Y-m-d", strtotime($_GET['endDate']));
+                $attributesValues = Reports::
+                                    where('snap_at', '>=', $startDate)->
+                                    where('snap_at', '<=', $endDate)->
+                                    orderBy('id')->
+                                    paginate(25);
+            } else {
+                $startDate = date("Y-m-d");                
+                $endDate = date("Y-m-d");                
+                $attributesValues = Reports::
+                                    orderBy('id')->
+                                    paginate(25);
+            }
             $headers = array(
                                 "Content-type"=>"text/html",
                                 "Content-Disposition"=>"attachment;Filename=SnapReportTable.doc"
                             );
             $content = $this->setContentFile($attributesKeys, $attributesCounts, $attributesValues);
-            return \Response::make($content,200, $headers);        
+            return \Response::make($content, 200, $headers);        
         }
     
     }
