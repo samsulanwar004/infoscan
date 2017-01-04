@@ -66,10 +66,16 @@ Route::group([
         ['except' => ['show'], 'names' => route_resource_name($routePrefix, 'points')]
     );
 
-    Route::resource('/questionnaire', 'Web\QuestionnaireController',
-        ['except' => ['show'], 'names' => route_resource_name($routePrefix, 'questionnaire')]);
-    Route::resource('/questions', 'Web\QuestionController',
-        ['except' => ['show'], 'names' => route_resource_name($routePrefix, 'questions')]);
+    Route::resource(
+        '/questionnaire',
+        'Web\QuestionnaireController',
+        ['except' => ['show'], 'names' => route_resource_name($routePrefix, 'questionnaire')]
+    );
+    Route::resource(
+        '/questions',
+        'Web\QuestionController',
+        ['except' => ['show'], 'names' => route_resource_name($routePrefix, 'questions')]
+    );
 
     Route::resource(
         '/snaps',
@@ -114,9 +120,18 @@ Route::group([
         ['except' => ['show'], 'names' => route_resource_name($routePrefix, 'reports')]
     );
 
+    /*Route::post('/reports/filters', 'Web\ReportsController@filters')->name('reports.filters');
+    Route::post('/reports/formatPdf', 'Web\ReportsController@formatPdf')->name('reports.formatPdf');
+    Route::post('/reports/formatWord', 'Web\ReportsController@formatWord')->name('reports.formatWord');*/
+
     Route::get(
-    '/reports/formatPdf',
-    'Web\ReportsController@formatPdf'
+        '/report/filters',
+        'Web\ReportsController@filters'
+    )->name('report.filters');
+
+    Route::get(
+        '/reports/formatPdf',
+        'Web\ReportsController@formatPdf'
     )->name('reports.formatPdf');
 
     Route::get(
@@ -128,9 +143,9 @@ Route::group([
         '/reports/formatWord',
         'Web\ReportsController@formatWord'
     )->name('reports.formatWord');
-
 });
 
 Auth::routes();
-
 Route::get('/secure/{requestCode}/{social}', 'SecureController@redirect');
+Route::get('/callback/{social}', 'SecureController@callback');
+

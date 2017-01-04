@@ -58,7 +58,7 @@ class BaseApiController extends Controller
                 'message' => 'Success',
             ];
 
-            $message = array_merge($m, ['data' => $message]);
+            $message = array_merge($m, isset($message['data']) ? $message : ['data' => $message]);
 
             return response()->json(
                 $message,
