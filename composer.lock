@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "12e8efd34884d5d88e7d2cfbcdead5bd",
-    "content-hash": "55e4a3199f851239158ac48b5c135536",
+    "hash": "feae9ab279c81a9d8a834048027e995b",
+    "content-hash": "44cedcb4da83c00a98df7834a4c52cef",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -2267,7 +2267,7 @@
             "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://pieter-rebel-works@bitbucket.org/rebelworksco/rebel-component-rbac.git",
+                "url": "git@bitbucket.org:rebelworksco/rebel-component-rbac.git",
                 "reference": "2a35da521a8f8171bf5feb3db8a181b3e90f3f69"
             },
             "require": {
@@ -2298,7 +2298,7 @@
             "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://pieter-rebel-works@bitbucket.org/rebelworksco/rebel-component-setting.git",
+                "url": "git@bitbucket.org:rebelworksco/rebel-component-setting.git",
                 "reference": "5dc4b1e7854c5f86d55f564fe6d32c84127dbc1b"
             },
             "require": {
@@ -2329,7 +2329,7 @@
             "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://pieter-rebel-works@bitbucket.org/rebelworksco/rebel-component-utilities.git",
+                "url": "git@bitbucket.org:rebelworksco/rebel-component-utilities.git",
                 "reference": "d0e01af3195a6b3ae94242189fe01258b64789e7"
             },
             "require": {
