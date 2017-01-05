@@ -1,6 +1,7 @@
-<form id="modalForm" action="{{ admin_route_url('snaps.update', ['id' => $snapFile->mode_type]) }}"  method="POST">
+<form id="modalForm" action="{{ admin_route_url('snaps.update', ['id' => $snapFile->id]) }}"  method="POST">
     {{ csrf_field() }}
     {{ method_field('PUT') }}
+    <input type="hidden" name="mode" value="{{ $snapFile->mode_type }}">
     <div class="modal-header">
         <a class="close btn-close" data-dismiss="modal">&times;</a>
         <h4><i class="fa fa-file-o fa-btn"></i> <span class="action-title">Snap </span> File</h4>
@@ -19,7 +20,7 @@
                 <table class="table">
                     <thead>
                         <tr>
-                            <th width="50">No</th>
+                            <th width="50"></th>
                             <th width="300">Product Item</th>
                             <th width="50">Qty</th>
                             <th width="200" class="text-right">Price</th>
@@ -27,11 +28,16 @@
                     </thead>
                     <tbody id="inputs">
                         @foreach($snapFile->tag as $tag)
-                            <tr>
-                                <td>#</td>
-                                <td>{{ $tag->name }}</td>
-                                <td>{{ $tag->quantity }}</td>
-                                <td class="text-right">{{ $tag->total_price }}</td>
+                            <tr id="input">
+                                <td>
+                                    <a class="btn btn-box-tool" id="remove">
+                                        <i class="fa fa-remove"></i>
+                                    </a>
+                                </td>
+                                <td width="300"><input type="text" name="tag[name][]" class="form-control input-sm tag-name" value="{{ $tag->name }}" placeholder="Product Name" required="required"></td>
+                                <td width="100"><input type="number" name="tag[qty][]" class="form-control input-sm" value="{{ $tag->quantity }}" placeholder="QTY" required="required"></td>
+                                <td width="200" class="text-right"><input type="number" name="tag[total][]" class="form-control input-sm" value="{{ $tag->total_price }}" placeholder="Total Price" required="required"></td>
+                                <input type="hidden" name="tag[id][]" value="{{ $tag->id }}">
                             </tr>
                         @endforeach
                     </tbody>
@@ -151,6 +157,13 @@
             });            
 
             $( document ).on( 'click', '#btnsave', function(e) {
+                e.preventDefault();
+                var countOfTextbox = $('.tag-name').length;
+
+                if(countOfTextbox >= 20) {
+                    alert('Form is full');
+                    return false;
+                }
 
                 var name = $('input[name="name"]').val();
                 var qty = $('input[name="qty"]').val();
@@ -158,7 +171,7 @@
 
                 if (name == false || qty == false || total == false)
                 {
-                    $('#tagit').fadeOut();
+                    alert('Not null');
                     return false;
                 }
 
@@ -168,7 +181,7 @@
 
                 viewtagsave(name, mouseX, mouseY);                              
 
-                $('tbody#inputs').append('<tr><td>#</td><td><input type="hidden" name="newtag[name][]" value="'+name+'">'+name+'</td><td><input type="hidden" name="newtag[qty][]" value="'+qty+'">'+qty+'</td><td class="text-right"><input type="hidden" name="newtag[total][]" value="'+total+'">'+total+'</td></tr><input type="hidden" name="newtag[x][]" value="'+mouseX+'"><input type="hidden" name="newtag[y][]" value="'+mouseY+'"><input type="hidden" name="newtag[fileId][]" value="{{ $snapFile->id }}">');
+                $('tbody#inputs').append('<tr id="input'+countOfTextbox+'"><td><a class="btn btn-box-tool" onclick="deleteTag('+countOfTextbox+')"><i class="fa fa-remove"></i></a></td><td width="300"><input type="text" name="newtag[name][]" class="form-control input-sm tag-name" value="'+name+'"></td><td width="100"><input type="number" name="newtag[qty][]" class="form-control input-sm" value="'+qty+'"></td><td width="200" class="text-right"><input type="number" name="newtag[total][]" class="form-control input-sm" value="'+total+'"><input type="hidden" name="newtag[x][]" value="'+mouseX+'"><input type="hidden" name="newtag[y][]" value="'+mouseY+'"><input type="hidden" name="newtag[fileId][]" value="{{ $snapFile->id }}"></td></tr>');
                 $('#tagit').fadeOut();                
 
             });         
@@ -199,13 +212,7 @@
                 var taggd;
                 $.getJSON( id+"/tagging" , function( datas ) {
                     $.each( datas, function( key, value ) {
-                        /*
-                        img_x
-                        img_y
-                        name
-                        quantity
-                        total_price
-                        */
+
                         data.push(      
                             Taggd.Tag.createFromObject({
                             position: { x: value.img_x, y: value.img_y },
@@ -233,6 +240,20 @@
 
                 taggd = new Taggd(image, options, data);
             }
-    });                     
+
+            $('a#remove').on('click', function (e) {
+                e.preventDefault();
+                if(confirm('Are you sure want to delete this item ?')) {
+                    $(e.target).closest('#input').remove();
+                }
+            });
+    });
+
+    function deleteTag(e)
+    {
+        if(confirm('Are you sure want to delete this item ?')) {
+            $('#input'+e).remove();
+        }
+    }                     
 
 </script>

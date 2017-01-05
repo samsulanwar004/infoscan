@@ -35,11 +35,11 @@
                                         <div class="timeline-body">
                                         @if ($snap->mode_type != 'audios')
                                             @foreach($snap->files as $file)
-                                                <img src="{{ $file->file_path }}" alt="{{ $file->file_code }}" class="margin img-thumbnail img-responsive @if($snap->snap_type != 'receipt') img-tag @endif"  id="{{$file->id}}" width="150" height="150">
+                                                <img src="{{ $file->file_path }}" alt="{{ $file->file_code }}" class="margin img-thumbnail img-responsive @if($snap->snap_type != 'receipt') img-tag @endif"  id="{{$file->id}}" style="width:150px;height:150px;">
                                             @endforeach
                                         @else
                                             @foreach($snap->files as $file)
-                                                <img src="http://logicalmoon.com/wp-content/uploads/2015/07/wmp-logo.png" alt="{{ $file->file_code }}" class="margin img-thumbnail img-responsive @if($snap->snap_type != 'receipt') img-tag @endif"  id="{{$file->id}}" width="150" height="150">
+                                                <img src="{{ URL::to('img/window-player.png') }}" alt="{{ $file->file_code }}" class="margin img-thumbnail img-responsive @if($snap->snap_type != 'receipt') img-tag @endif"  id="{{$file->id}}" style="width:150px;height:150px;">
                                             @endforeach
                                         @endif
                                         </div>
