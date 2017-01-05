@@ -11,6 +11,21 @@
         const PER_PAGE_PAGINATION = 25;
         
         public function index() {
+            $dataReports1 = Reports::
+                            select('outlet_name')->
+                            distinct('outlet_name')->
+                            orderBy('outlet_name', 'ASC')->
+                            get();
+            $dataReports2 = Reports::
+                            select('products')->
+                            distinct('products')->
+                            orderBy('products', 'ASC')->
+                            get();
+            $dataReports3 = Reports::
+                            select('users_city')->
+                            distinct('users_city')->
+                            orderBy('users_city', 'ASC')->
+                            get();
             if(isset($_GET['startDate']) && isset($_GET['endDate'])) {
                 $startDate = date("Y-m-d", strtotime($_GET['startDate']));
                 $endDate = date("Y-m-d", strtotime($_GET['endDate']));
@@ -25,11 +40,17 @@
                 $reports = Reports::
                            orderBy('id')->
                            paginate(25);
-            }
+            }            
             $this->isAllowed('Reports.List');
             $startDate = date("d-m-Y", strtotime($startDate));
             $endDate = date("d-m-Y", strtotime($endDate));
-            return view('reports.index', compact('reports', 'startDate', 'endDate'));
+            return view('reports.index', compact('reports', 
+                                                 'startDate', 
+                                                 'endDate', 
+                                                 'dataReports1', 
+                                                 'dataReports2', 
+                                                 'dataReports3'
+                                                ));
         }
 
         public function store(Request $request) {
@@ -161,6 +182,8 @@
         public function maps() {
             $this->isAllowed('Reports.List');
             $reports = Reports::
+                       select('users_city', 'longitude', 'latitude')->
+                       distinct('users_city')->
                        orderBy('users_city', 'ASC')->
                        get();
             return view('reports.maps', compact('reports'));

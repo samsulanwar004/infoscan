@@ -26,8 +26,13 @@
                         </button>                    
                     </div>
                     <div class="btn-group pull-right">
-                        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#myModal" title="Filters" style="height: 38px;"> 
-                            <a id="filters" class="filters" title="Filters" href="#">
+                        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#filtersAttributes" title="Filters Attributes" style="height: 38px;"> 
+                            <a id="filtersAttr" class="filtersAttr" title="Filters Attributes" href="#">
+                                <i class="fa fa-filter"></i>                            
+                            </a>
+                        </button>
+                        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#filtersValues" title="Filters Values" style="height: 38px;"> 
+                            <a id="filtersVal" class="filtersVal" title="Filters Values" href="#">
                                 <i class="fa fa-filter"></i>                            
                             </a>
                         </button>
@@ -66,7 +71,11 @@
                             <thead>
                                 <tr>
                                     <th class="no" name="no">No.</th>
-                                    <th class="outlet_name" name="outlet_name">Outlet Name</th>
+                                    <th class="outlet_name" name="outlet_name">
+                                        <a id="outlet_name_field" class="outlet_name_field" title="Outlet Name" data-toggle="modal" data-target="#outlet_name_filter" href="#">
+                                            Outlet Name                            
+                                        </a>
+                                    </th>
                                     <th class="products" name="products">Products</th>
                                     <th class="users_city" name="users_city">User's City</th>
                                     <th class="age" name="age">Age</th>
@@ -85,7 +94,7 @@
                                 @forelse($reports as $item)
                                     <tr>
                                         <td>{{ $i++ }}.</td>
-                                        <td>{{ $item->outlet_name }}</td>
+                                        <td class="{{ $item->outlet_name }}" name="{{ $item->outlet_name }}">{{ $item->outlet_name }}</td>
                                         <td>{{ $item->products }}</td>
                                         <td>{{ $item->users_city }}</td>
                                         <td>{{ $item->age }}</td>
@@ -107,7 +116,7 @@
                 </div>
             </form>
         </div>
-        <div class="modal fade" id="myModal" role="dialog">
+        <div class="modal fade" id="filtersAttributes" role="dialog">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -137,6 +146,35 @@
                 </div>   
             </div>
         </div>        
+        <div class="modal fade" id="filtersValues" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Customizable Atributes Values</h4>
+                    </div>
+                    <form role="form" action="#" method="post" enctype="multipart/form-data" class="form" accept-charset="utf-8">
+                        {{ csrf_field() }}
+                        <div class="modal-body">
+                            <div class="form-group" id="checkAttributes">
+                                <b>Outlet Name</b><br><br>
+                                @foreach($dataReports1 as $data1) 
+                                    <input style="cursor:pointer" type="checkbox" id="{{ $data1->outlet_name }}" name="{{ $data1->outlet_name }}" class="{{ $data1->outlet_name }}" value="{{ $data1->outlet_name }}" /> {{ $data1->outlet_name }}<br>
+                                @endforeach
+                                <br><br>
+                                <b>Products</b><br><br>
+                                @foreach($dataReports2 as $data2) 
+                                    <input style="cursor:pointer" type="checkbox" id="{{ $data2->products }}" name="{{ $data2->products }}" class="{{ $data2->products }}" value="{{ $data2->products }}" /> {{ $data2->products }}<br>
+                                @endforeach
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>   
+            </div>
+        </div>        
     </section>
 @endsection
 @section('footer_scripts')
@@ -153,6 +191,17 @@
                 var colToHide = $tblhead.filter("." + $(this).attr("name"));
                 var index = $(colToHide).index();
                 $tbl.find('tr :nth-child(' + (index + 1) + ')').toggle();
+            });
+        });
+        $(function () {
+            var $chk = $("#checkOutletName input:checkbox"); 
+            var $tbl = $("#tableAttributes");
+            var $tblhead = $("#tableAttributes tr");
+            $chk.prop('checked', true); 
+            $chk.click(function () {
+                var colToHide = $tblhead.filter("." + $(this).attr("name"));
+                var index = $(colToHide).index();
+                $tbl.find('td :nth-child(' + (index + 1) + ')').toggle();
             });
         });
         function showValues() {
