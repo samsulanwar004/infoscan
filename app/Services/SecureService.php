@@ -31,7 +31,9 @@ class SecureService
         }
 
         $member = $this->memberService->getMemberByCode($user['member_code']);
+        $hasRegistered = true;
         if (!$member) {
+            $hasRegistered = false;
             $this->memberService
                 ->setMemberCode($user['member_code'])
                 ->setName($user['name'])
@@ -45,7 +47,12 @@ class SecureService
                 ->register($user);
         }
 
-        return ['data' => ['token' => $this->memberService->getToken()]];
+        return [
+            'data' => [
+                'has_registered' => $hasRegistered,
+                'token' => $this->memberService->getToken()
+            ]
+        ];
     }
 
     public function registerManualHandle(Request $request)
@@ -60,22 +67,30 @@ class SecureService
                         $this->getMemberByCode($request->input('social_media_id'))
                     ;
 
+        $bankAccount = $request->exists('bank_account') ? $request->input('bank_account') : '';
+        $hasRegistered = true;
         if (! $member) {
+            $hasRegistered = false;
             $this->memberService
                 ->setMemberCode($request->input('social_media_id'))
                 ->setName($request->input('name'))
-                ->setEmail($request->input('email'))
+                ->setEmail($request->input('email', ''))
                 ->setGender($gender)
-                ->setAvatar($request->input('avatar'))
+                ->setAvatar($request->input('avatar', ''))
                 ->setIsLoginBySocialMedia(true)
                 ->setSocialMediaUrl($request->input('social_media_url'))
                 ->setSocialMediaType($request->input('social_media_type'))
                 ->setApiToken(str_random(60))
-                ->setBankAccount($request->input('bank_account'))
+                ->setBankAccount($bankAccount)
                 ->register($request->all());
         }
 
-        return ['data' => ['token' => $this->memberService->getToken()]];
+        return [
+            'data' => [
+                'has_registered' => $hasRegistered,
+                'token' => $this->memberService->getToken()
+            ]
+        ];
     }
 
     public function getMemberByCode($code)
