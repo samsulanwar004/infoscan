@@ -28,18 +28,18 @@
                                     <i class="fa fa-camera bg-purple"></i>
 
                                     <div class="timeline-item no-margin-right">
-                                        <span class="time"><i class="fa fa-clock-o"></i> 2 days ago</span>
+                                        <span class="time"><i class="fa fa-clock-o"></i> {{ $snap->created_at->diffForHumans() }}</span>
                                         <h3 class="timeline-header">
-                                            <a href="{{ admin_route_url('members.show', ['id' => $snap->member->id]) }}">{{ $snap->member->name }}</a> uploaded new photos
+                                            <a href="{{ admin_route_url('members.show', ['id' => $snap->member->id]) }}">{{ $snap->member->name }}</a> uploaded new {{ $snap->mode_type == 'audios' ? 'audios' : 'photos' }}
                                         </h3>
                                         <div class="timeline-body">
                                         @if ($snap->mode_type != 'audios')
                                             @foreach($snap->files as $file)
-                                                <img src="{{ $file->file_path }}" alt="{{ $file ->file_code }}" class="margin img-responsive @if($snap->snap_type != 'receipt') img-tag @endif"  id="{{$file->id}}">
+                                                <img src="{{ $file->file_path }}" alt="{{ $file->file_code }}" class="margin img-thumbnail img-responsive @if($snap->snap_type != 'receipt') img-tag @endif"  id="{{$file->id}}" width="150" height="150">
                                             @endforeach
                                         @else
                                             @foreach($snap->files as $file)
-                                                <img src="http://logicalmoon.com/wp-content/uploads/2015/07/wmp-logo.png" alt="{{ $file ->file_code }}" class="margin img-responsive @if($snap->snap_type != 'receipt') img-tag @endif"  id="{{$file->id}}">
+                                                <img src="http://logicalmoon.com/wp-content/uploads/2015/07/wmp-logo.png" alt="{{ $file->file_code }}" class="margin img-thumbnail img-responsive @if($snap->snap_type != 'receipt') img-tag @endif"  id="{{$file->id}}" width="150" height="150">
                                             @endforeach
                                         @endif
                                         </div>
