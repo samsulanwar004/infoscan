@@ -86,9 +86,9 @@ class SnapController extends AdminController
             if ($request->input('mode') === 'input') {
                 (new SnapService)->updateSnapModeInput($request, $id);
             } else if ($id === 'tags') {
-                (new SnapService)->updateSnapModeTags($request);
-            } else if ($id === 'audio') {
-
+                (new SnapService)->updateSnapModeTags($request, $id);
+            } else if ($request->input('mode') === 'audio') {
+                (new SnapService)->updateSnapModeAudios($request, $id);
             } else {
                 (new SnapService)->updateSnap($request, $id);
             }

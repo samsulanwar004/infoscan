@@ -15,7 +15,7 @@
                 </div>  
                   
             </div>
-            <div class="col-md-6" style="overflow-y:scroll;max-height: 500px;">
+            <div class="col-md-6" style="overflow-y:scroll;max-height: 300px;">
                 <table class="table">
                     <thead>
                         <tr>

@@ -11,7 +11,7 @@
             <div class="col-md-6">
                 <img src="{{ $snapFile->file_path }}" alt="" class="margin img-responsive">
             </div>
-            <div class="col-md-6" style="overflow-y:scroll;max-height: 500px;">
+            <div class="col-md-6" style="overflow-y:scroll;max-height: 300px;">
                 <table class="table">
                     <thead>
                         <tr>
@@ -75,7 +75,7 @@
             e.preventDefault();
             var countOfTextbox = $('.tag-name').length;
 
-            if(countOfTextbox >= 25) {
+            if(countOfTextbox >= 20) {
                 $(this).attr('disabled', 'disabled');
                 return;
             }
