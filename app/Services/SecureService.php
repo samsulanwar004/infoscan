@@ -30,9 +30,10 @@ class SecureService
             $gender = 'female' === $user['gender'] ? 'f' : 'm';
         }
 
-        $member = $this->memberService->member($user['email']);
+        $member = $this->memberService->getMemberByCode($user['member_code']);
         if (!$member) {
             $this->memberService
+                ->setMemberCode($user['member_code'])
                 ->setName($user['name'])
                 ->setEmail($user['email'])
                 ->setGender($gender)
@@ -54,9 +55,14 @@ class SecureService
             $gender = 'female' === $request->input('gender') ? 'f' : 'm';
         }
 
-        $member = $this->memberService->member($request->input('email'));
+        $member = $request->has('email') ?
+                        $this->getMemberByEmail($request->input('email')) :
+                        $this->getMemberByCode($request->input('social_media_id'))
+                    ;
+
         if (! $member) {
             $this->memberService
+                ->setMemberCode($request->input('social_media_id'))
                 ->setName($request->input('name'))
                 ->setEmail($request->input('email'))
                 ->setGender($gender)
@@ -70,5 +76,17 @@ class SecureService
         }
 
         return ['data' => ['token' => $this->memberService->getToken()]];
+    }
+
+    public function getMemberByCode($code)
+    {
+        return $this->memberService->getMemberByCode(
+            $request->input('social_media_id')
+        );
+    }
+
+    public function getMemberByEmail($email)
+    {
+        return $this->memberService->member($email);
     }
 }

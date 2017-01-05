@@ -17,7 +17,7 @@ class CreateMemberTable extends Migration
             $t->increments('id');
             $t->string('member_code', 10)->unique();
             $t->string('name', 200)->index();
-            $t->string('email', 150)->index();
+            $t->string('email', 150)->nullable()->index();
             $t->string('password', 150)->nullable();
             $t->string('gender', 1)->index();
             $t->string('avatar')->nullable();
