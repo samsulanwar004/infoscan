@@ -20,7 +20,9 @@
         "dusterio/laravel-plain-sqs": "^0.1.7",
         "elibyy/tcpdf-laravel": "5.3.*",
         "maatwebsite/excel": "~2.0.0",
-        "phpoffice/phpword": "dev-master"
+        "phpoffice/phpword": "dev-master",
+        "socialiteproviders/instagram": "^2.0",
+        "socialiteproviders/linkedin": "^2.0"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
@@ -29,27 +31,21 @@
         "symfony/css-selector": "3.1.*",
         "symfony/dom-crawler": "3.1.*"
     },
-    "repositories": [
-        {
-            "type": "git",
-            "url": "https://pieter-rebel-works@bitbucket.org/rebelworksco/rebel-component-utilities.git"
-        },
-        {
-            "type": "git",
-            "url": "https://pieter-rebel-works@bitbucket.org/rebelworksco/rebel-component-rbac.git"
-        },
-        {
-            "type": "git",
-            "url": "https://pieter-rebel-works@bitbucket.org/rebelworksco/rebel-component-setting.git"
-        },
-        {
-            "type": "composer",
-            "url": "https://packagist.org"
-        },
-        {
-            "packagist": false
-        }
-    ],
+    "repositories": [{
+        "type": "git",
+        "url": "git@bitbucket.org:rebelworksco/rebel-component-utilities.git"
+    }, {
+        "type": "git",
+        "url": "git@bitbucket.org:rebelworksco/rebel-component-rbac.git"
+    }, {
+        "type": "git",
+        "url": "git@bitbucket.org:rebelworksco/rebel-component-setting.git"
+    }, {
+        "type": "composer",
+        "url": "https://packagist.org"
+    }, {
+        "packagist": false
+    }],
     "autoload": {
         "classmap": [
             "database"

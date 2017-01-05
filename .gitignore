@@ -1,15 +1,15 @@
 /node_modules
 /public/storage
-/vendor
+#/vendor
 /.idea
 Homestead.json
 Homestead.yaml
 .env
-/public/js/*
-/public/css/*
-/public/fonts/*
-/public/img/*
-/public/build/*
+#/public/js/*
+#/public/css/*
+#/public/fonts/*
+#/public/img/*
+#/public/build/*
 
 *.DS_Store
 .AppleDouble

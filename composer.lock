@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "fd1f6409b717ba533601874020196626",
-    "content-hash": "55e4a3199f851239158ac48b5c135536",
+    "hash": "6bf77c5027aa799318073739b562d81e",
+    "content-hash": "19491059a6a994e871ee3b54ffeb515f",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -2267,7 +2267,7 @@
             "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://pieter-rebel-works@bitbucket.org/rebelworksco/rebel-component-rbac.git",
+                "url": "git@bitbucket.org:rebelworksco/rebel-component-rbac.git",
                 "reference": "2a35da521a8f8171bf5feb3db8a181b3e90f3f69"
             },
             "require": {
@@ -2298,7 +2298,7 @@
             "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://pieter-rebel-works@bitbucket.org/rebelworksco/rebel-component-setting.git",
+                "url": "git@bitbucket.org:rebelworksco/rebel-component-setting.git",
                 "reference": "5dc4b1e7854c5f86d55f564fe6d32c84127dbc1b"
             },
             "require": {
@@ -2329,7 +2329,7 @@
             "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://pieter-rebel-works@bitbucket.org/rebelworksco/rebel-component-utilities.git",
+                "url": "git@bitbucket.org:rebelworksco/rebel-component-utilities.git",
                 "reference": "d0e01af3195a6b3ae94242189fe01258b64789e7"
             },
             "require": {
@@ -2356,6 +2356,122 @@
             ],
             "description": "Laravel Utilities component",
             "time": "2016-10-31 09:21:56"
+        },
+        {
+            "name": "socialiteproviders/instagram",
+            "version": "v2.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/SocialiteProviders/Instagram.git",
+                "reference": "e802fc33da214f7bb5057e236ac2e707050bd01b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/SocialiteProviders/Instagram/zipball/e802fc33da214f7bb5057e236ac2e707050bd01b",
+                "reference": "e802fc33da214f7bb5057e236ac2e707050bd01b",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^5.6 || ^7.0",
+                "socialiteproviders/manager": "~2.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "SocialiteProviders\\Instagram\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Brian Faust",
+                    "email": "hello@brianfaust.de"
+                }
+            ],
+            "description": "Instagram OAuth2 Provider for Laravel Socialite",
+            "time": "2017-01-02 07:38:00"
+        },
+        {
+            "name": "socialiteproviders/linkedin",
+            "version": "v2.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/SocialiteProviders/LinkedIn.git",
+                "reference": "6c4180fb7ca545053312f384206e55fe1db15532"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/SocialiteProviders/LinkedIn/zipball/6c4180fb7ca545053312f384206e55fe1db15532",
+                "reference": "6c4180fb7ca545053312f384206e55fe1db15532",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^5.6 || ^7.0",
+                "socialiteproviders/manager": "~2.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "SocialiteProviders\\LinkedIn\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "DraperStudio",
+                    "email": "hello@draperstud.io"
+                }
+            ],
+            "description": "LinkedIn OAuth2 Provider for Laravel Socialite",
+            "time": "2016-04-01 06:59:31"
+        },
+        {
+            "name": "socialiteproviders/manager",
+            "version": "v2.2.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/SocialiteProviders/Manager.git",
+                "reference": "775bd7f25c71ed88e9ae73ed52ba129fecc7abd0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/SocialiteProviders/Manager/zipball/775bd7f25c71ed88e9ae73ed52ba129fecc7abd0",
+                "reference": "775bd7f25c71ed88e9ae73ed52ba129fecc7abd0",
+                "shasum": ""
+            },
+            "require": {
+                "laravel/socialite": "~2.0",
+                "php": "^5.6 || ^7.0"
+            },
+            "require-dev": {
+                "mockery/mockery": "^0.9.4",
+                "phpunit/phpunit": "^5.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "SocialiteProviders\\Manager\\": "src/",
+                    "SocialiteProviders\\Manager\\Test\\": "tests/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Andy Wendt",
+                    "email": "andy@awendt.com"
+                }
+            ],
+            "description": "Easily add new or override built-in providers in Laravel Socialite.",
+            "time": "2016-12-04 07:11:20"
         },
         {
             "name": "spatie/laravel-fractal",
