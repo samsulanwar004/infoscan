@@ -7,13 +7,29 @@ use App\Services\SecureService;
 use Illuminate\Http\Request;
 use Laravel\Socialite\Facades\Socialite;
 use Validator;
+
 class SecureController extends BaseApiController
 {
-    public function redirect($requestCode, $social)
+    public function redirect(Request $request, $requestCode, $social)
     {
-        //->stateless()
-        return Socialite::driver($social)
-                        ->redirect();
+        // validate the input
+        $validation = Validator::make([
+            'request_code' => $requestCode,
+            'social' => $social
+        ], [
+            'request_code' => 'required',
+            'social' => 'required|in:facebook,linkedin,instagram,google'
+        ]);
+
+        try {
+            if ($validation->fails()) {
+                throw new \Exception('Something problem with your request', 400);
+            }
+
+            return Socialite::with($social)->redirect();
+        } catch (\Exception $e) {
+            return $this->error($e, 400);
+        }
     }
 
     public function callback(Request $request, $social)
@@ -21,12 +37,15 @@ class SecureController extends BaseApiController
         try {
             /** @var \Laravel\Socialite\Two\User $object */
             $object = Socialite::driver($social)->user();
+
             $user = [
+                'member_code' => $object->getId()?:strtolower(str_random(10)),
                 'name' => $object->getName(),
                 'email' => $object->getEmail(),
                 'avatar' => $object->getAvatar(),
-                'link' => $object->user['link'],
+                'link' => isset($object->user['link']) ? $object->user['link'] : null,
             ];
+
             $secure = (new SecureService)->socialHandle($social, $user);
 
             return $this->success($secure);
@@ -67,12 +86,12 @@ class SecureController extends BaseApiController
     public function register(Request $request)
     {
         $validation = Validator::make($request->all(), [
+            'social_media_id' => 'required',
             'name' => 'required',
-            'email' => 'required|email',
-            'social_media_type' => 'required|in:facebook,linkedin,instagram,google'
+            'social_media_type' => 'required|in:facebook,google'
         ]);
 
-        if($validation->passes()) {
+        if ($validation->passes()) {
             try {
                 $secure = (new SecureService)->registerManualHandle($request);
 

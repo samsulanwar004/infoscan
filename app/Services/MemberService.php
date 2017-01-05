@@ -17,6 +17,11 @@ class MemberService
     /**
      * @var string
      */
+    private $memberCode;
+
+    /**
+     * @var string
+     */
     private $name;
 
     /**
@@ -81,7 +86,7 @@ class MemberService
         DB::beginTransaction();
 
         $member = null == $model ? $this->member() : $model;
-        $member->member_code = strtolower(str_random(10));
+        $member->member_code = $this->getMemberCode();
         $member->name = $this->getName();
         $member->email = $this->getEmail();
         $member->password = $this->getPassword();
@@ -117,6 +122,17 @@ class MemberService
     }
 
     /**
+     * Get registered member by member code.
+     *
+     * @param  string $memberCode
+     * @return \Illuminate\Database\Collection
+     */
+    public function getMemberByCode($memberCode)
+    {
+        return $this->member = Member::where('member_code', $memberCode)->first();
+    }
+
+    /**
      * @return array
      * @throws \App\Exceptions\Services\MemberServiceException
      */
@@ -137,6 +153,25 @@ class MemberService
         }
 
         return $this->member->api_token;
+    }
+
+    /**
+     * @return mixed|string
+     */
+    public function getMemberCode()
+    {
+        return $this->memberCode;
+    }
+
+    /**
+     * @param string $memberCode
+     * @return $this
+     */
+    public function setMemberCode($memberCode)
+    {
+        $this->memberCode = $memberCode;
+
+        return $this;
     }
 
     /**

@@ -55,11 +55,13 @@ Route::group([
         'Web\SesController',
         ['except' => ['show'], 'names' => route_resource_name($routePrefix, 'ses')]
     );
+
     Route::resource(
         '/lucky',
         'Web\LuckyDrawController',
         ['except' => ['show'], 'names' => route_resource_name($routePrefix, 'lucky')]
     );
+
     Route::resource(
         '/points',
         'Web\PointController',
@@ -83,6 +85,21 @@ Route::group([
         ['names' => route_resource_name($routePrefix, 'snaps')]
     );
 
+    Route::get(
+        '/snaps/{id}/edit-snap-file',
+        'Web\SnapController@editSnapFile'
+    )->name('snaps.editSnapFile');
+
+    Route::get(
+        '/snaps/{attr}/filter',
+        'Web\SnapController@filter'
+    )->name('snaps.filter');
+
+    Route::get(
+        '/snaps/{id}/tagging',
+        'Web\SnapController@tagging'
+    )->name('snaps.tagging');
+
     Route::resource(
         '/members',
         'Web\MemberController',
@@ -104,11 +121,6 @@ Route::group([
         'Web\ReportsController',
         ['except' => ['show'], 'names' => route_resource_name($routePrefix, 'reports')]
     );
-
-    Route::get(
-        '/snaps/{attr}/filter',
-        'Web\SnapController@filter'
-    )->name('snaps.filter');
 
     Route::get(
         '/reports/formatPdf',
