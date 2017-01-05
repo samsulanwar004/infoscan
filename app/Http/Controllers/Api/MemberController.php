@@ -43,7 +43,7 @@ class MemberController extends BaseApiController
             DB::beginTransaction();
             $m = $this->getActiveMember();
 
-            $m->name = $request->input('member_name');
+            $m->name = $request->input('name');
             $m->gender = 'female' === $request->input('gender') ? 'f' : 'm';
             $m->dob = date_format(date_create($request->input('dob')), 'Y-m-d');
             $m->monthly_expense = $request->input('monthly_expense');
