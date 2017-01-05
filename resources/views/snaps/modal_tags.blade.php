@@ -118,22 +118,26 @@
         margin-right: 5px;
     }
 
+    a.taggd__button {
+        cursor: pointer;
+    }
+
 </style>
 
 <script type="text/javascript">
 
-    $("modalForm").ready(function () {
+    $("modalForm").ready(function() {
 
         $(document).on("click", ".btn-close", function(){
             location.reload(true);
         });
 
-        $('form').on('focus', 'input[type=number]', function (e) {
-          $(this).on('mousewheel.disableScroll', function (e) {
+        $('form').on('focus', 'input[type=number]', function(e) {
+          $(this).on('mousewheel.disableScroll', function(e) {
             e.preventDefault()
           })
         });
-        $('form').on('blur', 'input[type=number]', function (e) {
+        $('form').on('blur', 'input[type=number]', function(e) {
           $(this).off('mousewheel.disableScroll')
         });
 
@@ -146,9 +150,9 @@
                 mouseX = (e.pageX - offset.left); // x and y axis
                 mouseY = (e.pageY - offset.top);                
 
-              $('#tagit').remove( ); // remove any tagit div first
-              $( imgtag ).append( '<div id="tagit"><input type="text" name="name" class="form-control input-sm" placeholder="Product Name" id="name"><input type="number" name="qty" class="form-control input-sm" placeholder="QTY" id="qty"><input type="number" class="form-control input-sm" placeholder="Total Price" id="total" name="total"><input type="button" name="btnsave" value="Save" id="btnsave"/><input type="button" name="btncancel" value="Cancel" id="btncancel" /></div>' );
-              $( '#tagit' ).css({ top:mouseY, left:mouseX });
+              $('#tagit').remove(); // remove any tagit div first
+              $(imgtag).append('<div id="tagit"><input type="text" name="name" class="form-control input-sm" placeholder="Product Name" id="name"><input type="number" name="qty" class="form-control input-sm" placeholder="QTY" id="qty"><input type="number" class="form-control input-sm" placeholder="Total Price" id="total" name="total"><input type="button" name="btnsave" value="Save" id="btnsave"/><input type="button" name="btncancel" value="Cancel" id="btncancel" /></div>');
+              $('#tagit').css({ top:mouseY, left:mouseX });
               
               $('#name').focus();
               $('#qty').focus();
@@ -156,7 +160,7 @@
 
             });            
 
-            $( document ).on( 'click', '#btnsave', function(e) {
+            $(document).on('click', '#btnsave', function(e) {
                 e.preventDefault();
                 var countOfTextbox = $('.tag-name').length;
 
@@ -187,21 +191,21 @@
             });         
            
             // Cancel the tag box.
-            $( document ).on( 'click', '#tagit #btncancel', function() {
+            $(document).on('click', '#tagit #btncancel', function() {
               $('#tagit').fadeOut();
             });
                        
             // mouseover the tagboxes that is already there but opacity is 0.
-            $( '#tagbox' ).on( 'mouseover', '.tagview', function( ) {
+            $('#tagbox').on('mouseover', '.tagview', function() {
                 var pos = $( this ).position();
                 $(this).css({ opacity: 1.0 }); // div appears when opacity is set to 1.
-            }).on( 'mouseout', '.tagview', function( ) {
+            }).on('mouseout', '.tagview', function() {
                 $(this).css({ opacity: 0.0 }); // hide the div by setting opacity to 0.
             });
 
             // load the tags for the image when page loads.
-            var img = $('#imgtag').find( 'img' );
-            var id = $( img ).attr( 'alt' );
+            var img = $('#imgtag').find('img');
+            var id = $(img).attr('alt');
             viewtag(id);
             function viewtag(id)
             {
@@ -241,7 +245,7 @@
                 taggd = new Taggd(image, options, data);
             }
 
-            $('a#remove').on('click', function (e) {
+            $('a#remove').on('click', function(e) {
                 e.preventDefault();
                 if(confirm('Are you sure want to delete this item ?')) {
                     $(e.target).closest('#input').remove();

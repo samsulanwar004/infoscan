@@ -63,18 +63,18 @@
 </form>
 
 <script type="text/javascript">
-    $("modalForm").ready(function () {
+    $("modalForm").ready(function() {
         
-        $('form').on('focus', 'input[type=number]', function (e) {
-          $(this).on('mousewheel.disableScroll', function (e) {
+        $('form').on('focus', 'input[type=number]', function(e) {
+          $(this).on('mousewheel.disableScroll', function(e) {
             e.preventDefault()
           })
         });
-        $('form').on('blur', 'input[type=number]', function (e) {
+        $('form').on('blur', 'input[type=number]', function(e) {
           $(this).off('mousewheel.disableScroll')
         });
 
-        $('a#add').on('click', function (e) {
+        $('a#add').on('click', function(e) {
             e.preventDefault();
             var countOfTextbox = $('.tag-name').length;
 
@@ -86,7 +86,7 @@
             $('tbody#inputs').append('<tr id="input'+countOfTextbox+'"><td><a class="btn btn-box-tool" onclick="deleteTag('+countOfTextbox+')"><i class="fa fa-remove"></i></a></td><td width="300"><input type="text" name="newtag[name][]" class="form-control input-sm tag-name" placeholder="Product Name" required="required"></td><td width="100"><input type="number" name="newtag[qty][]" class="form-control input-sm" placeholder="QTY" required="required"></td><td width="200" class="text-right"><input type="number" name="newtag[total][]" class="form-control input-sm" placeholder="Total Price" required="required"><input type="hidden" name="newtag[fileId][]" value="{{ $snapFile->id }}"></td></tr>');
         });
 
-        $('a#remove').on('click', function (e) {
+        $('a#remove').on('click', function(e) {
             e.preventDefault();
             if(confirm('Are you sure want to delete this item ?')) {
                 $(e.target).closest('#input').remove();
