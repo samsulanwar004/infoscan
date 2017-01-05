@@ -83,6 +83,21 @@ Route::group([
         ['names' => route_resource_name($routePrefix, 'snaps')]
     );
 
+    Route::get(
+        '/snaps/{id}/edit-snap-file',
+        'Web\SnapController@editSnapFile'
+    )->name('snaps.editSnapFile');
+
+    Route::get(
+        '/snaps/{attr}/filter',
+        'Web\SnapController@filter'
+    )->name('snaps.filter');
+
+    Route::get(
+        '/snaps/{id}/tagging',
+        'Web\SnapController@tagging'
+    )->name('snaps.tagging');
+
     Route::resource(
         '/members',
         'Web\MemberController',
@@ -110,11 +125,6 @@ Route::group([
     Route::post('/reports/formatWord', 'Web\ReportsController@formatWord')->name('reports.formatWord');*/
 
     Route::get(
-        '/snaps/{attr}/filter',
-        'Web\SnapController@filter'
-    )->name('snaps.filter');
-
-    Route::get(
         '/report/filters',
         'Web\ReportsController@filters'
     )->name('report.filters');
@@ -138,3 +148,4 @@ Route::group([
 Auth::routes();
 Route::get('/secure/{requestCode}/{social}', 'SecureController@redirect');
 Route::get('/callback/{social}', 'SecureController@callback');
+
