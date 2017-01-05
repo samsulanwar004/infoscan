@@ -95,9 +95,7 @@ class SecureService
 
     public function getMemberByCode($code)
     {
-        return $this->memberService->getMemberByCode(
-            $request->input('social_media_id')
-        );
+        return $this->memberService->getMemberByCode($code);
     }
 
     public function getMemberByEmail($email)
