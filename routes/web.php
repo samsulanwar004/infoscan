@@ -124,6 +124,11 @@ Route::group([
         '/reports/formatWord',
         'Web\ReportsController@formatWord'
     );
+
+    Route::get(
+        '/reports/maps',
+        'Web\ReportsController@maps'
+    )->name('reports.maps');
 });
 
 Auth::routes();

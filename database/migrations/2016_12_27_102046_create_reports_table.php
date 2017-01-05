@@ -24,6 +24,8 @@
                 $table->string('usership', 100)->nullable();
                 $table->string('sec', 100)->nullable();
                 $table->string('outlet_type', 100)->nullable();
+                $table->string('longitude', 100)->nullable();
+                $table->string('latitude', 100)->nullable();
                 $table->timestamps('snap_at');
                 $table->timestamps();
             });

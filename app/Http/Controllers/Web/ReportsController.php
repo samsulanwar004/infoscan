@@ -158,4 +158,12 @@
             return \Response::make($content, 200, $headers);        
         }
 
+        public function maps() {
+            $this->isAllowed('Reports.List');
+            $reports = Reports::
+                       orderBy('users_city', 'ASC')->
+                       get();
+            return view('reports.maps', compact('reports'));
+        }
+
     }

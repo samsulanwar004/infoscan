@@ -36,6 +36,11 @@
                                 <i class="fa fa-download"></i>
                             </a>
                         </button>
+                        <button type="button" class="btn btn-default" title="Maps" style="height: 38px;"> 
+                            <a id="maps" class="maps" title="Maps" href="#">
+                                <i class="fa fa-map-marker"></i>
+                            </a>
+                        </button>
                         <ul class="dropdown-menu" role="menu" style="width:10px; text-align:center;">
                             <li role="presentation">
                                 <a role="menuitem" id="pdf" class="pdf" title="PDF" href="#">
@@ -168,6 +173,9 @@
         });
         $('.excel').click(function() {
             window.location.href = "http://infoscan.dev/reports/formatExcel?attributes=" + showValues() + "&startDate=<?php echo $startDate; ?>&endDate=<?php echo $endDate; ?>";
+        });   
+        $('.maps').click(function() {
+            window.location.href = "http://infoscan.dev/reports/maps";
         });   
         function setCookie(cname, cvalue, exdays) {
             var d = new Date();
