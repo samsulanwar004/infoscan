@@ -13,19 +13,44 @@
         public function index() {
             $dataReports1 = Reports::
                             select('outlet_name')->
-                            distinct('outlet_name')->
-                            orderBy('outlet_name', 'ASC')->
+                            groupBy('outlet_name')->
                             get();
             $dataReports2 = Reports::
                             select('products')->
-                            distinct('products')->
-                            orderBy('products', 'ASC')->
+                            groupBy('products')->
                             get();
             $dataReports3 = Reports::
                             select('users_city')->
-                            distinct('users_city')->
-                            orderBy('users_city', 'ASC')->
+                            groupBy('users_city')->
                             get();
+            $dataReports4 = Reports::
+                            select('age')->
+                            groupBy('age')->
+                            get();
+            $dataReports5 = Reports::
+                            select('outlet_area')->
+                            groupBy('outlet_area')->
+                            get();
+            $dataReports6 = Reports::
+                            select('province')->
+                            groupBy('province')->
+                            get();
+            $dataReports7 = Reports::
+                            select('gender')->
+                            groupBy('gender')->
+                            get();
+            $dataReports8 = Reports::
+                            select('usership')->
+                            groupBy('usership')->
+                            get();
+            $dataReports9 = Reports::
+                            select('sec')->
+                            groupBy('sec')->
+                            get();
+            $dataReports10 = Reports::
+                             select('outlet_type')->
+                             groupBy('outlet_type')->
+                             get();
             if(isset($_GET['startDate']) && isset($_GET['endDate'])) {
                 $startDate = date("Y-m-d", strtotime($_GET['startDate']));
                 $endDate = date("Y-m-d", strtotime($_GET['endDate']));
@@ -44,13 +69,7 @@
             $this->isAllowed('Reports.List');
             $startDate = date("d-m-Y", strtotime($startDate));
             $endDate = date("d-m-Y", strtotime($endDate));
-            return view('reports.index', compact('reports', 
-                                                 'startDate', 
-                                                 'endDate', 
-                                                 'dataReports1', 
-                                                 'dataReports2', 
-                                                 'dataReports3'
-                                                ));
+            return view('reports.index', compact('reports', 'startDate', 'endDate', 'dataReports1', 'dataReports2', 'dataReports3', 'dataReports4', 'dataReports5', 'dataReports6', 'dataReports7', 'dataReports8', 'dataReports9', 'dataReports10'));
         }
 
         public function store(Request $request) {

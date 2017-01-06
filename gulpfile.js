@@ -26,7 +26,8 @@ elixir(mix => {
         ltePath + 'plugins/datepicker/datepicker3.css',
         ltePath + 'plugins/daterangepicker/daterangepicker.css',
         ltePath + 'plugins/easyui/easyui.css',
-        ltePath + 'css/taggd.css'
+        ltePath + 'css/taggd.css',
+        ltePath + 'plugins/multiselect/bootstrap-multiselect.css'
     ], 'public/css/app.css');
 
     /*mix.webpack('app.js');*/
@@ -42,7 +43,8 @@ elixir(mix => {
         ltePath + 'plugins/easyui/jquery.easyui.min.js',
         ltePath + 'plugins/easyui/pivot/jquery.pivotgrid.js',
         ltePath + 'plugins/icheck/icheck.js',
-        ltePath + 'plugins/tagged/taggd.js'
+        ltePath + 'plugins/tagged/taggd.js',
+        ltePath + 'plugins/multiselect/bootstrap-multiselect.js'
     ], 'public/js/vendor.js');
 
     mix.scripts([

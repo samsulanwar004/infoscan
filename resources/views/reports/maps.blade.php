@@ -1,43 +1,10 @@
 @extends('app')
 @section('content')
-    @include('partials.content_header', ['pageTitle' => 'Map Snaps Report', 'pageDescription' => 'List of Map Snaps Report Table', 'breadcrumbs' => ['Report' => false]])
+    @include('partials.content_header', ['pageTitle' => 'Map Snaps Report', 'pageDescription' => 'List of Map Snaps Report Table', 'breadcrumbs' => ['Report' => admin_route_url('reports.index')]])
     <body onload="initialize()">
     <section class="content">
         <div class="box">
-            <form role="form" action="#" method="post" enctype="multipart/form-data" class="form" accept-charset="utf-8">
-                {{ csrf_field() }}
-                <div class="box-header with-border">
-                    <h3 class="box-title"></h3>
-                    <div class="btn-group pull-right">
-                        <button type="button" class="btn btn-default" id="back" title="Back" style="height: 48px;"> 
-                            <a id="back" class="back" title="Back" href="{{ admin_route_url('reports.index') }}">
-                                <i class="fa fa-hand-o-left"></i>
-                            </a>
-                        </button>
-                    </div>
-                    <div class="btn-group pull-left">
-                        <button type="button" class="btn btn-default" id="globe" title="Location" style="height: 48px;"> 
-                            <a id="globe" class="globe" title="Location" href="#">
-                                <i class="fa fa-globe"></i>
-                            </a>
-                        </button>
-                        <button class="btn btn-default" type="button" aria-expended="false" style="height: 48px;">
-                            <select name="location" id="location" class="form-control">
-                                <option value="">Select Location</option>
-                                @foreach($reports as $location)
-                                    <option value="{{ $location->users_city }}">{{ $location->users_city }}</option>
-                                @endforeach
-                            </select>
-                        </button>
-                        <button class="btn btn-default" type="text" aria-expended="false" id="search" style="height: 48px;">
-                            <a id="search" class="search" title="Submit Snaps Date" href="#">
-                                <i class="fa fa-search"></i>
-                            </a>
-                        </button>                    
-                    </div>
-                </div>
-                <div id="map"></div>
-            </form>
+            <div id="map"></div>
         </div>
     </section>
 @endsection
