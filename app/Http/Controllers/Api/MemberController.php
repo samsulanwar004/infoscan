@@ -59,7 +59,7 @@ class MemberController extends BaseApiController
         } catch (Exception $e) {
             DB::rollBack();
 
-            $this->error($e);
+            return $this->error($e);
         }
     }
 
@@ -86,7 +86,7 @@ class MemberController extends BaseApiController
 
             // send forgot password email
         } catch (Exception $e) {
-            $this->error($e);
+            return $this->error($e);
         }
     }
 }

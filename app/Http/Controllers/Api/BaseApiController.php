@@ -19,8 +19,12 @@ class BaseApiController extends Controller
     protected function error($message, $httpCode = 500)
     {
         logger($message);
-        if ($message instanceof \Exception || $message instanceof \InvalidArgumentException) {
-            $message = $message->getMessage();
+        if(config('app.debug')) {
+            if ($message instanceof \Exception || $message instanceof \InvalidArgumentException) {
+                $message = $message->getMessage();
+            }
+        } else {
+            $message = 'Something error with your request. Please contact your administrator';
         }
 
         return response()->json(
@@ -29,6 +33,11 @@ class BaseApiController extends Controller
         );
     }
 
+    /**
+     * Send the not found response.
+     *
+     * @return \Illuminate\Http\Response
+     */
     protected function notFound()
     {
         return response()->json(
@@ -36,6 +45,13 @@ class BaseApiController extends Controller
         );
     }
 
+    /**
+     * Send the success response.
+     *
+     * @param  mixed|null $message
+     * @param  integer $httpCode
+     * @return \Illuminate\Http\Response
+     */
     protected function success($message = null, $httpCode = 200)
     {
         if (null == $message) {
@@ -82,6 +98,13 @@ class BaseApiController extends Controller
         return $this;
     }
 
+    /**
+     * Generate response message.
+     *
+     * @param  string $status
+     * @param  mixed $message
+     * @return array
+     */
     private function generateMessage($status, $message)
     {
         return [
