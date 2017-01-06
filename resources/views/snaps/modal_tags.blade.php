@@ -129,7 +129,7 @@
     $("modalForm").ready(function() {
 
         $(document).on("click", ".btn-close", function(){
-            location.reload(true);
+            window.location.href = '{{ $snapFile->snap_id }}';
         });
 
         $('form').on('focus', 'input[type=number]', function(e) {
