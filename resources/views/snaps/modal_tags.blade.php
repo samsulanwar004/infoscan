@@ -34,7 +34,7 @@
                                         <i class="fa fa-remove"></i>
                                     </a>
                                 </td>
-                                <td width="300"><input type="text" name="tag[name][]" class="form-control input-sm tag-name" value="{{ $tag->name }}" placeholder="Product Name" required="required"></td>
+                                <td width="300"><input type="text" name="tag[name][]" id="{{ $tag->id }}|{{ $tag->img_x }}|{{ $tag->img_y }}" class="form-control input-sm tag-name {{ $tag->id }}old" value="{{ $tag->name }}" placeholder="Product Name" required="required"></td>
                                 <td width="100"><input type="number" name="tag[qty][]" class="form-control input-sm" value="{{ $tag->quantity }}" placeholder="QTY" required="required"></td>
                                 <td width="200" class="text-right"><input type="number" name="tag[total][]" class="form-control input-sm" value="{{ $tag->total_price }}" placeholder="Total Price" required="required"></td>
                                 <input type="hidden" name="tag[id][]" value="{{ $tag->id }}">
@@ -128,6 +128,37 @@
 
     $("modalForm").ready(function() {
 
+        $('.tag-name').on('click', function(e) {
+            var image = document.getElementById('tag-image');
+            var idArray = e.toElement.id.split('|');
+            var id = idArray[0];
+            var img_x = idArray[1];
+            var img_y = idArray[2];
+            $("#"+id+"popup").css({
+                'display' : 'none',
+            });
+            var options = {};
+            var data = [
+              Taggd.Tag.createFromObject({
+                position: { x: img_x, y: img_y },
+                text: this.value,
+                popupAttributes: {
+                    id: id+"popup",
+                },
+              }),
+            ];
+
+            var taggd = new Taggd(image, options, data);
+
+            $("#"+id+"popup").css({
+                'display' : '',
+            });
+
+            $('.'+id+'old').on('keyup', function() {
+                $("#"+id+"popup").html($("."+id+'old').val());
+            });
+        });
+
         $(document).on("click", ".btn-close", function(){
             window.location.href = '{{ $snapFile->snap_id }}';
         });
@@ -185,7 +216,7 @@
 
                 viewtagsave(name, mouseX, mouseY);                              
 
-                $('tbody#inputs').append('<tr id="input'+countOfTextbox+'"><td><a class="btn btn-box-tool" onclick="deleteTag('+countOfTextbox+')"><i class="fa fa-remove"></i></a></td><td width="300"><input type="text" name="newtag[name][]" class="form-control input-sm tag-name" value="'+name+'"></td><td width="100"><input type="number" name="newtag[qty][]" class="form-control input-sm" value="'+qty+'"></td><td width="200" class="text-right"><input type="number" name="newtag[total][]" class="form-control input-sm" value="'+total+'"><input type="hidden" name="newtag[x][]" value="'+mouseX+'"><input type="hidden" name="newtag[y][]" value="'+mouseY+'"><input type="hidden" name="newtag[fileId][]" value="{{ $snapFile->id }}"></td></tr>');
+                $('tbody#inputs').append('<tr id="input'+countOfTextbox+'"><td><a class="btn btn-box-tool" onclick="deleteTag('+countOfTextbox+')"><i class="fa fa-remove"></i></a></td><td width="300"><input type="text" name="newtag[name][]" class="form-control input-sm tag-name '+countOfTextbox+'new" id="'+countOfTextbox+'|'+mouseX+'|'+mouseY+'" onclick="editTag(this)" onkeyup="editNewTag(this)" value="'+name+'"></td><td width="100"><input type="number" name="newtag[qty][]" class="form-control input-sm" value="'+qty+'"></td><td width="200" class="text-right"><input type="number" name="newtag[total][]" class="form-control input-sm" value="'+total+'"><input type="hidden" name="newtag[x][]" value="'+mouseX+'"><input type="hidden" name="newtag[y][]" value="'+mouseY+'"><input type="hidden" name="newtag[fileId][]" value="{{ $snapFile->id }}"></td></tr>');
                 $('#tagit').fadeOut();                
 
             });         
@@ -258,6 +289,41 @@
         if(confirm('Are you sure want to delete this item ?')) {
             $('#input'+e).remove();
         }
-    }                     
+    }   
+
+    function editTag(e)
+    {        
+        var image = document.getElementById('tag-image');
+        var idArray = e.id.split('|');
+        var id = idArray[0];
+        var img_x = idArray[1];
+        var img_y = idArray[2];
+        $("#"+id+"newpopup").css({
+            'display' : 'none',
+        });
+        var options = {};
+        var data = [
+          Taggd.Tag.createFromObject({
+            position: { x: img_x, y: img_y },
+            text: e.value,
+            popupAttributes: {
+                id: id+"newpopup",
+            },
+          }),
+        ];
+
+        var taggd = new Taggd(image, options, data);
+
+        $("#"+id+"newpopup").css({
+            'display' : '',
+        });
+    }  
+
+    function editNewTag(e)
+    {
+        var idArray = e.id.split('|');
+        var id = idArray[0];
+        $("#"+id+"newpopup").html($("."+id+'new').val());
+    }                
 
 </script>
