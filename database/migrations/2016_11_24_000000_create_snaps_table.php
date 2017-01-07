@@ -24,6 +24,8 @@ class CreateSnapsTable extends Migration
             $table->string('status', 10)->default('new');
             $table->string('approved_by', 100)->nullable()->index();
             $table->string('check_by', 100)->nullable()->index();
+            $table->decimal('longitude', 11, 8)->nullable();
+            $table->decimal('latitude', 11, 8)->nullable();
             $table->timestamps();
 
             $table->foreign('member_id', 'FK_member_id_in_snaps')
