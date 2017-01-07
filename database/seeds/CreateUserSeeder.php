@@ -23,6 +23,7 @@ class CreateUserSeeder extends Seeder
         'Snaps.List','Snaps.Show',        
         'Settings.List',
         'Transactions.List',
+        'Reports.List',
     ];
 
     protected $createPermissionsCrowdsourceAdmin = [
@@ -40,6 +41,7 @@ class CreateUserSeeder extends Seeder
         'Snaps.List','Snaps.Show',        
         'Settings.List',
         'Transactions.List',
+        'Reports.List',
     ];
 
     protected $createPermissionsCrowdsourceSupervisor = [
@@ -55,6 +57,7 @@ class CreateUserSeeder extends Seeder
         'Member.List','Member.Show',
         'Snaps.List','Snaps.Show',
         'Transactions.List',
+        'Reports.List',
     ];
 
     protected $createPermissionsCrowdsourceAccount = [
