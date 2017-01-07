@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Services\MemberService;
 use App\Transformers\MemberTransformer;
 use DB;
 use Exception;
@@ -40,6 +41,11 @@ class MemberController extends BaseApiController
     function update(Request $request)
     {
         try {
+            $validation = (new MemberService)->validateProfileInput($request->all());
+            if($validation->fails()) {
+                return $this->error($validation->errors(), 400);
+            }
+
             DB::beginTransaction();
             $m = $this->getActiveMember();
 
@@ -51,6 +57,9 @@ class MemberController extends BaseApiController
             $m->city = $request->input('city');
             $m->occupation = $request->input('occupation');
             $m->last_education = $request->input('last_education');
+            $m->bank_name = $request->input('bank_name');
+            $m->bank_account_name = $request->input('bank_account_name');
+            $m->bank_account_number = $request->input('bank_account_number');
 
             $m->save();
             DB::commit();
