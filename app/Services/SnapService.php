@@ -255,6 +255,8 @@ class SnapService
                 DB::commit();
             } catch (Exception $e) {
                 DB::rollback();
+
+                throw new SnapServiceException($e->getMessage());
             }
 
             return [];
@@ -373,14 +375,6 @@ class SnapService
         }
 
         return $audioList;
-    }
-
-    /**
-     * @param \Illuminate\Http\Request $request
-     */
-    protected function tagsProcess(Request $request)
-    {
-
     }
 
     /**

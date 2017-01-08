@@ -10,11 +10,11 @@
         <div class="form-horizontal">
             <div class="col-md-6">
                 <div id="imgtag">
-                    <img src="{{ $snapFile->file_path }}" id="tag-image" alt="{{ $snapFile->id }}" class="margin img-responsive">
+                    <img src="{{ config('filesystems.s3url') . $snapFile->file_path }}" id="tag-image" alt="{{ $snapFile->id }}" class="margin img-responsive">
                     <div id="tagbox">
                     </div>
-                </div>  
-                  
+                </div>
+
             </div>
             <div class="col-md-6" style="overflow-y:scroll;max-height: 300px;">
                 <table class="table">
@@ -61,7 +61,7 @@
 </form>
 
 <style type="text/css">
-    
+
     #imgtag
     {
         position: relative;
@@ -112,7 +112,7 @@
     #tagit input
     {
         margin-bottom: 5px;
-    }    
+    }
     #tagit input[type=button]
     {
         margin-right: 5px;
@@ -175,21 +175,21 @@
             var counter = 0;
             var mouseX = 0;
             var mouseY = 0;
-            
+
             $("#imgtag img").click(function(e) { // make sure the image is click
                 var offset = $(this).offset(); // get the div to append the tagging list
                 mouseX = (e.pageX - offset.left); // x and y axis
-                mouseY = (e.pageY - offset.top);                
+                mouseY = (e.pageY - offset.top);
 
               $('#tagit').remove(); // remove any tagit div first
               $(imgtag).append('<div id="tagit"><input type="text" name="name" class="form-control input-sm" placeholder="Product Name" id="name"><input type="number" name="qty" class="form-control input-sm" placeholder="QTY" id="qty"><input type="number" class="form-control input-sm" placeholder="Total Price" id="total" name="total"><input type="button" name="btnsave" value="Save" id="btnsave"/><input type="button" name="btncancel" value="Cancel" id="btncancel" /></div>');
               $('#tagit').css({ top:mouseY, left:mouseX });
-              
+
               $('#name').focus();
               $('#qty').focus();
               $('#total').focus();
 
-            });            
+            });
 
             $(document).on('click', '#btnsave', function(e) {
                 e.preventDefault();
@@ -212,20 +212,20 @@
 
                 var image = document.getElementById('tag-image');
                 mouseX = mouseX / image.clientWidth;
-                mouseY = mouseY / image.clientHeight;  
+                mouseY = mouseY / image.clientHeight;
 
-                viewtagsave(name, mouseX, mouseY);                              
+                viewtagsave(name, mouseX, mouseY);
 
                 $('tbody#inputs').append('<tr id="input'+countOfTextbox+'"><td><a class="btn btn-box-tool" onclick="deleteTag('+countOfTextbox+')"><i class="fa fa-remove"></i></a></td><td width="300"><input type="text" name="newtag[name][]" class="form-control input-sm tag-name '+countOfTextbox+'new" id="'+countOfTextbox+'|'+mouseX+'|'+mouseY+'" onclick="editTag(this)" onkeyup="editNewTag(this)" value="'+name+'"></td><td width="100"><input type="number" name="newtag[qty][]" class="form-control input-sm" value="'+qty+'"></td><td width="200" class="text-right"><input type="number" name="newtag[total][]" class="form-control input-sm" value="'+total+'"><input type="hidden" name="newtag[x][]" value="'+mouseX+'"><input type="hidden" name="newtag[y][]" value="'+mouseY+'"><input type="hidden" name="newtag[fileId][]" value="{{ $snapFile->id }}"></td></tr>');
-                $('#tagit').fadeOut();                
+                $('#tagit').fadeOut();
 
-            });         
-           
+            });
+
             // Cancel the tag box.
             $(document).on('click', '#tagit #btncancel', function() {
               $('#tagit').fadeOut();
             });
-                       
+
             // mouseover the tagboxes that is already there but opacity is 0.
             $('#tagbox').on('mouseover', '.tagview', function() {
                 var pos = $( this ).position();
@@ -248,7 +248,7 @@
                 $.getJSON( id+"/tagging" , function( datas ) {
                     $.each( datas, function( key, value ) {
 
-                        data.push(      
+                        data.push(
                             Taggd.Tag.createFromObject({
                             position: { x: value.img_x, y: value.img_y },
                             text: value.name,
@@ -256,7 +256,7 @@
                         );
                     });
                     taggd = new Taggd(image, options, data);
-                }, "json"); 
+                }, "json");
             }
 
             function viewtagsave(name, mouseX, mouseY)
@@ -289,10 +289,10 @@
         if(confirm('Are you sure want to delete this item ?')) {
             $('#input'+e).remove();
         }
-    }   
+    }
 
     function editTag(e)
-    {        
+    {
         var image = document.getElementById('tag-image');
         var idArray = e.id.split('|');
         var id = idArray[0];
@@ -317,13 +317,13 @@
         $("#"+id+"newpopup").css({
             'display' : '',
         });
-    }  
+    }
 
     function editNewTag(e)
     {
         var idArray = e.id.split('|');
         var id = idArray[0];
         $("#"+id+"newpopup").html($("."+id+'new').val());
-    }                
+    }
 
 </script>
