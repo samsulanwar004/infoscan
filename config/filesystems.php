@@ -64,4 +64,6 @@ return [
 
     ],
 
+    's3url' => env('S3_URL'),
+
 ];

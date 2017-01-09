@@ -35,7 +35,7 @@
                                         <div class="timeline-body">
                                         @if ($snap->mode_type != 'audios')
                                             @foreach($snap->files as $file)
-                                                <img src="{{ $file->file_path }}" alt="{{ $file->file_code }}" class="margin img-thumbnail img-responsive @if($snap->snap_type != 'receipt') img-tag @endif"  id="{{$file->id}}" style="width:150px;height:150px;">
+                                                <img src="{{ config('filesystems.s3url') . $file->file_path }}" alt="{{ $file->file_code }}" class="margin img-thumbnail img-responsive @if($snap->snap_type != 'receipt') img-tag @endif"  id="{{$file->id}}" style="width:150px;height:150px;">
                                             @endforeach
                                         @else
                                             @foreach($snap->files as $file)
@@ -58,13 +58,13 @@
             </div>
         </div>
         <!-- /.box -->
-        <a href="#"  style="display: none;" 
+        <a href="#"  style="display: none;"
         data-toggle="modal"
         data-target="#"
-        modal-size="modal-lg" 
-        id="modal-edit" 
+        modal-size="modal-lg"
+        id="modal-edit"
         title="Edit">
-        Edit Select Image</a>        
+        Edit Select Image</a>
     </section>
     <!-- /.content -->
 @endsection

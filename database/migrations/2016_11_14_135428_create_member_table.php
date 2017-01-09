@@ -31,6 +31,9 @@ class CreateMemberTable extends Migration
             $t->string('city', 200)->nullable();
             $t->string('occupation', 100)->nullable();
             $t->string('last_education', 5)->index()->nullable();
+            $t->string('bank_name', 10)->nullable()->index();
+            $t->string('bank_account_name', 150)->nullable()->index();
+            $t->string('bank_account_number', 15)->nullable()->index();
             $t->string('api_token', 60)->unique();
             $t->timestamps();
         });

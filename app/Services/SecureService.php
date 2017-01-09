@@ -67,7 +67,6 @@ class SecureService
                         $this->getMemberByCode($request->input('social_media_id'))
                     ;
 
-        $bankAccount = $request->exists('bank_account') ? $request->input('bank_account') : '';
         $hasRegistered = true;
         if (! $member) {
             $hasRegistered = false;
@@ -81,7 +80,6 @@ class SecureService
                 ->setSocialMediaUrl($request->input('social_media_url'))
                 ->setSocialMediaType($request->input('social_media_type'))
                 ->setApiToken(str_random(60))
-                ->setBankAccount($bankAccount)
                 ->register($request->all());
         }
 
