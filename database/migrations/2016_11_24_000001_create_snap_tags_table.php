@@ -20,8 +20,8 @@ class CreateSnapFilesTable extends Migration
             $table->string('name', 255);
             $table->decimal('total_price', 15, 2)->default('0.00');
             $table->integer('quantity')->default('0');
-            $table->varchar('img_x', 20)->nullable();
-            $table->varchar('img_y', 20)->nullable();
+            $table->string('img_x', 20)->nullable();
+            $table->string('img_y', 20)->nullable();
             $table->timestamps();
 
             $table->foreign('snap_file_id', 'FK_snap_files_id_in_snap_tags')

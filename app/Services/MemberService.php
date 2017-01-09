@@ -6,6 +6,7 @@ use App\Exceptions\Services\MemberServiceException;
 use App\Member;
 use App\Transformers\MemberTransformer;
 use DB;
+use Illuminate\Support\Facades\Validator;
 
 class MemberService
 {
@@ -68,11 +69,19 @@ class MemberService
      * @var string
      */
     private $apiToken;
+    /**
+     * @var string
+     */
+    private $bankName;
 
     /**
      * @var string
      */
-    private $bankAccount;
+    private $bankAccountName;
+    /**
+     * @var string
+     */
+    private $bankAccountNumber;
 
     /**
      * Add new a member into database.
@@ -144,6 +153,19 @@ class MemberService
 
         return fractal()->item($this->member, new MemberTransformer)
                         ->toArray();
+    }
+
+    public function validateProfileInput(array $data)
+    {
+        return Validator::make($data, [
+            'name' => 'required|min:3',
+            'dob' => 'required|date_format:"d-m-Y"',
+            'gender' => 'required|in:female,male',
+            'monthly_expense' => 'required|integer',
+            'bank_name' => 'required|min:3|max:10',
+            'bank_account_name' => 'required|min:3|max:150',
+            'bank_account_number' => 'required|min:10|max:15',
+        ]);
     }
 
     public function getToken()
@@ -367,19 +389,58 @@ class MemberService
     /**
      * @return string
      */
-    public function getBankAccount()
+    public function getBankName()
     {
-        return $this->bankAccount;
+        return $this->bankName;
     }
 
     /**
      * @param string
      * @return $this
      */
-    public function setBankAccount($bankAccount)
+    public function setBankName($bankName)
     {
-        $this->bankAccount = $bankAccount;
+        $this->bankName = $bankName;
 
         return $this;
     }
+
+    /**
+     * @return string
+     */
+    public function getBankAccountName()
+    {
+        return $this->bankAccountName;
+    }
+
+    /**
+     * @param string
+     * @return $this
+     */
+    public function setBankAccountName($bAccName)
+    {
+        $this->bankAccountName = $bAccName;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getBankAccountNumber()
+    {
+        return $this->bankAccountNumber;
+    }
+
+    /**
+     * @param string
+     * @return $this
+     */
+    public function setBankAccountNumber($bAccNumber)
+    {
+        $this->bankAccountNumber = $bAccNumber;
+
+        return $this;
+    }
+
 }

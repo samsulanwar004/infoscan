@@ -83,7 +83,6 @@ class SnapService
 
     public function updateSnap(Request $request, $id)
     {
-
         $snaps = $this->getSnapByid($id);
         $snaps->approved_by = is_null($request->input('approve')) ? null : auth()->user()->id;
         $snaps->check_by = is_null($request->input('check')) ? null : auth()->user()->id;
@@ -114,7 +113,7 @@ class SnapService
         }
 
         // create new tag
-        for ($i=0; $i < $newTagCount; $i++) { 
+        for ($i=0; $i < $newTagCount; $i++) {
             $t = new SnapTag;
             $t->name = $newTags['name'][$i];
             $t->quantity = $newTags['qty'][$i];
@@ -149,7 +148,7 @@ class SnapService
         }
 
         // create new tag
-        for ($i=0; $i < $newTagCount; $i++) { 
+        for ($i=0; $i < $newTagCount; $i++) {
             $t = new SnapTag;
             $t->name = $newTags['name'][$i];
             $t->quantity = $newTags['qty'][$i];
@@ -186,7 +185,7 @@ class SnapService
         }
 
         // create new tag
-        for ($i=0; $i < $newTagCount; $i++) { 
+        for ($i=0; $i < $newTagCount; $i++) {
             $t = new SnapTag;
             $t->name = $newTags['name'][$i];
             $t->quantity = $newTags['qty'][$i];
@@ -201,7 +200,7 @@ class SnapService
     {
         $ids = is_null($ids) ? [0] : $ids;
         SnapTag::where('snap_file_id', '=', $snapFileId)
-                    ->whereNotIn('id', $ids)->delete(); 
+                    ->whereNotIn('id', $ids)->delete();
     }
 
     /**
@@ -256,6 +255,8 @@ class SnapService
                 DB::commit();
             } catch (Exception $e) {
                 DB::rollback();
+
+                throw new SnapServiceException($e->getMessage());
             }
 
             return [];
@@ -377,14 +378,6 @@ class SnapService
     }
 
     /**
-     * @param \Illuminate\Http\Request $request
-     */
-    protected function tagsProcess(Request $request)
-    {
-
-    }
-
-    /**
      * Upload file to s3.
      *
      * @param  array $files
@@ -491,6 +484,8 @@ class SnapService
             $snap->mode_type = $request->input('mode_type');
         }
         $snap->status = 'new';
+        $snap->longitude = $request->input('longitude');
+        $snap->latitude = $request->input('latitude');
         $snap->save();
 
         return $snap;
