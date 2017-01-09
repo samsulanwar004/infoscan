@@ -23,7 +23,7 @@
                             <th width="50"></th>
                             <th width="300">Product Item</th>
                             <th width="50">Qty</th>
-                            <th width="200" class="text-right">Price</th>
+                            <th width="200">Price</th>
                         </tr>
                     </thead>
                     <tbody id="inputs">
@@ -36,7 +36,7 @@
                                 </td>
                                 <td width="300"><input type="text" name="tag[name][]" id="{{ $tag->id }}|{{ $tag->img_x }}|{{ $tag->img_y }}" class="form-control input-sm tag-name {{ $tag->id }}old" value="{{ $tag->name }}" placeholder="Product Name" required="required"></td>
                                 <td width="100"><input type="number" name="tag[qty][]" class="form-control input-sm" value="{{ $tag->quantity }}" placeholder="QTY" required="required"></td>
-                                <td width="200" class="text-right"><input type="number" name="tag[total][]" class="form-control input-sm" value="{{ $tag->total_price }}" placeholder="Total Price" required="required"></td>
+                                <td width="200"><input type="number" name="tag[total][]" class="form-control input-sm" value="{{ $tag->total_price }}" placeholder="Total Price" required="required"></td>
                                 <input type="hidden" name="tag[id][]" value="{{ $tag->id }}">
                             </tr>
                         @endforeach
@@ -59,6 +59,14 @@
         </div>
     </div>
 </form>
+
+<style type="text/css">
+    input[type=number]::-webkit-inner-spin-button, 
+    input[type=number]::-webkit-outer-spin-button { 
+      -webkit-appearance: none; 
+      margin: 0; 
+    }
+</style>
 
 <style type="text/css">
 
@@ -216,7 +224,7 @@
 
                 viewtagsave(name, mouseX, mouseY);
 
-                $('tbody#inputs').append('<tr id="input'+countOfTextbox+'"><td><a class="btn btn-box-tool" onclick="deleteTag('+countOfTextbox+')"><i class="fa fa-remove"></i></a></td><td width="300"><input type="text" name="newtag[name][]" class="form-control input-sm tag-name '+countOfTextbox+'new" id="'+countOfTextbox+'|'+mouseX+'|'+mouseY+'" onclick="editTag(this)" onkeyup="editNewTag(this)" value="'+name+'"></td><td width="100"><input type="number" name="newtag[qty][]" class="form-control input-sm" value="'+qty+'"></td><td width="200" class="text-right"><input type="number" name="newtag[total][]" class="form-control input-sm" value="'+total+'"><input type="hidden" name="newtag[x][]" value="'+mouseX+'"><input type="hidden" name="newtag[y][]" value="'+mouseY+'"><input type="hidden" name="newtag[fileId][]" value="{{ $snapFile->id }}"></td></tr>');
+                $('tbody#inputs').append('<tr id="input'+countOfTextbox+'"><td><a class="btn btn-box-tool" onclick="deleteTag('+countOfTextbox+')"><i class="fa fa-remove"></i></a></td><td width="300"><input type="text" name="newtag[name][]" class="form-control input-sm tag-name '+countOfTextbox+'new" id="'+countOfTextbox+'|'+mouseX+'|'+mouseY+'" onclick="editTag(this)" onkeyup="editNewTag(this)" value="'+name+'"></td><td width="100"><input type="number" name="newtag[qty][]" class="form-control input-sm" value="'+qty+'"></td><td width="200"><input type="number" name="newtag[total][]" class="form-control input-sm" value="'+total+'"><input type="hidden" name="newtag[x][]" value="'+mouseX+'"><input type="hidden" name="newtag[y][]" value="'+mouseY+'"><input type="hidden" name="newtag[fileId][]" value="{{ $snapFile->id }}"></td></tr>');
                 $('#tagit').fadeOut();
 
             });
