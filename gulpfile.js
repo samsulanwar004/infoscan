@@ -25,9 +25,12 @@ elixir(mix => {
         ltePath + 'plugins/icheck/square/blue.css',
         ltePath + 'plugins/datepicker/datepicker3.css',
         ltePath + 'plugins/daterangepicker/daterangepicker.css',
-        ltePath + 'plugins/easyui/easyui.css',
-        ltePath + 'css/taggd.css'
+        ltePath + 'plugins/easyui/easyui.css'
     ], 'public/css/app.css');
+
+    mix.styles([
+        ltePath + 'css/taggd.css'
+    ], 'public/css/taggd.css');
 
     /*mix.webpack('app.js');*/
 
@@ -41,14 +44,21 @@ elixir(mix => {
         ltePath + 'plugins/form-serialize/jquery.serializejson.min.js',
         ltePath + 'plugins/easyui/jquery.easyui.min.js',
         ltePath + 'plugins/easyui/pivot/jquery.pivotgrid.js',
-        ltePath + 'plugins/icheck/icheck.js',
-        ltePath + 'plugins/tagged/taggd.js'
+        ltePath + 'plugins/icheck/icheck.js'
     ], 'public/js/vendor.js');
 
     mix.scripts([
         ltePath + 'js/app.js',
         assetPath + 'js/project.js'
     ], 'public/js/admin.js');
+
+    mix.scripts([
+        ltePath + 'plugins/tagged/taggd.js'
+    ], 'public/js/taggd.js');
+
+    mix.scripts([
+        ltePath + 'plugins/elevate/jquery.elevatezoom.js'
+    ], 'public/js/elevate.js');
 
     mix.scripts([
         ltePath + 'js/html5shiv.js',
@@ -65,9 +75,12 @@ elixir(mix => {
 
     mix.version([
         'css/app.css',
+        'css/taggd.css',
         'js/vendor.js',
         'js/admin.js',
         'js/ie-support.js',
-        'js/app.js'
+        'js/app.js',
+        'js/elevate.js',
+        'js/taggd.js',
     ]);
 });
