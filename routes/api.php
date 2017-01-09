@@ -14,9 +14,7 @@ use Illuminate\Http\Request;
 */
 
 Route::post('v1/login', 'SecureController@login');
-
-
-
+Route::post('v1/register', 'SecureController@register');
 
 Route::group([
     'prefix' => 'v1',
@@ -27,4 +25,5 @@ Route::group([
     Route::get('/lucky', 'Api\LuckyDrawController@index');
     Route::post('/lucky', 'Api\LuckyDrawController@store');
     Route::get('/me', 'Api\MemberController@show');
+    Route::put('/me', 'Api\MemberController@update');
 });

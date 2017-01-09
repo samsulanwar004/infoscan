@@ -171,11 +171,12 @@ return [
         Rebel\Component\Setting\RebelSettingServiceProvider::class,
         Rebel\Component\Util\BladeDirectives\BladeDirectiveServiceProvider::class,
         Spatie\Fractal\FractalServiceProvider::class,
-        Laravel\Socialite\SocialiteServiceProvider::class,
+        //Laravel\Socialite\SocialiteServiceProvider::class,
+        \SocialiteProviders\Manager\ServiceProvider::class,
         Dusterio\PlainSqs\Integrations\LaravelServiceProvider::class,
-
         Barryvdh\Debugbar\ServiceProvider::class,
         Elibyy\TCPDF\ServiceProvider::class,
+        Maatwebsite\Excel\ExcelServiceProvider::class,
         //
 
         /*
@@ -210,9 +211,11 @@ return [
         'Cache' => Illuminate\Support\Facades\Cache::class,
         'Config' => Illuminate\Support\Facades\Config::class,
         'Cookie' => Illuminate\Support\Facades\Cookie::class,
+        'Converter' => Anam\PhantomMagick\Facades\Converter::class,
         'Crypt' => Illuminate\Support\Facades\Crypt::class,
         'DB' => Illuminate\Support\Facades\DB::class,
         'Eloquent' => Illuminate\Database\Eloquent\Model::class,
+        'Excel' => Maatwebsite\Excel\Facades\Excel::class,
         'Event' => Illuminate\Support\Facades\Event::class,
         'File' => Illuminate\Support\Facades\File::class,
         'Gate' => Illuminate\Support\Facades\Gate::class,
@@ -236,7 +239,7 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
         'RebelField' => Rebel\Component\Util\BladeDirectives\Facades\RebelField::class,
-        'Socialite' => Laravel\Socialite\Facades\Socialite::class,
+        'Socialize' => Laravel\Socialite\Facades\Socialite::class,
     ],
 
 ];

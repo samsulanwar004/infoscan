@@ -5,6 +5,8 @@ namespace App\Services;
 use App\Exceptions\Services\SnapServiceException;
 use App\Jobs\UploadToS3;
 use App\Snap;
+use App\SnapFile;
+use App\SnapTag;
 use DB;
 use Dusterio\PlainSqs\Jobs\DispatcherJob;
 use Exception;
@@ -52,9 +54,153 @@ class SnapService
         return $snap->paginate();
     }
 
+    public function getSnapsByType($attr)
+    {
+        return Snap::where('snap_type', '=', $attr)
+            ->paginate(50);
+    }
+
+    public function getSnapsByMode($attr)
+    {
+        return Snap::where('mode_type', '=', $attr)
+            ->paginate(50);
+    }
+
+    public function getSnapFileById($id)
+    {
+        return SnapFile::with(['tag'])->where('id', '=', $id)->first();
+    }
+
     public function getSnapByid($id)
     {
         return Snap::with(['files'])->where('id', $id)->first();
+    }
+
+    public function getSnapTagById($id)
+    {
+        return SnapTag::where('id', '=', $id)->first();
+    }
+
+    public function updateSnap(Request $request, $id)
+    {
+        $snaps = $this->getSnapByid($id);
+        $snaps->approved_by = is_null($request->input('approve')) ? null : auth()->user()->id;
+        $snaps->check_by = is_null($request->input('check')) ? null : auth()->user()->id;
+
+        $snaps->update();
+    }
+
+    public function updateSnapModeInput(Request $request, $id)
+    {
+        $tags = $request->input('tag');
+        $newTags = $request->input('newtag');
+        $tagCount = count($tags['name']);
+        $newTagCount = count($newTags['name']);
+        $ids = $tags['id'];
+
+        // Remove unnecessary snap tags
+        $this->deleteSnapTags($ids, $id);
+
+        // update tag.
+        for ($i=0; $i < $tagCount; ++$i) {
+            $tagId = $tags['id'][$i];
+            $t = $this->getSnapTagById($tagId);
+            $t->name = $tags['name'][$i];
+            $t->quantity = $tags['qty'][$i];
+            $t->total_price = $tags['total'][$i];
+
+            $t->update();
+        }
+
+        // create new tag
+        for ($i=0; $i < $newTagCount; $i++) {
+            $t = new SnapTag;
+            $t->name = $newTags['name'][$i];
+            $t->quantity = $newTags['qty'][$i];
+            $t->total_price = $newTags['total'][$i];
+            $t->file()->associate($newTags['fileId'][$i]);
+
+            $t->save();
+        }
+
+    }
+
+    public function updateSnapModeTags(Request $request, $id)
+    {
+        $tags = $request->input('tag');
+        $newTags = $request->input('newtag');
+        $tagCount = count($tags['name']);
+        $newTagCount = count($newTags['name']);
+        $ids = $tags['id'];
+
+        // Remove unnecessary snap tags
+        $this->deleteSnapTags($ids, $id);
+
+        // update tag.
+        for ($i=0; $i < $tagCount; ++$i) {
+            $tagId = $tags['id'][$i];
+            $t = $this->getSnapTagById($tagId);
+            $t->name = $tags['name'][$i];
+            $t->quantity = $tags['qty'][$i];
+            $t->total_price = $tags['total'][$i];
+
+            $t->update();
+        }
+
+        // create new tag
+        for ($i=0; $i < $newTagCount; $i++) {
+            $t = new SnapTag;
+            $t->name = $newTags['name'][$i];
+            $t->quantity = $newTags['qty'][$i];
+            $t->total_price = $newTags['total'][$i];
+            $t->img_x = $newTags['x'][$i];
+            $t->img_y = $newTags['y'][$i];
+            $t->file()->associate($newTags['fileId'][$i]);
+
+            $t->save();
+        }
+
+    }
+
+    public function updateSnapModeAudios($request, $id)
+    {
+        $tags = $request->input('tag');
+        $newTags = $request->input('newtag');
+        $tagCount = count($tags['name']);
+        $newTagCount = count($newTags['name']);
+        $ids = $tags['id'];
+
+        // Remove unnecessary snap tags
+        $this->deleteSnapTags($ids, $id);
+
+        // update tag.
+        for ($i=0; $i < $tagCount; ++$i) {
+            $tagId = $tags['id'][$i];
+            $t = $this->getSnapTagById($tagId);
+            $t->name = $tags['name'][$i];
+            $t->quantity = $tags['qty'][$i];
+            $t->total_price = $tags['total'][$i];
+
+            $t->update();
+        }
+
+        // create new tag
+        for ($i=0; $i < $newTagCount; $i++) {
+            $t = new SnapTag;
+            $t->name = $newTags['name'][$i];
+            $t->quantity = $newTags['qty'][$i];
+            $t->total_price = $newTags['total'][$i];
+            $t->file()->associate($newTags['fileId'][$i]);
+
+            $t->save();
+        }
+    }
+
+    public function deleteSnapTags($ids, $snapFileId)
+    {
+        $ids = is_null($ids) ? [0] : $ids;
+        SnapTag::where('snap_file_id', '=', $snapFileId)
+                    ->whereNotIn('id', $ids)->delete();
     }
 
     /**
@@ -109,6 +255,8 @@ class SnapService
                 DB::commit();
             } catch (Exception $e) {
                 DB::rollback();
+
+                throw new SnapServiceException($e->getMessage());
             }
 
             return [];
@@ -230,14 +378,6 @@ class SnapService
     }
 
     /**
-     * @param \Illuminate\Http\Request $request
-     */
-    protected function tagsProcess(Request $request)
-    {
-
-    }
-
-    /**
      * Upload file to s3.
      *
      * @param  array $files
@@ -344,6 +484,8 @@ class SnapService
             $snap->mode_type = $request->input('mode_type');
         }
         $snap->status = 'new';
+        $snap->longitude = $request->input('longitude');
+        $snap->latitude = $request->input('latitude');
         $snap->save();
 
         return $snap;

@@ -14,7 +14,7 @@
             </div>
             <div class="col-md-4" style="overflow-y:scroll;max-height: 250px;">
                 <div id="levels" style="overflow: hidden;padding-top: 25px;">
-                    @foreach($levels as $level)
+                    @forelse($levels as $level)
                         <div id="level">
                             <?php
                                 $levelArray = explode(' ', $level->name);
@@ -26,7 +26,16 @@
                                 </div>
                             </div>
                         </div>
-                    @endforeach
+                    @empty
+                        <div id="level">
+                            <div class="form-group">
+                                <label for="name" class="col-sm-4 control-label">Level 1</label>
+                                <div class="col-sm-8">
+                                    <input type="number" class="form-control level-name" name="levels[1]" placeholder="Point Level 1" required="required">
+                                </div>
+                            </div>
+                        </div>
+                    @endforelse
                 </div>
             </div>
         </div>
@@ -52,18 +61,7 @@
 <script type="text/javascript">
 
     $(document).ready(function () {
-        $('#modalForm').on('submit', function (e) {
-            e.preventDefault();
-            REBEL.onSubmit($(this), function (responseData) {
-                if(responseData.status == 'ok') {
-                    $('#modalForm')[0].reset();
-                }
-                setTimeout(function () {
-                    REBEL.removeAllMessageAlert();
-                }, 2000)
-            });
-        });
-
+        
         $('form').on('focus', 'input[type=number]', function (e) {
           $(this).on('mousewheel.disableScroll', function (e) {
             e.preventDefault()

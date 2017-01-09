@@ -1,5 +1,19 @@
 <div class="col-md-4">
-	<button type="button" class="btn btn-success btn-block btn-lg"><i class="fa fa-check-circle-o fa-btn"></i> Approve This Content</button>
+	@if($snap->approved_by == null)
+	<a href="{{ admin_route_url('snaps.edit', ['id' => $snap->id]) }}" class="btn btn-success btn-block btn-lg"
+        data-toggle="modal"
+        data-target="#"
+        modal-size="modal-lg" 
+        title="Edit">
+        <i class="fa fa-check-circle-o fa-btn"></i>Approve This Content</a>  
+    @else
+    	<a href="{{ admin_route_url('snaps.edit', ['id' => $snap->id]) }}" class="btn btn-danger btn-block btn-lg"
+        data-toggle="modal"
+        data-target="#"
+        modal-size="modal-lg" 
+        title="Edit">
+        <i class="fa fa-check-circle-o fa-btn"></i>This Content Approved</a>
+	@endif
 	<table class="table">
 		<thead>
 			<tr>

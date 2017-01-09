@@ -15,22 +15,20 @@
             <div class="box-header with-border form-inline" style="overflow: hidden; height: 45px;">
 
                 <div class="box-tools pull-right ">
-                    Filter type:
-                    <select class="form-control">
-                        <option value="0">File by Type</option>
-                        <option value="rc">Receipt</option>
-                        <option value="gt">General Trade</option>
-                        <option value="ai">Arange Items</option>
-                        <option value="hw">Hand Written</option>
+                    Filter Snap type: 
+                    <select class="form-control snap-type">
+                        <option value="all" id="all">All</option>
+                        @foreach($snapCategorys as $id => $name)
+                            <option value="{{$id}}" id="{{$id}}">{{$name}}</option>
+                        @endforeach                                                                   
                     </select>
 
-                    Filter type:
-                    <select class="form-control">
-                        <option value="0">File by Type</option>
-                        <option value="rc">Receipt</option>
-                        <option value="gt">General Trade</option>
-                        <option value="ai">Arange Items</option>
-                        <option value="hw">Hand Written</option>
+                    Filter Mode type:
+                    <select class="form-control snap-mode">
+                        <option value="all">All</option>
+                        @foreach($snapCategoryModes as $id => $name)
+                            <option value="{{$id}}" id="{{$id}}">{{$name}}</option>
+                        @endforeach 
                     </select>
                 </div>
             </div>
@@ -48,7 +46,7 @@
                     @forelse($snaps as $snap)
                         <tr>
                             <td class="vertical-middle">
-                                <i class="fa fa-check-circle {{ $snap->is_active == 1 ? 'text-green' : 'text-default' }}"></i>
+                                <i class="fa fa-check-circle {{ $snap->approved_by != null ? 'text-green' : 'text-default' }}"></i>
                             </td>
                             <td class="vertical-middle">
                                 {{ strtoupper($snap->request_code) }} <br>
@@ -66,7 +64,7 @@
                             </td>
                             <td class="text-right vertical-middle">
                                 <div class="btn-group">
-                                    @cando('User.Update')
+                                    @cando('Snaps.Show')
                                     <a href="{{ admin_route_url('snaps.show', ['id' => $snap->id]) }}" class="btn btn-primary">
                                         <i class="fa fa-search"> </i>
                                     </a>
@@ -76,7 +74,7 @@
                         </tr>
                     @empty
                         <td colspan="4"> There is no record for snaps data!</td>
-                    @endforelse
+                    @endforelse                    
                     </tbody>
                 </table>
             </div>
@@ -86,3 +84,39 @@
     </section>
     <!-- /.content -->
 @endsection
+
+@section('footer_scripts')
+<script>
+    $(function() {
+       getSelected();
+    });
+
+    $(".snap-type").on("change", function() {
+        var attr = this.value;
+        if (attr == 'all')
+        {
+            return window.location.href = '/snaps';
+        }
+        var link = '/snaps/'+attr+'/filter';
+        window.location.href = link;
+
+    });
+
+    $(".snap-mode").on("change", function() {
+        var attr = this.value;
+        if (attr == 'all')
+        {
+            return window.location.href = '/snaps';
+        }
+        var link = '/snaps/'+attr+'/filter';
+        window.location.href = link;
+
+    });
+
+    function getSelected()
+    {
+        document.getElementById("{{$type}}").selected = true;
+    }
+    
+</script>
+@stop

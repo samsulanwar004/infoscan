@@ -43,10 +43,22 @@ return [
         'client_secret' => env('GOOGLE_CLIENT_SECRET'),
         'redirect'      => env('GOOGLE_REDIRECT'),
     ],
+
     'facebook' => [
         'client_id'     => env('FB_CLIENT_ID'),
         'client_secret' => env('FB_CLIENT_SECRET'),
         'redirect'      => env('FB_REDIRECT'),
     ],
 
+    'linkedin' => [
+        'client_id' => env('LINKEDIN_KEY'),
+        'client_secret' => env('LINKEDIN_SECRET'),
+        'redirect' => env('LINKEDIN_REDIRECT_URI'),
+    ],
+
+    'instagram' => [
+        'client_id' => env('INSTAGRAM_KEY'),
+        'client_secret' => env('INSTAGRAM_SECRET'),
+        'redirect' => env('INSTAGRAM_REDIRECT_URI'),
+    ],
 ];
