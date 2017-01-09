@@ -18,7 +18,7 @@
             <div class="box-body">
                 <div class="row">
 
-                    <div class="{{ $snap->snap_type == 'receipt' ? 'col-md-12' : 'col-md-8' }}">
+                    <div class="col-md-8">
                         <p class="text-muted well well-sm no-shadow">
                             Terimakasih Misbach
                         </p>
@@ -35,11 +35,11 @@
                                         <div class="timeline-body">
                                         @if ($snap->mode_type != 'audios')
                                             @foreach($snap->files as $file)
-                                                <img src="{{ config('filesystems.s3url') . $file->file_path }}" alt="{{ $file->file_code }}" class="margin img-thumbnail img-responsive @if($snap->snap_type != 'receipt') img-tag @endif"  id="{{$file->id}}" style="width:150px;height:150px;">
+                                                <img src="{{ config('filesystems.s3url') . $file->file_path }}" alt="{{ $file->file_code }}" class="margin img-thumbnail img-responsive img-tag"  id="{{$file->id}}" style="width:150px;height:150px;">
                                             @endforeach
                                         @else
                                             @foreach($snap->files as $file)
-                                                <img src="{{ URL::to('img/window-player.png') }}" alt="{{ $file->file_code }}" class="margin img-thumbnail img-responsive @if($snap->snap_type != 'receipt') img-tag @endif"  id="{{$file->id}}" style="width:150px;height:150px;">
+                                                <img src="{{ URL::to('img/window-player.png') }}" alt="{{ $file->file_code }}" class="margin img-thumbnail img-responsive img-tag"  id="{{$file->id}}" style="width:150px;height:150px;">
                                             @endforeach
                                         @endif
                                         </div>
@@ -50,10 +50,7 @@
                         </div>
 
                     </div>
-
-                    @if($snap->snap_type !== 'receipt' && (!empty($snap->mode_type) || !is_null($snap->mode_type)))
                         @include('snaps.show_detail', ['snap' => $snap])
-                    @endif
                 </div>
             </div>
         </div>
@@ -70,6 +67,9 @@
 @endsection
 
 @section('footer_scripts')
+<link rel="stylesheet" href="{{ elixir('css/taggd.css') }}">
+<script src="{{ elixir('js/taggd.js') }}"></script>
+<script src="{{ elixir('js/elevate.js') }}"></script>
 <script type="text/javascript">
     $(".img-tag").on('click', function(img) {
         //console.log(img.toElement.id);
@@ -78,6 +78,7 @@
         link.attr('href', nameLink);
 
         link.trigger('click');
+
     });
 
 </script>
