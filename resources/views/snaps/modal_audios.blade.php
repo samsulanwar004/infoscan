@@ -10,7 +10,7 @@
         <div class="form-horizontal">
             <div class="col-md-6">
                 <audio controls>
-                  <source src="{{ $snapFile->file_path }}" type="audio/mpeg">
+                  <source src="{{ config('filesystems.s3url') . $snapFile->file_path }}" type="audio/mpeg">
                     Your browser does not support the audio element.
                 </audio>
             </div>

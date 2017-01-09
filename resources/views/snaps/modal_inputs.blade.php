@@ -9,7 +9,7 @@
     <div class="modal-body">
         <div class="form-horizontal">
             <div class="col-md-6">
-                <img src="{{ $snapFile->file_path }}" alt="" class="margin img-responsive">
+                <img src="{{ config('filesystems.s3url') . $snapFile->file_path }}" alt="" class="margin img-responsive">
             </div>
             <div class="col-md-6" style="overflow-y:scroll;max-height: 300px;">
                 <table class="table">
