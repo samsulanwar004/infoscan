@@ -1,6 +1,9 @@
 {
-  "css/app.css": "css/app-00e2a13c96.css",
+  "css/app.css": "css/app-575c52fc16.css",
+  "css/taggd.css": "css/taggd-65dd15db81.css",
   "js/admin.js": "js/admin-040362279a.js",
+  "js/elevate.js": "js/elevate-ae62de6f1b.js",
   "js/ie-support.js": "js/ie-support-fddb44178b.js",
-  "js/vendor.js": "js/vendor-f13af00478.js"
+  "js/taggd.js": "js/taggd-03f23f7e27.js",
+  "js/vendor.js": "js/vendor-36a97f68f3.js"
 }
