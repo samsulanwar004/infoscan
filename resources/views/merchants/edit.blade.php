@@ -121,7 +121,7 @@
                     </div>
                     <!-- /.box-body -->
                     <div class="box-footer text-right">
-                        <button class="btn btn-primary" id="add">
+                        <button class="btn btn-default" id="add">
                             <i class="fa fa-plus fa-btn"></i>Add User
                         </button>
                         <button type="submit" class="btn btn-primary" id="submit">
