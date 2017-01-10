@@ -3,7 +3,7 @@
     {{ method_field('PUT') }}
     <input type="hidden" name="mode" value="{{ $snapFile->mode_type }}">
     <div class="modal-header">
-        <a class="close" data-dismiss="modal">&times;</a>
+        <a class="close btn-close" data-dismiss="modal">&times;</a>
         <h4><i class="fa fa-file-o fa-btn"></i> <span class="action-title">Snap </span> File</h4>
     </div>
     <div class="modal-body">
@@ -48,7 +48,7 @@
     </div>
     <div class="modal-footer">
         <div class="button-container">
-            <a class="btn btn-link" data-dismiss="modal">Close</a>
+            <a class="btn btn-link btn-close" data-dismiss="modal">Close</a>
             <button class="btn btn-primary submit-to-server">
                 <i class="fa fa-save fa-btn"></i> <span class="ladda-label">Save Item</span>
             </button>
@@ -66,13 +66,29 @@
 
 <style type="text/css">
     input[type=number]::-webkit-inner-spin-button, 
-    input[type=number]::-webkit-outer-spin-button { 
+    input[type=number]::-webkit-outer-spin-button 
+    { 
       -webkit-appearance: none; 
       margin: 0; 
     }
 </style>
 
 <script type="text/javascript">
+    $(document).ready(function() {
+        $('#modalForm').on('submit', function (e) {
+            e.preventDefault();
+            REBEL.onSubmit($(this), function (responseData) {
+                REBEL.removeAllMessageAlert();
+                if (responseData.status == "ok") {
+                    REBEL.smallNotifTemplate(responseData.message, '.modal-content', 'success');
+                }             
+                setTimeout(function () {
+                    REBEL.removeAllMessageAlert();
+                }, 3000)
+            });
+        });
+    });
+
     $("modalForm").ready(function() {
 
         $('form').on('focus', 'input[type=number]', function(e) {
@@ -82,6 +98,10 @@
         });
         $('form').on('blur', 'input[type=number]', function(e) {
           $(this).off('mousewheel.disableScroll')
+        });
+
+        $(document).on("click", ".btn-close", function(){
+            window.location.href = '{{ $snapFile->snap_id }}';
         });
 
         $('a#add').on('click', function(e) {

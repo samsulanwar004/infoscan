@@ -97,12 +97,23 @@ class SnapController extends AdminController
             }
             
         } catch (Exception $e) {
-            return redirect()->back()->withInput()->withErrors($e->getMessage());
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], 500);
         } catch (PDOException $e) {
-            return redirect()->back()->withInput()->withErrors($e->getMessage());
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], 500);
         }
 
-        return redirect()->back()->with('success', 'Snaps successfully updated!');
+        $mode = ($request->has('mode') == true) ? $request->input('mode') : "Confirmation";
+        return response()->json([
+            'status' => 'ok',
+            'message' => 'Snaps '.$mode.' successfully updated!',
+        ]);
+
     }
 
     public function tagging($id)

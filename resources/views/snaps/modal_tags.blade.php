@@ -136,9 +136,13 @@
         $('#modalForm').on('submit', function (e) {
             e.preventDefault();
             REBEL.onSubmit($(this), function (responseData) {
+                REBEL.removeAllMessageAlert();
+                if (responseData.status == "ok") {
+                    REBEL.smallNotifTemplate(responseData.message, '.modal-content', 'success');
+                }
                 setTimeout(function () {
                     REBEL.removeAllMessageAlert();
-                }, 2000)
+                }, 3000)
             });
         });
     });

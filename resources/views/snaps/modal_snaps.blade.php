@@ -70,19 +70,36 @@
       margin: 0; 
     }
 
-    .zoomContainer{ 
+    .zoomContainer
+    { 
         z-index: 9999;
     }
 
-    .zoomWindow{ 
+    .zoomWindow
+    { 
         z-index: 9999;
     }
 
 </style>
 
 <script type="text/javascript">    
+    $(document).ready(function() {
+        $('#modalForm').on('submit', function (e) {
+            e.preventDefault();
+            REBEL.onSubmit($(this), function (responseData) {
+                REBEL.removeAllMessageAlert();
+                if (responseData.status == "ok") {
+                    REBEL.smallNotifTemplate(responseData.message, '.modal-content', 'success');
+                }
+                setTimeout(function () {
+                    REBEL.removeAllMessageAlert();
+                }, 3000)
+            });
+        });
+    });
 
-    $("modalForm").ready(function() {   
+    $("modalForm").ready(function() {  
+
         $(".img-zoom").elevateZoom({
             zoomType: "inner",
             cursor: "crosshair",
@@ -100,6 +117,7 @@
 
         $(document).on("click", ".btn-close", function(){
             $(".zoomContainer").remove();
+            window.location.href = '{{ $snapFile->snap_id }}';
         });
 
         $('form').on('focus', 'input[type=number]', function(e) {

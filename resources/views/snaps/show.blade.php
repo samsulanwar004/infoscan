@@ -83,7 +83,8 @@
 
 </script>
 <style type="text/css">
-    img.img-tag {
+    img.img-tag 
+    {
         cursor: pointer;
     }
 </style>
