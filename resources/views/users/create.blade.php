@@ -82,3 +82,21 @@
     <!-- /.content -->
 @endsection
 
+@section('footer_scripts')
+<script type="text/javascript">
+    $("#password, #confirm_password").keyup(function() {
+        var pass1 = document.getElementById("password").value;
+        var pass2 = document.getElementById("confirm_password").value;
+
+        if (pass1 != pass2) {
+            document.getElementById("password").style.borderColor = "#E34234";
+            document.getElementById("confirm_password").style.borderColor = "#E34234";
+            document.getElementById("save").disabled = true;
+        } else {
+            document.getElementById("password").style.borderColor = "#00ff00";
+            document.getElementById("confirm_password").style.borderColor = "#00ff00";
+            document.getElementById("save").disabled = false;
+        }
+    });
+</script>
+@stop
