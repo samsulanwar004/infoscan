@@ -13,6 +13,8 @@
                   <source src="{{ config('filesystems.s3url') . $snapFile->file_path }}" type="audio/mpeg">
                     Your browser does not support the audio element.
                 </audio>
+                <textarea class="form-control" style="resize:none;width: 100%;height: 300px;" 
+                cols="50" readonly="readonly">{{ $snapFile->recognition_text }}</textarea>
             </div>
             <div class="col-md-6" style="overflow-y:scroll;max-height: 300px;">
                 <table class="table">
@@ -41,8 +43,8 @@
                         @endforeach
                     </tbody>
                 </table>
-            </div>
-        </div>
+            </div>                
+        </div>            
     </div>
     <div class="modal-footer">
         <div class="button-container">
@@ -72,7 +74,7 @@
 
 <script type="text/javascript">
     $("modalForm").ready(function() {
-        
+
         $('form').on('focus', 'input[type=number]', function(e) {
           $(this).on('mousewheel.disableScroll', function(e) {
             e.preventDefault()
