@@ -114,7 +114,7 @@
 
             <li class="treeview">
                 <a href="/reports">
-                    <i class="fa fa-file"></i> <span>Report</span>
+                    <i class="fa fa-file"></i> <span>Reports</span>
                     <span class="pull-right-container">
                       <i class="fa fa-angle-left pull-right"></i>
                     </span>

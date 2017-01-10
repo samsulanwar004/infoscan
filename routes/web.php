@@ -55,11 +55,13 @@ Route::group([
         'Web\SesController',
         ['except' => ['show'], 'names' => route_resource_name($routePrefix, 'ses')]
     );
+
     Route::resource(
         '/lucky',
         'Web\LuckyDrawController',
         ['except' => ['show'], 'names' => route_resource_name($routePrefix, 'lucky')]
     );
+
     Route::resource(
         '/points',
         'Web\PointController',
@@ -120,15 +122,6 @@ Route::group([
         ['except' => ['show'], 'names' => route_resource_name($routePrefix, 'reports')]
     );
 
-    /*Route::post('/reports/filters', 'Web\ReportsController@filters')->name('reports.filters');
-    Route::post('/reports/formatPdf', 'Web\ReportsController@formatPdf')->name('reports.formatPdf');
-    Route::post('/reports/formatWord', 'Web\ReportsController@formatWord')->name('reports.formatWord');*/
-
-    Route::get(
-        '/report/filters',
-        'Web\ReportsController@filters'
-    )->name('report.filters');
-
     Route::get(
         '/reports/formatPdf',
         'Web\ReportsController@formatPdf'
@@ -137,15 +130,19 @@ Route::group([
     Route::get(
         '/reports/formatExcel',
         'Web\ReportsController@formatExcel'
-    )->name('reports.formatExcel');
+    );
 
     Route::get(
         '/reports/formatWord',
         'Web\ReportsController@formatWord'
-    )->name('reports.formatWord');
+    );
+
+    Route::get(
+        '/reports/maps',
+        'Web\ReportsController@maps'
+    )->name('reports.maps');
 });
 
 Auth::routes();
 Route::get('/secure/{requestCode}/{social}', 'SecureController@redirect');
 Route::get('/callback/{social}', 'SecureController@callback');
-
