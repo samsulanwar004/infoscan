@@ -25,13 +25,9 @@ elixir(mix => {
         ltePath + 'plugins/icheck/square/blue.css',
         ltePath + 'plugins/datepicker/datepicker3.css',
         ltePath + 'plugins/daterangepicker/daterangepicker.css',
-<<<<<<< HEAD
-        ltePath + 'plugins/easyui/easyui.css'
-=======
         ltePath + 'plugins/easyui/easyui.css',
         ltePath + 'css/taggd.css',
         ltePath + 'plugins/multiselect/bootstrap-multiselect.css'
->>>>>>> upstream/master
     ], 'public/css/app.css');
 
     mix.styles([
@@ -50,13 +46,9 @@ elixir(mix => {
         ltePath + 'plugins/form-serialize/jquery.serializejson.min.js',
         ltePath + 'plugins/easyui/jquery.easyui.min.js',
         ltePath + 'plugins/easyui/pivot/jquery.pivotgrid.js',
-<<<<<<< HEAD
-        ltePath + 'plugins/icheck/icheck.js'
-=======
         ltePath + 'plugins/icheck/icheck.js',
         ltePath + 'plugins/tagged/taggd.js',
         ltePath + 'plugins/multiselect/bootstrap-multiselect.js'
->>>>>>> upstream/master
     ], 'public/js/vendor.js');
 
     mix.scripts([
