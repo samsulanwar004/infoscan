@@ -16,7 +16,8 @@ class SnapController extends AdminController
         $snaps = ( new SnapService)->getAvailableSnaps();
         $type = 'all';
         $snapCategorys = config("common.snap_category");
-        $snapCategoryModes = config("common.snap_category_mode");
+        $snapCategoryModes = config("common.snap_catmode");
+        dd($snapCategorys);
 
         return view('snaps.index', compact('snaps', 'type', 'snapCategorys', 'snapCategoryModes'));
     }
