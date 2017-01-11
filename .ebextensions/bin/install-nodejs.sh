@@ -30,7 +30,7 @@ install_node () {
     else
         yum rm nodejs
         sudo rm -f /usr/bin/node
-        curl -sL https://rpm.nodesource.com/setup_6.x | sudo -E bash -
+        curl -sL https://rpm.nodesource.com/pub_6.x/el/7/x86_64/nodejs-6.9.4-1nodesource.el7.centos.x86_64.rpm | sudo -E bash -
         yum install -y nodejs
     fi
 }
