@@ -22,20 +22,23 @@ check_if_same_hash () {
 }
 
 install_node () {
-    yum install -y gcc-c++ make
     if hash nodejs 2> /dev/null; then
         echo 'nodejs install, add more processing if needed' > /dev/null
     else
+        # do this (commented) command to remove default nodejs in elastic beanstalk.
+        # yum install -y gcc-c++ make
         # yum erase nodejs
         # sudo rm -f /usr/bin/node
+
+        # need to update or change the version of node js. Please follow the link below.
         rpm -Uvh https://rpm.nodesource.com/pub_6.x/el/7/x86_64/nodejs-6.9.4-1nodesource.el7.centos.x86_64.rpm | sudo -E bash -
         yum install -y nodejs
     fi
 }
 
 install_npm_packages () {
-    npm install -g gulp
-    npm install -g gulp-cli
+    /usr/bin/npm install -g gulp
+    /usr/bin/npm install -g gulp-cli
 }
 
 update_current_hash () {
