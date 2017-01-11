@@ -37,8 +37,12 @@ install_node () {
 }
 
 install_npm_packages () {
+    /usr/bin/npm install -g npm@latest
+    echo 'update npm'
     /usr/bin/npm install -g gulp
+    echo 'gulp installed' > /dev/null
     /usr/bin/npm install -g gulp-cli
+    echo 'gulp-cli installed' > /dev/null
 }
 
 update_current_hash () {
