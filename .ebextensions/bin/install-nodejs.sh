@@ -23,7 +23,10 @@ check_if_same_hash () {
 
 install_node () {
     if hash nodejs 2> /dev/null; then
-        echo 'nodejs install, add more processing if needed' > /dev/null
+        #echo 'nodejs install, add more processing if needed' > /dev/null
+        yum rm nodejs
+        sudo rm -f /usr/bin/node
+        sudo yum install nodejs --enablerepo=epel-testing
     else
         curl -sL https://rpm.nodesource.com/setup_6.x | sudo -E bash -
         yum install nodejs
