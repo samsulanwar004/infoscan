@@ -39,7 +39,7 @@ install_node () {
 install_npm_packages () {
     #/usr/bin/npm install -g npm@latest
     #echo 'update npm'
-    /usr/bin/npm install -g minimatch@3.0.2
+    #/usr/bin/npm install -g minimatch@3.0.2
     echo 'install minimatch 3.0.2 globlaly'
     /usr/bin/npm install -g gulp
     echo 'gulp installed' > /dev/null
