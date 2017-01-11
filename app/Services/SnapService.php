@@ -196,6 +196,40 @@ class SnapService
         }
     }
 
+    public function updateSnapModeImages($request, $id)
+    {
+        $tags = $request->input('tag');
+        $newTags = $request->input('newtag');
+        $tagCount = count($tags['name']);
+        $newTagCount = count($newTags['name']);
+        $ids = $tags['id'];
+
+        // Remove unnecessary snap tags
+        $this->deleteSnapTags($ids, $id);
+
+        // update tag.
+        for ($i=0; $i < $tagCount; ++$i) {
+            $tagId = $tags['id'][$i];
+            $t = $this->getSnapTagById($tagId);
+            $t->name = $tags['name'][$i];
+            $t->quantity = $tags['qty'][$i];
+            $t->total_price = $tags['total'][$i];
+
+            $t->update();
+        }
+
+        // create new tag
+        for ($i=0; $i < $newTagCount; $i++) {
+            $t = new SnapTag;
+            $t->name = $newTags['name'][$i];
+            $t->quantity = $newTags['qty'][$i];
+            $t->total_price = $newTags['total'][$i];
+            $t->file()->associate($newTags['fileId'][$i]);
+
+            $t->save();
+        }
+    }
+
     public function deleteSnapTags($ids, $snapFileId)
     {
         $ids = is_null($ids) ? [0] : $ids;

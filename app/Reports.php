@@ -16,5 +16,6 @@
     							'usership',
     							'sec',
     							'outlet_type',
+                                'snap_at',
     						  ];
     }
