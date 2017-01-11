@@ -16,8 +16,7 @@ class SnapController extends AdminController
         $snaps = ( new SnapService)->getAvailableSnaps();
         $type = 'all';
         $snapCategorys = config("common.snap_category");
-        $snapCategoryModes = config("common.snap_catmode");
-        dd($snapCategorys);
+        $snapCategoryModes = config("common.snap_category_mode");
 
         return view('snaps.index', compact('snaps', 'type', 'snapCategorys', 'snapCategoryModes'));
     }
@@ -64,7 +63,8 @@ class SnapController extends AdminController
         $modeView = [
             'input' => 'modal_inputs',
             'tags' => 'modal_tags',
-            'audio' => 'modal_audios'
+            'audio' => 'modal_audios',
+            'image' => 'modal_snaps'
         ];
 
         $snapFile = (new SnapService)->getSnapFileById($id);
@@ -90,17 +90,30 @@ class SnapController extends AdminController
                 (new SnapService)->updateSnapModeTags($request, $id);
             } else if ($request->input('mode') === 'audio') {
                 (new SnapService)->updateSnapModeAudios($request, $id);
+            } else if ($request->input('mode') === 'image') {
+                (new SnapService)->updateSnapModeImages($request, $id);
             } else {
                 (new SnapService)->updateSnap($request, $id);
             }
             
         } catch (Exception $e) {
-            return redirect()->back()->withInput()->withErrors($e->getMessage());
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], 500);
         } catch (PDOException $e) {
-            return redirect()->back()->withInput()->withErrors($e->getMessage());
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], 500);
         }
 
-        return redirect()->back()->with('success', 'Snaps successfully updated!');
+        $mode = ($request->has('mode') == true) ? $request->input('mode') : "Confirmation";
+        return response()->json([
+            'status' => 'ok',
+            'message' => 'Snaps '.$mode.' successfully updated!',
+        ]);
+
     }
 
     public function tagging($id)

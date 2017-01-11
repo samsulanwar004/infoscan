@@ -3,13 +3,13 @@
     {{ method_field('PUT') }}
     <input type="hidden" name="mode" value="{{ $snapFile->mode_type }}">
     <div class="modal-header">
-        <a class="close" data-dismiss="modal">&times;</a>
+        <a class="close btn-close" data-dismiss="modal">&times;</a>
         <h4><i class="fa fa-file-o fa-btn"></i> <span class="action-title">Snap </span> File</h4>
     </div>
     <div class="modal-body">
         <div class="form-horizontal">
             <div class="col-md-6">
-                <img src="{{ $snapFile->file_path }}" alt="" class="margin img-responsive">
+                <img src="{{ config('filesystems.s3url') . $snapFile->file_path }}" alt="" class="margin img-responsive img-zoom">
             </div>
             <div class="col-md-6" style="overflow-y:scroll;max-height: 300px;">
                 <table class="table">
@@ -43,12 +43,12 @@
     </div>
     <div class="modal-footer">
         <div class="button-container">
-            <a class="btn btn-link" data-dismiss="modal">Close</a>
+            <a class="btn btn-link btn-close" data-dismiss="modal">Close</a>
             <button class="btn btn-primary submit-to-server">
                 <i class="fa fa-save fa-btn"></i> <span class="ladda-label">Save Item</span>
             </button>
                 <a class="btn btn-default" id="add">
-                    <i class="fa fa-plus fa-btn"></i>Create New
+                    <i class="fa fa-plus fa-btn"></i>New Create
                 </a>
             <div class="la-ball-fall">
                 <div></div>
@@ -59,8 +59,58 @@
     </div>
 </form>
 
+<style type="text/css">
+    input[type=number]::-webkit-inner-spin-button, 
+    input[type=number]::-webkit-outer-spin-button 
+    { 
+      -webkit-appearance: none; 
+      margin: 0; 
+    }
+
+    .zoomContainer
+    { 
+        z-index: 9999;
+    }
+
+    .zoomWindow
+    { 
+        z-index: 9999;
+    }
+
+</style>
+
 <script type="text/javascript">
+    $(document).ready(function() {
+        $('#modalForm').on('submit', function (e) {
+            e.preventDefault();
+            REBEL.onSubmit($(this), function (responseData) {
+                REBEL.removeAllMessageAlert();
+                if (responseData.status == "ok") {
+                    REBEL.smallNotifTemplate(responseData.message, '.modal-content', 'success');
+                }
+                setTimeout(function () {
+                    REBEL.removeAllMessageAlert();
+                }, 3000)
+            });
+        });
+    });
+
     $("modalForm").ready(function() {
+
+        $(".img-zoom").elevateZoom({
+            zoomType: "inner",
+            cursor: "crosshair",
+            easing: true,
+        });
+
+        $(window).resize(function() {
+            $(".zoomContainer").remove();
+            $(".img-zoom").elevateZoom({
+                zoomType: "inner",
+                cursor: "crosshair",
+                easing: true,
+            });
+        });
         
         $('form').on('focus', 'input[type=number]', function(e) {
           $(this).on('mousewheel.disableScroll', function(e) {
@@ -88,6 +138,10 @@
             if(confirm('Are you sure want to delete this item ?')) {
                 $(e.target).closest('#input').remove();
             }
+        });
+
+        $(document).on("click", ".btn-close", function(){
+            window.location.href = '{{ $snapFile->snap_id }}';
         });
         
     });

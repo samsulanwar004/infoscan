@@ -23,20 +23,20 @@
                             <th width="50"></th>
                             <th width="300">Product Item</th>
                             <th width="50">Qty</th>
-                            <th width="200" class="text-right">Price</th>
+                            <th width="200">Price</th>
                         </tr>
                     </thead>
                     <tbody id="inputs">
                         @foreach($snapFile->tag as $tag)
                             <tr id="input">
                                 <td>
-                                    <a class="btn btn-box-tool" id="remove">
+                                    <a class="{{ $tag->id }}-tag btn btn-box-tool" id="remove">
                                         <i class="fa fa-remove"></i>
                                     </a>
                                 </td>
                                 <td width="300"><input type="text" name="tag[name][]" id="{{ $tag->id }}|{{ $tag->img_x }}|{{ $tag->img_y }}" class="form-control input-sm tag-name {{ $tag->id }}old" value="{{ $tag->name }}" placeholder="Product Name" required="required"></td>
                                 <td width="100"><input type="number" name="tag[qty][]" class="form-control input-sm" value="{{ $tag->quantity }}" placeholder="QTY" required="required"></td>
-                                <td width="200" class="text-right"><input type="number" name="tag[total][]" class="form-control input-sm" value="{{ $tag->total_price }}" placeholder="Total Price" required="required"></td>
+                                <td width="200"><input type="number" name="tag[total][]" class="form-control input-sm" value="{{ $tag->total_price }}" placeholder="Total Price" required="required"></td>
                                 <input type="hidden" name="tag[id][]" value="{{ $tag->id }}">
                             </tr>
                         @endforeach
@@ -61,6 +61,12 @@
 </form>
 
 <style type="text/css">
+    input[type=number]::-webkit-inner-spin-button, 
+    input[type=number]::-webkit-outer-spin-button 
+    { 
+      -webkit-appearance: none; 
+      margin: 0; 
+    }
 
     #imgtag
     {
@@ -118,13 +124,28 @@
         margin-right: 5px;
     }
 
-    a.taggd__button {
+    a.taggd__button 
+    {
         cursor: pointer;
     }
 
 </style>
 
 <script type="text/javascript">
+    $(document).ready(function() {
+        $('#modalForm').on('submit', function (e) {
+            e.preventDefault();
+            REBEL.onSubmit($(this), function (responseData) {
+                REBEL.removeAllMessageAlert();
+                if (responseData.status == "ok") {
+                    REBEL.smallNotifTemplate(responseData.message, '.modal-content', 'success');
+                }
+                setTimeout(function () {
+                    REBEL.removeAllMessageAlert();
+                }, 3000)
+            });
+        });
+    });
 
     $("modalForm").ready(function() {
 
@@ -139,13 +160,13 @@
             });
             var options = {};
             var data = [
-              Taggd.Tag.createFromObject({
-                position: { x: img_x, y: img_y },
-                text: this.value,
-                popupAttributes: {
-                    id: id+"popup",
-                },
-              }),
+                Taggd.Tag.createFromObject({
+                    position: { x: img_x, y: img_y },
+                    text: this.value,
+                    popupAttributes: {
+                        id: id+"popup",
+                    },
+                }),
             ];
 
             var taggd = new Taggd(image, options, data);
@@ -214,9 +235,10 @@
                 mouseX = mouseX / image.clientWidth;
                 mouseY = mouseY / image.clientHeight;
 
-                viewtagsave(name, mouseX, mouseY);
+                var className = countOfTextbox+'-new-tag';
+                viewtagsave(name, mouseX, mouseY, className);
 
-                $('tbody#inputs').append('<tr id="input'+countOfTextbox+'"><td><a class="btn btn-box-tool" onclick="deleteTag('+countOfTextbox+')"><i class="fa fa-remove"></i></a></td><td width="300"><input type="text" name="newtag[name][]" class="form-control input-sm tag-name '+countOfTextbox+'new" id="'+countOfTextbox+'|'+mouseX+'|'+mouseY+'" onclick="editTag(this)" onkeyup="editNewTag(this)" value="'+name+'"></td><td width="100"><input type="number" name="newtag[qty][]" class="form-control input-sm" value="'+qty+'"></td><td width="200" class="text-right"><input type="number" name="newtag[total][]" class="form-control input-sm" value="'+total+'"><input type="hidden" name="newtag[x][]" value="'+mouseX+'"><input type="hidden" name="newtag[y][]" value="'+mouseY+'"><input type="hidden" name="newtag[fileId][]" value="{{ $snapFile->id }}"></td></tr>');
+                $('tbody#inputs').append('<tr id="input'+countOfTextbox+'"><td><a class="btn btn-box-tool" onclick="deleteTag('+countOfTextbox+')"><i class="fa fa-remove"></i></a></td><td width="300"><input type="text" name="newtag[name][]" class="form-control input-sm tag-name '+countOfTextbox+'new" id="'+countOfTextbox+'|'+mouseX+'|'+mouseY+'" onclick="editTag(this)" onkeyup="editNewTag(this)" value="'+name+'"></td><td width="100"><input type="number" name="newtag[qty][]" class="form-control input-sm" value="'+qty+'"></td><td width="200"><input type="number" name="newtag[total][]" class="form-control input-sm" value="'+total+'"><input type="hidden" name="newtag[x][]" value="'+mouseX+'"><input type="hidden" name="newtag[y][]" value="'+mouseY+'"><input type="hidden" name="newtag[fileId][]" value="{{ $snapFile->id }}"></td></tr>');
                 $('#tagit').fadeOut();
 
             });
@@ -250,8 +272,11 @@
 
                         data.push(
                             Taggd.Tag.createFromObject({
-                            position: { x: value.img_x, y: value.img_y },
-                            text: value.name,
+                                position: { x: value.img_x, y: value.img_y },
+                                text: value.name,
+                                buttonAttributes: {
+                                    id: value.id+"-tag",
+                                },
                             })
                         );
                     });
@@ -259,7 +284,7 @@
                 }, "json");
             }
 
-            function viewtagsave(name, mouseX, mouseY)
+            function viewtagsave(name, mouseX, mouseY, className)
             {
                 var image = document.getElementById('tag-image');
                 var data =[];
@@ -267,10 +292,13 @@
                 var taggd;
 
                 var data = [
-                  Taggd.Tag.createFromObject({
-                    position: { x: mouseX, y: mouseY },
-                    text: name,
-                  }),
+                    Taggd.Tag.createFromObject({
+                        position: { x: mouseX, y: mouseY },
+                        text: name,
+                        buttonAttributes: {
+                            id: className,
+                        },
+                    }),
                 ];
 
                 taggd = new Taggd(image, options, data);
@@ -278,8 +306,11 @@
 
             $('a#remove').on('click', function(e) {
                 e.preventDefault();
+                var classArray = this.className.split(' ');
+                var id = classArray[0];
                 if(confirm('Are you sure want to delete this item ?')) {
                     $(e.target).closest('#input').remove();
+                    $("#"+id).remove();
                 }
             });
     });
@@ -288,6 +319,7 @@
     {
         if(confirm('Are you sure want to delete this item ?')) {
             $('#input'+e).remove();
+            $("#"+e+"-new-tag").remove();
         }
     }
 
@@ -303,13 +335,13 @@
         });
         var options = {};
         var data = [
-          Taggd.Tag.createFromObject({
-            position: { x: img_x, y: img_y },
-            text: e.value,
-            popupAttributes: {
-                id: id+"newpopup",
-            },
-          }),
+            Taggd.Tag.createFromObject({
+                position: { x: img_x, y: img_y },
+                text: e.value,
+                popupAttributes: {
+                    id: id+"newpopup",
+                },
+            }),
         ];
 
         var taggd = new Taggd(image, options, data);
