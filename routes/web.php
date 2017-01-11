@@ -91,7 +91,7 @@ Route::group([
     )->name('snaps.editSnapFile');
 
     Route::get(
-        '/snaps/{attr}/filter',
+        '/snaps/{type}/{mode}/filter',
         'Web\SnapController@filter'
     )->name('snaps.filter');
 
