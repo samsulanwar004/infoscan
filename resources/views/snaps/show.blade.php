@@ -48,7 +48,26 @@
                         </div>
 
                     </div>
-                        @include('snaps.show_detail', ['snap' => $snap])
+                        <div class="col-md-4">
+                            @if($snap->approved_by == null)
+                            <a href="{{ admin_route_url('snaps.edit', ['id' => $snap->id]) }}" class="btn btn-success btn-block btn-lg"
+                                data-toggle="modal"
+                                data-target="#"
+                                modal-size="modal-lg" 
+                                title="Edit">
+                                <i class="fa fa-check-circle-o fa-btn"></i>Approve This Content</a>  
+                            @else
+                                <a href="{{ admin_route_url('snaps.edit', ['id' => $snap->id]) }}" class="btn btn-danger btn-block btn-lg"
+                                data-toggle="modal"
+                                data-target="#"
+                                modal-size="modal-lg" 
+                                title="Edit">
+                                <i class="fa fa-check-circle-o fa-btn"></i>This Content Approved</a>
+                            @endif
+                            <div class="snaps-detail">
+                                @include('snaps.show_detail', ['snap' => $snap])
+                            </div>   
+                        </div>                     
                 </div>
             </div>
         </div>
@@ -69,6 +88,7 @@
 <script src="{{ elixir('js/taggd.js') }}"></script>
 <script src="{{ elixir('js/elevate.js') }}"></script>
 <script type="text/javascript">
+
     $(".img-tag").on('click', function(img) {
         //console.log(img.toElement.id);
         var link = $('#modal-edit');

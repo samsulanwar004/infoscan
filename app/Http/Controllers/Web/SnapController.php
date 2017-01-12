@@ -73,6 +73,13 @@ class SnapController extends AdminController
         return view("snaps.$mode", compact('snapFile'));
     }
 
+    public function snapDetail($id)
+    {
+        $snap = (new SnapService)->getSnapById($id);
+
+        return view('snaps.show_detail', compact('snap'));
+    }
+
     public function update(Request $request, $id)
     {
         $this->validate($request, [
