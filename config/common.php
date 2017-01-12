@@ -18,7 +18,7 @@ return [
     ],
     'snap_type' => [
     	'rc' => 'receipt',
-    	'gt' => 'generalTrade',
+    	'gt' => 'generaltrade',
     	'hw' => 'handwritten',
     ]
 ];
