@@ -91,6 +91,11 @@ Route::group([
     )->name('snaps.editSnapFile');
 
     Route::get(
+        '/snaps/{id}/snap-detail',
+        'Web\SnapController@snapDetail'
+    )->name('snaps.snapDetail');
+
+    Route::get(
         '/snaps/{type}/{mode}/filter',
         'Web\SnapController@filter'
     )->name('snaps.filter');

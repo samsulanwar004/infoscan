@@ -90,12 +90,16 @@
                 REBEL.removeAllMessageAlert();
                 if (responseData.status == "ok") {
                     REBEL.smallNotifTemplate(responseData.message, '.modal-content', 'success');
+                    $.get( '/snaps/{{ $snapFile->snap_id }}/snap-detail' , function(view){ 
+                        $(".snaps-detail").html(view);
+                    });
                 }
                 setTimeout(function () {
                     REBEL.removeAllMessageAlert();
                 }, 3000)
-            });
+            });            
         });
+
     });
 
     $("modalForm").ready(function() {  
@@ -117,7 +121,6 @@
 
         $(document).on("click", ".btn-close", function(){
             $(".zoomContainer").remove();
-            window.location.href = '{{ $snapFile->snap_id }}';
         });
 
         $('form').on('focus', 'input[type=number]', function(e) {

@@ -87,6 +87,9 @@
                 REBEL.removeAllMessageAlert();
                 if (responseData.status == "ok") {
                     REBEL.smallNotifTemplate(responseData.message, '.modal-content', 'success');
+                    $.get( '/snaps/{{ $snapFile->snap_id }}/snap-detail' , function(view){ 
+                        $(".snaps-detail").html(view);
+                    });
                 }
                 setTimeout(function () {
                     REBEL.removeAllMessageAlert();
@@ -138,10 +141,6 @@
             if(confirm('Are you sure want to delete this item ?')) {
                 $(e.target).closest('#input').remove();
             }
-        });
-
-        $(document).on("click", ".btn-close", function(){
-            window.location.href = '{{ $snapFile->snap_id }}';
         });
         
     });

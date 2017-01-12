@@ -81,6 +81,9 @@
                 REBEL.removeAllMessageAlert();
                 if (responseData.status == "ok") {
                     REBEL.smallNotifTemplate(responseData.message, '.modal-content', 'success');
+                    $.get( '/snaps/{{ $snapFile->snap_id }}/snap-detail' , function(view){ 
+                        $(".snaps-detail").html(view);
+                    });
                 }             
                 setTimeout(function () {
                     REBEL.removeAllMessageAlert();
@@ -98,10 +101,6 @@
         });
         $('form').on('blur', 'input[type=number]', function(e) {
           $(this).off('mousewheel.disableScroll')
-        });
-
-        $(document).on("click", ".btn-close", function(){
-            window.location.href = '{{ $snapFile->snap_id }}';
         });
 
         $('a#add').on('click', function(e) {
