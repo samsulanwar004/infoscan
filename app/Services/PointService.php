@@ -114,8 +114,10 @@ inner join level_points as l on l.id = tlp.level_id;');
         $task = $this->updateTask($request, $id);
 
         if ($task) {
+            $levelId = [];
             foreach ($request->input('levels') as $levelName => $point) {
                 $level = $this->findLevel($levelName);
+                $levelId[] = $level->id;
                 $taskLevelPoint = $this->getTaskLevelPoints($task->id, $level->id);   
 
                 if ($taskLevelPoint == false)
@@ -129,8 +131,11 @@ inner join level_points as l on l.id = tlp.level_id;');
                     $taskLevelPoint->point = $point;
                     $taskLevelPoint->update();
                 }
-                
+
             }
+            // delete unnesesary level
+            TaskLevelPoints::where('task_id', '=', $id)
+                    ->whereNotIn('level_id', $levelId)->delete();
 
             $this->removeCache();
 
