@@ -25,8 +25,8 @@
                 <table class="table table-striped">
                     <thead>
                     <tr>
-                        <th>Code</th>
-                        <th>Description</th>
+                        <th width="75">Type</th>
+                        <th>Question</th>
                         <th>Created at</th>
                         <th width="250"></th>
                     </tr>
@@ -38,11 +38,10 @@
                     @forelse($questions as $question)
                         <tr>
                             <td>
-                                {{ $question->questionnaire_question_code }}
+                                <span class="label label-info">{{ $question->type }}</span>
                             </td>
                             <td>
-                                {{ $question->description }}<br>
-                                <span class="label label-info">{{ $question->type }}</span>
+                                {{ $question->description }}
                             </td>
                             <td>
                                 {{ $question->created_at }}
@@ -69,7 +68,7 @@
                             </td>
                         </tr>
                     @empty
-                        <td colspan="4"> There is no record for questions data!</td>
+                        <td colspan="9"> There is no record for questions data!</td>
                     @endforelse
                     </tbody>
                 </table>

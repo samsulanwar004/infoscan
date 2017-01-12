@@ -4,9 +4,7 @@ namespace App\Http\Controllers\Web;
 
 use App\QuestionnaireQuestion;
 use App\QuestionnaireTemplate;
-use App\QuestionnaireAnswer;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use League\Flysystem\Exception;
 
 class QuestionnaireController extends AdminController
@@ -17,14 +15,14 @@ class QuestionnaireController extends AdminController
     {
         $this->isAllowed('Questionnaire.List');
         $questionnaire = QuestionnaireTemplate::all();
-        return view('questionnaire.index', compact('questionnaire'));
+        return view('questionnaire.questionnaire_index', compact('questionnaire'));
     }
 
     public function create()
     {
         $this->isAllowed('Questionnaire.Create');
         $questions = QuestionnaireQuestion::all();
-        return view('questionnaire.create', compact('questions'));
+        return view('questionnaire.questionnaire_create', compact('questions'));
     }
 
     public function edit($id)
@@ -32,7 +30,7 @@ class QuestionnaireController extends AdminController
         $this->isAllowed('Questionnaire.Update');
         $questionnaire = $this->getQuestionnaireTemplateById($id);
         $questions = QuestionnaireQuestion::all();
-        return view('questionnaire.edit', compact('questionnaire', 'questions'));
+        return view('questionnaire.questionnaire_edit', compact('questionnaire', 'questions'));
     }
 
     public function store(Request $request)
@@ -52,7 +50,6 @@ class QuestionnaireController extends AdminController
         $input['created_by'] = auth()->user()->name;
         $questionnaire = QuestionnaireTemplate::create($input);
         $questionnaire->questions()->attach($request->input('question'));
-
         return redirect($this->redirectAfterSave)->with('success', 'Questionnaire successfully saved!');
     }
 
