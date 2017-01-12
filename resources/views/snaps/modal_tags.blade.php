@@ -3,7 +3,7 @@
     {{ method_field('PUT') }}
     <input type="hidden" name="mode" value="{{ $snapFile->mode_type }}">
     <div class="modal-header">
-        <a class="close btn-close" data-dismiss="modal">&times;</a>
+        <a class="close btn-close btn-modal-close" data-dismiss="modal">&times;</a>
         <h4><i class="fa fa-file-o fa-btn"></i> <span class="action-title">Snap </span> File</h4>
     </div>
     <div class="modal-body">
@@ -60,11 +60,11 @@
 </form>
 
 <style type="text/css">
-    input[type=number]::-webkit-inner-spin-button, 
-    input[type=number]::-webkit-outer-spin-button 
-    { 
-      -webkit-appearance: none; 
-      margin: 0; 
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button
+    {
+      -webkit-appearance: none;
+      margin: 0;
     }
 
     #imgtag
@@ -123,7 +123,7 @@
         margin-right: 5px;
     }
 
-    a.taggd__button 
+    a.taggd__button
     {
         cursor: pointer;
     }
@@ -142,10 +142,7 @@
                         $(".snaps-detail").html(view);
                     });
                 }
-                setTimeout(function () {
-                    REBEL.removeAllMessageAlert();
-                }, 3000)
-            });
+            }, true);
         });
 
     $('.tag-name').on('click', function(e) {

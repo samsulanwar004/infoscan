@@ -13,7 +13,7 @@ function generateMessage(arrM) {
     if (arrM.constructor === stringConstructor) {
         message += '<li>' + arrM + '</li>';
     } else {
-        $.each(arrM, function (index, value) {
+        $.each(arrM, function(index, value) {
             message += '<li>' + value + '</li>';
         })
     }
@@ -24,9 +24,9 @@ function generateMessage(arrM) {
 }
 
 function inputErrorMessage(arrM) {
-    $.each(arrM, function (index, value) {
+    $.each(arrM, function(index, value) {
         $("." + index).addClass('has-error');
-        $("." + index).append('<p class="help-block text-red error-text">'+value+'</p>');
+        $("." + index).append('<p class="help-block text-red error-text">' + value + '</p>');
     })
 }
 
@@ -51,11 +51,11 @@ function menuFocus() {
         $("li.dashboard").addClass('active');
         $('a.link-dashboard').addClass('v-link-active v-link-active-exact');
     } else {
-        $(".left-menu a").each(function () {
+        $(".left-menu a").each(function() {
 
             var href = $(this).attr('href');
             var objReg = RegExp(href, 'gi');
-            objReg = href.match(path);//path.match(objReg);
+            objReg = href.match(path); //path.match(objReg);
             //console.log(href, objReg);
             // must re-check for matching value.
             if (path === href || null !== objReg && !$(this).hasClass('dashboard')) {
@@ -77,7 +77,7 @@ function redirectIfUnauthorizedInAdmin(xhr) {
 
         REBEL.smallNotifTemplate('Your session is expired. We will redirect you to login page.', 'body', 'error');
 
-        setTimeout(function () {
+        setTimeout(function() {
             window.location = '/admin/login';
         }, 3000);
     }
@@ -89,17 +89,17 @@ function getTokenValue() {
 
 function slugify(text) {
     return text.toString().toLowerCase()
-        .replace(/\s+/g, '-')           // Replace spaces with -
-        .replace(/[^\w\-]+/g, '')       // Remove all non-word chars
-        .replace(/\-\-+/g, '-')         // Replace multiple - with single -
-        .replace(/^-+/, '')             // Trim - from start of text
-        .replace(/-+$/, '');            // Trim - from end of text
+        .replace(/\s+/g, '-') // Replace spaces with -
+        .replace(/[^\w\-]+/g, '') // Remove all non-word chars
+        .replace(/\-\-+/g, '-') // Replace multiple - with single -
+        .replace(/^-+/, '') // Trim - from start of text
+        .replace(/-+$/, ''); // Trim - from end of text
 }
 
 var REBEL = REBEL || {};
-REBEL = (function () {
+REBEL = (function() {
     return {
-        initialize: function () {
+        initialize: function() {
             getModalContent();
             menuFocus();
             //REBEL.setIcheck();
@@ -108,7 +108,7 @@ REBEL = (function () {
         inputSlugify: function(elem, result) {
             var _originInput = elem;
 
-            if(_originInput.length) {
+            if (_originInput.length) {
                 var _originText = _originInput.val(),
                     _slugText = slugify(_originText);
 
@@ -125,7 +125,7 @@ REBEL = (function () {
             });
         },*/
 
-        smallNotifTemplate: function (message, places, type) {
+        smallNotifTemplate: function(message, places, type) {
 
             places = typeof places === 'undefined' ? 'body' : places;
             type = typeof type === 'undefined' ? 'success' : type;
@@ -134,28 +134,28 @@ REBEL = (function () {
                 borderColor = '#f0c36d',
                 textColor = '#222';
 
-            if(type === 'error') {
+            if (type === 'error') {
                 bgColor = '#f36150';
                 textColor = '#fff';
                 borderColor = 'rgb(107, 32, 29)';
             }
 
-            var template = '<div class="small-notif" style="padding:2px 10px;border:1px solid transparent; font-weight:700;border-color: '+borderColor+';background-color:'+bgColor+';color:'+textColor+';text-align: center;position: fixed;left: 39%;width: 20%;border-radius: 0px 0px 6px 6px;font-size: 12px;min-width: 180px; z-index:1031;" > ' + message + ' </div>';
+            var template = '<div class="small-notif" style="padding:2px 10px;border:1px solid transparent; font-weight:700;border-color: ' + borderColor + ';background-color:' + bgColor + ';color:' + textColor + ';text-align: center;position: fixed;left: 39%;width: 20%;border-radius: 0px 0px 6px 6px;font-size: 12px;min-width: 180px; z-index:1031;" > ' + message + ' </div>';
 
             $(places).prepend(template);
 
             return false;
         },
 
-        smallErrorNotif: function (places) {
+        smallErrorNotif: function(places) {
             return REBEL.smallNotifTemplate('Error process!', places, 'error');
         },
-        smallSuccessNotif: function (places) {
+        smallSuccessNotif: function(places) {
             return REBEL.smallNotifTemplate('Success.', places, 'success');
         },
 
 
-        messageTemplate: function (message, alertType, title, icon, fixed) {
+        messageTemplate: function(message, alertType, title, icon, fixed) {
             alertType = typeof alertType !== 'undefined' ? alertType : 'info';
 
             if (fixed == false || fixed == 'undefined') {
@@ -172,7 +172,7 @@ REBEL = (function () {
                 '<h4 class="small-type"><i class="fa fa-' + icon + '"></i> ' + title + '!</h4>' +
                 message + '</div>';
         },
-        scrollToTop: function (element) {
+        scrollToTop: function(element) {
             $(element).scrollTop(0);
         },
 
@@ -186,62 +186,60 @@ REBEL = (function () {
          return false;
          },*/
 
-        hideLoading: function () {
+        hideLoading: function() {
             $("#loading").remove();
 
             return false;
         },
 
-        removeAllMessageAlert: function () {
+        removeAllMessageAlert: function() {
             $(".alert").remove();
             $(".small-notif").remove();
             return false;
         },
 
-        showErrorMessage: function (message, tagIdToAdd, fixed) {
+        showErrorMessage: function(message, tagIdToAdd, fixed) {
             tagIdToAdd = typeof tagIdToAdd !== 'undefined' ? tagIdToAdd : 'body';
 
             $("." + tagIdToAdd).prepend(REBEL.messageTemplate(message, 'danger', 'Whoops!!! Something wrong with your process.', 'ban', fixed));
         },
 
-        showInfoMessage: function (message, tagIdToAdd, fixed) {
+        showInfoMessage: function(message, tagIdToAdd, fixed) {
             tagIdToAdd = typeof tagIdToAdd !== 'undefined' ? tagIdToAdd : 'body';
 
             $("." + tagIdToAdd).prepend(REBEL.messageTemplate(message, 'info', 'Info', 'bullhorn', fixed));
         },
 
-        showWarningMessage: function (message, tagIdToAdd, fixed) {
+        showWarningMessage: function(message, tagIdToAdd, fixed) {
             tagIdToAdd = typeof tagIdToAdd !== 'undefined' ? tagIdToAdd : 'body';
 
             $("." + tagIdToAdd).prepend(REBEL.messageTemplate(message, 'warning', 'Warning', 'warning', fixed));
         },
 
-        showSuccessMessage: function (message, tagIdToAdd, fixed) {
+        showSuccessMessage: function(message, tagIdToAdd, fixed) {
             tagIdToAdd = typeof tagIdToAdd !== 'undefined' ? tagIdToAdd : 'body';
             var ele = $("." + tagIdToAdd);
             ele.prepend(REBEL.messageTemplate(message, 'success', 'YayyY... Process successed!', 'thumbs-up', fixed));
         },
-        isJson: function (jsonString) {
+        isJson: function(jsonString) {
             try {
                 var o = JSON.parse(jsonString);
                 if (o && typeof o === "object" && o !== null) {
                     return o;
                 }
-            }
-            catch (e) {
-            }
+            } catch (e) {}
 
             return false;
         },
-        disableElement: function (form) {
+        disableElement: function(form) {
             form.find('input, textarea, button, select').attr('disabled', 'disabled');
         },
-        enableElement: function (form) {
-            setTimeout(function () {
+        enableElement: function(form) {
+            setTimeout(function() {
                 form.find('input, textarea, button, select').removeAttr('disabled');
             }, 500);
         },
-        onSubmit: function (form, callback, closeModal) {
+        onSubmit: function(form, callback, closeModal) {
             var _form = form,
                 _action = _form.attr('action'),
                 _method = $("#action_method").length ? $("#action_method").val() : _form.attr('method'),
@@ -258,13 +256,13 @@ REBEL = (function () {
                 type: _method,
                 dataType: 'JSON',
                 data: _inputData,
-                success: function (data, textStatus, requestObject) {
+                success: function(data, textStatus, requestObject) {
                     if (REBEL.isJson(data)) {
                         data = $.parseJSON(data)
                     }
 
                     // redirect to login page if authentication session expired.
-                    if(requestObject.status === 401) {
+                    if (requestObject.status === 401) {
                         return redirectIfUnauthorizedInAdmin(requestObject);
                     }
 
@@ -281,14 +279,14 @@ REBEL = (function () {
 
                         // close modal
                         if (closeModal) {
-                            setTimeout(function () {
+                            setTimeout(function() {
                                 $(".btn-modal-close").trigger("click");
-                                $("#modalContent").on('hide.bs.modal', function (e) {
+                                $("#modalContent").on('hide.bs.modal', function(e) {
                                     $(this).remove()
                                 });
                             }, 2500);
                         } else {
-                            setTimeout(function () {
+                            setTimeout(function() {
                                 REBEL.removeAllMessageAlert();
                             }, 1500);
                         }
@@ -300,8 +298,8 @@ REBEL = (function () {
 
                     REBEL.enableElement(_form);
                 },
-                error: function (requestObject, error, errorThrown) {
-                    if(requestObject.status === 401) {
+                error: function(requestObject, error, errorThrown) {
+                    if (requestObject.status === 401) {
                         return redirectIfUnauthorizedInAdmin(requestObject);
                     }
 
@@ -311,20 +309,20 @@ REBEL = (function () {
 
                     inputErrorMessage(_output);
 
-                    setTimeout(function () {
+                    setTimeout(function() {
                         //REBEL.smallErrorNotif('.modal-content');REBEL.showErrorMessage(_output, "modal-body", false)
                         REBEL.smallErrorNotif('.modal-content');
                     }, 200);
                 }
-            }).done(function () {
+            }).done(function() {
                 REBEL.scrollToTop('#modalContent')
             })
         },
-        onChangeStatus: function (element, callback) {
+        onChangeStatus: function(element, callback) {
             var url = element.attr('href');
             alert(url);
 
-            $.post(url, function (data, status) {
+            $.post(url, function(data, status) {
                 alert("Data: " + data + "\nStatus: " + status);
             })
         }
@@ -332,7 +330,7 @@ REBEL = (function () {
 })();
 
 function getModalContent() {
-    $('a[data-toggle|="modal"]').on('click', function (e) {
+    $('a[data-toggle|="modal"]').on('click', function(e) {
         e.preventDefault();
         $('.alert').remove();
         var url = $(this).attr('href');
@@ -347,7 +345,7 @@ function getModalContent() {
 
             modal.modal('hide')
                 .append(modalDialog)
-                .on('hidden.bs.modal', function () {
+                .on('hidden.bs.modal', function() {
                     $(this).remove();
                 })
                 .appendTo('body');
@@ -376,18 +374,18 @@ function getModalContent() {
                 $.ajax({
                     url: url,
                     type: "GET",
-                    success: function (data) {
+                    success: function(data) {
                         modalContent.html(data);
                     },
-                    error: function (requestObject, error, errorThrown) {
+                    error: function(requestObject, error, errorThrown) {
                         var modal = $("#modalContent");
                         modal.modal('hide');
-                        modal.on('hide.bs.modal', function (e) {
+                        modal.on('hide.bs.modal', function(e) {
                             $(this).remove()
                         });
                         //console.log(requestObject, error, errorThrown);
 
-                        if(requestObject.status === 401) {
+                        if (requestObject.status === 401) {
                             return redirectIfUnauthorizedInAdmin(requestObject);
                         }
 
@@ -402,6 +400,6 @@ function getModalContent() {
     });
 }
 
-$(document).ready(function () {
+$(document).ready(function() {
     REBEL.initialize();
 });
