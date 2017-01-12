@@ -54,15 +54,22 @@ class SnapService
         return $snap->paginate();
     }
 
-    public function getSnapsByType($attr)
+    public function getSnapsByFilter($type, $mode)
     {
-        return Snap::where('snap_type', '=', $attr)
+        return Snap::where('snap_type', '=', $type)
+            ->where('mode_type', '=', $mode)
             ->paginate(50);
     }
 
-    public function getSnapsByMode($attr)
+    public function getSnapsByType($type)
     {
-        return Snap::where('mode_type', '=', $attr)
+        return Snap::where('snap_type', '=', $type)
+            ->paginate(50);
+    }
+
+    public function getSnapsByMode($mode)
+    {
+        return Snap::where('mode_type', '=', $mode)
             ->paginate(50);
     }
 

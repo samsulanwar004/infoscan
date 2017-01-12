@@ -76,7 +76,7 @@
         $( '#profile' ).on( 'submit', function() {
 
             $.ajax({
-              url: '/users/{{ $user->id }}/credential',
+              url: this.action,
               type: "put",
               data: {
                 '_token':$('input[name=_token]').val(),

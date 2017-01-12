@@ -30,18 +30,16 @@
                                     <div class="timeline-item no-margin-right">
                                         <span class="time"><i class="fa fa-clock-o"></i> {{ $snap->created_at->diffForHumans() }}</span>
                                         <h3 class="timeline-header">
-                                            <a href="{{ admin_route_url('members.show', ['id' => $snap->member->id]) }}">{{ $snap->member->name }}</a> uploaded new {{ $snap->mode_type == 'audios' ? 'audios' : 'photos' }}
+                                            <a href="{{ admin_route_url('members.show', ['id' => $snap->member->id]) }}">{{ $snap->member->name }}</a> uploaded new photos
                                         </h3>
                                         <div class="timeline-body">
-                                        @if ($snap->mode_type != 'audios')
                                             @foreach($snap->files as $file)
-                                                <img src="{{ config('filesystems.s3url') . $file->file_path }}" alt="{{ $file->file_code }}" class="margin img-thumbnail img-responsive img-tag"  id="{{$file->id}}" style="width:150px;height:150px;">
+                                                @if ($file->mode_type == 'audio')
+                                                    <img src="{{ URL::to('img/snaps/window-player.png') }}" alt="{{ $file->file_code }}" class="margin img-thumbnail img-responsive img-tag"  id="{{$file->id}}" style="width:150px;height:150px;">
+                                                @else
+                                                    <img src="{{ config('filesystems.s3url') . $file->file_path }}" alt="{{ $file->file_code }}" class="margin img-thumbnail img-responsive img-tag"  id="{{$file->id}}" style="width:150px;height:150px;">
+                                                @endif
                                             @endforeach
-                                        @else
-                                            @foreach($snap->files as $file)
-                                                <img src="{{ URL::to('img/window-player.png') }}" alt="{{ $file->file_code }}" class="margin img-thumbnail img-responsive img-tag"  id="{{$file->id}}" style="width:150px;height:150px;">
-                                            @endforeach
-                                        @endif
                                         </div>
                                     </div>
                                 </li>
@@ -50,7 +48,17 @@
                         </div>
 
                     </div>
-                        @include('snaps.show_detail', ['snap' => $snap])
+                        <div class="col-md-4">
+                            <a href="{{ admin_route_url('snaps.edit', ['id' => $snap->id]) }}" class="btn btn-success btn-block btn-lg"
+                                data-toggle="modal"
+                                data-target="#"
+                                modal-size="modal-lg" 
+                                title="Edit">
+                                <i class="fa fa-check-circle-o fa-btn"></i>Approve This Content</a>  
+                            <div class="snaps-detail">
+                                @include('snaps.show_detail', ['snap' => $snap])
+                            </div>   
+                        </div>                     
                 </div>
             </div>
         </div>
@@ -71,6 +79,7 @@
 <script src="{{ elixir('js/taggd.js') }}"></script>
 <script src="{{ elixir('js/elevate.js') }}"></script>
 <script type="text/javascript">
+
     $(".img-tag").on('click', function(img) {
         //console.log(img.toElement.id);
         var link = $('#modal-edit');
