@@ -3,7 +3,7 @@
     {{ method_field('PUT') }}
     <input type="hidden" name="mode" value="{{ $snapFile->mode_type }}">
     <div class="modal-header">
-        <a class="close btn-close" data-dismiss="modal">&times;</a>
+        <a class="close btn-close btn-modal-close" data-dismiss="modal">&times;</a>
         <h4><i class="fa fa-file-o fa-btn"></i> <span class="action-title">Snap </span> File</h4>
     </div>
     <div class="modal-body">
