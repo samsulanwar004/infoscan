@@ -60,16 +60,28 @@ class SnapController extends AdminController
 
     public function editSnapFile($id)
     {
-        $modeView = [
-            'input' => 'modal_inputs',
-            'tags' => 'modal_tags',
-            'audio' => 'modal_audios',
-            'image' => 'modal_snaps'
-        ];
+        try {
+            $modeView = [
+                'input' => 'modal_inputs',
+                'tags' => 'modal_tags',
+                'audio' => 'modal_audios',
+                'image' => 'modal_snaps'
+            ];
 
-        $snapFile = (new SnapService)->getSnapFileById($id);
-        $mode = $modeView[$snapFile->mode_type];
-        return view("snaps.$mode", compact('snapFile'));
+            $snapFile = (new SnapService)->getSnapFileById($id);
+            if(null === $snapFile->mode_type) {
+                throw new \Exception('Mode type cannot be empty!');
+            }
+            $mode = $modeView[$snapFile->mode_type];
+
+            return view("snaps.$mode", compact('snapFile'));
+        } catch (\Exception $e) {
+            logger($e->getMessage());
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], 404);
+        }
     }
 
     public function update(Request $request, $id)
@@ -95,7 +107,7 @@ class SnapController extends AdminController
             } else {
                 (new SnapService)->updateSnap($request, $id);
             }
-            
+
         } catch (Exception $e) {
             return response()->json([
                 'status' => 'error',

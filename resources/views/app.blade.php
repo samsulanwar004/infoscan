@@ -12,7 +12,7 @@
     <![endif]-->
 </head>
 
-<body class="hold-transition skin-red-light sidebar-mini {{ isset($mini_sidebar) ? 'sidebar-collapse' : ''}}">
+<body class="hold-transition body skin-red-light sidebar-mini {{ isset($mini_sidebar) ? 'sidebar-collapse' : ''}}">
 @include('partials.alert')
 <!-- Site wrapper -->
 <div class="wrapper">
