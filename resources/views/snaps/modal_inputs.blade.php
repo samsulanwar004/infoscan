@@ -3,7 +3,7 @@
     {{ method_field('PUT') }}
     <input type="hidden" name="mode" value="{{ $snapFile->mode_type }}">
     <div class="modal-header">
-        <a class="close btn-close" data-dismiss="modal">&times;</a>
+        <a class="close btn-close btn-modal-close" data-dismiss="modal">&times;</a>
         <h4><i class="fa fa-file-o fa-btn"></i> <span class="action-title">Snap </span> File</h4>
     </div>
     <div class="modal-body">
@@ -87,6 +87,9 @@
                 REBEL.removeAllMessageAlert();
                 if (responseData.status == "ok") {
                     REBEL.smallNotifTemplate(responseData.message, '.modal-content', 'success');
+                    $.get( '/snaps/{{ $snapFile->snap_id }}/snap-detail' , function(view){ 
+                        $(".snaps-detail").html(view);
+                    });
                 }
                 setTimeout(function () {
                     REBEL.removeAllMessageAlert();
@@ -138,10 +141,6 @@
             if(confirm('Are you sure want to delete this item ?')) {
                 $(e.target).closest('#input').remove();
             }
-        });
-
-        $(document).on("click", ".btn-close", function(){
-            window.location.href = '{{ $snapFile->snap_id }}';
         });
         
     });

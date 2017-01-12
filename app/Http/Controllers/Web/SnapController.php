@@ -14,11 +14,10 @@ class SnapController extends AdminController
     {
         $this->isAllowed('Snaps.List');
         $snaps = ( new SnapService)->getAvailableSnaps();
-        $type = 'all';
         $snapCategorys = config("common.snap_category");
         $snapCategoryModes = config("common.snap_category_mode");
 
-        return view('snaps.index', compact('snaps', 'type', 'snapCategorys', 'snapCategoryModes'));
+        return view('snaps.index', compact('snaps', 'snapCategorys', 'snapCategoryModes'));
     }
 
     public function show(Request $request, $id)
@@ -29,26 +28,28 @@ class SnapController extends AdminController
         return view('snaps.show', compact('snap'));
     }
 
-    public function filter($attr)
+    public function filter($type, $mode)
     {
         $this->isAllowed('Snaps.List');
 
         $snaps = ( new SnapService);
 
-        if (config("common.snap_type.$attr")) {
-            $att = config("common.snap_type.$attr");
-            $snaps = $snaps->getSnapsByType($att);
-            $type = $attr;
+        if ($type == 'all' && $mode == 'all') {
+            $snaps = $snaps->getAvailableSnaps();            
+        } else if($type == 'all') {
+            $mode = config("common.snap_mode.$mode");
+            $snaps = $snaps->getSnapsByMode($mode);
+        } else if($mode == 'all') {
+            $type = config("common.snap_type.$type");
+            $snaps = $snaps->getSnapsByType($type);
         } else {
-            $att = config("common.snap_mode.$attr");
-            $snaps = $snaps->getSnapsByMode($att);
-            $type = $attr;
+            $type = config("common.snap_type.$type");
+            $mode = config("common.snap_mode.$mode");
+
+            $snaps = $snaps->getSnapsByFilter($type, $mode);
         }
 
-        $snapCategorys = config("common.snap_category");
-        $snapCategoryModes = config("common.snap_category_mode");
-
-        return view('snaps.index', compact('snaps', 'type', 'snapCategorys', 'snapCategoryModes'));
+        return view('snaps.table_snaps', compact('snaps'));
     }
 
     public function edit($id)
@@ -82,6 +83,13 @@ class SnapController extends AdminController
                 'message' => $e->getMessage(),
             ], 404);
         }
+    }
+
+    public function snapDetail($id)
+    {
+        $snap = (new SnapService)->getSnapById($id);
+
+        return view('snaps.show_detail', compact('snap'));
     }
 
     public function update(Request $request, $id)

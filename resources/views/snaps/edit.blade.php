@@ -2,7 +2,7 @@
     {{ csrf_field() }}
     {{ method_field('PUT') }}
     <div class="modal-header">
-        <a class="close btn-close" data-dismiss="modal">&times;</a>
+        <a class="close btn-modal-close" data-dismiss="modal">&times;</a>
         <h4><i class="fa fa-file-o fa-btn"></i> <span class="action-title">Snap </span> Confirmation</h4>
     </div>
     <div class="modal-body">
@@ -67,7 +67,7 @@
     </div>
     <div class="modal-footer">
         <div class="button-container">
-            <a class="btn btn-link btn-close" data-dismiss="modal">Close</a>
+            <a class="btn btn-link btn-modal-close" data-dismiss="modal">Close</a>
             <button class="btn btn-primary submit-to-server">
                 <i class="fa fa-save fa-btn"></i> <span class="ladda-label">Save</span>
             </button>
@@ -94,12 +94,6 @@
             }, 3000)
           });
       });
-  });
-
-  $("modalForm").ready(function() {
-    $(document).on("click", ".btn-close", function(){
-        window.location.href = '{{ $snap->id }}';
-    });
   });
 
 </script>
