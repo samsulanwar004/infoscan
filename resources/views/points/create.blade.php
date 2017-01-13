@@ -65,15 +65,18 @@
 
     $(document).ready(function () {
 
-        // $('#modalForm').on('submit', function (e) {
-        //     e.preventDefault();
-        //     REBEL.onSubmit($(this), function (responseData) {
-        //         REBEL.removeAllMessageAlert();
-        //         if (responseData.status == "ok") {
-        //             REBEL.smallNotifTemplate(responseData.message, '.modal-content', 'success');
-        //         }
-        //     }, true);
-        // });
+        $('#modalForm').on('submit', function (e) {
+            e.preventDefault();
+            REBEL.onSubmit($(this), function (responseData) {
+                REBEL.removeAllMessageAlert();
+                if (responseData.status == "ok") {
+                    REBEL.smallNotifTemplate(responseData.message, '.modal-content', 'success');
+                    $.get( '/points/get-task-table' , function(view){ 
+                        $(".box-body").html(view);
+                    });
+                }
+            }, true);
+        });
         
         $('form').on('focus', 'input[type=number]', function (e) {
           $(this).on('mousewheel.disableScroll', function (e) {
