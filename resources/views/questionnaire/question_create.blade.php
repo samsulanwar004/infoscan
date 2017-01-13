@@ -37,7 +37,6 @@
 
 @section('footer_scripts')
     <script>
-
         var answercounter = 2;
 
         $(document).ready(function () {
@@ -59,12 +58,14 @@
                 }
             });
 
-            $('input[type=radio]').change(function(){
-                var value = $( 'input[name=type]:checked' ).val();
-                if(value == 'input'){
+            $('input[type=radio]').change(function () {
+                var value = $('input[name=type]:checked').val();
+                if (value == 'input') {
                     $('div#answers').hide();
-                    $('.answer input[type=text]').val('');
+//                    $('.answer input[type=text]').val('');
+                    $('button#addanswer').prop('disabled', true);
                 } else {
+                    $('button#addanswer').prop('disabled', false);
                     $('div#answers').show();
                 }
             });

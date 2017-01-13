@@ -44,7 +44,7 @@
                                 {{ $question->description }}
                             </td>
                             <td>
-                                {{ $question->created_at }}
+                                {{ date_format(date_create($question->created_at), 'd M Y') }}
                             </td>
                             <td class="text-right vertical-middle">
                                 <div class="btn-group">
