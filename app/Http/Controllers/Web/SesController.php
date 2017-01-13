@@ -13,7 +13,7 @@ class SesController extends AdminController
     public function index()
     {
         $this->isAllowed('Ses.List');
-        $ses = SocioEconomicStatus::orderBy('range_start')->paginate(50);
+        $ses = SocioEconomicStatus::orderBy('code', 'asc')->paginate(50);
         return view('ses.index', compact('ses'));
     }
 
