@@ -24,19 +24,22 @@
               <b>Member Name :</b> {{ $snap->member->name }}<br>
             </div>
             <!-- /.col -->
-            <div class="col-sm-4 invoice-col">
-                <div class="checkbox">
+            <div class="col-sm-2 invoice-col">
+                <div class="radio">
                     <label>
-                        <input name="approve" {{ (bool)$snap->approved_by ? 'checked' : '' }} type="checkbox">
+                        <input id="approve" value="approve" name="confirm" type="radio" {{ (bool)$snap->approved_by ? 'checked' : '' }} >
                         Approve
                     </label>
                 </div>
-                <div class="checkbox">
+                <div class="radio">
                     <label>
-                        <input name="check" {{ (bool)$snap->check_by ? 'checked' : '' }} type="checkbox">
-                        Check
+                        <input id="reject" value="reject" name="confirm" type="radio" {{ (bool)$snap->reject_by ? 'checked' : '' }} >
+                        Reject
                     </label>
                 </div>
+            </div>
+            <div class="col-sm-6 invoice-col">
+              <textarea name="comment" id="comment" class="form-control" rows="4" placeholder="Reason"></textarea>
             </div>
           </div>
           <!-- /.row -->
@@ -89,11 +92,16 @@
             if (responseData.status == "ok") {
               REBEL.smallNotifTemplate(responseData.message, '.modal-content', 'success');
             }
-            setTimeout(function () {
-                REBEL.removeAllMessageAlert();
-            }, 3000)
-          });
+          }, true);
       });
+
+      $('#approve').on('click', function() {
+        $('#comment').removeAttr('required');
+      });
+
+      $('#reject').on('click', function() {
+        $('#comment').attr('required', 'required');
+      })
   });
 
 </script>

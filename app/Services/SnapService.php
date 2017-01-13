@@ -91,8 +91,9 @@ class SnapService
     public function updateSnap(Request $request, $id)
     {
         $snaps = $this->getSnapByid($id);
-        $snaps->approved_by = is_null($request->input('approve')) ? null : auth()->user()->id;
-        $snaps->check_by = is_null($request->input('check')) ? null : auth()->user()->id;
+        $snaps->approved_by = ($request->input('confirm') != 'approve') ? null : auth()->user()->id;
+        $snaps->reject_by = ($request->input('confirm') != 'reject') ? null : auth()->user()->id;
+        $snaps->comment = $request->input('comment');
 
         $snaps->update();
     }
