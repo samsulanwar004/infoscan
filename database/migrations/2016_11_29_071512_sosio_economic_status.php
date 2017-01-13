@@ -20,6 +20,7 @@ class SosioEconomicStatus extends Migration
             $table->decimal('range_end', 15, 5)->default(0);
 
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
