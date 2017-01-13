@@ -17,7 +17,7 @@ class CreateQuestionsTable extends Migration
             $table->increments('id');
             $table->string('questionnaire_question_code', 5)->unique();
             $table->string('description')->nullable();
-            $table->enum('type', ['single', 'multiple']);
+            $table->enum('type', ['single', 'multiple', 'input']);
             $table->timestamps();
             $table->softDeletes();
         });
