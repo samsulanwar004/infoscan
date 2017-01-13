@@ -49,6 +49,8 @@ class MerchantController extends AdminController
             'company_logo' => 'mimes:jpg,jpeg,png',
             'user.name.*' => 'required|max:50',
             'user.email.*' => 'required|email|unique:users,email',
+            'user.phone.*' => 'required|max:15',
+            'user.position.*' => 'required|max:25'
         ]);
 
 
@@ -114,8 +116,12 @@ class MerchantController extends AdminController
             'company_logo' => 'mimes:jpg,jpeg,png',
             'user.name.*' => 'required|max:50',
             'user.email.*' => 'email',
+            'user.phone.*' => 'required|max:15',
+            'user.position.*' => 'required|max:25',
             'newuser.name.*' => 'required|max:50',
-            'newuser.email.*' => 'required|unique:users,email'
+            'newuser.email.*' => 'required|unique:users,email',
+            'newuser.phone.*' => 'required|max:15',
+            'newuser.position.*' => 'required|max:25'
         ]);
 
         try {
