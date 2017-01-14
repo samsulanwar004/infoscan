@@ -112,11 +112,15 @@ class MerchantService {
 
             $name = $user['name'][$i];
             $email = $user['email'][$i];
+            $phone = $user['phone'][$i];
+            $position = $user['position'][$i];
             $passwordStr = strtolower(str_random(10));
             $password = bcrypt($passwordStr);
 
             $u->name = $name;
             $u->email = $email;
+            $u->phone = $phone;
+            $u->position = $position;
             $u->password = $password;
             $u->is_active = 1;
             $u->save();
@@ -146,6 +150,8 @@ class MerchantService {
             $userUpdateId = $users['id'][$i];
             $u = $this->getUserById($userUpdateId);
             $u->name = $users['name'][$i];
+            $u->phone = $users['phone'][$i];
+            $u->position = $users['position'][$i];
             $u->is_active = $users['is_active'][$i];
             $u->save();
         }
@@ -163,6 +169,8 @@ class MerchantService {
                 $u = new User;
                 $u->name = $newUser['name'][$i];
                 $u->email = $newUser['email'][$i];
+                $u->phone = $newUser['phone'][$i];
+                $u->position = $newUser['position'][$i];
                 $u->password = $password;
                 $u->is_active = 1;
                 $u->save();
