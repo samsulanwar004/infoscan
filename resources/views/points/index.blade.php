@@ -23,14 +23,14 @@
                     @endcando
                 </div>
             </div>
-            <div class="box-body">
-                <a href="#"  style="display: none;" 
+            <a href="#"  style="display: none;" 
                 data-toggle="modal"
                 data-target="#"
                 modal-size="modal-lg" 
                 id="modal-edit" 
                 title="Edit">
                 Edit Select Row</a>
+            <div class="box-body">
                 <table id="point-pivot" style="width:700px;height:300px"></table>
             </div>
         </div>

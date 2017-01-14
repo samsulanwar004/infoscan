@@ -11,7 +11,13 @@
         @forelse($snaps as $snap)
             <tr>
                 <td class="vertical-middle">
-                    <i class="fa fa-check-circle {{ $snap->approved_by != null ? 'text-green' : 'text-default' }}"></i>
+                    @if ($snap->approved_by == true)
+                        <i class="fa fa-check-circle text-green"></i>
+                    @elseif ($snap->reject_by == true)
+                        <i class="fa fa-times-circle text-red"></i>
+                    @else
+                        <i class="fa fa-check-circle text-default"></i>
+                    @endif
                 </td>
                 <td class="vertical-middle">
                     {{ strtoupper($snap->request_code) }} <br>
