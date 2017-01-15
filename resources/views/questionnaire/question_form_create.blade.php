@@ -13,7 +13,7 @@
                     </div>
                     <div class="form-group">
                         <label>Answer type: </label>&nbsp;&nbsp;&nbsp;&nbsp;
-                        <label><input type="radio" id="single" class="question_type" name="type" value="single"> Single</label>&nbsp;&nbsp;&nbsp;&nbsp;
+                        <label><input type="radio" id="single" class="question_type" name="type" value="single" checked> Single</label>&nbsp;&nbsp;&nbsp;&nbsp;
                         <label><input type="radio" id="multiple" class="question_type" name="type" value="multiple"> Multiple</label>&nbsp;&nbsp;&nbsp;&nbsp;
                         <label><input type="radio" id="input" class="question_type" name="type" value="input"> Input</label>
                     </div>

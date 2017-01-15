@@ -26,7 +26,7 @@
                 $table->string('outlet_type', 100)->nullable();
                 $table->string('longitude', 100)->nullable();
                 $table->string('latitude', 100)->nullable();
-                $table->timestamps('snap_at');
+                $table->timestamp('snap_at');
                 $table->timestamps();
             });
         }

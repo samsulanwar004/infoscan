@@ -49,7 +49,7 @@ class QuestionnaireController extends AdminController
         $input['end_at'] = $period[1];
         $input['created_by'] = auth()->user()->name;
         $questionnaire = QuestionnaireTemplate::create($input);
-        $questionnaire->questions()->attach($request->input('question'));
+        $questionnaire->questions()->sync($request->input('question'));
         return redirect($this->redirectAfterSave)->with('success', 'Questionnaire successfully saved!');
     }
 

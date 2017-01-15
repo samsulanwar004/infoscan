@@ -67,6 +67,7 @@
                     @endforelse
                     </tbody>
                 </table>
+                {{ $ses->links() }}
             </div>
         </div>
         <!-- /.box -->

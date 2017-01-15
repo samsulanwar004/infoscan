@@ -8,11 +8,13 @@
 
 namespace App;
 
-
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
 
 class SocioEconomicStatus extends Model
 {
+    use SoftDeletes;
+    protected $dates = ['deleted_at'];
     protected $table = 'socio_economic_status';
     protected $fillable = [
         'code',

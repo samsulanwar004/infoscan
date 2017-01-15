@@ -105,6 +105,11 @@ Route::group([
         'Web\SnapController@tagging'
     )->name('snaps.tagging');
 
+    Route::get(
+        '/points/get-task-table',
+        'Web\PointController@getTaskTable'
+    )->name('points.task');
+
     Route::resource(
         '/members',
         'Web\MemberController',

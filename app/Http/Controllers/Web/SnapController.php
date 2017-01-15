@@ -23,9 +23,18 @@ class SnapController extends AdminController
     public function show(Request $request, $id)
     {
         $this->isAllowed('Snaps.Show');
-        $snap = (new SnapService)->getSnapById($id);
 
-        return view('snaps.show', compact('snap'));
+        try {
+            $snap = (new SnapService)->getSnapById($id);         
+            if(null === $snap) {
+                throw new Exception('Id Snap not valid!');
+            }
+            return view('snaps.show', compact('snap'));
+        } catch (Exception $e) {
+            logger($e->getMessage());
+            return view('errors.404');
+        }           
+        
     }
 
     public function filter($type, $mode)
@@ -70,6 +79,7 @@ class SnapController extends AdminController
             ];
 
             $snapFile = (new SnapService)->getSnapFileById($id);
+
             if(null === $snapFile->mode_type) {
                 throw new \Exception('Mode type cannot be empty!');
             }

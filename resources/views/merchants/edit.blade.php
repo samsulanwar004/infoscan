@@ -79,6 +79,18 @@
                                                required>
                                     </div>
                                     <div class="form-group has-feedback">
+                                        <label for="phone">Phone</label>
+                                        <input type="text" class="form-control" name="user[phone][]" id="phone"
+                                               value="{{ old('phone', $mu->user->phone) }}" placeholder="Enter phone number"
+                                               required>
+                                    </div>
+                                    <div class="form-group has-feedback">
+                                        <label for="position">Position</label>
+                                        <input type="text" class="form-control" name="user[position][]" id="position"
+                                               value="{{ old('position', $mu->user->position) }}" placeholder="Enter position"
+                                               required>
+                                    </div>
+                                    <div class="form-group has-feedback">
                                         <label for="email">Email</label>
                                         <input type="email" class="form-control" name="user[email][]" id="email"
                                                value="{{ old('email', $mu->user->email) }}" disabled="disabled"
@@ -107,6 +119,18 @@
                                         <label for="name">Name</label>
                                         <input type="text" class="form-control" name="newuser[name][]" id="name"
                                                value="{{ old('newuser.name.' . $i) }}" placeholder="Enter user name"
+                                               required>
+                                    </div>
+                                    <div class="form-group has-feedback {{ $errors->has('newuser.phone.'.$i) ? 'has-error' : false }}">
+                                        <label for="phone">Phone</label>
+                                        <input type="text" class="form-control" name="newuser[phone][]" id="phone"
+                                               value="{{ old('newuser.phone.' . $i) }}" placeholder="Enter phone number"
+                                               required>
+                                    </div>
+                                    <div class="form-group has-feedback {{ $errors->has('newuser.position.'.$i) ? 'has-error' : false }}">
+                                        <label for="position">Position</label>
+                                        <input type="text" class="form-control" name="newuser[position][]" id="position"
+                                               value="{{ old('newuser.position.' . $i) }}" placeholder="Enter position"
                                                required>
                                     </div>
                                     <div class="form-group has-feedback {{ $errors->has('newuser.email.'.$i) ? 'has-error' : false }}">
@@ -164,7 +188,12 @@
 
         $(document).on('click', 'button#add', function (e) {
             e.preventDefault();
-            $('div#users').append('<div id="user"><hr><div class="text-right"><button class="btn btn-box-tool" id="remove"><i class="fa fa-remove"></i></button></div><div class="form-group has-feedback"><label for="name">Name</label><input type="text" class="form-control" name="newuser[name][]" id="name" placeholder="Enter user name" required></div><div class="form-group has-feedback"><label for="email">Email</label><input type="email" class="form-control" name="newuser[email][]" id="email" placeholder="Enter email" required></div></div>');
+            $('div#users').append('<div id="user"><hr>' +
+                '<div class="text-right"><button class="btn btn-box-tool" id="remove"><i class="fa fa-remove"></i></button></div>' +
+                '<div class="form-group has-feedback"><label for="name">Name</label><input type="hidden" name="user[id][]" id="id"><input type="text" class="form-control" name="newuser[name][]" id="name" placeholder="Enter user name" required></div>' +
+                '<div class="form-group has-feedback"><label for="phone">Phone</label><input type="text" class="form-control" name="newuser[phone][]" id="phone" placeholder="Enter phone number" required></div>' +
+                '<div class="form-group has-feedback"><label for="position">Position</label><input type="text" class="form-control" name="newuser[position][]" id="position" placeholder="Enter position"required></div>' +
+                '<div class="form-group has-feedback"><label for="email">Email</label><input type="email" class="form-control" name="newuser[email][]" id="email" placeholder="Enter email" required></div></div>');
             updateCounterForm(false);
 
             window.location.href='#add';
