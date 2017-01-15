@@ -6066,3 +6066,7 @@ td.vertical-middle {
 .no-margin-right {
     margin-right: 0px !important;
 }
+
+.scroll-table-outer {
+    overflow-y: scroll;
+}

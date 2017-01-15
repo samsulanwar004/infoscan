@@ -59,7 +59,7 @@
                     <!-- <li><a href="/merchants/user"><i class="fa fa-circle-o"></i>Merchants Users</a></li> -->
                 </ul>
             </li>
-      
+
             <li class="snaps">
                 <a href="/snaps">
                     <i class="fa fa-file-o"></i> <span>Snaps Management</span>
@@ -119,6 +119,9 @@
                       <i class="fa fa-angle-left pull-right"></i>
                     </span>
                 </a>
+                <ul class="treeview-menu">
+                    <li><a href="/reports"><i class="fa fa-circle-o"></i>Index</a></li>
+                </ul>
             </li>
 
             <li class="header">LABELS</li>

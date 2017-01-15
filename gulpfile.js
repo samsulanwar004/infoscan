@@ -1,8 +1,7 @@
 const elixir = require('laravel-elixir'),
     assetPath = './resources/assets/',
     ltePath = './resources/assets/lte/',
-    nodePath = './node_modules/'
-    ;
+    nodePath = './node_modules/';
 require('laravel-elixir-vue-2');
 
 /*
@@ -65,6 +64,10 @@ elixir(mix => {
     ], 'public/js/elevate.js');
 
     mix.scripts([
+        ltePath + 'plugins/cookie/js.cookie.js'
+    ], 'public/js/cookie.js');
+
+    mix.scripts([
         ltePath + 'js/html5shiv.js',
         ltePath + 'js/respond.js'
     ], 'public/js/ie-support.js');
@@ -86,5 +89,6 @@ elixir(mix => {
         'js/app.js',
         'js/elevate.js',
         'js/taggd.js',
+        'js/cookie.js',
     ]);
 });
