@@ -65,9 +65,11 @@
                                 @if(count($questions) > 0)
                                     <select name="question" class="input-lg form-control que">
                                         <option id="selectdisable" disabled selected>Select question</option>
-                                        @foreach($questions as $question)
-                                            <option value="{{ $question->id }}">{{ $question->description .' ('. $question->type.')' }}</option>
-                                        @endforeach
+                                        @if(count($questions) > 0)
+                                            @foreach($questions as $question)
+                                                <option value="{{ $question->id }}">{{ $question->description .' ('. $question->type.')' }}</option>
+                                            @endforeach
+                                        @endif
                                     </select>
                                 @endif
                             </div>
