@@ -57,14 +57,14 @@
                                 </button>
                             </div>
                             <div class="col-md-11">
-                                @if(count($questions) > 0)
-                                    <select name="question" class="input-lg form-control que">
-                                        <option id="selectdisable" disabled selected>Select question</option>
+                                <select name="question" class="input-lg form-control que">
+                                    <option id="selectdisable" disabled selected>Select question</option>
+                                    @if(count($questions) > 0)
                                         @foreach($questions as $question)
                                             <option value="{{ $question->id }}">{{ $question->description .' ('. $question->type.')' }}</option>
                                         @endforeach
-                                    </select>
-                                @endif
+                                    @endif
+                                </select>
                             </div>
                             <div class="col-md-1">
                                 <a href="#selected-questions" class="btn btn-primary disabled" id="add-item">

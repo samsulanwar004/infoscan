@@ -6066,3 +6066,15 @@ td.vertical-middle {
 .no-margin-right {
     margin-right: 0px !important;
 }
+
+.scroll-table-outer {
+    overflow-y: scroll;
+}
+
+.bg-soft {
+    background-color: #f4f4f4;
+}
+
+.d4-border-top {
+    border-top: 1px solid #f2f2f2;
+}
