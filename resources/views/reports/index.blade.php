@@ -2,7 +2,7 @@
 
 @section('content')
     @include('partials.content_header', ['pageTitle' => 'Reports', 'pageDescription' => '', 'breadcrumbs' => ['Reports' => false]])
-
+    <?php $configurations = config('common.reports.fields'); ?>
     <!-- Main content -->
     <section class="content">
 
@@ -11,15 +11,6 @@
             <div class="box-header with-border form-inline" style="height: 45px;">
 
                 <div class="box-tools pull-right ">
-                    <!-- Filter Snap type:
-                    <select class="form-control snap-type">
-                        <option value="all">All</option>
-                    </select>
-
-                    Filter Mode type:
-                    <select class="form-control snap-mode">
-                        <option value="all">All</option>
-                    </select> -->
                     <a class="btn btn-default btn-modal" href="javascript:void(0)"><i class="fa fa-btn fa-filter"></i> Filter</a>
                     <!-- Single button -->
                     <div class="btn-group">
@@ -42,8 +33,8 @@
                     <table class="table reportTable" id="reportTable">
                         <thead>
                             <tr>
-                                @foreach(config('common.reports.fields') as $field => $label)
-                                <td style="min-width: 100px;" class="{{ $field }}">{{ $label }}</td>
+                                @foreach($configurations as $field => $label)
+                                <td style="min-width: 100px;" class="{{ $field }}">{{ $label['label'] }}</td>
                                 @endforeach
                             </tr>
                         </thead>
@@ -51,7 +42,7 @@
                         <tbody>
                             @foreach($results as $result)
                             <tr>
-                                @foreach(config('common.reports.fields') as $field => $label)
+                                @foreach($configurations as $field => $label)
                                 <td>{{ $result->{$field} }}</td>
                                 @endforeach
                             </tr>
@@ -73,8 +64,8 @@
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     <h4 class="modal-title">Filter</h4>
                 </div>
-                <div class="modal-body">
-                    <div class="row">
+                <div class="modal-body" style="padding-bottom: 1px;">
+                    <div class="row" style="margin-bottom: 20px;">
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="date_range" class="control-label">Select Data Range:</label>
@@ -88,24 +79,44 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="submit-button" class="control-label">&nbsp;</label>
-                                <button id="submit-button" type="button" class="btn btn-block btn-success"><i class="fa fa-btn fa-filter"></i> Get Filter Data</button>
+                                <button id="submit-button" type="button" class="btn btn-block btn-info"><i class="fa fa-btn fa-filter"></i> Get Filter Data</button>
                             </div>
                         </div>
                     </div>
-                    <hr>
-                    <div style="overflow-y: scroll; max-height: 250px;">
-                        @foreach(config('common.reports.fields') as $field => $label)
-                        <div class="row">
-                            <div class="col-md-6" style="min-height: 45px;">
+                    <!-- <hr> -->
+                    <!-- <div style="overflow-y: scroll; max-height: 350px;"> -->
+                    <div class="checkbox-list">
+                        @foreach($configurations as $field => $label)
+                        <div class="row bg-soft">
+                            <div class="col-md-6 d4-border-top" style="min-height: 45px; padding-top: 15px;">
                                 <div class="checkbox">
-                                    <label><input checked type="checkbox" class="column-list" checkboxIndex="{{ $loop->index }}">{{ $label }}</label>
+                                    <label><input checked type="checkbox" class="column-list" checkboxIndex="{{ $loop->index }}">{{ $label['label'] }}</label>
                                 </div>
                             </div>
-                            <div class="col-md-6">
+
+
+
+                            <div class="col-md-6 d4-border-top" style="padding-top: 15px;">
                                 <div class="form-group checkbox-input-{{ $loop->index }}">
-                                    <select class="form-control input-sm">
-                                        <option value="0">Select Options</option>
-                                    </select>
+                                    <?php
+                                        $options = [
+                                            'class' => sprintf("%s %s", 'input-sm form-control', $label['type'])
+                                        ];
+                                        if('range' === $label['type']) {
+                                            $options['data-min'] = $label['data']['min'];
+                                            $options['data-max'] = $label['data']['max'];
+                                        }
+
+                                        if('multiple' === $label['type']) {
+                                            $options['style'] = 'width: 100%;';
+                                            $options['multiple'] = 'multiple';
+                                        }
+
+                                        if('single' === $label['type']) {
+                                            $options['style'] = 'width: 100%;';
+                                        }
+                                    ?>
+                                    {!! \RebelField::type($label['type'], $field, [], [], $options) !!}
                                 </div>
                             </div>
                         </div>
@@ -123,10 +134,16 @@
 @endsection
 
 @section('footer_scripts')
-<script src="{{ elixir('js/cookie.js') }}"></script>
+<link rel="stylesheet" href="{{ elixir('css/report-vendor.css') }}" />
+<script src="{{ elixir('js/report-vendor.js') }}"></script>
 <script type="text/javascript">
     $(document).ready(function() {
         whenLoaded();
+        $('.range').each(function(i, obj) {
+            buildRangeSlider($(obj));
+        });
+
+        $('.multiple, .single').select2();
 
         $('.btn-modal').on('click', function(e) {
             e.preventDefault();
@@ -146,12 +163,15 @@
         $('.column-list').on('change', function() {
             var checkboxIndex = $(this).attr('checkboxIndex');
             var checkboxInput = $('.checkbox-input-' + checkboxIndex);
+
             if($(this).is(':checked')) {
                 showHideColumn('reportTable', checkboxIndex, true);
                 checkboxInput.show();
+                $(this).parents('.row').addClass('bg-soft');
             } else {
                 showHideColumn('reportTable', checkboxIndex, false);
                 checkboxInput.hide();
+                $(this).parents('.row').removeClass('bg-soft');
             }
         });
     });
@@ -166,6 +186,29 @@
         } else {
             console.log($cookies);
         }
+    }
+
+    function buildRangeSlider(selector) {
+        var selector = $(".range"),
+            $min = selector.attr('data-min'),
+            $max = selector.attr('data-max'),
+            slider;
+
+        var create = function () {
+            selector.ionRangeSlider({
+                type: "double",
+                hide_min_max: true,
+                keyboard: true,
+                min: $min,
+                max: $max,
+                //from: 1000,
+                grid: true
+            });
+
+            slider = selector.data("ionRangeSlider");
+        };
+
+        return create();
     }
 </script>
 @stop

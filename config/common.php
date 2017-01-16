@@ -23,29 +23,130 @@ return [
     ],
     'reports' => [
         'fields' => [
-            'user_id' => 'User ID',
-            'age' => 'Age',
-            'province' => 'Province',
-            'gender' => 'Gender',
-            'occupation' => 'Occupation',
-            'person_in_house' => 'Person in House',
-            'last_education' => 'Latest Education',
-            'user_city' =>  'City',
-            'sec' => 'SEC',
-            'usership' => 'User Ship',
-            'receipt_number' => 'Receipt Number',
-            'outlet_type' => 'Outlet Type',
-            'outlet_name' => 'Outlet Name',
-            'outlet_province' => 'Outlet Province',
-            'outlet_city' => 'Outlet City',
-            'outlet_address' => 'Outlet Address',
-            'products' => 'Product',
-            'brand' => 'Brands',
-            'quantity' => 'Quantity',
-            'total_price_quantity' => 'Total Price',
-            'grand_total_price' => 'Grand Total Price',
-            'purchase_time' => 'Purchase Time',
-            'sent_time' => 'Time Sent',
+            'user_id' => [
+                'label' => 'User ID',
+                'type' => 'multiple'
+            ],
+            'age' => [
+                'label' => 'Age',
+                'type' => 'range',
+                'data' => [
+                    'min' => 0,
+                    'max' => 1000000,
+                ]
+            ],
+            'province' => [
+                'label' => 'Province',
+                'type' => 'multiple'
+            ],
+            'gender' => [
+                'label' => 'Gender',
+                'type' => 'multiple'
+            ],
+            'occupation' => [
+                'label' => 'Occupation',
+                'type' => 'single'
+            ],
+            'person_in_house' => [
+                'label' => 'Person in House',
+                'type' => 'range',
+                'data' => [
+                    'min' => 0,
+                    'max' => 1000000,
+                ]
+            ],
+            'last_education' => [
+                'label' => 'Latest Education',
+                'type' => 'range',
+                'data' => [
+                    'min' => 0,
+                    'max' => 1000000,
+                ]
+            ],
+            'user_city' => [
+                'label' => 'City',
+                'type' => 'multiple'
+            ],
+            'sec' => [
+                'label' => 'SEC',
+                'type' => 'single'
+            ],
+            'usership' => [
+                'label' => 'User Ship',
+                'type' => 'single'
+            ],
+            'receipt_number' => [
+                'label' => 'Receipt Number',
+                'type' => 'input'
+            ],
+            'outlet_type' => [
+                'label' => 'Outlet Type',
+                'type' => 'single'
+            ],
+            'outlet_name' => [
+                'label' => 'Outlet Name',
+                'type' => 'single'
+            ],
+            'outlet_province' => [
+                'label' => 'Outlet Province',
+                'type' => 'single'
+            ],
+            'outlet_city' => [
+                'label' => 'Outlet City',
+                'type' => 'single'
+            ],
+            'outlet_address' => [
+                'label' => 'Outlet Address',
+                'type' => 'input'
+            ],
+            'products' => [
+                'label' => 'Products',
+                'type' => 'multiple'
+            ],
+            'brand' => [
+                'label' => 'Brands',
+                'type' => 'single'
+            ],
+            'quantity' => [
+                'label' => 'Quantity',
+                'type' => 'range',
+                'data' => [
+                    'min' => 0,
+                    'max' => 3000,
+                ]
+            ],
+            'total_price_quantity' => [
+                'label' => 'Total Price',
+                'type' => 'range',
+                'data' => [
+                    'min' => 0,
+                    'max' => 3000,
+                ]
+            ],
+            'grand_total_price' => [
+                'label' => 'Grand Total Price',
+                'type' => 'range',
+                'data' => [
+                    'min' => 0,
+                    'max' => 3000,
+                ]
+            ],
+            'purchase_time' => [
+                'label' => 'Purchase Time',
+                'type' => 'range',
+                'data' => [
+                    'min' => 0,
+                    'max' => 3000,
+                ]
+            ],
+            'sent_time' => [
+                'label' => 'Time Sent',
+                'type' => 'range',
+                'data' => [
+                    'min' => 0,
+                    'max' => 3000,
+                ]
+            ],
             //'monthly_expense' => 'Monthly Expense',
         ]
     ]

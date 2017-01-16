@@ -64,13 +64,20 @@ elixir(mix => {
     ], 'public/js/elevate.js');
 
     mix.scripts([
-        ltePath + 'plugins/cookie/js.cookie.js'
-    ], 'public/js/cookie.js');
-
-    mix.scripts([
         ltePath + 'js/html5shiv.js',
         ltePath + 'js/respond.js'
     ], 'public/js/ie-support.js');
+
+    mix.styles([
+        ltePath + 'plugins/ionrange/css/ion.rangeSlider.css',
+        ltePath + 'plugins/ionrange/css/ion.rangeSlider.skinModern.css',
+        ltePath + 'plugins/select2/css/select2.css',
+    ], 'public/css/report-vendor.css');
+    mix.scripts([
+        ltePath + 'plugins/cookie/js.cookie.js',
+        ltePath + 'plugins/ionrange/js/ion-rangeSlider/ion.rangeSlider.js',
+        ltePath + 'plugins/select2/js/select2.js',
+    ], 'public/js/report-vendor.js');
 
     mix.copy(ltePath + 'fonts/*.{ttf,woff,woff2,eof,svg}', 'public/fonts');
     mix.copy(nodePath + 'bootstrap-sass/assets/fonts/bootstrap/*.{ttf,woff,woff2,eof,svg}', 'public/fonts');
@@ -79,6 +86,7 @@ elixir(mix => {
     mix.copy(ltePath + 'img', 'public/img/lte'); // lte image
     mix.copy(ltePath + 'plugins/easyui/images', 'public/img/easyui'); // lte image
     mix.copy(ltePath + 'plugins/icheck/square/blue.png', 'public/img');
+    mix.copy(ltePath + 'plugins/ionrange/img/sprite-skin-modern.png', 'public/img');
 
     mix.version([
         'css/app.css',
@@ -89,6 +97,7 @@ elixir(mix => {
         'js/app.js',
         'js/elevate.js',
         'js/taggd.js',
-        'js/cookie.js',
+        'js/report-vendor.js',
+        'css/report-vendor.css',
     ]);
 });
