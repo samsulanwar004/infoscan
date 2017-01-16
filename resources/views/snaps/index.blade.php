@@ -88,7 +88,7 @@
 @section('footer_scripts')
 <script>
     $(function() {
-       getSelected();
+        getSelected();
     });
 
     $(".snap-type").on("change", function() {

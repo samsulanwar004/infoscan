@@ -122,6 +122,8 @@ Route::group([
         ['except' => ['show'], 'names' => route_resource_name($routePrefix, 'reports')]
     );
 
+    Route::post('/reports/filters', 'Web\ReportsController@filters')->name('reports.filters');
+
     Route::get(
         '/reports/formatPdf',
         'Web\ReportsController@formatPdf'

@@ -109,13 +109,16 @@
                         <button type="button" class="close" data-dismiss="modal">&times;</button>
                         <h4 class="modal-title">Customizable Atributes</h4>
                     </div>
-                    <form role="form" action="#" method="post" enctype="multipart/form-data" class="form" accept-charset="utf-8">
+                    <form role="form" action="{{ admin_route_url('reports.filters') }}" method="post" enctype="multipart/form-data" class="form" accept-charset="utf-8">
                         {{ csrf_field() }}
                         <div class="modal-body">
                             <div class="form-group col-md-6" id="checkAttributes1">
                                 <span text-align="center"><input style="cursor:pointer" type="checkbox" id="outlet_name" name="outlet_name" class="outlet_name" value="Outlet Name" /> Outlet Name</span>
                             </div>
-                            <div class="col-md-6" id="selectAttributes1">
+                            <!--<div class="panel-body col-md-6">
+                                <div id="pickList"></div>
+                            </div>-->
+                            <div class="col-md-6" id="selectAttributes2">
                                 <select id="val1" name="val1" multiple="multiple" class"form-control">
                                     @foreach($dataReports1 as $data1) 
                                         <option style="cursor:pointer" id="{{ $data1->outlet_name }}" name="{{ $data1->outlet_name }}" class="{{ $data1->outlet_name }}" value="{{ $data1->outlet_name }}"> {{ $data1->outlet_name }}</option>
@@ -242,7 +245,7 @@
                             <br><br><br><br><br>
                         </div>
                         <div class="modal-footer">
-                            <button type="submit" class="btn btn-primary">
+                            <button type="submit" class="btn btn-primary" id="submit">
                                 <i class="fa fa-save fa-btn"></i> Submit
                             </button>
                             <button type="button" class="btn btn-warning" data-dismiss="modal">
@@ -265,13 +268,15 @@
                 includeSelectAllOption: true,
                 maxHeight: 80
             });
-            $('#btnSelected').click(function () {
-                var selected = $("#lstFruits option:selected");
+            $('#submit').click(function () {
+                var selected = $("#val1, #val2, #val3, #val4, #val5, #val6, #val7, #val8, #val9, #val10 option:selected");
                 var message = "";
                 selected.each(function () {
-                    message += $(this).text() + " " + $(this).val() + "\n";
-                });
-                alert(message);
+                    message += $(this).attr("name") + " : " + $(this).val() + "; ";
+                });                
+                fields = JSON.parse(message);
+                alert(fields);
+                return fields;
             });
         });
         function checkboxHide(attrs, vals) {
@@ -363,5 +368,35 @@
             var getCookies = getCookie(showValues());
             setCookie(showValues(), getCookies, 365);
         }    
+    </script>
+    <link href="/css/pickList.css"  rel="stylesheet">
+    <style>
+        body { 
+            background-color: #fafafa;
+        }
+    </style>
+    <script src="/js/pickList.js"></script>
+    <script>
+        var val = {
+            01: {id: 01, text: 'Isis'},
+            02: {id: 02, text: 'Sophia'},
+            03: {id: 03, text: 'Alice'},
+            04: {id: 04, text: 'Isabella'},
+            05: {id: 05, text: 'Manuela'},
+            06: {id: 06, text: 'Laura'},
+            07: {id: 07, text: 'Luiza'},
+            08: {id: 08, text: 'Valentina'},
+            09: {id: 09, text: 'Giovanna'},
+            10: {id: 10, text: 'Maria Eduarda'},
+            11: {id: 11, text: 'Helena'},
+            12: {id: 12, text: 'Beatriz'},
+            13: {id: 13, text: 'Maria Luiza'},
+            14: {id: 14, text: 'Lara'},
+            15: {id: 15, text: 'Julia'}
+        };
+        var pick = $("#pickList").pickList({data: val});
+        $("#getSelected").click(function () {
+            console.log(pick.getValues());
+        });
     </script>
 @endsection
