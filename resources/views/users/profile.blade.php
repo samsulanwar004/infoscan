@@ -76,7 +76,7 @@
         $( '#profile' ).on( 'submit', function() {
 
             $.ajax({
-              url: '/users/{{ $user->id }}/credential',
+              url: this.action,
               type: "put",
               data: {
                 '_token':$('input[name=_token]').val(),
@@ -86,10 +86,16 @@
                 'password':$('input[name=password]').val(),                   
             },
                 success: function(msg){
-                    alert(msg.message);
+                    REBEL.smallNotifTemplate(msg.message, 'body', 'success');
+                    setTimeout(function () {
+                        REBEL.removeAllMessageAlert();
+                    }, 3000)
                 },
                 error: function (msg) {
-                    alert(msg.responseText);
+                    REBEL.smallNotifTemplate(msg.responseText, 'body', 'error');
+                    setTimeout(function () {
+                        REBEL.removeAllMessageAlert();
+                    }, 3000)
                 }
             });                        
             return false;

@@ -23,7 +23,9 @@ class CreateSnapsTable extends Migration
             $table->string('mode_type', 10)->nullable();
             $table->string('status', 10)->default('new');
             $table->string('approved_by', 100)->nullable()->index();
+            $table->string('reject_by', 100)->nullable()->index();
             $table->string('check_by', 100)->nullable()->index();
+            $table->text('comment')->nullable();
             $table->decimal('longitude', 11, 8)->nullable();
             $table->decimal('latitude', 11, 8)->nullable();
             $table->timestamps();

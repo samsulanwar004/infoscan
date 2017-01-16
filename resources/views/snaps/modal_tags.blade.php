@@ -3,7 +3,7 @@
     {{ method_field('PUT') }}
     <input type="hidden" name="mode" value="{{ $snapFile->mode_type }}">
     <div class="modal-header">
-        <a class="close btn-close" data-dismiss="modal">&times;</a>
+        <a class="close btn-close btn-modal-close" data-dismiss="modal">&times;</a>
         <h4><i class="fa fa-file-o fa-btn"></i> <span class="action-title">Snap </span> File</h4>
     </div>
     <div class="modal-body">
@@ -12,9 +12,8 @@
                 <div id="imgtag">
                     <img src="{{ config('filesystems.s3url') . $snapFile->file_path }}" id="tag-image" alt="{{ $snapFile->id }}" class="margin img-responsive">
                     <div id="tagbox">
-                    </div>
-                </div>
-
+                    </div>                    
+                </div>                
             </div>
             <div class="col-md-6" style="overflow-y:scroll;max-height: 300px;">
                 <table class="table">
@@ -23,20 +22,20 @@
                             <th width="50"></th>
                             <th width="300">Product Item</th>
                             <th width="50">Qty</th>
-                            <th width="200" class="text-right">Price</th>
+                            <th width="200">Price</th>
                         </tr>
                     </thead>
                     <tbody id="inputs">
                         @foreach($snapFile->tag as $tag)
                             <tr id="input">
                                 <td>
-                                    <a class="btn btn-box-tool" id="remove">
+                                    <a class="{{ $tag->id }}-tag btn btn-box-tool" id="remove">
                                         <i class="fa fa-remove"></i>
                                     </a>
                                 </td>
                                 <td width="300"><input type="text" name="tag[name][]" id="{{ $tag->id }}|{{ $tag->img_x }}|{{ $tag->img_y }}" class="form-control input-sm tag-name {{ $tag->id }}old" value="{{ $tag->name }}" placeholder="Product Name" required="required"></td>
                                 <td width="100"><input type="number" name="tag[qty][]" class="form-control input-sm" value="{{ $tag->quantity }}" placeholder="QTY" required="required"></td>
-                                <td width="200" class="text-right"><input type="number" name="tag[total][]" class="form-control input-sm" value="{{ $tag->total_price }}" placeholder="Total Price" required="required"></td>
+                                <td width="200"><input type="number" name="tag[total][]" class="form-control input-sm" value="{{ $tag->total_price }}" placeholder="Total Price" required="required"></td>
                                 <input type="hidden" name="tag[id][]" value="{{ $tag->id }}">
                             </tr>
                         @endforeach
@@ -61,6 +60,12 @@
 </form>
 
 <style type="text/css">
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button
+    {
+      -webkit-appearance: none;
+      margin: 0;
+    }
 
     #imgtag
     {
@@ -118,176 +123,211 @@
         margin-right: 5px;
     }
 
-    a.taggd__button {
+    a.taggd__button
+    {
         cursor: pointer;
     }
 
 </style>
 
 <script type="text/javascript">
+    $(document).ready(function() {
+        $('#modalForm').on('submit', function (e) {
+            e.preventDefault();
+            REBEL.onSubmit($(this), function (responseData) {
+                REBEL.removeAllMessageAlert();
+                if (responseData.status == "ok") {
+                    REBEL.smallNotifTemplate(responseData.message, '.modal-content', 'success');
+                    $.get( '/snaps/{{ $snapFile->snap_id }}/snap-detail' , function(view){ 
+                        $(".snaps-detail").html(view);
+                    });
+                }
+            }, true);
+        });
 
-    $("modalForm").ready(function() {
-
-        $('.tag-name').on('click', function(e) {
-            var image = document.getElementById('tag-image');
-            var idArray = e.toElement.id.split('|');
-            var id = idArray[0];
-            var img_x = idArray[1];
-            var img_y = idArray[2];
-            $("#"+id+"popup").css({
-                'display' : 'none',
-            });
-            var options = {};
-            var data = [
-              Taggd.Tag.createFromObject({
+    $('.tag-name').on('click', function(e) {
+        var image = document.getElementById('tag-image');
+        var idArray = e.toElement.id.split('|');
+        var id = idArray[0];
+        var img_x = idArray[1];
+        var img_y = idArray[2];
+        $("#"+id+"popup").css({
+            'display' : 'none',
+        });
+        var options = {};
+        var data = [
+            Taggd.Tag.createFromObject({
                 position: { x: img_x, y: img_y },
                 text: this.value,
                 popupAttributes: {
                     id: id+"popup",
                 },
-              }),
-            ];
+            }),
+        ];
 
-            var taggd = new Taggd(image, options, data);
+        var taggd = new Taggd(image, options, data);
 
-            $("#"+id+"popup").css({
-                'display' : '',
-            });
-
-            $('.'+id+'old').on('keyup', function() {
-                $("#"+id+"popup").html($("."+id+'old').val());
-            });
+        $("#"+id+"popup").css({
+            'display' : '',
         });
 
-        $(document).on("click", ".btn-close", function(){
-            window.location.href = '{{ $snapFile->snap_id }}';
+        $('.'+id+'old').on('keyup', function() {
+            $("#"+id+"popup").html($("."+id+'old').val());
+        });
+    });
+
+    $('form').on('focus', 'input[type=number]', function(e) {
+      $(this).on('mousewheel.disableScroll', function(e) {
+        e.preventDefault()
+      })
+    });
+    $('form').on('blur', 'input[type=number]', function(e) {
+      $(this).off('mousewheel.disableScroll')
+    });
+
+        var counter = 0;
+        var mouseX = 0;
+        var mouseY = 0;
+
+        $("#imgtag img").click(function(e) { // make sure the image is click
+            var offset = $(this).offset(); // get the div to append the tagging list
+            mouseX = (e.pageX - offset.left); // x and y axis
+            mouseY = (e.pageY - offset.top);
+
+            $('#tagit').remove(); // remove any tagit div first           
+            $('div#imgtag').append('<div id="tagit"><input type="text" name="name" class="form-control input-sm" placeholder="Product Name" id="name"><input type="number" name="qty" class="form-control input-sm" placeholder="QTY" id="qty"><input type="number" class="form-control input-sm" placeholder="Total Price" id="total" name="total"><input type="hidden" name="x" id="x" value="'+mouseX+'"><input type="hidden" id="y" name="y" value="'+mouseY+'"><input type="button" name="btnsave" value="Save" id="btnsave"/><input type="button" name="btncancel" value="Cancel" id="btncancel" /></div>');
+            $('#tagit').css({ top:mouseY, left:mouseX });
+
+            $('#name').focus();
+
         });
 
-        $('form').on('focus', 'input[type=number]', function(e) {
-          $(this).on('mousewheel.disableScroll', function(e) {
-            e.preventDefault()
-          })
-        });
-        $('form').on('blur', 'input[type=number]', function(e) {
-          $(this).off('mousewheel.disableScroll')
-        });
 
-            var counter = 0;
-            var mouseX = 0;
-            var mouseY = 0;
+        $(document).on('click', '#tagit #btnsave', function(e) {
+            e.stopPropagation();
 
-            $("#imgtag img").click(function(e) { // make sure the image is click
-                var offset = $(this).offset(); // get the div to append the tagging list
-                mouseX = (e.pageX - offset.left); // x and y axis
-                mouseY = (e.pageY - offset.top);
+            var time = Math.round(Date.now() / 100);
 
-              $('#tagit').remove(); // remove any tagit div first
-              $(imgtag).append('<div id="tagit"><input type="text" name="name" class="form-control input-sm" placeholder="Product Name" id="name"><input type="number" name="qty" class="form-control input-sm" placeholder="QTY" id="qty"><input type="number" class="form-control input-sm" placeholder="Total Price" id="total" name="total"><input type="button" name="btnsave" value="Save" id="btnsave"/><input type="button" name="btncancel" value="Cancel" id="btncancel" /></div>');
-              $('#tagit').css({ top:mouseY, left:mouseX });
+            if ($('.tag-input[time=' + time + ']').length > 0) {
+                return false;
+            }
+            
+            e.preventDefault();
+            var countOfTextbox = $('.tag-name').length;
 
-              $('#name').focus();
-              $('#qty').focus();
-              $('#total').focus();
+            if(countOfTextbox >= 20) {
+                REBEL.smallNotifTemplate('Form is full', '.modal-content', 'error');
+                REBEL.scrollToTop('#modalContent');
+                setTimeout(function(){
+                    REBEL.removeAllMessageAlert();
+                }, 3000);
+                return false;
+            }
 
-            });
+            var name = $('#name').val();
+            var qty = $('#qty').val();
+            var total = $('#total').val();
+            mouseX = $('#x').val();
+            mouseY = $('#y').val();
 
-            $(document).on('click', '#btnsave', function(e) {
-                e.preventDefault();
-                var countOfTextbox = $('.tag-name').length;
-
-                if(countOfTextbox >= 20) {
-                    alert('Form is full');
-                    return false;
-                }
-
-                var name = $('input[name="name"]').val();
-                var qty = $('input[name="qty"]').val();
-                var total = $('input[name="total"]').val();
-
-                if (name == false || qty == false || total == false)
-                {
-                    alert('Not null');
-                    return false;
-                }
-
-                var image = document.getElementById('tag-image');
-                mouseX = mouseX / image.clientWidth;
-                mouseY = mouseY / image.clientHeight;
-
-                viewtagsave(name, mouseX, mouseY);
-
-                $('tbody#inputs').append('<tr id="input'+countOfTextbox+'"><td><a class="btn btn-box-tool" onclick="deleteTag('+countOfTextbox+')"><i class="fa fa-remove"></i></a></td><td width="300"><input type="text" name="newtag[name][]" class="form-control input-sm tag-name '+countOfTextbox+'new" id="'+countOfTextbox+'|'+mouseX+'|'+mouseY+'" onclick="editTag(this)" onkeyup="editNewTag(this)" value="'+name+'"></td><td width="100"><input type="number" name="newtag[qty][]" class="form-control input-sm" value="'+qty+'"></td><td width="200" class="text-right"><input type="number" name="newtag[total][]" class="form-control input-sm" value="'+total+'"><input type="hidden" name="newtag[x][]" value="'+mouseX+'"><input type="hidden" name="newtag[y][]" value="'+mouseY+'"><input type="hidden" name="newtag[fileId][]" value="{{ $snapFile->id }}"></td></tr>');
-                $('#tagit').fadeOut();
-
-            });
-
-            // Cancel the tag box.
-            $(document).on('click', '#tagit #btncancel', function() {
-              $('#tagit').fadeOut();
-            });
-
-            // mouseover the tagboxes that is already there but opacity is 0.
-            $('#tagbox').on('mouseover', '.tagview', function() {
-                var pos = $( this ).position();
-                $(this).css({ opacity: 1.0 }); // div appears when opacity is set to 1.
-            }).on('mouseout', '.tagview', function() {
-                $(this).css({ opacity: 0.0 }); // hide the div by setting opacity to 0.
-            });
-
-            // load the tags for the image when page loads.
-            var img = $('#imgtag').find('img');
-            var id = $(img).attr('alt');
-            viewtag(id);
-            function viewtag(id)
+            if (name == false || qty == false || total == false)
             {
-              // get the tag list with action remove and tag boxes and place it on the image.
-                var image = document.getElementById('tag-image');
-                var data =[];
-                var options = {};
-                var taggd;
-                $.getJSON( id+"/tagging" , function( datas ) {
-                    $.each( datas, function( key, value ) {
+                REBEL.smallNotifTemplate('Not null', '.modal-content', 'error');
+                REBEL.scrollToTop('#modalContent');
+                setTimeout(function(){
+                    REBEL.removeAllMessageAlert();
+                }, 3000);
+                return false;
+            }
 
-                        data.push(
-                            Taggd.Tag.createFromObject({
+            var image = document.getElementById('tag-image');
+            mouseX = mouseX / image.clientWidth;
+            mouseY = mouseY / image.clientHeight;
+
+            var className = countOfTextbox+'-new-tag';
+            viewtagsave(name, mouseX, mouseY, className);
+            $('tbody#inputs').append('<tr class="tag-input" time=' + time + ' id="input'+countOfTextbox+'"><td><a class="btn btn-box-tool" onclick="deleteTag('+countOfTextbox+')"><i class="fa fa-remove"></i></a></td><td width="300"><input type="text" name="newtag[name][]" class="form-control input-sm tag-name '+countOfTextbox+'new" id="'+countOfTextbox+'|'+mouseX+'|'+mouseY+'" onclick="editTag(this)" onkeyup="editNewTag(this)" value="'+name+'"></td><td width="100"><input type="number" name="newtag[qty][]" class="form-control input-sm" value="'+qty+'"></td><td width="200"><input type="number" name="newtag[total][]" class="form-control input-sm" value="'+total+'"><input type="hidden" name="newtag[x][]" value="'+mouseX+'"><input type="hidden" name="newtag[y][]" value="'+mouseY+'"><input type="hidden" name="newtag[fileId][]" value="{{ $snapFile->id }}"></td></tr>');
+
+            $('#tagit').fadeOut();
+        });
+
+        // Cancel the tag box.
+        $(document).on('click', '#tagit #btncancel', function() {
+          $('#tagit').fadeOut();
+        });
+
+        // mouseover the tagboxes that is already there but opacity is 0.
+        $('#tagbox').on('mouseover', '.tagview', function() {
+            var pos = $( this ).position();
+            $(this).css({ opacity: 1.0 }); // div appears when opacity is set to 1.
+        }).on('mouseout', '.tagview', function() {
+            $(this).css({ opacity: 0.0 }); // hide the div by setting opacity to 0.
+        });
+
+        // load the tags for the image when page loads.
+        var img = $('#imgtag').find('img');
+        var id = $(img).attr('alt');
+        viewtag(id);
+        function viewtag(id)
+        {
+          // get the tag list with action remove and tag boxes and place it on the image.
+            var image = document.getElementById('tag-image');
+            var data =[];
+            var options = {};
+            var taggd;
+            $.getJSON( id+"/tagging" , function( datas ) {
+                $.each( datas, function( key, value ) {
+
+                    data.push(
+                        Taggd.Tag.createFromObject({
                             position: { x: value.img_x, y: value.img_y },
                             text: value.name,
-                            })
-                        );
-                    });
-                    taggd = new Taggd(image, options, data);
-                }, "json");
-            }
+                            buttonAttributes: {
+                                id: value.id+"-tag",
+                            },
+                        })
+                    );
+                });
+                taggd = new Taggd(image, options, data);
+            }, "json");
+        }
 
-            function viewtagsave(name, mouseX, mouseY)
-            {
-                var image = document.getElementById('tag-image');
-                var data =[];
-                var options = {};
-                var taggd;
+        function viewtagsave(name, mouseX, mouseY, className)
+        {
+            var image = document.getElementById('tag-image');
+            var data =[];
+            var options = {};
+            var taggd;
 
-                var data = [
-                  Taggd.Tag.createFromObject({
+            var data = [
+                Taggd.Tag.createFromObject({
                     position: { x: mouseX, y: mouseY },
                     text: name,
-                  }),
-                ];
+                    buttonAttributes: {
+                        id: className,
+                    },
+                }),
+            ];
 
-                taggd = new Taggd(image, options, data);
+            taggd = new Taggd(image, options, data);
+        }
+
+        $('a#remove').on('click', function(e) {
+            e.preventDefault();
+            var classArray = this.className.split(' ');
+            var id = classArray[0];
+            if(confirm('Are you sure want to delete this item ?')) {
+                $(e.target).closest('#input').remove();
+                $("#"+id).remove();
             }
-
-            $('a#remove').on('click', function(e) {
-                e.preventDefault();
-                if(confirm('Are you sure want to delete this item ?')) {
-                    $(e.target).closest('#input').remove();
-                }
-            });
+        });
     });
 
     function deleteTag(e)
     {
         if(confirm('Are you sure want to delete this item ?')) {
             $('#input'+e).remove();
+            $("#"+e+"-new-tag").remove();
         }
     }
 
@@ -303,13 +343,13 @@
         });
         var options = {};
         var data = [
-          Taggd.Tag.createFromObject({
-            position: { x: img_x, y: img_y },
-            text: e.value,
-            popupAttributes: {
-                id: id+"newpopup",
-            },
-          }),
+            Taggd.Tag.createFromObject({
+                position: { x: img_x, y: img_y },
+                text: e.value,
+                popupAttributes: {
+                    id: id+"newpopup",
+                },
+            }),
         ];
 
         var taggd = new Taggd(image, options, data);

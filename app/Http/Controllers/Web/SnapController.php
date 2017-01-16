@@ -14,42 +14,51 @@ class SnapController extends AdminController
     {
         $this->isAllowed('Snaps.List');
         $snaps = ( new SnapService)->getAvailableSnaps();
-        $type = 'all';
         $snapCategorys = config("common.snap_category");
-        $snapCategoryModes = config("common.snap_catmode");
-        dd($snapCategorys);
+        $snapCategoryModes = config("common.snap_category_mode");
 
-        return view('snaps.index', compact('snaps', 'type', 'snapCategorys', 'snapCategoryModes'));
+        return view('snaps.index', compact('snaps', 'snapCategorys', 'snapCategoryModes'));
     }
 
     public function show(Request $request, $id)
     {
         $this->isAllowed('Snaps.Show');
-        $snap = (new SnapService)->getSnapById($id);
 
-        return view('snaps.show', compact('snap'));
+        try {
+            $snap = (new SnapService)->getSnapById($id);         
+            if(null === $snap) {
+                throw new Exception('Id Snap not valid!');
+            }
+            return view('snaps.show', compact('snap'));
+        } catch (Exception $e) {
+            logger($e->getMessage());
+            return view('errors.404');
+        }           
+        
     }
 
-    public function filter($attr)
+    public function filter($type, $mode)
     {
         $this->isAllowed('Snaps.List');
 
         $snaps = ( new SnapService);
 
-        if (config("common.snap_type.$attr")) {
-            $att = config("common.snap_type.$attr");
-            $snaps = $snaps->getSnapsByType($att);
-            $type = $attr;
+        if ($type == 'all' && $mode == 'all') {
+            $snaps = $snaps->getAvailableSnaps();            
+        } else if($type == 'all') {
+            $mode = config("common.snap_mode.$mode");
+            $snaps = $snaps->getSnapsByMode($mode);
+        } else if($mode == 'all') {
+            $type = config("common.snap_type.$type");
+            $snaps = $snaps->getSnapsByType($type);
         } else {
-            $att = config("common.snap_mode.$attr");
-            $snaps = $snaps->getSnapsByMode($att);
-            $type = $attr;
+            $type = config("common.snap_type.$type");
+            $mode = config("common.snap_mode.$mode");
+
+            $snaps = $snaps->getSnapsByFilter($type, $mode);
         }
 
-        $snapCategorys = config("common.snap_category");
-        $snapCategoryModes = config("common.snap_category_mode");
-
-        return view('snaps.index', compact('snaps', 'type', 'snapCategorys', 'snapCategoryModes'));
+        return view('snaps.table_snaps', compact('snaps'));
     }
 
     public function edit($id)
@@ -61,15 +70,36 @@ class SnapController extends AdminController
 
     public function editSnapFile($id)
     {
-        $modeView = [
-            'input' => 'modal_inputs',
-            'tags' => 'modal_tags',
-            'audio' => 'modal_audios'
-        ];
+        try {
+            $modeView = [
+                'input' => 'modal_inputs',
+                'tags' => 'modal_tags',
+                'audio' => 'modal_audios',
+                'image' => 'modal_snaps'
+            ];
 
-        $snapFile = (new SnapService)->getSnapFileById($id);
-        $mode = $modeView[$snapFile->mode_type];
-        return view("snaps.$mode", compact('snapFile'));
+            $snapFile = (new SnapService)->getSnapFileById($id);
+
+            if(null === $snapFile->mode_type) {
+                throw new \Exception('Mode type cannot be empty!');
+            }
+            $mode = $modeView[$snapFile->mode_type];
+
+            return view("snaps.$mode", compact('snapFile'));
+        } catch (\Exception $e) {
+            logger($e->getMessage());
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], 404);
+        }
+    }
+
+    public function snapDetail($id)
+    {
+        $snap = (new SnapService)->getSnapById($id);
+
+        return view('snaps.show_detail', compact('snap'));
     }
 
     public function update(Request $request, $id)
@@ -90,17 +120,30 @@ class SnapController extends AdminController
                 (new SnapService)->updateSnapModeTags($request, $id);
             } else if ($request->input('mode') === 'audio') {
                 (new SnapService)->updateSnapModeAudios($request, $id);
+            } else if ($request->input('mode') === 'image') {
+                (new SnapService)->updateSnapModeImages($request, $id);
             } else {
                 (new SnapService)->updateSnap($request, $id);
             }
-            
+
         } catch (Exception $e) {
-            return redirect()->back()->withInput()->withErrors($e->getMessage());
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], 500);
         } catch (PDOException $e) {
-            return redirect()->back()->withInput()->withErrors($e->getMessage());
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], 500);
         }
 
-        return redirect()->back()->with('success', 'Snaps successfully updated!');
+        $mode = ($request->has('mode') == true) ? $request->input('mode') : "Confirmation";
+        return response()->json([
+            'status' => 'ok',
+            'message' => 'Snaps '.$mode.' successfully updated!',
+        ]);
+
     }
 
     public function tagging($id)

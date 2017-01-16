@@ -17,7 +17,7 @@
                 <div class="box-tools pull-right ">
                     Filter Snap type: 
                     <select class="form-control snap-type">
-                        <option value="all" id="all">All</option>
+                        <option value="all">All</option>
                         @foreach($snapCategorys as $id => $name)
                             <option value="{{$id}}" id="{{$id}}">{{$name}}</option>
                         @endforeach                                                                   
@@ -33,50 +33,7 @@
                 </div>
             </div>
             <div class="box-body">
-                <table class="table table-striped">
-                    <thead>
-                    <tr>
-                        <th width="25">#</th>
-                        <th width="100">Code</th>
-                        <th>Snap Details</th>
-                        <th width="250"></th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    @forelse($snaps as $snap)
-                        <tr>
-                            <td class="vertical-middle">
-                                <i class="fa fa-check-circle {{ $snap->approved_by != null ? 'text-green' : 'text-default' }}"></i>
-                            </td>
-                            <td class="vertical-middle">
-                                {{ strtoupper($snap->request_code) }} <br>
-                            </td>
-                            <td class="vertical-middle">
-                                <span>
-                                    <b>{{ strtoupper($snap->snap_type) }}</b> Snap {{$snap->snap_type !== 'receipt' && (!is_null($snap->mode_type) || !empty($snap->snap_type)) ? 'with ' . strtoupper($snap->mode_type) . ' mode.' : '' }}
-                                </span>
-                                <br>
-                                <span class="small">
-                                    Total image: {{ $snap->files()->count() }}
-                                </span>
-
-                                <span class="small ml10">Uploaded by: <a href="{{ admin_route_url('members.show', ['id' => $snap->member->id]) }}">{{ $snap->member->email }}</a></span>
-                            </td>
-                            <td class="text-right vertical-middle">
-                                <div class="btn-group">
-                                    @cando('Snaps.Show')
-                                    <a href="{{ admin_route_url('snaps.show', ['id' => $snap->id]) }}" class="btn btn-primary">
-                                        <i class="fa fa-search"> </i>
-                                    </a>
-                                    @endcando
-                                </div>
-                            </td>
-                        </tr>
-                    @empty
-                        <td colspan="4"> There is no record for snaps data!</td>
-                    @endforelse                    
-                    </tbody>
-                </table>
+                @include('snaps.table_snaps')
             </div>
         </div>
         <!-- /.box -->
@@ -90,33 +47,27 @@
     $(function() {
         getSelected();
     });
-
     $(".snap-type").on("change", function() {
-        var attr = this.value;
-        if (attr == 'all')
-        {
-            return window.location.href = '/snaps';
-        }
-        var link = '/snaps/'+attr+'/filter';
-        window.location.href = link;
+
+        var type = $(this).val();
+        var mode = $(".snap-mode").val();
+
+        $.get( '/snaps/'+type+'/'+mode+'/filter' , function(view){ 
+            $(".box-body").html(view);
+        });
 
     });
 
     $(".snap-mode").on("change", function() {
-        var attr = this.value;
-        if (attr == 'all')
-        {
-            return window.location.href = '/snaps';
-        }
-        var link = '/snaps/'+attr+'/filter';
-        window.location.href = link;
+
+        var mode = $(this).val();
+        var type = $(".snap-type").val();
+
+        $.get( '/snaps/'+type+'/'+mode+'/filter' , function(view){ 
+            $(".box-body").html(view);
+        });
 
     });
-
-    function getSelected()
-    {
-        document.getElementById("{{$type}}").selected = true;
-    }
     
 </script>
 @stop

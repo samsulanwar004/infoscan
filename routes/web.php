@@ -91,7 +91,12 @@ Route::group([
     )->name('snaps.editSnapFile');
 
     Route::get(
-        '/snaps/{attr}/filter',
+        '/snaps/{id}/snap-detail',
+        'Web\SnapController@snapDetail'
+    )->name('snaps.snapDetail');
+
+    Route::get(
+        '/snaps/{type}/{mode}/filter',
         'Web\SnapController@filter'
     )->name('snaps.filter');
 
@@ -99,6 +104,11 @@ Route::group([
         '/snaps/{id}/tagging',
         'Web\SnapController@tagging'
     )->name('snaps.tagging');
+
+    Route::get(
+        '/points/get-task-table',
+        'Web\PointController@getTaskTable'
+    )->name('points.task');
 
     Route::resource(
         '/members',

@@ -18,7 +18,7 @@
             <div class="box-body">
                 <div class="row">
 
-                    <div class="{{ $snap->snap_type == 'receipt' ? 'col-md-12' : 'col-md-8' }}">
+                    <div class="col-md-8">
                         <p class="text-muted well well-sm no-shadow">
                             Terimakasih Misbach
                         </p>
@@ -30,18 +30,16 @@
                                     <div class="timeline-item no-margin-right">
                                         <span class="time"><i class="fa fa-clock-o"></i> {{ $snap->created_at->diffForHumans() }}</span>
                                         <h3 class="timeline-header">
-                                            <a href="{{ admin_route_url('members.show', ['id' => $snap->member->id]) }}">{{ $snap->member->name }}</a> uploaded new {{ $snap->mode_type == 'audios' ? 'audios' : 'photos' }}
+                                            <a href="{{ admin_route_url('members.show', ['id' => $snap->member->id]) }}">{{ $snap->member->name }}</a> uploaded new photos
                                         </h3>
                                         <div class="timeline-body">
-                                        @if ($snap->mode_type != 'audios')
                                             @foreach($snap->files as $file)
-                                                <img src="{{ config('filesystems.s3url') . $file->file_path }}" alt="{{ $file->file_code }}" class="margin img-thumbnail img-responsive @if($snap->snap_type != 'receipt') img-tag @endif"  id="{{$file->id}}" style="width:150px;height:150px;">
+                                                @if ($file->mode_type == 'audio')
+                                                    <img src="{{ URL::to('img/snaps/window-player.png') }}" alt="{{ $file->file_code }}" class="margin img-thumbnail img-responsive img-tag"  id="{{$file->id}}" style="width:150px;height:150px;">
+                                                @else
+                                                    <img src="{{ config('filesystems.s3url') . $file->file_path }}" alt="{{ $file->file_code }}" class="margin img-thumbnail img-responsive img-tag"  id="{{$file->id}}" style="width:150px;height:150px;">
+                                                @endif
                                             @endforeach
-                                        @else
-                                            @foreach($snap->files as $file)
-                                                <img src="{{ URL::to('img/window-player.png') }}" alt="{{ $file->file_code }}" class="margin img-thumbnail img-responsive @if($snap->snap_type != 'receipt') img-tag @endif"  id="{{$file->id}}" style="width:150px;height:150px;">
-                                            @endforeach
-                                        @endif
                                         </div>
                                     </div>
                                 </li>
@@ -50,10 +48,17 @@
                         </div>
 
                     </div>
-
-                    @if($snap->snap_type !== 'receipt' && (!empty($snap->mode_type) || !is_null($snap->mode_type)))
-                        @include('snaps.show_detail', ['snap' => $snap])
-                    @endif
+                        <div class="col-md-4">
+                            <a href="{{ admin_route_url('snaps.edit', ['id' => $snap->id]) }}" class="btn btn-success btn-block btn-lg"
+                                data-toggle="modal"
+                                data-target="#"
+                                modal-size="modal-lg" 
+                                title="Edit">
+                                <i class="fa fa-check-circle-o fa-btn"></i>Approve This Content</a>  
+                            <div class="snaps-detail">
+                                @include('snaps.show_detail', ['snap' => $snap])
+                            </div>   
+                        </div>                     
                 </div>
             </div>
         </div>
@@ -70,7 +75,11 @@
 @endsection
 
 @section('footer_scripts')
+<link rel="stylesheet" href="{{ elixir('css/taggd.css') }}">
+<script src="{{ elixir('js/taggd.js') }}"></script>
+<script src="{{ elixir('js/elevate.js') }}"></script>
 <script type="text/javascript">
+
     $(".img-tag").on('click', function(img) {
         //console.log(img.toElement.id);
         var link = $('#modal-edit');
@@ -78,11 +87,13 @@
         link.attr('href', nameLink);
 
         link.trigger('click');
+
     });
 
 </script>
 <style type="text/css">
-    img.img-tag {
+    img.img-tag 
+    {
         cursor: pointer;
     }
 </style>

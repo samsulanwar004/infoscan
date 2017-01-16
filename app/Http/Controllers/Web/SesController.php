@@ -13,7 +13,7 @@ class SesController extends AdminController
     public function index()
     {
         $this->isAllowed('Ses.List');
-        $ses = SocioEconomicStatus::orderBy('range_start')->paginate(50);
+        $ses = SocioEconomicStatus::orderBy('code', 'asc')->paginate(50);
         return view('ses.index', compact('ses'));
     }
 
@@ -33,7 +33,7 @@ class SesController extends AdminController
     public function store(Request $request)
     {
         $this->validate($request, [
-            'code' => 'required|string|unique:code',
+            'code' => 'required|string|unique:socio_economic_status,code',
             'range_start' => 'required|numeric|different:range_end|min:0',
             'range_end' => 'required|numeric|min:0'
         ]);
@@ -54,7 +54,7 @@ class SesController extends AdminController
     public function update(Request $request, $id)
     {
         $this->validate($request, [
-            'code' => 'required|string|unique:code',
+            'code' => 'required|string|unique:socio_economic_status,code,' . $id . ',id',
             'range_start' => 'required|numeric|different:range_end|min:0',
             'range_end' => 'required|numeric|min:0'
         ]);

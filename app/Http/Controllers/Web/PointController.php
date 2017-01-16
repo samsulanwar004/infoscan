@@ -22,6 +22,15 @@ class PointController extends AdminController
         return view('points.index');
     }
 
+    public function getTaskTable(Request $request)
+    {
+        $this->isAllowed('Points.List');
+        if ($request->wantsJson()) {
+            return (new PointService)->getPivotGrid();
+        }
+        return view('points.table_task_level_points');
+    }
+
     public function show($id)
     {
 
@@ -55,12 +64,21 @@ class PointController extends AdminController
         try {
             (new PointService)->addTaskLevelPoint($request);
         } catch (Exception $e) {
-            return redirect()->back()->withInput()->withErrors($e->getMessage());
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], 500);
         } catch (\PDOException $e) {
-            return redirect()->back()->withInput()->withErrors($e->getMessage());
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], 500);
         } 
 
-        return redirect($this->redirectAfterSave)->with('success', 'Task Level Points successfully created!');
+        return response()->json([
+            'status' => 'ok',
+            'message' => 'Task Level Points successfully created!',
+        ]);
 
     }
 
@@ -83,13 +101,21 @@ class PointController extends AdminController
         try {
             (new PointService)->updateTaskLevelPoint($request, $id);
         } catch (Exception $e) {
-            return redirect()->back()->withInput()->withErrors($e->getMessage());
+             return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], 500);
         } catch (\PDOException $e) {
-            return redirect()->back()->withInput()->withErrors($e->getMessage());
+             return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], 500);
         }
 
-        return redirect($this->redirectAfterSave)->with('success', 'Task Level Points successfully updated!');
-
+        return response()->json([
+            'status' => 'ok',
+            'message' => 'Task Level Points successfully updated!',
+        ]);
     }
 
     public function destroy($id)

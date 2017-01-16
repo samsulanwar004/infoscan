@@ -17,7 +17,6 @@ class CreateUserSeeder extends Seeder
         'Questionnaire.List','Questionnaire.Create','Questionnaire.Update','Questionnaire.Delete',
         'Questions.List','Questions.Create','Questions.Update','Questions.Delete',
         'Ses.List','Ses.Create','Ses.Update','Ses.Delete',
-        'Tags.List','Tags.Create','Tags.Update','Tags.Delete',
         'Points.List','Points.Create','Points.Update','Points.Delete',
         'Member.List','Member.Show',
         'Snaps.List','Snaps.Show',        
@@ -35,7 +34,6 @@ class CreateUserSeeder extends Seeder
         'Questionnaire.List','Questionnaire.Create','Questionnaire.Update','Questionnaire.Delete',
         'Questions.List','Questions.Create','Questions.Update','Questions.Delete',
         'Ses.List','Ses.Create','Ses.Update','Ses.Delete',
-        'Tags.List','Tags.Create','Tags.Update','Tags.Delete',
         'Points.List','Points.Create','Points.Update','Points.Delete',
         'Member.List','Member.Show',
         'Snaps.List','Snaps.Show',        
@@ -52,7 +50,6 @@ class CreateUserSeeder extends Seeder
         'Questionnaire.List','Questionnaire.Create','Questionnaire.Update','Questionnaire.Delete',
         'Questions.List','Questions.Create','Questions.Update','Questions.Delete',
         'Ses.List','Ses.Create','Ses.Update','Ses.Delete',
-        'Tags.List','Tags.Create','Tags.Update','Tags.Delete',
         'Points.List','Points.Create','Points.Update','Points.Delete',
         'Member.List','Member.Show',
         'Snaps.List','Snaps.Show',
@@ -61,7 +58,7 @@ class CreateUserSeeder extends Seeder
     ];
 
     protected $createPermissionsCrowdsourceAccount = [
-        'Tags.List','Tags.Create','Tags.Update','Tags.Delete',
+        'Snaps.List','Snaps.Show',
     ];
 
     protected $createPermissionsVendorAdmin = [

@@ -3,16 +3,18 @@
     {{ method_field('PUT') }}
     <input type="hidden" name="mode" value="{{ $snapFile->mode_type }}">
     <div class="modal-header">
-        <a class="close" data-dismiss="modal">&times;</a>
+        <a class="close btn-close btn-modal-close" data-dismiss="modal">&times;</a>
         <h4><i class="fa fa-file-o fa-btn"></i> <span class="action-title">Snap </span> File</h4>
     </div>
     <div class="modal-body">
         <div class="form-horizontal">
             <div class="col-md-6">
                 <audio controls>
-                  <source src="{{ $snapFile->file_path }}" type="audio/mpeg">
+                  <source src="{{ config('filesystems.s3url') . $snapFile->file_path }}" type="audio/mpeg">
                     Your browser does not support the audio element.
                 </audio>
+                <textarea class="form-control" style="resize:none;width: 100%;height: 300px;" 
+                cols="50" readonly="readonly">{{ $snapFile->recognition_text }}</textarea>
             </div>
             <div class="col-md-6" style="overflow-y:scroll;max-height: 300px;">
                 <table class="table">
@@ -21,7 +23,7 @@
                             <th width="50"></th>
                             <th width="300">Product Item</th>
                             <th width="100">Qty</th>
-                            <th width="200" class="text-right">Price</th>
+                            <th width="200">Price</th>
                         </tr>
                     </thead>
 
@@ -35,18 +37,18 @@
                                 </td>
                                 <td width="300"><input type="text" name="tag[name][]" class="form-control input-sm tag-name" value="{{ $tag->name }}" placeholder="Product Name" required="required"></td>
                                 <td width="100"><input type="number" name="tag[qty][]" class="form-control input-sm" value="{{ $tag->quantity }}" placeholder="QTY" required="required"></td>
-                                <td width="200" class="text-right"><input type="number" name="tag[total][]" class="form-control input-sm" value="{{ $tag->total_price }}" placeholder="Total Price" required="required"></td>
+                                <td width="200"><input type="number" name="tag[total][]" class="form-control input-sm" value="{{ $tag->total_price }}" placeholder="Total Price" required="required"></td>
                                 <input type="hidden" name="tag[id][]" value="{{ $tag->id }}">
                             </tr>
                         @endforeach
                     </tbody>
                 </table>
-            </div>
-        </div>
+            </div>                
+        </div>            
     </div>
     <div class="modal-footer">
         <div class="button-container">
-            <a class="btn btn-link" data-dismiss="modal">Close</a>
+            <a class="btn btn-link btn-close" data-dismiss="modal">Close</a>
             <button class="btn btn-primary submit-to-server">
                 <i class="fa fa-save fa-btn"></i> <span class="ladda-label">Save Item</span>
             </button>
@@ -62,9 +64,36 @@
     </div>
 </form>
 
+<style type="text/css">
+    input[type=number]::-webkit-inner-spin-button, 
+    input[type=number]::-webkit-outer-spin-button 
+    { 
+      -webkit-appearance: none; 
+      margin: 0; 
+    }
+</style>
+
 <script type="text/javascript">
+    $(document).ready(function() {
+        $('#modalForm').on('submit', function (e) {
+            e.preventDefault();
+            REBEL.onSubmit($(this), function (responseData) {
+                REBEL.removeAllMessageAlert();
+                if (responseData.status == "ok") {
+                    REBEL.smallNotifTemplate(responseData.message, '.modal-content', 'success');
+                    $.get( '/snaps/{{ $snapFile->snap_id }}/snap-detail' , function(view){ 
+                        $(".snaps-detail").html(view);
+                    });
+                }             
+                setTimeout(function () {
+                    REBEL.removeAllMessageAlert();
+                }, 3000)
+            });
+        });
+    });
+
     $("modalForm").ready(function() {
-        
+
         $('form').on('focus', 'input[type=number]', function(e) {
           $(this).on('mousewheel.disableScroll', function(e) {
             e.preventDefault()
@@ -83,7 +112,7 @@
                 return;
             }
 
-            $('tbody#inputs').append('<tr id="input'+countOfTextbox+'"><td><a class="btn btn-box-tool" onclick="deleteTag('+countOfTextbox+')"><i class="fa fa-remove"></i></a></td><td width="300"><input type="text" name="newtag[name][]" class="form-control input-sm tag-name" placeholder="Product Name" required="required"></td><td width="100"><input type="number" name="newtag[qty][]" class="form-control input-sm" placeholder="QTY" required="required"></td><td width="200" class="text-right"><input type="number" name="newtag[total][]" class="form-control input-sm" placeholder="Total Price" required="required"><input type="hidden" name="newtag[fileId][]" value="{{ $snapFile->id }}"></td></tr>');
+            $('tbody#inputs').append('<tr id="input'+countOfTextbox+'"><td><a class="btn btn-box-tool" onclick="deleteTag('+countOfTextbox+')"><i class="fa fa-remove"></i></a></td><td width="300"><input type="text" name="newtag[name][]" class="form-control input-sm tag-name" placeholder="Product Name" required="required"></td><td width="100"><input type="number" name="newtag[qty][]" class="form-control input-sm" placeholder="QTY" required="required"></td><td width="200"><input type="number" name="newtag[total][]" class="form-control input-sm" placeholder="Total Price" required="required"><input type="hidden" name="newtag[fileId][]" value="{{ $snapFile->id }}"></td></tr>');
         });
 
         $('a#remove').on('click', function(e) {

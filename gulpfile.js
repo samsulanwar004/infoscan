@@ -30,6 +30,10 @@ elixir(mix => {
         ltePath + 'plugins/multiselect/bootstrap-multiselect.css'
     ], 'public/css/app.css');
 
+    mix.styles([
+        ltePath + 'css/taggd.css'
+    ], 'public/css/taggd.css');
+
     /*mix.webpack('app.js');*/
 
     mix.scripts([
@@ -53,6 +57,14 @@ elixir(mix => {
     ], 'public/js/admin.js');
 
     mix.scripts([
+        ltePath + 'plugins/tagged/taggd.js'
+    ], 'public/js/taggd.js');
+
+    mix.scripts([
+        ltePath + 'plugins/elevate/jquery.elevatezoom.js'
+    ], 'public/js/elevate.js');
+
+    mix.scripts([
         ltePath + 'js/html5shiv.js',
         ltePath + 'js/respond.js'
     ], 'public/js/ie-support.js');
@@ -67,9 +79,12 @@ elixir(mix => {
 
     mix.version([
         'css/app.css',
+        'css/taggd.css',
         'js/vendor.js',
         'js/admin.js',
         'js/ie-support.js',
-        'js/app.js'
+        'js/app.js',
+        'js/elevate.js',
+        'js/taggd.js',
     ]);
 });

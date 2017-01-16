@@ -2,7 +2,7 @@
     {{ csrf_field() }}
     {{ method_field('PUT') }}
     <div class="modal-header">
-        <a class="close" data-dismiss="modal">&times;</a>
+        <a class="close btn-modal-close" data-dismiss="modal">&times;</a>
         <h4><i class="fa fa-file-o fa-btn"></i> <span class="action-title">Snap </span> Confirmation</h4>
     </div>
     <div class="modal-body">
@@ -24,19 +24,22 @@
               <b>Member Name :</b> {{ $snap->member->name }}<br>
             </div>
             <!-- /.col -->
-            <div class="col-sm-4 invoice-col">
-                <div class="checkbox">
+            <div class="col-sm-2 invoice-col">
+                <div class="radio">
                     <label>
-                        <input name="approve" {{ (bool)$snap->approved_by ? 'checked' : '' }} type="checkbox">
+                        <input id="approve" value="approve" name="confirm" type="radio" {{ (bool)$snap->approved_by ? 'checked' : '' }} >
                         Approve
                     </label>
                 </div>
-                <div class="checkbox">
+                <div class="radio">
                     <label>
-                        <input name="check" {{ (bool)$snap->check_by ? 'checked' : '' }} type="checkbox">
-                        Check
+                        <input id="reject" value="reject" name="confirm" type="radio" {{ (bool)$snap->reject_by ? 'checked' : '' }} >
+                        Reject
                     </label>
                 </div>
+            </div>
+            <div class="col-sm-6 invoice-col">
+              <textarea name="comment" id="comment" class="form-control" rows="4" placeholder="Reason"></textarea>
             </div>
           </div>
           <!-- /.row -->
@@ -67,7 +70,7 @@
     </div>
     <div class="modal-footer">
         <div class="button-container">
-            <a class="btn btn-link" data-dismiss="modal">Close</a>
+            <a class="btn btn-link btn-modal-close" data-dismiss="modal">Close</a>
             <button class="btn btn-primary submit-to-server">
                 <i class="fa fa-save fa-btn"></i> <span class="ladda-label">Save</span>
             </button>
@@ -79,4 +82,27 @@
         </div>
     </div>
 </form>
+
+<script type="text/javascript">
+  $(document).ready(function() {
+      $('#modalForm').on('submit', function (e) {
+          e.preventDefault();
+          REBEL.onSubmit($(this), function (responseData) {
+            REBEL.removeAllMessageAlert();
+            if (responseData.status == "ok") {
+              REBEL.smallNotifTemplate(responseData.message, '.modal-content', 'success');
+            }
+          }, true);
+      });
+
+      $('#approve').on('click', function() {
+        $('#comment').removeAttr('required');
+      });
+
+      $('#reject').on('click', function() {
+        $('#comment').attr('required', 'required');
+      })
+  });
+
+</script>
 
