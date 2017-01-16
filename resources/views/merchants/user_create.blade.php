@@ -18,6 +18,12 @@
             <div class="box-header with-border">
                 <h3 class="box-title">
                 </h3>
+                                    @cando('Merchant.Reports')
+                                    <a href="{{ admin_route_url('merchants.edit', ['id' => $merchant->id]) }}"
+                                       class="btn btn-info">
+                                        <i class="fa fa-pencil"> </i>
+                                    </a>
+                                    @endcando
 
                 <div class="box-tools pull-right">
                     <a href="{{ admin_route_url('merchantusers.index') }}" class="btn btn-box-tool"
