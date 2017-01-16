@@ -32,7 +32,7 @@ return [
                 'type' => 'range',
                 'data' => [
                     'min' => 0,
-                    'max' => 1000000,
+                    'max' => 100,
                 ]
             ],
             'province' => [
@@ -52,7 +52,7 @@ return [
                 'type' => 'range',
                 'data' => [
                     'min' => 0,
-                    'max' => 1000000,
+                    'max' => 100,
                 ]
             ],
             'last_education' => [
@@ -112,7 +112,7 @@ return [
                 'type' => 'range',
                 'data' => [
                     'min' => 0,
-                    'max' => 3000,
+                    'max' => 1000,
                 ]
             ],
             'total_price_quantity' => [
