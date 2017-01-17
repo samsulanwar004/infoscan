@@ -18,8 +18,12 @@ class MerchantController extends AdminController
     public function index()
     {
         $this->isAllowed('Merchant.List');
-        $merchants = (new MerchantService)->getAllMerchant();
-
+        $lead = auth()->user()->id;
+        $merchant = new MerchantService;
+        $merchants = $this->isSuperAdministrator() ? 
+                        $merchant->getAllMerchant() : 
+                        $merchant->getMerchantByLead($lead);
+        dd($merchants);
         return view('merchants.index', compact('merchants'));
     }
 

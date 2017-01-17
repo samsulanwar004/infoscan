@@ -8,6 +8,7 @@ class Merchant extends Model
 {
     use SoftDeletes;
     protected $table = 'merchants';
+    protected $tableJoin = 'merchant_users';
     protected $fillable = [
         'merchant_code',
         'company_name',

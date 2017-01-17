@@ -11,6 +11,8 @@ class AdminController extends Controller
 {
     use UriTrait;
 
+    const SUPER_USER = 'Super Administrator';
+
     public function dashboard(Request $request)
     {
         return view('dashboard');
@@ -23,5 +25,10 @@ class AdminController extends Controller
     	}
 
     	return;
+    }
+
+    public function isSuperAdministrator()
+    {
+        return auth()->user()->hasRole(self::SUPER_USER);
     }
 }
