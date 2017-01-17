@@ -51,4 +51,9 @@ class User extends Authenticatable
     {
         return $this->hasOne(MerchantUser::class, 'user_id', 'id');
     }
+
+    public function userActivities()
+    {
+        return $this->hasMany(UserActivities::class, 'user_id', 'id')->limit(10);
+    }
 }

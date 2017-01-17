@@ -44,8 +44,14 @@
                                 {{ $user->name }} <br>
                                 <small>{{ $user->email }}</small>
                             </td>
-                            <td class="vertical-middle"><a href="#"><i class="fa fa-list-alt fa-btn"></i> See
-                                    activity</a></td>
+                            <td class="vertical-middle">
+                                <a href="{{ admin_route_url('users.activities', ['id' => $user->id]) }}" 
+                                    data-toggle="modal"
+                                    data-target="#">
+                                    <i class="fa fa-list-alt fa-btn"></i> See
+                                    activity
+                                </a>
+                            </td>
                             <td class="text-right vertical-middle">
                                 <div class="btn-group">
                                     @cando('User.Update')
