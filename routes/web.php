@@ -131,7 +131,7 @@ Route::group([
         'Web\HistoryController@showTransaction'
     )->name('transaction.show');
 
-    Route::resource(
+    /*Route::resource(
         '/reports',
         'Web\ReportsController',
         ['except' => ['show'], 'names' => route_resource_name($routePrefix, 'reports')]
@@ -155,7 +155,9 @@ Route::group([
     Route::get(
         '/reports/maps',
         'Web\ReportsController@maps'
-    )->name('reports.maps');
+    )->name('reports.maps');*/
+
+    Route::get('/reports', 'Web\ReportController@index')->name($routePrefix == null ? 'reports' : '.reports');
 });
 
 Auth::routes();

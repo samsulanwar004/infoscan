@@ -39,7 +39,7 @@
                                 {{ $item->description }}
                             </td>
                             <td>
-                                {{ $item->start_at }} - {{ $item->end_at }}
+                                {{ date_format(date_create($item->start_at), 'd M Y H:i:s') . ' - '. date_format(date_create($item->end_at), 'd M Y H:i:s') }}
                             </td>
                             <td>
                                 {{ $item->created_by }}
@@ -82,21 +82,28 @@
                                                 data-dismiss="modal"
                                                 aria-label="Close">
                                             <span aria-hidden="true">&times;</span></button>
-                                        <h4 class="modal-title dataquestionnairelabel">{{ $item->description }}</h4>
-                                        <p>Period: {{ $item->start_at }} - {{ $item->end_at }}</p>
+                                        <h4 class="modal-title dataquestionnairelabel"
+                                            style="margin-bottom: 10px;">{{ $item->description .' (Point: '.$item->total_point.')' }}</h4>
+                                        <p>
+                                            <i class="fa fa-calendar"></i> {{ date_format(date_create($item->start_at), 'd M Y H:i:s') . ' - '. date_format(date_create($item->end_at), 'd M Y H:i:s') }}
+                                            &nbsp;&nbsp;&nbsp;&nbsp;
+                                            <i class="fa fa-user"></i> {{ $item->created_by }}&nbsp;&nbsp;&nbsp;&nbsp;
+                                        </p>
                                     </div>
                                     <div class="modal-body">
                                         <ol>
                                             @foreach($item->questions as $question)
                                                 <li>
-                                                    <h5>{{ $question->description }}</h5>
-                                                    <ul>
-                                                        @foreach($question->answer as $answer)
-                                                            <li>
-                                                                {{ $answer->description }}
-                                                            </li>
-                                                        @endforeach
-                                                    </ul>
+                                                    <h5>{{ $question->description }} ({{ $question->type }})</h5>
+                                                    @if($question->type != 'input')
+                                                        <ul>
+                                                            @foreach($question->answer as $answer)
+                                                                <li>
+                                                                    {{ $answer->description }}
+                                                                </li>
+                                                            @endforeach
+                                                        </ul>
+                                                    @endif
                                                 </li>
                                             @endforeach
                                         </ol>

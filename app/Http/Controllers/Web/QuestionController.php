@@ -49,10 +49,12 @@ class QuestionController extends AdminController
         $input = $request->all();
         $input['questionnaire_question_code'] = strtolower(str_random(5));
         $question = QuestionnaireQuestion::create($input);
-        foreach ($input['answer'] as $answer) {
-            $inputanswer['description'] = $answer;
-            $inputanswer['question_id'] = $question->id;
-            QuestionnaireAnswer::create($inputanswer);
+        if ($input['type'] != 'input') {
+            foreach ($input['answer'] as $answer) {
+                $inputanswer['description'] = $answer;
+                $inputanswer['question_id'] = $question->id;
+                QuestionnaireAnswer::create($inputanswer);
+            }
         }
         if ($input['_from'] == 'question') {
             return redirect($this->redirectAfterSave)->with('success', 'Question successfully saved!');
@@ -72,12 +74,11 @@ class QuestionController extends AdminController
         try {
             $question = QuestionnaireQuestion::where('id', $id)->first();
             $input = $request->all();
-            if (!is_null($request->input('answer'))) {
+            if (!is_null($request->input('answer')) && $request->input('type') != 'input') {
                 $in = QuestionnaireAnswer::where('question_id', $id)->whereIn('description',
                     $request->input('answer'))->pluck('description');
                 $out = QuestionnaireAnswer::where('question_id', $id)->whereNotIn('description',
                     $request->input('answer'))->get();
-//                dd($out);
                 if (count($out) > 0) {
                     foreach ($out as $item) {
                         \DB::table('questionnaire_answers')->where('question_id',
@@ -93,8 +94,18 @@ class QuestionController extends AdminController
                         QuestionnaireAnswer::create($inputanswer);
                     }
                 }
+            } else {
+                $out = QuestionnaireAnswer::where('question_id', $id)->get();
+                if (count($out) > 0) {
+                    foreach ($out as $item) {
+                        \DB::table('questionnaire_answers')->where('question_id',
+                            $id)->where('id', $item->id)->update(array('deleted_at' => \DB::raw('NOW()')));
+                    }
+                }
             }
+
             $question->fill($input)->save();
+
         } catch (Exception $e) {
             return back()->with('errors', $e->getMessage());
         }

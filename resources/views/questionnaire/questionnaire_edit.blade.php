@@ -42,7 +42,7 @@
                         <div class="form-group has-feedback">
                             <label for="period">Period</label>
                             <input class="form-control" type="text" name="period" id="datepicker"
-                                   value="{{ $questionnaire->start_at }} - {{ $questionnaire->end_at }}"/>
+                                   value="{{ $questionnaire->start_at }} - {{ $questionnaire->end_at }}" readonly>
                         </div>
 
                         <div class="form-group has-feedback">
@@ -52,68 +52,147 @@
                                    placeholder="Enter point" required>
                         </div>
                         <br>
-                        {{--{{ dd($questionnaire->questions) }}--}}
                         <div id="questions">
-                            <h2>Questions</h2>
-                            <hr>
-                            @php
-                                $counter = 0;
-                            @endphp
-                            @foreach($questionnaire->questions as $item)
-                                @php
-                                    $counter++;
-                                @endphp
-                                <div class="question">
-                                    <h4 class="questiontitle">Question {{ $counter }}</h4>
-                                    <select name="question[]" class="form-control">
-                                        @foreach($questions as $question)
-                                            @if($item->id == $question->id)
-                                                <option value="{{ $question->id }}"
-                                                        selected>{{ $question->description }}</option>
-                                            @else
-                                                <option value="{{ $question->id }}">{{ $question->description }}</option>
-                                            @endif
-                                        @endforeach
+                            <div id="question_head">
+                                <h2 style="display: inline-block;">Questions</h2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <button style="display: inline-block;margin-bottom: 10px;" type="button"
+                                        class="btn btn-default btn-xs create_que" data-toggle="modal"
+                                        data-target="#question_form">
+                                    Create new question
+                                </button>
+                            </div>
+                            <div class="col-md-11">
+                                @if(count($questions) > 0)
+                                    <select name="question" class="input-lg form-control que">
+                                        <option id="selectdisable" disabled selected>Select question</option>
+                                        @if(count($questions) > 0)
+                                            @foreach($questions as $question)
+                                                <option value="{{ $question->id }}">{{ $question->description .' ('. $question->type.')' }}</option>
+                                            @endforeach
+                                        @endif
                                     </select>
-                                    <div class="show"></div>
-                                </div>
-                                <hr>
-                            @endforeach
+                                @endif
+                            </div>
+                            <div class="col-md-1">
+                                <a href="#selected-questions" class="btn btn-primary disabled" id="add-item">
+                                    <i class="fa fa-plus"></i>
+                                </a>
+                            </div>
                         </div>
-                    </div>
-                    <!-- /.box-body -->
-                    <div class="box-footer text-right">
-                        <div class="pull-left">
-                            <button class="btn btn-primary" id="addquestion">
-                                <i class="fa fa-plus fa-btn"></i>Add Question
-                            </button>
-                            <button class="btn btn-danger" id="removequestion">
-                                <i class="fa fa-minus fa-btn"></i>Remove Last Question
+                        <hr>
+                        <h5 style="padding-top: 20px;">Selected Questions</h5>
+                        <div id="selected-questions" class="well well-sm"></div>
+                        <!-- /.box-body -->
+
+                        <div class="box-footer text-right">
+                            <button type="submit" class="btn btn-primary" id="submit">
+                                <i class="fa fa-save fa-btn"></i> Save
                             </button>
                         </div>
-                        <button type="submit" class="btn btn-primary" id="submit">
-                            <i class="fa fa-save fa-btn"></i> Save
-                        </button>
-                    </div>
                 </form>
             </div>
             <div id="loading"></div>
         </div>
         <!-- /.box -->
+        <!-- modal -->
+        <div class="modal fade" id="question_form" role="form">
+            <div class="modal-dialog" style="background-color: white;">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title">Create new question</h4>
+                </div>
+                <div class="modal-body">
+                    @include('questionnaire.question_form_create', ['from' => 'questionnaire'])
+                </div>
+            </div>
+        </div>
 
+        <div class="modal fade" id="question_success" role="form">
+            <div class="modal-dialog" style="background-color: white;">
+                <div class="modal-body">
+                    <h4 style="text-align: center;">Question Submitted.</h4>
+                </div>
+                <div class="modal-footer">
+                    <button id="buttonCloseSubmitted" type="button" class="btn btn-default" data-dismiss="modal">Close
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- /.modal -->
     </section>
     <!-- /.content -->
 @endsection
-
+{{--{{ dd($questionnaire->questions) }}--}}
 @section('footer_scripts')
+    <link rel="stylesheet" type="text/css"
+          href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css">
+    <script type="text/javascript"
+            src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
     <script type="text/javascript">
 
-        var questioncounter = {{ count($questionnaire->questions) }} +1;
+        var questioncounter = 1;
+        var answercounter = 2;
+        var questionsIn = [];
+
+        var usedCount = {{ count($questionnaire->questions) }};
+        var usedFeatured = {{ json_encode($questionnaire->questions->pluck('id')) }};
 
         $(document).ready(function () {
+            currentFeatured();
+            checkInput();
+
+            $("select").select2();
+
+            updateQuestionCounter(true);
+            updateAnswerCounter(true);
+
+            $(document).on('click', 'button#addanswer', function (e) {
+                e.preventDefault();
+                $('div.answer').last().clone().appendTo('div#answers');
+                $('div.answer').last().find('input[type=text]').val('');
+                updateAnswerCounter(false);
+            });
+
+            $(document).on('click', 'button.removeanswer', function (e) {
+                e.preventDefault();
+                if (confirm('Are you sure want to delete answer?')) {
+                    $(this).closest('.answer').remove();
+                    updateAnswerCounter(true);
+                }
+            });
+
+            $('select[name=question]').on('change', function (e) {
+                if ($('select[name=question]').val() != null) {
+                    $('a#add-item').removeClass('disabled');
+                } else {
+                    $('a#add-item').addClass('disabled');
+                }
+            });
+
+            $('input').on('change', function () {
+                checkInput();
+            });
+
+            $('a#add-item').on('click', function () {
+                que_value = $('select[name=question]').val();
+                que_text = $('.select2-selection__rendered').attr('title');
+                updateQuestionCounter(false);
+                fill = '<div class="input-group selected-items" style="margin-top: 10px; margin-bottom: 10px;">' +
+                    '<input type="text" value="' + que_text + '" class="form-control" readonly>' +
+                    '<input type="hidden" name="question[]" value="' + que_value + '">' +
+                    '<a class="input-group-addon remove-item btn btn-danger" href="#"><i class="fa fa-remove"></i></a>' +
+                    '</div>';
+                $('#selected-questions').append(fill);
+                questionsIn.push(que_value);
+                $('select[name=question] option:selected').prop('disabled', 'disabled').trigger('change');
+                $('select[name=question] option#selectdisable').prop('selected', true).trigger('change');
+                $('select[name=question]').select2();
+            });
+
             $(document).on('focus', 'input#datepicker', function (e) {
                 e.preventDefault();
-                console.log('datepicker');
                 $('input[name="period"]').daterangepicker({
                     timePicker: true,
                     timePicker24Hour: true,
@@ -122,26 +201,93 @@
                     }
                 });
             });
-            console.log(questioncounter);
 
-            updateQuestionCounter(true);
-            console.log(questioncounter);
-            $(document).on('click', 'button#addquestion', function (e) {
-                e.preventDefault();
-                var counter = questioncounter + 1;
-                $('div.question').last().clone().appendTo('div#questions');
-                $('div.question h4').last().replaceWith('<h4 class="questiontitle">Question ' + counter + '</h4>');
-                updateQuestionCounter(false);
-                window.location.href = '#latest';
+            $(document).on('click', 'button.create_que', function (e) {
+                $('#question_form input[type=text]').val('');
             });
 
-            $(document).on('click', 'button#removequestion', function (e) {
+            $(document).on('click', 'button#submit_question', function (e) {
                 e.preventDefault();
-                if (confirm('Are you sure want to delete question?')) {
-                    $('div.question').last().remove();
-                    updateQuestionCounter(true);
+
+                var answers_field = $('input:text.input_answer').serializeArray();
+                var answers = {};
+                $.each(answers_field, function (key, value) {
+                    answers[key] = (value.value);
+                });
+
+                var formData = {
+                    'description': $('input#answer_desc').val(),
+                    'type': $('input[name=type]:checked').val(),
+                    'answer': answers,
+                    '_from': $('input[name=_from]').val(),
+                    '_token': $('input[name=_token]').val()
+                };
+
+                $.ajax({
+                    type: 'POST',
+                    url: '{{ url('questions') }}',
+                    data: formData,
+                    dataType: 'json',
+                    encode: true
+                }).done(function (data) {
+                    $('select[name=question]').append('<option value="' + data['id'] + '">' + data['description'] + ' (' + data['type'] + ')</option>').trigger('change');
+                    $('select[name=question] option:last-child').prop('selected', true).trigger('change');
+                    $('#question_form').modal('toggle');
+                    $('#question_success').modal('toggle');
+                });
+            });
+
+            $('#question_form input[type=radio]').change(function () {
+                var value = $('input[name=type]:checked').val();
+                if (value == 'input') {
+                    $('div#answers').hide();
+                    $('button#addanswer').prop('disabled', true);
+                } else {
+                    $('div#answers').show();
+                    $('button#addanswer').prop('disabled', false);
                 }
             });
+
+            $('button#buttonCloseSubmitted').click(function () {
+                answercounter = 1;
+                $('div.answer').slice(1).remove();
+            });
+
+            $(document).on('click', 'a.remove-item', function (e) {
+                e.preventDefault();
+                if (confirm('Are you sure to remove this question?')) {
+                    updateQuestionCounter(true);
+                    rem_val = $(this).parent().find('input[type=hidden]').val();
+                    questionsIn = jQuery.grep(questionsIn, function (value) {
+                        return value != rem_val;
+                    });
+
+                    $(this).closest('.selected-items').remove();
+                    $('select option[value=' + rem_val + ']').attr('disabled', false);
+                    $('select').select2();
+                    checkInput();
+                }
+            });
+
+            function currentFeatured() {
+                var name = '';
+                if (usedCount > 0) {
+                    usedOptions = [];
+                    for (i = 0; i < usedCount; i++) {
+                        que_text = $('select[name=question] option[value=' + usedFeatured[i] + ']').text();
+                        updateQuestionCounter(false);
+                        fill = '<div class="input-group selected-items" style="margin-top: 10px; margin-bottom: 10px;">' +
+                            '<input type="text" value="' + que_text + '" class="form-control" readonly>' +
+                            '<input type="hidden" name="question[]" value="' + usedFeatured[i] + '">' +
+                            '<a class="input-group-addon remove-item btn btn-danger" href="#"><i class="fa fa-remove"></i></a>' +
+                            '</div>';
+                        $('#selected-questions').append(fill);
+                        questionsIn.push(usedFeatured[i]);
+                        $('select[name=question] option[value=' + usedFeatured[i] + ']').prop('disabled', 'disabled').trigger('change');
+                        $('select[name=question]').select2();
+                    }
+                }
+            }
         });
 
         function updateQuestionCounter(isRemove) {
@@ -151,12 +297,37 @@
                 questioncounter = questioncounter + 1;
             }
 
-            if (questioncounter > 1) {
-                $("button#removequestion").prop("disabled", false);
+            if (questioncounter == 0) {
+                $('#selected-questions').append('<h5 id="empty">Empty.</h5>');
             } else {
-                $("button#removequestion").prop("disabled", true);
+                $('h5#empty').remove();
+            }
+
+            checkInput();
+        }
+
+        function updateAnswerCounter(isRemove) {
+            if (isRemove) {
+                answercounter = answercounter - 1;
+            } else {
+                answercounter = answercounter + 1;
+            }
+
+            if (answercounter > 1) {
+                $("button.removeanswer").prop("disabled", false);
+            } else {
+                $("button.removeanswer").prop("disabled", true);
             }
         }
+
+        function checkInput() {
+            if ($('input[name=description]').val() == '' || $('input[name=period]').val() == '' || $('input[name=total_point]').val() == '' || questioncounter < 1) {
+                $('button#submit').attr('disabled', true);
+            } else {
+                $('button#submit').attr('disabled', false);
+            }
+        }
+
 
     </script>
 @endsection
