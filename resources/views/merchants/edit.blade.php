@@ -22,6 +22,12 @@
                 </h3>
 
                 <div class="box-tools pull-right">
+                    @cando('Merchant.Reports')
+                        <a href="#"
+                            class="">
+                            Setting Reports </i>
+                        </a>
+                    @endcando
                     <a href="{{ admin_route_url('merchants.index') }}" class="btn btn-box-tool"
                        data-toggle="tooltip" title="Back">
                         <i class="fa fa-times"></i></a>
