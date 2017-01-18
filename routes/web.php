@@ -86,6 +86,11 @@ Route::group([
     );
 
     Route::get(
+        '/users/{id}/activities',
+        'Web\UserController@activities'
+    )->name('users.activities');
+
+    Route::get(
         '/snaps/{id}/edit-snap-file',
         'Web\SnapController@editSnapFile'
     )->name('snaps.editSnapFile');

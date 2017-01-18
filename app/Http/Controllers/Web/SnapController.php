@@ -111,6 +111,12 @@ class SnapController extends AdminController
             'newtag.name.*' => 'required|max:255',
             'newtag.qty.*' => 'required|max:11',
             'newtag.total.*' => 'required|max:15',
+            'comment' => 'max:100',
+            'outlet_name' => 'max:100',
+            'location' => 'max:100',
+            'receipt_id' => 'max:100',
+            'longitude' => 'max:100',
+            'latitude' => 'max:100',
         ]);
 
         try {
@@ -138,7 +144,7 @@ class SnapController extends AdminController
             ], 500);
         }
 
-        $mode = ($request->has('mode') == true) ? $request->input('mode') : "Confirmation";
+        $mode = ($request->has('mode') == true) ? $request->input('mode') : "";
         return response()->json([
             'status' => 'ok',
             'message' => 'Snaps '.$mode.' successfully updated!',
