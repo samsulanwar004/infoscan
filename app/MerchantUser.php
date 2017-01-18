@@ -25,7 +25,7 @@ class MerchantUser extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function user()
+    public function lead()
     {
         return $this->belongsTo(User::class, 'lead_by');
     }
