@@ -23,7 +23,6 @@ class MerchantController extends AdminController
         $merchants = $this->isSuperAdministrator() ? 
                         $merchant->getAllMerchant() : 
                         $merchant->getMerchantByLead($lead);
-        dd($merchants);
         return view('merchants.index', compact('merchants'));
     }
 

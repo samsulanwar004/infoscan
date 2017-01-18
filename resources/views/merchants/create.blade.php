@@ -8,6 +8,9 @@
             'Create' => false]
         ]
     )
+    <?php 
+        $configurations = config('common.report_settings.fields'); 
+    ?>
     <!-- Main content -->
     <section class="content">
         <!-- Default box -->
@@ -15,7 +18,7 @@
             <div class="box-header with-border">
                 <h3 class="box-title"></h3>
                 <div class="box-tools pull-right">
-                    <a href="{{ admin_route_url('merchants.index') }}" class="btn btn-box-tool" data-toggle="tooltip" title="Back"> 
+                    <a href="{{ admin_route_url('merchants.index') }}" class="btn btn-box-tool" data-toggle="tooltip" title="Back">
                         <i class="fa fa-times"></i>
                     </a>
                 </div>
@@ -65,6 +68,11 @@
                                         <label for="email">Email</label>
                                         <input type="email" class="form-control" name="user[email][]" id="email" value="{{ old('user.email.' . $i) }}" placeholder="Enter email" required>
                                     </div>
+                                    @cando('Merchant.Reports')
+                                        <div class="form-group has-feedback">
+                                            <a class="btn btn-default btn-modal" href="javascript:void(0)"><i class="fa fa-btn fa-filter"></i> Setting Reports</a>
+                                        </div>
+                                    @endcando
                                 </div>
                             @endfor
                         </div>
@@ -81,13 +89,63 @@
                 </form>
             </div>
             <div id="loading"></div>
+            <div class="modal fade" tabindex="-1" role="dialog">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title">Filter</h4>
+                        </div>
+                        <div class="modal-body" style="padding-bottom: 1px;">
+                            <div class="checkbox-list">
+                                @foreach($configurations as $field => $label)
+                                    <div class="row bg-soft">
+                                        <div class="col-md-6 d4-border-top" style="min-height: 45px; padding-top: 15px;">
+                                            <div class="checkbox">
+                                                <label><input checked type="checkbox" class="column-list" checkboxIndex="{{ $loop->index }}">{{ $label['label'] }}</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 d4-border-top" style="padding-top: 15px;">
+                                            <div class="form-group checkbox-input-{{ $loop->index }}">
+                                                <?php
+                                                    $options = [
+                                                        'class' => sprintf("%s %s", 'input-sm form-control', $label['type'])
+                                                    ];
+                                                    if('range' === $label['type']) {
+                                                        $options['data-min'] = $label['data']['min'];
+                                                        $options['data-max'] = $label['data']['max'];
+                                                    }
+                                                    if('multiple' === $label['type']) {
+                                                        $options['style'] = 'width: 100%;';
+                                                        $options['multiple'] = 'multiple';   
+                                                    }
+                                                    if('single' === $label['type']) {
+                                                        $options['style'] = 'width: 100%;';
+                                                    }
+                                                ?>
+                                                {!! \RebelField::type($label['type'], $field, [], [], $options) !!}
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <a href="#" class="btn-link" data-dismiss="modal">Close</a>
+                            <button type="submit" class="btn btn-primary">Save Setting</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
         <!-- /.box -->
     </section>
     <!-- /.content -->
 @endsection
 @section('footer_scripts')
-    <script>
+    <link rel="stylesheet" href="{{ elixir('css/report-vendor.css') }}" />
+    <script type="text/javascript" src="{{ elixir('js/report-vendor.js') }}"></script>
+    <script type="text/javascript">
         var counterform = 2;
         function updateCounterForm(isRemove) {
             if (isRemove) {
@@ -127,6 +185,68 @@
         function myLoading() {
             $('#loading').addClass('overlay');
             document.getElementById("loading").innerHTML = '<i class="fa fa-spinner fa-spin" style="font-size:50px; position: fixed;"></i>';
+        }
+        $(document).ready(function() {
+            whenLoaded();
+            $('.range').each(function(i, obj) {
+                buildRangeSlider($(obj));
+            });
+            $('.multiple, .single').select2();
+            $('.btn-modal').on('click', function(e) {
+                e.preventDefault();
+                $('.modal').modal('show');
+            })
+            $('.datepicker').daterangepicker({
+                timePicker: false,
+                timePicker24Hour: false,
+                minDate: -0,
+                maxDate: "<?php echo \Carbon\Carbon::today()->toDateString(); ?>",
+                locale: {
+                    format: 'YYYY-MM-DD'
+                }
+            });
+            $('.column-list').on('change', function() {
+                var checkboxIndex = $(this).attr('checkboxIndex');
+                var checkboxInput = $('.checkbox-input-' + checkboxIndex);
+                if($(this).is(':checked')) {
+                    showHideColumn('reportTable', checkboxIndex, true);
+                    checkboxInput.show();
+                    $(this).parents('.row').addClass('bg-soft');
+                } else {
+                    showHideColumn('reportTable', checkboxIndex, false);
+                    checkboxInput.hide();
+                    $(this).parents('.row').removeClass('bg-soft');
+                }
+            });
+        });
+        function whenLoaded() {
+            //console.log(Cookies.get('reports'));
+            var $cookies = Cookies.get('reportFilters');
+            if(!$cookies) {
+                Cookies.set('reportFilters', 'getCookies', { path: '/reports' });
+                return;
+            } else {
+                console.log($cookies);
+            }
+        }
+        function buildRangeSlider(selector) {
+            var selector = $(".range"),
+            $min = selector.attr('data-min'),
+            $max = selector.attr('data-max'),
+            slider;
+            var create = function () {
+                selector.ionRangeSlider({
+                    type: "double",
+                    hide_min_max: true,
+                    keyboard: true,
+                    min: $min,
+                    max: $max,
+                    //from: 1000,
+                    grid: true
+                });
+                slider = selector.data("ionRangeSlider");
+            };
+            return create();
         }
     </script>
 @endsection
