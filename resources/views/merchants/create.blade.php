@@ -8,9 +8,9 @@
             'Create' => false]
         ]
     )
-    <?php 
-        $configurations = config('common.reports.fields'); 
-        $ignoredFields = config('common.reports.ignored_fields'); 
+    <?php
+        $configurations = config('common.reports.fields');
+        $ignoredFields = config('common.reports.ignored_fields');
     ?>
     <!-- Main content -->
     <section class="content">
@@ -91,7 +91,7 @@
             </div>
             <div id="loading"></div>
             <div class="modal fade" tabindex="-1" role="dialog">
-                <form id="settingReportsForm" role="form" action="{{ admin_route_url('merchants.addSettingReports') }}" method="post" class="form" accept-charset="utf-8">
+                <form id="settingReportsForm" role="form" action="{{ admin_route_url('merchants.settingReports') }}" method="post" class="form" accept-charset="utf-8">
                     {{ csrf_field() }}
                     <div class="modal-dialog modal-lg" role="document">
                         <div class="modal-content">
@@ -111,23 +111,33 @@
                                                 </div>
                                                 <div class="col-md-6 d4-border-top" style="padding-top: 15px;">
                                                     <div class="form-group checkbox-input-{{ $loop->index }}">
-                                                        <?php
+                                                        @php
+                                                            $elementType = $label['type'];
                                                             $options = [
-                                                                'class' => sprintf("%s %s", 'input-sm form-control', $label['type'])
+                                                                'class' => sprintf("%s %s", 'input-sm form-control', $elementType)
                                                             ];
-                                                            if('range' === $label['type']) {
+                                                            if('range' === $elementType) {
                                                                 $options['data-min'] = $label['data']['min'];
                                                                 $options['data-max'] = $label['data']['max'];
                                                             }
-                                                            if('multiple' === $label['type']) {
+
+                                                            if('multiple' === $elementType) {
                                                                 $options['style'] = 'width: 100%;';
-                                                                $options['multiple'] = 'multiple';   
+                                                                $options['multiple'] = 'multiple';
                                                             }
-                                                            if('single' === $label['type']) {
+
+                                                            if('single' === $elementType) {
                                                                 $options['style'] = 'width: 100%;';
                                                             }
-                                                        ?>
-                                                        {!! \RebelField::type($label['type'], $field, [], [], $options) !!}                                                    
+
+                                                            if('dateRange' === $elementType) {
+                                                                $options['date-min'] = $label['data']['min'];
+                                                                $options['date-max'] = $label['data']['max'];
+                                                                $options['date-format'] = $label['data']['format'];
+                                                                $elementType = 'input';
+                                                            }
+                                                        @endphp
+                                                        {!! \RebelField::type($elementType, $field, [], [], $options) !!}
                                                     </div>
                                                 </div>
                                             </div>
@@ -197,11 +207,18 @@
             $('.range').each(function(i, obj) {
                 buildRangeSlider($(obj));
             });
+
+            $('.dateRange').each(function(i, obj) {
+                buildDateRange($(obj));
+            });
+
             $('.multiple, .single').select2();
+
             $('.btn-modal').on('click', function(e) {
                 e.preventDefault();
                 $('.modal').modal('show');
             })
+
             $('.column-list').on('change', function() {
                 var checkboxIndex = $(this).attr('checkboxIndex');
                 var checkboxInput = $('.checkbox-input-' + checkboxIndex);
@@ -215,6 +232,7 @@
                     $(this).parents('.row').removeClass('bg-soft');
                 }
             });
+
             $('#settingReportsForm').on('submit', function (e) {
                 e.preventDefault();
                 REBEL.onSubmit($(this), function (responseData) {
@@ -226,9 +244,10 @@
                     setTimeout(function () {
                         REBEL.removeAllMessageAlert();
                     }, 3000)
-                });            
+                });
             });
         });
+
         function whenLoaded() {
             //console.log(Cookies.get('reports'));
             var $cookies = Cookies.get('reportFilters');
@@ -239,6 +258,7 @@
                 console.log($cookies);
             }
         }
+
         function buildRangeSlider(selector) {
             var selector = $(".range"),
             $min = selector.attr('data-min'),
@@ -257,6 +277,27 @@
                 slider = selector.data("ionRangeSlider");
             };
             return create();
+        }
+
+        function buildDateRange(selector) {
+            var $min = selector.attr('date-min'),
+                $max = selector.attr('date-max'),
+                $format = selector.attr('date-format');
+
+            $(selector).daterangepicker({
+                timePicker: false,
+                drops: "up",
+                timePicker24Hour: false,
+                showDropdowns: true,
+                autoApply: true,
+                alwaysShowCalendars: true,
+                minDate: $min,
+                maxDate: $max,
+                cancelClass: "btn-danger",
+                locale: {
+                    format: 'YYYY-MM-DD'
+                }
+            });
         }
     </script>
 @endsection

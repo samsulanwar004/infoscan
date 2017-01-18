@@ -131,37 +131,15 @@ Route::group([
         'Web\HistoryController@showTransaction'
     )->name('transaction.show');
 
-    /*Route::resource(
+    Route::get(
         '/reports',
-        'Web\ReportsController',
-        ['except' => ['show'], 'names' => route_resource_name($routePrefix, 'reports')]
-    );
+        'Web\ReportController@index'
+    )->name($routePrefix == null ? 'reports' : '.reports');
 
-    Route::post('/reports/filters', 'Web\ReportsController@filters')->name('reports.filters');
-
-    Route::get(
-        '/reports/formatPdf',
-        'Web\ReportsController@formatPdf'
-    )->name('reports.formatPdf');
-
-    Route::get(
-        '/reports/formatExcel',
-        'Web\ReportsController@formatExcel'
-    );
-
-    Route::get(
-        '/reports/formatWord',
-        'Web\ReportsController@formatWord'
-    );
-
-    Route::get(
-        '/reports/maps',
-        'Web\ReportsController@maps'
-    )->name('reports.maps');*/
-
-    Route::get('/reports', 'Web\ReportController@index')->name($routePrefix == null ? 'reports' : '.reports');
-
-    Route::post('/merchants/settingReports', 'Web\MerchantController@settingReports')->name('merchants.settingReports');    
+    Route::post(
+        '/merchants/settingReports',
+        'Web\MerchantController@settingReports'
+    )->name($routePrefix == null ? 'merchants.settingReports' : '.merchants.settingReports');
 });
 
 Auth::routes();

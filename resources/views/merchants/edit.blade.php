@@ -8,9 +8,9 @@
             'Edit' => false]
         ]
     )
-    <?php 
-        $configurations = config('common.reports.fields'); 
-        $ignoredFields = config('common.reports.ignored_fields'); 
+    <?php
+        $configurations = config('common.reports.fields');
+        $ignoredFields = config('common.reports.ignored_fields');
     ?>
     <!-- Main content -->
     <section class="content">
@@ -19,7 +19,7 @@
             <div class="box-header with-border">
                 <h3 class="box-title"></h3>
                 <div class="box-tools pull-right">
-                    @cando('Setting.Reports')
+                    @cando('Merchant.Reports')
                     <a href="#"> <i class="fa fa-btn fa-cog"></i> Setting Reports</a>
                     @endcando
                     <a href="{{ admin_route_url('merchants.index') }}" class="btn btn-box-tool"
@@ -156,7 +156,7 @@
             </div>
             <div id="loading"></div>
             <div class="modal fade" tabindex="-1" role="dialog">
-                <form id="settingReportsForm" role="form" action="{{ admin_route_url('merchants.editSettingReports') }}" method="post" class="form" accept-charset="utf-8">
+                <form id="settingReportsForm" role="form" action="{{ admin_route_url('merchants.settingReports') }}" method="post" class="form" accept-charset="utf-8">
                     {{ csrf_field() }}
                     <div class="modal-dialog modal-lg" role="document">
                         <div class="modal-content">
@@ -164,7 +164,7 @@
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                                 <h4 class="modal-title">Setting Reports</h4>
                             </div>
-                            <div class="modal-body" style="padding-bottom: 1px;">                            
+                            <div class="modal-body" style="padding-bottom: 1px;">
                                 <div class="checkbox-list">
                                     @foreach($configurations as $field => $label)
                                         @if(! in_array($field, $ignoredFields))
@@ -186,7 +186,7 @@
                                                             }
                                                             if('multiple' === $label['type']) {
                                                                 $options['style'] = 'width: 100%;';
-                                                                $options['multiple'] = 'multiple';   
+                                                                $options['multiple'] = 'multiple';
                                                             }
                                                             if('single' === $label['type']) {
                                                                 $options['style'] = 'width: 100%;';
@@ -307,7 +307,7 @@
                     setTimeout(function () {
                         REBEL.removeAllMessageAlert();
                     }, 3000)
-                });            
+                });
             });
         });
         function whenLoaded() {

@@ -133,18 +133,20 @@ return [
             ],
             'purchase_time' => [
                 'label' => 'Purchase Time',
-                'type' => 'range',
+                'type' => 'dateRange',
                 'data' => [
-                    'min' => 0,
-                    'max' => 3000,
+                    'min' => -0,
+                    'max' => \Carbon\Carbon::today()->toDateString(),
+                    'format' => 'YYYY-MM-DD',
                 ]
             ],
             'sent_time' => [
-                'label' => 'Time Sent',
-                'type' => 'range',
+                'label' => 'Purchase Time',
+                'type' => 'dateRange',
                 'data' => [
-                    'min' => 0,
-                    'max' => 3000,
+                    'min' => -0,
+                    'max' => \Carbon\Carbon::today()->toDateString(),
+                    'format' => 'YYYY-MM-DD',
                 ]
             ],
             //'monthly_expense' => 'Monthly Expense',
