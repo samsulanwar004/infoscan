@@ -148,6 +148,9 @@ return [
                 ]
             ],
             //'monthly_expense' => 'Monthly Expense',
+        ],
+        'ignored_fields' => [
+            'user_id'
         ]
     ]
 ];
