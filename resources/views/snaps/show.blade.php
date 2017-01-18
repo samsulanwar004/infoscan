@@ -52,13 +52,14 @@
                             <a href="{{ admin_route_url('snaps.edit', ['id' => $snap->id]) }}" class="btn btn-success btn-block btn-lg"
                                 data-toggle="modal"
                                 data-target="#"
-                                modal-size="modal-lg" 
+                                modal-size="modal-lg"
                                 title="Edit">
-                                <i class="fa fa-check-circle-o fa-btn"></i>Approve This Content</a>  
+                                <i class="fa fa-check-circle-o fa-btn"></i>Approve This Content</a>
+
                             <div class="snaps-detail">
                                 @include('snaps.show_detail', ['snap' => $snap])
-                            </div>   
-                        </div>                     
+                            </div>
+                        </div>
                 </div>
             </div>
         </div>
@@ -92,7 +93,7 @@
 
 </script>
 <style type="text/css">
-    img.img-tag 
+    img.img-tag
     {
         cursor: pointer;
     }
