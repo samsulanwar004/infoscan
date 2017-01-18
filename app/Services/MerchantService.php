@@ -221,4 +221,12 @@ class MerchantService {
     {
         return Role::where('role_name', '=', 'Vendor Account')->first();
     }
+
+    public function getFilter($request, $id = null)
+    {
+        $name = strtolower(str_random(10));
+        $m->save();
+
+        return $m;
+    }    
 }

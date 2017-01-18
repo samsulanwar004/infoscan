@@ -160,6 +160,8 @@ Route::group([
     )->name('reports.maps');*/
 
     Route::get('/reports', 'Web\ReportController@index')->name($routePrefix == null ? 'reports' : '.reports');
+
+    Route::post('/merchants/filterStore', 'Web\MerchantController@filterStore')->name('merchants.filterStore');    
 });
 
 Auth::routes();

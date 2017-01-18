@@ -172,5 +172,29 @@ class MerchantController extends AdminController
 
         return redirect($this->redirectAfterSave)->with('success', 'Merchant successfully deleted!');
     }
+
+    public function filterStore(Request $request) 
+    {
+        $merchants = new MerchantService;
+
+        try {
+            \DB::beginTransaction();
+            $merchant = $merchants->filterStore($request);
+            $users = $merchants->createNewUser($request);
+            $merchants->persistData($merchant, $users);
+            \DB::commit();
+        } catch (\Exception $e) {
+            \DB::rollback();
+
+            logger($e);
+            return back()->with('errors', $e->getMessage());
+        }
+
+        return redirect($this->redirectAfterSave)->with('success', 'Merchant successfully saved!');        
+
+        $filter = $request->all();
+        $filterJson = json_encode($filter);
+        dd($filterJson);
+    }
         
 }

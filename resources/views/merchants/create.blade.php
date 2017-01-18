@@ -90,52 +90,55 @@
             </div>
             <div id="loading"></div>
             <div class="modal fade" tabindex="-1" role="dialog">
-                <div class="modal-dialog modal-lg" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                            <h4 class="modal-title">Filter</h4>
-                        </div>
-                        <div class="modal-body" style="padding-bottom: 1px;">
-                            <div class="checkbox-list">
-                                @foreach($configurations as $field => $label)
-                                    <div class="row bg-soft">
-                                        <div class="col-md-6 d4-border-top" style="min-height: 45px; padding-top: 15px;">
-                                            <div class="checkbox">
-                                                <label><input checked type="checkbox" class="column-list" checkboxIndex="{{ $loop->index }}">{{ $label['label'] }}</label>
+                <form role="form" action="{{ admin_route_url('merchants.filterStore') }}" method="post" enctype="multipart/form-data" class="form" accept-charset="utf-8" onsubmit="myLoading()">
+                    {{ csrf_field() }}
+                    <div class="modal-dialog modal-lg" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                <h4 class="modal-title">Filter</h4>
+                            </div>
+                            <div class="modal-body" style="padding-bottom: 1px;">
+                                <div class="checkbox-list">
+                                    @foreach($configurations as $field => $label)
+                                        <div class="row bg-soft">
+                                            <div class="col-md-6 d4-border-top" style="min-height: 45px; padding-top: 15px;">
+                                                <div class="checkbox">
+                                                    <label><input checked type="checkbox" class="column-list" checkboxIndex="{{ $loop->index }}">{{ $label['label'] }}</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 d4-border-top" style="padding-top: 15px;">
+                                                <div class="form-group checkbox-input-{{ $loop->index }}">
+                                                    <?php
+                                                        $options = [
+                                                            'class' => sprintf("%s %s", 'input-sm form-control', $label['type'])
+                                                        ];
+                                                        if('range' === $label['type']) {
+                                                            $options['data-min'] = $label['data']['min'];
+                                                            $options['data-max'] = $label['data']['max'];
+                                                        }
+                                                        if('multiple' === $label['type']) {
+                                                            $options['style'] = 'width: 100%;';
+                                                            $options['multiple'] = 'multiple';   
+                                                        }
+                                                        if('single' === $label['type']) {
+                                                            $options['style'] = 'width: 100%;';
+                                                        }
+                                                    ?>
+                                                    {!! \RebelField::type($label['type'], $field, [], [], $options) !!}
+                                                </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-6 d4-border-top" style="padding-top: 15px;">
-                                            <div class="form-group checkbox-input-{{ $loop->index }}">
-                                                <?php
-                                                    $options = [
-                                                        'class' => sprintf("%s %s", 'input-sm form-control', $label['type'])
-                                                    ];
-                                                    if('range' === $label['type']) {
-                                                        $options['data-min'] = $label['data']['min'];
-                                                        $options['data-max'] = $label['data']['max'];
-                                                    }
-                                                    if('multiple' === $label['type']) {
-                                                        $options['style'] = 'width: 100%;';
-                                                        $options['multiple'] = 'multiple';   
-                                                    }
-                                                    if('single' === $label['type']) {
-                                                        $options['style'] = 'width: 100%;';
-                                                    }
-                                                ?>
-                                                {!! \RebelField::type($label['type'], $field, [], [], $options) !!}
-                                            </div>
-                                        </div>
-                                    </div>
-                                @endforeach
+                                    @endforeach
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <a href="#" class="btn-link" data-dismiss="modal">Close</a>
+                                <button type="submit" class="btn btn-primary">Save Setting</button>
                             </div>
                         </div>
-                        <div class="modal-footer">
-                            <a href="#" class="btn-link" data-dismiss="modal">Close</a>
-                            <button type="submit" class="btn btn-primary">Save Setting</button>
-                        </div>
                     </div>
-                </div>
+                </form>
             </div>
         </div>
         <!-- /.box -->
