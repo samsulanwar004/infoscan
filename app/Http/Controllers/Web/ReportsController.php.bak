@@ -72,6 +72,13 @@
             return view('reports.index', compact('reports', 'startDate', 'endDate', 'dataReports1', 'dataReports2', 'dataReports3', 'dataReports4', 'dataReports5', 'dataReports6', 'dataReports7', 'dataReports8', 'dataReports9', 'dataReports10'));
         }
 
+        public function filters(Request $request) {
+            $snapDate = $request->all();
+            $startDate = $snapDate['startDate'];
+            $endDate = $snapDate['endDate'];
+            return redirect()->action('Web\ReportsController@index', compact('startDate', 'endDate'));
+        }
+
         public function store(Request $request) {
             $snapDate = $request->all();
             $startDate = $snapDate['startDate'];

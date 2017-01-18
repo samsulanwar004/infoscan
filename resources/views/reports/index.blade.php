@@ -52,7 +52,6 @@
                 </div>
             </div>
         </div>
-        <!-- /.box -->
 
     </section>
     <!-- /.content -->
@@ -110,6 +109,7 @@
                                         if('multiple' === $label['type']) {
                                             $options['style'] = 'width: 100%;';
                                             $options['multiple'] = 'multiple';
+                                            
                                         }
 
                                         if('single' === $label['type']) {

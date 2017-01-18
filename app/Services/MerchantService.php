@@ -22,9 +22,14 @@ class MerchantService {
 
     public function getAllMerchant()
     {
-    	$m = Merchant::paginate();
+        return Merchant::paginate();
+    }
 
-    	return $m;
+    public function getMerchantByLead($leadId)
+    {
+        return Merchant::join('merchant_users as mu', 'merchants.id', '=', 'mu.merchant_id')
+                         ->where('mu.lead_by', '=', $leadId)
+                         ->paginate();
     }
 
     public function getMerchantById($id)
@@ -40,6 +45,13 @@ class MerchantService {
 
     	return $mu;
     }
+
+    /*public function getMerchantLeadById($id)
+    {
+        $mu = MerchantUser::with('user')->where('lead_by', '=', $id)->get();
+
+        return $mu;
+    }*/
 
     public function countOfUserInput(Request $request)
     {
@@ -59,6 +71,7 @@ class MerchantService {
             $mu = new MerchantUser;
             $mu->merchant()->associate($merchant);
             $mu->user()->associate($user);
+            $mu->lead()->associate(Auth::user()->id);
 
             $mu->save();
         }
@@ -181,7 +194,9 @@ class MerchantService {
                     ->queue(new MailMerchantUser($u, $passwordStr));
 
                 // add to merchant user
+
                 $mu = MerchantUser::create(['merchant_id' => $merchantId, 'user_id' => $u->id]);
+                dd($mu);
             }
         }
 
