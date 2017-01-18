@@ -31,7 +31,7 @@ return [
                 'label' => 'Age',
                 'type' => 'range',
                 'data' => [
-                    'min' => 0,
+                    'min' => 17,
                     'max' => 100,
                 ]
             ],
@@ -51,13 +51,13 @@ return [
                 'label' => 'Person in House',
                 'type' => 'range',
                 'data' => [
-                    'min' => 0,
-                    'max' => 100,
+                    'min' => 1,
+                    'max' => 5,
                 ]
             ],
             'last_education' => [
                 'label' => 'Latest Education',
-                'type' => 'range',
+                'type' => 'multiple',
                 'data' => [
                     'min' => 0,
                     'max' => 1000000,

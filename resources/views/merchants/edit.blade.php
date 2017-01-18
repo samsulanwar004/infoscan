@@ -18,9 +18,12 @@
             <div class="box-header with-border">
                 <h3 class="box-title"></h3>
                 <div class="box-tools pull-right">
-                    <a href="{{ admin_route_url('merchants.index') }}" class="btn btn-box-tool" data-toggle="tooltip" title="Back">
-                        <i class="fa fa-times"></i>
-                    </a>
+                    @cando('Setting.Reports')
+                    <a href="#"> <i class="fa fa-btn fa-cog"></i> Setting Reports</a>
+                    @endcando
+                    <a href="{{ admin_route_url('merchants.index') }}" class="btn btn-box-tool"
+                       data-toggle="tooltip" title="Back">
+                        <i class="fa fa-times"></i></a>
                 </div>
             </div>
             <div class="box-body" id="form-body">

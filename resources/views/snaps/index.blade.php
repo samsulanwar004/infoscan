@@ -15,12 +15,12 @@
             <div class="box-header with-border form-inline" style="overflow: hidden; height: 45px;">
 
                 <div class="box-tools pull-right ">
-                    Filter Snap type: 
+                    Filter Snap type:
                     <select class="form-control snap-type">
                         <option value="all">All</option>
                         @foreach($snapCategorys as $id => $name)
                             <option value="{{$id}}" id="{{$id}}">{{$name}}</option>
-                        @endforeach                                                                   
+                        @endforeach
                     </select>
 
                     Filter Mode type:
@@ -28,7 +28,7 @@
                         <option value="all">All</option>
                         @foreach($snapCategoryModes as $id => $name)
                             <option value="{{$id}}" id="{{$id}}">{{$name}}</option>
-                        @endforeach 
+                        @endforeach
                     </select>
                 </div>
             </div>
@@ -52,7 +52,7 @@
         var type = $(this).val();
         var mode = $(".snap-mode").val();
 
-        $.get( '/snaps/'+type+'/'+mode+'/filter' , function(view){ 
+        $.get( '/snaps/'+type+'/'+mode+'/filter' , function(view){
             $(".box-body").html(view);
         });
 
@@ -63,11 +63,11 @@
         var mode = $(this).val();
         var type = $(".snap-type").val();
 
-        $.get( '/snaps/'+type+'/'+mode+'/filter' , function(view){ 
+        $.get( '/snaps/'+type+'/'+mode+'/filter' , function(view){
             $(".box-body").html(view);
         });
 
     });
-    
+
 </script>
 @stop

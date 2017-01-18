@@ -2,8 +2,10 @@
 	<thead>
 		<tr>
 			<th>Item</th>
-			<th width="60">Qty</th>
-			<th width="100" class="text-right">Price</th>
+			<th>Brands</th>
+			<th>Variants</th>
+			<th>Qty</th>
+			<th>Price</th>
 		</tr>
 	</thead>
 
@@ -14,8 +16,10 @@
 				@foreach($file->tag as $tag)
 					<tr>
 						<td>{{ $tag->name }}</td>
+						<td>{{ $tag->brands }}</td>
+						<td style="max-width: 100px">{{ $tag->variants }}</td>
 						<td>{{ $tag->quantity }}</td>
-						<td class="text-right">{{ $tag->total_price }}</td>
+						<td>{{ $tag->total_price }}</td>
 					</tr>
 				@endforeach
 			@endif

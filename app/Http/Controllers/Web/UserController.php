@@ -69,6 +69,15 @@ class UserController extends AdminController
     {
     }
 
+    public function activities($id)
+    {
+        $user = User::with('userActivities')
+            ->where('id', '=', $id)
+            ->first();
+        $activities = $user->userActivities;
+        return view('users.activities', compact('activities'));
+    }
+
     /**
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */

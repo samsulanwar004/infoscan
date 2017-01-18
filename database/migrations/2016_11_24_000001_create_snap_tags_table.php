@@ -18,6 +18,9 @@ class CreateSnapFilesTable extends Migration
             $table->increments('id');
             $table->integer('snap_file_id')->unsigned();
             $table->string('name', 255);
+            $table->string('brands', 255)->nullable();
+            $table->text('variants')->nullable();
+            $table->string('name', 255);
             $table->decimal('total_price', 15, 2)->default('0.00');
             $table->integer('quantity')->default('0');
             $table->string('img_x', 20)->nullable();
