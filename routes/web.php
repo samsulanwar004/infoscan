@@ -161,7 +161,7 @@ Route::group([
 
     Route::get('/reports', 'Web\ReportController@index')->name($routePrefix == null ? 'reports' : '.reports');
 
-    Route::post('/merchants/filterStore', 'Web\MerchantController@filterStore')->name('merchants.filterStore');    
+    Route::post('/merchants/settingReports', 'Web\MerchantController@settingReports')->name('merchants.settingReports');    
 });
 
 Auth::routes();

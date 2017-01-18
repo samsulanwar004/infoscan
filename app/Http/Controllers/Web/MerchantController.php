@@ -173,28 +173,54 @@ class MerchantController extends AdminController
         return redirect($this->redirectAfterSave)->with('success', 'Merchant successfully deleted!');
     }
 
-    public function filterStore(Request $request) 
+    public function addSettingReports(Request $request) 
     {
-        $merchants = new MerchantService;
-
         try {
+            $content = json_encode($request->except(['_token']));
+            $name = str_random(10);
+            $createdBy = auth()->user()->id;
             \DB::beginTransaction();
-            $merchant = $merchants->filterStore($request);
-            $users = $merchants->createNewUser($request);
-            $merchants->persistData($merchant, $users);
+            $merchants = new MerchantService;
+            $merchant = $merchants->createSettingReport($name, $content, $createdBy);
             \DB::commit();
+            return response()->json([
+                'status' => 'ok',
+                'message' => 'Success',
+                'data' => ['id' => $merchant]
+            ]);
         } catch (\Exception $e) {
             \DB::rollback();
-
             logger($e);
-            return back()->with('errors', $e->getMessage());
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ]);
         }
+    }
 
-        return redirect($this->redirectAfterSave)->with('success', 'Merchant successfully saved!');        
-
-        $filter = $request->all();
-        $filterJson = json_encode($filter);
-        dd($filterJson);
+    public function editSettingReports(Request $request) 
+    {
+        try {
+            $content = json_encode($request->except(['_token']));
+            $name = str_random(10);
+            $createdBy = auth()->user()->id;
+            \DB::beginTransaction();
+            $merchants = new MerchantService;
+            $merchant = $merchants->updateSettingReport($name, $content, $createdBy);
+            \DB::commit();
+            return response()->json([
+                'status' => 'ok',
+                'message' => 'Success',
+                'data' => ['id' => $merchant]
+            ]);
+        } catch (\Exception $e) {
+            \DB::rollback();
+            logger($e);
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ]);
+        }
     }
         
 }

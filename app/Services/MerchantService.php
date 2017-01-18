@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\MerchantUser;
 use App\Merchant;
 use App\User;
+use App\MerchantSettingReports;
 use Auth;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\MerchantUser as MailMerchantUser;
@@ -222,11 +223,22 @@ class MerchantService {
         return Role::where('role_name', '=', 'Vendor Account')->first();
     }
 
-    public function getFilter($request, $id = null)
+    public function createSettingReport($name, $content, $createdBy)
     {
-        $name = strtolower(str_random(10));
+        $m = new MerchantSettingReports;
+        $m->name = $name;
+        $m->content = $content;
+        $m->created_by = $createdBy;
         $m->save();
-
-        return $m;
+        return $m->id;
     }    
+
+    public function updateSettingReport($id, $name, $content, $updatedBy) 
+    {
+        $m = new MerchantSettingReports;
+
+        MerchantSettingReports::where('id', '=', $merchantId)
+                              ->whereNotIn('user_id', $ids)->delete(); 
+
+    }
 }
