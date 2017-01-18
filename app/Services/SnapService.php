@@ -94,6 +94,12 @@ class SnapService
         $snaps->approved_by = ($request->input('confirm') != 'approve') ? null : auth()->user()->id;
         $snaps->reject_by = ($request->input('confirm') != 'reject') ? null : auth()->user()->id;
         $snaps->comment = $request->input('comment');
+        $snaps->outlet_name = $request->input('outlet_name');
+        $snaps->location = $request->input('location');
+        $snaps->purchase_time = $request->input('purchase_time');
+        $snaps->receipt_id = $request->input('receipt_id');
+        $snaps->longitude = !$request->has('longitude') ? 0.00 : $request->input('longitude');
+        $snaps->latitude = !$request->has('latitude') ? 0.00 : $request->input('latitude');
 
         $snaps->update();
     }
@@ -114,6 +120,8 @@ class SnapService
             $tagId = $tags['id'][$i];
             $t = $this->getSnapTagById($tagId);
             $t->name = $tags['name'][$i];
+            $t->brands = $tags['brands'][$i];
+            $t->variants = $tags['variants'][$i];
             $t->quantity = $tags['qty'][$i];
             $t->total_price = $tags['total'][$i];
 
@@ -124,6 +132,8 @@ class SnapService
         for ($i=0; $i < $newTagCount; $i++) {
             $t = new SnapTag;
             $t->name = $newTags['name'][$i];
+            $t->brands = $newTags['brands'][$i];
+            $t->variants = $newTags['variants'][$i];
             $t->quantity = $newTags['qty'][$i];
             $t->total_price = $newTags['total'][$i];
             $t->file()->associate($newTags['fileId'][$i]);
@@ -149,6 +159,8 @@ class SnapService
             $tagId = $tags['id'][$i];
             $t = $this->getSnapTagById($tagId);
             $t->name = $tags['name'][$i];
+            $t->brands = $tags['brands'][$i];
+            $t->variants = $tags['variants'][$i];
             $t->quantity = $tags['qty'][$i];
             $t->total_price = $tags['total'][$i];
 
@@ -159,6 +171,8 @@ class SnapService
         for ($i=0; $i < $newTagCount; $i++) {
             $t = new SnapTag;
             $t->name = $newTags['name'][$i];
+            $t->brands = $newTags['brands'][$i];
+            $t->variants = $newTags['variants'][$i];
             $t->quantity = $newTags['qty'][$i];
             $t->total_price = $newTags['total'][$i];
             $t->img_x = $newTags['x'][$i];
@@ -186,6 +200,8 @@ class SnapService
             $tagId = $tags['id'][$i];
             $t = $this->getSnapTagById($tagId);
             $t->name = $tags['name'][$i];
+            $t->brands = $tags['brands'][$i];
+            $t->variants = $tags['variants'][$i];
             $t->quantity = $tags['qty'][$i];
             $t->total_price = $tags['total'][$i];
 
@@ -196,6 +212,8 @@ class SnapService
         for ($i=0; $i < $newTagCount; $i++) {
             $t = new SnapTag;
             $t->name = $newTags['name'][$i];
+            $t->brands = $newTags['brands'][$i];
+            $t->variants = $newTags['variants'][$i];
             $t->quantity = $newTags['qty'][$i];
             $t->total_price = $newTags['total'][$i];
             $t->file()->associate($newTags['fileId'][$i]);
@@ -220,6 +238,8 @@ class SnapService
             $tagId = $tags['id'][$i];
             $t = $this->getSnapTagById($tagId);
             $t->name = $tags['name'][$i];
+            $t->brands = $tags['brands'][$i];
+            $t->variants = $tags['variants'][$i];
             $t->quantity = $tags['qty'][$i];
             $t->total_price = $tags['total'][$i];
 
@@ -230,6 +250,8 @@ class SnapService
         for ($i=0; $i < $newTagCount; $i++) {
             $t = new SnapTag;
             $t->name = $newTags['name'][$i];
+            $t->brands = $newTags['brands'][$i];
+            $t->variants = $newTags['variants'][$i];
             $t->quantity = $newTags['qty'][$i];
             $t->total_price = $newTags['total'][$i];
             $t->file()->associate($newTags['fileId'][$i]);

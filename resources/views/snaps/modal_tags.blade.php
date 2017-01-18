@@ -4,23 +4,25 @@
     <input type="hidden" name="mode" value="{{ $snapFile->mode_type }}">
     <div class="modal-header">
         <a class="close btn-close btn-modal-close" data-dismiss="modal">&times;</a>
-        <h4><i class="fa fa-file-o fa-btn"></i> <span class="action-title">Snap </span> File</h4>
+        <h4><i class="fa fa-file-o fa-btn"></i> <span class="action-title">Snap </span> File {{ strtoupper($snapFile->mode_type) }}</h4>
     </div>
     <div class="modal-body">
         <div class="form-horizontal">
-            <div class="col-md-6">
+            <div class="col-md-4">
                 <div id="imgtag">
                     <img src="{{ config('filesystems.s3url') . $snapFile->file_path }}" id="tag-image" alt="{{ $snapFile->id }}" class="margin img-responsive">
                     <div id="tagbox">
                     </div>                    
                 </div>                
             </div>
-            <div class="col-md-6" style="overflow-y:scroll;max-height: 300px;">
+            <div class="col-md-8" style="overflow-y:scroll;max-height: 300px;">
                 <table class="table">
                     <thead>
                         <tr>
                             <th width="50"></th>
                             <th width="300">Product Item</th>
+                            <th width="300">Brands</th>
+                            <th width="300">Variants</th>
                             <th width="50">Qty</th>
                             <th width="200">Price</th>
                         </tr>
@@ -34,6 +36,8 @@
                                     </a>
                                 </td>
                                 <td width="300"><input type="text" name="tag[name][]" id="{{ $tag->id }}|{{ $tag->img_x }}|{{ $tag->img_y }}" class="form-control input-sm tag-name {{ $tag->id }}old" value="{{ $tag->name }}" placeholder="Product Name" required="required"></td>
+                                <td width="300"><input type="text" name="tag[brands][]" class="form-control input-sm" value="{{ $tag->brands }}" placeholder="Brands"></td>
+                                <td width="300"><input type="text" name="tag[variants][]" class="form-control input-sm" value="{{ $tag->variants }}" placeholder="Variants"></td>
                                 <td width="100"><input type="number" name="tag[qty][]" class="form-control input-sm" value="{{ $tag->quantity }}" placeholder="QTY" required="required"></td>
                                 <td width="200"><input type="number" name="tag[total][]" class="form-control input-sm" value="{{ $tag->total_price }}" placeholder="Total Price" required="required"></td>
                                 <input type="hidden" name="tag[id][]" value="{{ $tag->id }}">
@@ -65,6 +69,10 @@
     {
       -webkit-appearance: none;
       margin: 0;
+    }
+
+    .modal-dialog {
+        width: 90%;
     }
 
     #imgtag
@@ -195,9 +203,16 @@
             mouseY = (e.pageY - offset.top);
 
             $('#tagit').remove(); // remove any tagit div first           
-            $('div#imgtag').append('<div id="tagit"><input type="text" name="name" class="form-control input-sm" placeholder="Product Name" id="name"><input type="number" name="qty" class="form-control input-sm" placeholder="QTY" id="qty"><input type="number" class="form-control input-sm" placeholder="Total Price" id="total" name="total"><input type="hidden" name="x" id="x" value="'+mouseX+'"><input type="hidden" id="y" name="y" value="'+mouseY+'"><input type="button" name="btnsave" value="Save" id="btnsave"/><input type="button" name="btncancel" value="Cancel" id="btncancel" /></div>');
-            $('#tagit').css({ top:mouseY, left:mouseX });
+            $('div#imgtag').append('<div id="tagit"><input type="text" name="name" class="form-control input-sm" placeholder="Product Name" id="name"><input type="text" name="brands" class="form-control input-sm" placeholder="Brands" id="brands"><input type="text" name="variants" class="form-control input-sm" placeholder="Variants" id="variants"><input type="number" name="qty" class="form-control input-sm" placeholder="QTY" id="qty"><input type="number" class="form-control input-sm" placeholder="Total Price" id="total" name="total"><input type="hidden" name="x" id="x" value="'+mouseX+'"><input type="hidden" id="y" name="y" value="'+mouseY+'"><input type="button" name="btnsave" value="Save" id="btnsave"/><input type="button" name="btncancel" value="Cancel" id="btncancel" /></div>');
+            var imgtag = document.getElementById('imgtag');
+            var tagit = document.getElementById('tagit');
+            var tengah = imgtag.clientHeight/2;
 
+            if (mouseY > tengah) {                
+                $('#tagit').css({ top:mouseY-tagit.clientHeight, left:mouseX });          
+            } else {
+                $('#tagit').css({ top:mouseY, left:mouseX });
+            }
             $('#name').focus();
 
         });
@@ -225,6 +240,8 @@
             }
 
             var name = $('#name').val();
+            var brands = $('#brands').val();
+            var variants = $('#variants').val();
             var qty = $('#qty').val();
             var total = $('#total').val();
             mouseX = $('#x').val();
@@ -246,7 +263,7 @@
 
             var className = countOfTextbox+'-new-tag';
             viewtagsave(name, mouseX, mouseY, className);
-            $('tbody#inputs').append('<tr class="tag-input" time=' + time + ' id="input'+countOfTextbox+'"><td><a class="btn btn-box-tool" onclick="deleteTag('+countOfTextbox+')"><i class="fa fa-remove"></i></a></td><td width="300"><input type="text" name="newtag[name][]" class="form-control input-sm tag-name '+countOfTextbox+'new" id="'+countOfTextbox+'|'+mouseX+'|'+mouseY+'" onclick="editTag(this)" onkeyup="editNewTag(this)" value="'+name+'"></td><td width="100"><input type="number" name="newtag[qty][]" class="form-control input-sm" value="'+qty+'"></td><td width="200"><input type="number" name="newtag[total][]" class="form-control input-sm" value="'+total+'"><input type="hidden" name="newtag[x][]" value="'+mouseX+'"><input type="hidden" name="newtag[y][]" value="'+mouseY+'"><input type="hidden" name="newtag[fileId][]" value="{{ $snapFile->id }}"></td></tr>');
+            $('tbody#inputs').append('<tr class="tag-input" time=' + time + ' id="input'+countOfTextbox+'"><td><a class="btn btn-box-tool" onclick="deleteTag('+countOfTextbox+')"><i class="fa fa-remove"></i></a></td><td width="300"><input type="text" name="newtag[name][]" class="form-control input-sm tag-name '+countOfTextbox+'new" id="'+countOfTextbox+'|'+mouseX+'|'+mouseY+'" onclick="editTag(this)" onkeyup="editNewTag(this)" value="'+name+'"></td><td width="300"><input type="text" name="newtag[brands][]" class="form-control input-sm" value="'+brands+'"></td><td width="300"><input type="text" name="newtag[variants][]" class="form-control input-sm" value="'+variants+'"></td><td width="100"><input type="number" name="newtag[qty][]" class="form-control input-sm" value="'+qty+'"></td><td width="200"><input type="number" name="newtag[total][]" class="form-control input-sm" value="'+total+'"><input type="hidden" name="newtag[x][]" value="'+mouseX+'"><input type="hidden" name="newtag[y][]" value="'+mouseY+'"><input type="hidden" name="newtag[fileId][]" value="{{ $snapFile->id }}"></td></tr>');
 
             $('#tagit').fadeOut();
         });
