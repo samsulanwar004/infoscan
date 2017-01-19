@@ -70,6 +70,7 @@ class QuestionnaireController extends AdminController
 
     public function update(Request $request, $id)
     {
+        $this->isAllowed('Questionnaire.Update');
         try {
             $questionnaire = QuestionnaireTemplate::where('id', $id)->first();
             $input = $request->all();
@@ -104,6 +105,7 @@ class QuestionnaireController extends AdminController
 
     public function destroy($id)
     {
+        $this->isAllowed('Questionnaire.Delete');
         try {
             QuestionnaireTemplate::where('id', $id)->delete();
             \DB::table('questionnaire_templates_questions')->where('template_id',
