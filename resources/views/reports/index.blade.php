@@ -139,8 +139,8 @@
 @endsection
 
 @section('footer_scripts')
-<link rel="stylesheet" href="{{ elixir('css/report-vendor.css') }}" />
-<script src="{{ elixir('js/report-vendor.js') }}"></script>
+<link rel="stylesheet" href="{{ elixirCDN('css/report-vendor.css') }}" />
+<script src="{{ elixirCDN('js/report-vendor.js') }}"></script>
 <script type="text/javascript">
     $(document).ready(function() {
         whenLoaded();

@@ -224,8 +224,8 @@
     <!-- /.content -->
 @endsection
 @section('footer_scripts')
-    <link rel="stylesheet" href="{{ elixir('css/report-vendor.css') }}" />
-    <script type="text/javascript" src="{{ elixir('js/report-vendor.js') }}"></script>
+    <link rel="stylesheet" href="{{ elixirCDN('css/report-vendor.css') }}" />
+    <script type="text/javascript" src="{{ elixirCDN('js/report-vendor.js') }}"></script>
     <script type="text/javascript">
         var counterform = {{ count($merchantUsers)+1 }};
         function updateCounterForm(isRemove) {

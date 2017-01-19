@@ -5,9 +5,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Infoscan | Admin Panel</title>
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    <link rel="stylesheet" href="{{ elixir('css/app.css') }}">
+    <link rel="stylesheet" href="{{ elixirCDN('css/app.css') }}">
     <!--[if lt IE 9]>
-    <script src="{{ elixir('js/ie-support.js') }}"></script>
+    <script src="{{ elixirCDN('js/ie-support.js') }}"></script>
     <![endif]-->
 </head>
 <body class="hold-transition login-page">
@@ -62,8 +62,8 @@
 
     </div>
 </div>
-<script src="{{ elixir('js/vendor.js') }}"></script>
-<script src="{{ elixir('js/admin.js') }}"></script>
+<script src="{{ elixirCDN('js/vendor.js') }}"></script>
+<script src="{{ elixirCDN('js/admin.js') }}"></script>
 <script>
     $(document).ready(function () {
         $('input[type="checkbox"]').iCheck({

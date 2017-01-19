@@ -6,9 +6,9 @@
     <title>Admin Panel</title>
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <meta id="token" content="{{ csrf_token() }}">
-    <link rel="stylesheet" href="{{ elixir('css/app.css') }}">
+    <link rel="stylesheet" href="{{ elixirCDN('css/app.css') }}">
     <!--[if lt IE 9]>
-    <script src="{{ elixir('js/ie-support.js') }}"></script>
+    <script src="{{ elixirCDN('js/ie-support.js') }}"></script>
     <![endif]-->
 </head>
 
@@ -39,8 +39,8 @@
     <div class="control-sidebar-bg"></div>
 </div>
 <!-- ./wrapper -->
-<script src="{{ elixir('js/vendor.js') }}"></script>
-<script src="{{ elixir('js/admin.js') }}"></script>
+<script src="{{ elixirCDN('js/vendor.js') }}"></script>
+<script src="{{ elixirCDN('js/admin.js') }}"></script>
 
 <script>
     $(document).ready(function () {
