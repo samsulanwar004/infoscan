@@ -44,13 +44,40 @@
                             <input class="form-control" type="text" name="period" id="datepicker"
                                    value="{{ $questionnaire->start_at }} - {{ $questionnaire->end_at }}" readonly>
                         </div>
-
+                        @cando('Questionnaire.Point')
                         <div class="form-group has-feedback">
                             <label for="total_point">Point</label>
                             <input type="number" class="form-control" name="total_point" id="total_point"
                                    value="{{ old('total_point', $questionnaire->total_point) }}"
-                                   placeholder="Enter point" required>
+                                   placeholder="Enter point" min="0" required>
                         </div>
+                        @endcando
+                        @cando('Questionnaire.Publish')
+                        <div class="form-group has-feedback">
+                            <label for="status">Status</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            @if($questionnaire->status == 'publish')
+                                <label><input type="radio" name="status" value="publish" checked> Publish</label>&nbsp;&nbsp;&nbsp;&nbsp;
+                                <label><input type="radio" name="status" value="unpublish"> Unpublish</label>&nbsp;&nbsp;&nbsp;&nbsp;
+                                <label><input type="radio" name="status" value="new"> New</label>&nbsp;&nbsp;&nbsp;&nbsp;
+                                <label><input type="radio" name="status" value="void"> Void</label>
+                            @elseif($questionnaire->status == 'unpublish')
+                                <label><input type="radio" name="status" value="publish"> Publish</label>&nbsp;&nbsp;&nbsp;&nbsp;
+                                <label><input type="radio" name="status" value="unpublish" checked> Unpublish</label>&nbsp;&nbsp;&nbsp;&nbsp;
+                                <label><input type="radio" name="status" value="new"> New</label>&nbsp;&nbsp;&nbsp;&nbsp;
+                                <label><input type="radio" name="status" value="void"> Void</label>
+                            @elseif($questionnaire->status == 'new')
+                                <label><input type="radio" name="status" value="publish"> Publish</label>&nbsp;&nbsp;&nbsp;&nbsp;
+                                <label><input type="radio" name="status" value="unpublish"> Unpublish</label>&nbsp;&nbsp;&nbsp;&nbsp;
+                                <label><input type="radio" name="status" value="new" checked> New</label>&nbsp;&nbsp;&nbsp;&nbsp;
+                                <label><input type="radio" name="status" value="void"> Void</label>
+                            @elseif($questionnaire->status == 'void')
+                                <label><input type="radio" name="status" value="publish"> Publish</label>&nbsp;&nbsp;&nbsp;&nbsp;
+                                <label><input type="radio" name="status" value="unpublish"> Unpublish</label>&nbsp;&nbsp;&nbsp;&nbsp;
+                                <label><input type="radio" name="status" value="new"> New</label>&nbsp;&nbsp;&nbsp;&nbsp;
+                                <label><input type="radio" name="status" value="void" checked> Void</label>
+                            @endif
+                        </div>
+                        @endcando
                         <br>
                         <div id="questions">
                             <div id="question_head">

@@ -16,7 +16,8 @@ class QuestionnaireTemplate extends Model
         'start_at',
         'end_at',
         'created_by',
-        'total_point'
+        'total_point',
+        'status'
     ];
     protected $dates = ['deleted_at'];
 
@@ -24,5 +25,10 @@ class QuestionnaireTemplate extends Model
     {
         return $this->belongsToMany(QuestionnaireQuestion::class, 'questionnaire_templates_questions', 'template_id',
             'question_id');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'created_by');
     }
 }

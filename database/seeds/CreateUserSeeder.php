@@ -14,7 +14,7 @@ class CreateUserSeeder extends Seeder
         'Exchange.List','Exchange.Create','Exchange.Update','Exchange.Delete',
         'Promotion.List','Promotion.Create','Promotion.Update','Promotion.Delete',
         'LuckyDraw.List','LuckyDraw.Create','LuckyDraw.Update','LuckyDraw.Delete',
-        'Questionnaire.List','Questionnaire.Create','Questionnaire.Update','Questionnaire.Delete',
+        'Questionnaire.List','Questionnaire.Create','Questionnaire.Update','Questionnaire.Delete', 'Questionnaire.Point', 'Questionnaire.Publish',
         'Questions.List','Questions.Create','Questions.Update','Questions.Delete',
         'Ses.List','Ses.Create','Ses.Update','Ses.Delete',
         'Points.List','Points.Create','Points.Update','Points.Delete',
@@ -31,7 +31,7 @@ class CreateUserSeeder extends Seeder
         'Exchange.List','Exchange.Create','Exchange.Update','Exchange.Delete',
         'Promotion.List','Promotion.Create','Promotion.Update','Promotion.Delete',
         'LuckyDraw.List','LuckyDraw.Create','LuckyDraw.Update','LuckyDraw.Delete',
-        'Questionnaire.List','Questionnaire.Create','Questionnaire.Update','Questionnaire.Delete',
+        'Questionnaire.List','Questionnaire.Create','Questionnaire.Update','Questionnaire.Delete', 'Questionnaire.Point', 'Questionnaire.Publish',
         'Questions.List','Questions.Create','Questions.Update','Questions.Delete',
         'Ses.List','Ses.Create','Ses.Update','Ses.Delete',
         'Points.List','Points.Create','Points.Update','Points.Delete',
@@ -65,6 +65,8 @@ class CreateUserSeeder extends Seeder
         'Merchant.List','Merchant.Create','Merchant.Update','Merchant.Delete',
         'Brand.List','Brand.Create','Brand.Update','Brand.Delete',
         'Promotion.List','Promotion.Create','Promotion.Update','Promotion.Delete',
+        'Questionnaire.List','Questionnaire.Create','Questionnaire.Update','Questionnaire.Delete',
+        'Questions.List','Questions.Create','Questions.Update',
     ];
 
     protected $createPermissionsVendorAccount = [

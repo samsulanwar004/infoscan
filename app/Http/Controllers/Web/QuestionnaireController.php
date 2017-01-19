@@ -14,7 +14,11 @@ class QuestionnaireController extends AdminController
     public function index()
     {
         $this->isAllowed('Questionnaire.List');
-        $questionnaire = QuestionnaireTemplate::all();
+        if(auth()->user()->hasRole('Super Administrator')){
+            $questionnaire = QuestionnaireTemplate::orderBy('status', 'desc')->orderBy('start_at', 'asc')->get();
+        } else{
+            $questionnaire = QuestionnaireTemplate::where('created_by', auth()->user()->id)->orderBy('status', 'desc')->orderBy('start_at', 'asc')->get();
+        }
         return view('questionnaire.questionnaire_index', compact('questionnaire'));
     }
 
@@ -35,19 +39,29 @@ class QuestionnaireController extends AdminController
 
     public function store(Request $request)
     {
+        $this->isAllowed('Questionnaire.Create');
         $period = explode(' - ', $request->input('period'));
         $this->validate($request, [
             'period' => 'required',
-            'total_point' => 'required',
             'description' => 'required',
             'question.*' => 'required'
         ]);
 
+        if (!auth()->user()->hasRole('Questionnaire.Point') || !$request->input('total_point')) {
+            $input['total_point'] = 0;
+            $input['status'] = 'new';
+        }
+
+        if (!auth()->user()->hasRole('Questionnaire.Publish')) {
+            $input['status'] = 'new';
+        }
+
         $input = $request->all();
+
         $input['questionnaire_template_code'] = strtolower(str_random(5));
         $input['start_at'] = $period[0];
         $input['end_at'] = $period[1];
-        $input['created_by'] = auth()->user()->name;
+        $input['created_by'] = auth()->user()->id;
         $questionnaire = QuestionnaireTemplate::create($input);
         $questionnaire->questions()->sync($request->input('question'));
         return redirect($this->redirectAfterSave)->with('success', 'Questionnaire successfully saved!');
@@ -58,13 +72,23 @@ class QuestionnaireController extends AdminController
         try {
             $questionnaire = QuestionnaireTemplate::where('id', $id)->first();
             $input = $request->all();
-            $period = explode(' - ', $request->input('period'));
-            $input['start_at'] = $period[0];
-            $input['end_at'] = $period[1];
+
+            if (!is_null($request->input('period'))) {
+                $period = explode(' - ', $request->input('period'));
+                $input['start_at'] = $period[0];
+                $input['end_at'] = $period[1];
+            }
+
             if (!is_null($request->input('question'))) {
                 $questionnaire->questions()->sync($request->input('question'));
             }
+
+            if ($input['total_point'] == 0) {
+                $input['status'] = 'new';
+            }
+
             $questionnaire->fill($input)->save();
+
         } catch (Exception $e) {
             return back()->with('errors', $e->getMessage());
         }
@@ -92,5 +116,18 @@ class QuestionnaireController extends AdminController
     private function getQuestionnaireTemplateById($id)
     {
         return QuestionnaireTemplate::where('id', $id)->first();
+    }
+
+    public function publish($id)
+    {
+        $this->isAllowed('Questionnaire.Publish');
+        $questionnaire = $this->getQuestionnaireTemplateById($id);
+        if ($questionnaire['total_point'] > 0) {
+            $input['status'] = 'publish';
+            $questionnaire->fill($input)->save();
+            return redirect($this->redirectAfterSave)->with('success', 'Questionnaire published');
+        } else {
+            return back()->with('errors', 'Total points must be greater than 0');
+        }
     }
 }

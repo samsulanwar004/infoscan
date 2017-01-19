@@ -73,6 +73,7 @@ Route::group([
         'Web\QuestionnaireController',
         ['except' => ['show'], 'names' => route_resource_name($routePrefix, 'questionnaire')]
     );
+
     Route::resource(
         '/questions',
         'Web\QuestionController',
@@ -84,6 +85,8 @@ Route::group([
         'Web\SnapController',
         ['names' => route_resource_name($routePrefix, 'snaps')]
     );
+
+    Route::get('/questionnaire/publish/{id}', 'Web\QuestionnaireController@publish')->name('questionnaire.publish');
 
     Route::get(
         '/snaps/{id}/edit-snap-file',
