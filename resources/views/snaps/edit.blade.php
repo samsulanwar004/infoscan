@@ -9,16 +9,16 @@
         <div class="row">
             <div class="col-xs-12">
               <h2 class="page-header">
-                <img src="/img/lte/logo.png" width="50"> GoJago
+                <img src="<?php echo env('CDN_URL', ''); ?>/img/lte/logo.png" width="50"> GoJago
                 <small class="pull-right">Date: {{ date_format(date_create($snap->created_at), 'M, d Y') }}</small>
               </h2>
             </div>
             <!-- /.col -->
           </div>
           <!-- info row -->
-          <div class="row invoice-info">                
+          <div class="row invoice-info">
             <div class="col-sm-4 invoice-col">
-              <b>Request Code :</b> {{ $snap->request_code }}<br>                      
+              <b>Request Code :</b> {{ $snap->request_code }}<br>
               <b>Snap Type :</b> {{ strtoupper($snap->snap_type) }}<br>
               <b>Mode Type :</b> {{ strtoupper($snap->mode_type) }}<br>
               <b>Member Name :</b> {{ $snap->member->name }}<br>
@@ -59,8 +59,8 @@
                     <tr>
                       <td>{{ $file->file_code }}</td>
                       <td>{{ $file->recognition_score }}</td>
-                    </tr>   
-                @endforeach                     
+                    </tr>
+                @endforeach
                 </tbody>
               </table>
             </div>
