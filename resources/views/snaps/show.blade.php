@@ -196,5 +196,31 @@
         height: 160px;
     }
 
+    div.table-custom table {
+        border-collapse: separate;
+        border-spacing: 0 5px;
+    }
+
+    div.table-custom thead th {
+        background-color: #EA5941;
+        color: white;
+    }
+
+    div.table-custom tbody td {
+        background-color: rgba(14, 14, 14, 0.1);
+    }
+
+    div.table-custom tr td:first-child,
+    div.table-custom tr th:first-child {
+        border-top-left-radius: 6px;
+        border-bottom-left-radius: 6px;
+    }
+
+    div.table-custom tr td:last-child,
+    div.table-custom tr th:last-child {
+        border-top-right-radius: 6px;
+        border-bottom-right-radius: 6px;
+    }
+
 </style>
 @stop

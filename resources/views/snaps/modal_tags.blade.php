@@ -15,7 +15,7 @@
                     </div>                    
                 </div>                
             </div>
-            <div class="col-md-8" style="overflow-y:scroll;max-height: 300px;">
+            <div class="col-md-8 table-custom" style="overflow-y:scroll;max-height: 300px;">
                 <table class="table">
                     <thead>
                         <tr>
@@ -24,7 +24,7 @@
                             <th width="300">Brands</th>
                             <th width="300">Variants</th>
                             <th width="50">Qty</th>
-                            <th width="200">Price</th>
+                            <th width="200">Total Price</th>
                         </tr>
                     </thead>
                     <tbody id="inputs">

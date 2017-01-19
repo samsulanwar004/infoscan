@@ -15,7 +15,7 @@
                 <textarea class="form-control" style="resize:none;width: 100%;height: 300px;" 
                 cols="50" readonly="readonly">{{ $snapFile->recognition_text }}</textarea>
             </div>
-            <div class="col-md-6" style="overflow-y:scroll;height: 300px;">
+            <div class="col-md-6 table-custom" style="overflow-y:scroll;height: 300px;">
                 <table class="table">
                     <thead>
                         <tr>
@@ -24,7 +24,7 @@
                             <th width="300">Brands</th>
                             <th width="300">Variants</th>
                             <th width="130">Qty</th>
-                            <th width="250">Price</th>
+                            <th width="250">Total Price</th>
                         </tr>
                     </thead>
 

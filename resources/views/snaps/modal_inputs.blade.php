@@ -11,7 +11,7 @@
             <div class="col-md-4">
                 <img src="{{ config('filesystems.s3url') . $snapFile->file_path }}" alt="" class="margin img-responsive img-zoom">
             </div>
-            <div class="col-md-8" style="overflow-y:scroll;max-height: 300px;">
+            <div class="col-md-8 table-custom" style="overflow-y:scroll;max-height: 300px;">
                 <table class="table">
                     <thead>
                         <tr>
@@ -20,7 +20,7 @@
                             <th width="300">Brands</th>
                             <th width="300">Variants</th>
                             <th width="100">Qty</th>
-                            <th width="200" class="text-right">Price</th>
+                            <th width="200">Total Price</th>
                         </tr>
                     </thead>
 
