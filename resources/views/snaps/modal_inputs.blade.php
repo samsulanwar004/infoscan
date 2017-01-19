@@ -11,7 +11,7 @@
             <div class="col-md-4">
                 <img src="{{ config('filesystems.s3url') . $snapFile->file_path }}" alt="" class="margin img-responsive img-zoom">
             </div>
-            <div class="col-md-8" style="overflow-y:scroll;max-height: 300px;">
+            <div class="col-md-8 table-custom" style="overflow-y:scroll;max-height: 300px;">
                 <table class="table">
                     <thead>
                         <tr>
@@ -20,7 +20,7 @@
                             <th width="300">Brands</th>
                             <th width="300">Variants</th>
                             <th width="100">Qty</th>
-                            <th width="200" class="text-right">Price</th>
+                            <th width="200">Total Price</th>
                         </tr>
                     </thead>
 
@@ -34,7 +34,7 @@
                                 </td>
                                 <td width="300"><input type="text" name="tag[name][]" class="form-control input-sm tag-name" value="{{ $tag->name }}" placeholder="Product Name" required="required"></td>
                                 <td width="300"><input type="text" name="tag[brands][]" class="form-control input-sm" value="{{ $tag->brands }}" placeholder="Brands"></td>
-                                <td width="300"><input type="text" name="tag[variants][]" class="form-control input-sm" value="{{ $tag->variants }}" placeholder="Variants"></td>
+                                <td width="300"><input type="text" list="variants" name="tag[variants][]" class="form-control input-sm" value="{{ $tag->variants }}" placeholder="Variants"></td>
                                 <td width="100"><input type="number" name="tag[qty][]" class="form-control input-sm" value="{{ $tag->quantity }}" placeholder="QTY" required="required"></td>
                                 <td width="200" class="text-right"><input type="number" name="tag[total][]" class="form-control input-sm" value="{{ $tag->total_price }}" placeholder="Total Price" required="required"></td>
                                 <input type="hidden" name="tag[id][]" value="{{ $tag->id }}">
@@ -42,6 +42,13 @@
                         @endforeach
                     </tbody>
                 </table>
+                <datalist id="variants">
+                  <option value="PC Packaging: Roll On| PC Weight: ">
+                  <option value="PC Packaging: Spray| PC Weight: ">
+                  <option value="PC Packaging: Pack| PC Weight: ">
+                  <option value="PC Packaging: Bottle| PC Weight: ">
+                  <option value="PC Packaging: Sachet| PC Weight: ">
+                </datalist>
             </div>
         </div>
     </div>
@@ -141,7 +148,7 @@
                 return;
             }
 
-            $('tbody#inputs').append('<tr id="input'+countOfTextbox+'"><td><a class="btn btn-box-tool" onclick="deleteTag('+countOfTextbox+')"><i class="fa fa-remove"></i></a></td><td width="300"><input type="text" name="newtag[name][]" class="form-control input-sm tag-name" placeholder="Product Name" required="required"></td><td width="300"><input type="text" name="newtag[brands][]" class="form-control input-sm" placeholder="Brands"></td><td width="300"><input type="text" name="newtag[variants][]" class="form-control input-sm" placeholder="Variants"></td><td width="100"><input type="number" name="newtag[qty][]" class="form-control input-sm" placeholder="QTY" required="required"></td><td width="200" class="text-right"><input type="number" name="newtag[total][]" class="form-control input-sm" placeholder="Total Price" required="required"><input type="hidden" name="newtag[fileId][]" value="{{ $snapFile->id }}"></td></tr>');
+            $('tbody#inputs').append('<tr id="input'+countOfTextbox+'"><td><a class="btn btn-box-tool" onclick="deleteTag('+countOfTextbox+')"><i class="fa fa-remove"></i></a></td><td width="300"><input type="text" name="newtag[name][]" class="form-control input-sm tag-name" placeholder="Product Name" required="required"></td><td width="300"><input type="text" name="newtag[brands][]" class="form-control input-sm" placeholder="Brands"></td><td width="300"><input type="text" list="variants" name="newtag[variants][]" class="form-control input-sm" placeholder="Variants"></td><td width="100"><input type="number" name="newtag[qty][]" class="form-control input-sm" placeholder="QTY" required="required"></td><td width="200" class="text-right"><input type="number" name="newtag[total][]" class="form-control input-sm" placeholder="Total Price" required="required"><input type="hidden" name="newtag[fileId][]" value="{{ $snapFile->id }}"></td></tr>');
         });
 
         $('a#remove').on('click', function(e) {

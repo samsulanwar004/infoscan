@@ -3,6 +3,7 @@
 namespace App\Contracts;
 
 use Illuminate\Http\Request;
+use App\Events\UserActivitiesEvent;
 
 trait ProfileTrait
 {
@@ -24,6 +25,8 @@ trait ProfileTrait
             }
 
             $user->save();
+
+            //event(new UserActivitiesEvent($user->id, 'update', 'profile', $this->getIpAddress()));
         } catch (\Exception $e) {
             logger($e->getMessage());
 
@@ -37,5 +40,18 @@ trait ProfileTrait
             'status' => 'ok',
             'message' => 'Credentials successfully updated!',
         ], 200);
+    }
+
+    private function getIpAddress()
+    {
+        if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+            $ip = $_SERVER['HTTP_CLIENT_IP'];
+        } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+            $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+        } else {
+            $ip = $_SERVER['REMOTE_ADDR'];
+        }
+
+        return $ip;
     }
 }
