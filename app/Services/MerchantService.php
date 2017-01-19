@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\MerchantUser;
 use App\Merchant;
 use App\User;
-use App\MerchantSettingReports;
+use App\MerchantSettingReport;
 use Auth;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\MerchantUser as MailMerchantUser;
@@ -17,7 +17,7 @@ class MerchantService {
 	public function getMerchantIdByAuth()
     {
         $mu = MerchantUser::where('user_id', '=', Auth::user()->id)->first();
-        
+
         return $mu;
     }
 
@@ -157,7 +157,7 @@ class MerchantService {
 
         // Remove unnecessary user
         MerchantUser::where('merchant_id', '=', $merchantId)
-                    ->whereNotIn('user_id', $ids)->delete(); 
+                    ->whereNotIn('user_id', $ids)->delete();
 
         // update merchant user.
         for ($i=0; $i < $userCount; ++$i) {
@@ -225,20 +225,20 @@ class MerchantService {
 
     public function createSettingReport($name, $content, $createdBy)
     {
-        $m = new MerchantSettingReports;
+        $m = new MerchantSettingReport;
         $m->name = $name;
         $m->content = $content;
         $m->created_by = $createdBy;
         $m->save();
         return $m->id;
-    }    
+    }
 
-    public function updateSettingReport($id, $name, $content, $updatedBy) 
+    public function updateSettingReport($id, $name, $content, $updatedBy)
     {
-        $m = new MerchantSettingReports;
+        $m = new MerchantSettingReport;
 
-        MerchantSettingReports::where('id', '=', $merchantId)
-                              ->whereNotIn('user_id', $ids)->delete(); 
+        MerchantSettingReport::where('id', '=', $merchantId)
+                              ->whereNotIn('user_id', $ids)->delete();
 
     }
 }

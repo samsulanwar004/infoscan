@@ -138,8 +138,13 @@ Route::group([
 
     Route::post(
         '/merchants/settingReports',
-        'Web\MerchantController@settingReports'
-    )->name($routePrefix == null ? 'merchants.settingReports' : '.merchants.settingReports');
+        'Web\MerchantController@storeSettingReports'
+    )->name($routePrefix == null ? 'merchants.settingReports.store' : '.merchants.settingReports.store');
+
+    Route::put(
+        '/merchants/settingReports/{id}',
+        'Web\MerchantController@updateSettingReports'
+    )->name($routePrefix == null ? 'merchants.settingReports.update' : '.merchants.settingReports.update');
 });
 
 Auth::routes();
