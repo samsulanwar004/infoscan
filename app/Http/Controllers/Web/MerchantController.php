@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Web;
 
 use App\Services\MerchantService;
 use Illuminate\Http\Request;
+use DB;
 
 class MerchantController extends AdminController
 {
@@ -18,8 +19,11 @@ class MerchantController extends AdminController
     public function index()
     {
         $this->isAllowed('Merchant.List');
-        $merchants = (new MerchantService)->getAllMerchant();
-
+        $lead = auth()->user()->id;
+        $merchant = new MerchantService;
+        $merchants = $this->isSuperAdministrator() ?
+                        $merchant->getAllMerchant() :
+                        $merchant->getMerchantByLead($lead);
         return view('merchants.index', compact('merchants'));
     }
 
@@ -55,13 +59,13 @@ class MerchantController extends AdminController
 
 
         try {
-            \DB::beginTransaction();
+            DB::beginTransaction();
             $merchant = $merchants->persisteMerchant($request);
             $users = $merchants->createNewUser($request);
             $merchants->persistData($merchant, $users);
-            \DB::commit();
+            DB::commit();
         } catch (\Exception $e) {
-            \DB::rollback();
+            DB::rollback();
 
             logger($e);
             return back()->with('errors', $e->getMessage());
@@ -129,12 +133,12 @@ class MerchantController extends AdminController
             if ($request->hasFile('company_logo') != null && $m->company_logo == true) {
                 \Storage::delete('public/merchants/' . $m->company_logo);
             }
-            \DB::beginTransaction();
+            DB::beginTransaction();
             $merchants->persisteMerchant($request, $id);
             $merchants->updateUser($request, $m->id);
-            \DB::commit();
+            DB::commit();
         } catch (\Exception $e) {
-            \DB::rollback();
+            DB::rollback();
 
             logger($e);
             return back()->with('errors', $e->getMessage());
@@ -162,12 +166,66 @@ class MerchantController extends AdminController
             if ($m->company_logo != null) {
                 \Storage::delete('public/merchants/' . $m->company_logo);
             }
-
         } catch (\Exception $e) {
             return back()->with('errors', $e->getMessage());
         }
 
         return redirect($this->redirectAfterSave)->with('success', 'Merchant successfully deleted!');
     }
-        
+
+    public function storeSettingReports(Request $request)
+    {
+        try {
+            $content = json_encode($request->except(['_token']));
+            $name = str_random(10);
+            $createdBy = auth()->user()->id;
+
+            DB::beginTransaction();
+            $merchants = new MerchantService;
+            $merchant = $merchants->createSettingReport($name, $content, $createdBy);
+            DB::commit();
+
+            return response()->json([
+                'status' => 'ok',
+                'message' => 'Success',
+                'data' => ['id' => $merchant]
+            ]);
+        } catch (\Exception $e) {
+            DB::rollback();
+            logger($e);
+
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ]);
+        }
+    }
+
+    public function updateSettingReports(Request $request, $id)
+    {
+        try {
+            $content = json_encode($request->except(['_token']));
+            $name = str_random(10);
+            $createdBy = auth()->user()->id;
+
+            DB::beginTransaction();
+            $merchants = new MerchantService;
+            $merchant = $merchants->updateSettingReport($name, $content, $createdBy);
+            DB::commit();
+
+            return response()->json([
+                'status' => 'ok',
+                'message' => 'Success',
+                'data' => ['id' => $merchant]
+            ]);
+        } catch (\Exception $e) {
+            DB::rollback();
+            logger($e);
+
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ]);
+        }
+    }
 }

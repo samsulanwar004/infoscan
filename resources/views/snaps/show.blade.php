@@ -171,7 +171,7 @@
 @endsection
 
 @section('footer_scripts')
-<link rel="stylesheet" href="{{ elixir('css/taggd.css') }}">
+<link rel="stylesheet" href="{{ elixirCDN('css/taggd.css') }}">
 <style type="text/css">
     img.img-tag {
         cursor: pointer;
@@ -237,13 +237,12 @@
 </script>
 
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDL2kUSI8aZRZY2M1x3ios-LmwOoVYZ_9o&callback=initMap" async defer></script>
-<script src="{{ elixir('js/taggd.js') }}"></script>
-<script src="{{ elixir('js/elevate.js') }}"></script>
+<script src="{{ elixirCDN('js/taggd.js') }}"></script>
+<script src="{{ elixirCDN('js/elevate.js') }}"></script>
 <script type="text/javascript">
 
     $(document).ready(function() {
-        
-        
+
         $('#snapUpdate').on('submit', function (e) {
             e.preventDefault();
             REBEL.onSubmit($(this), function (responseData) {

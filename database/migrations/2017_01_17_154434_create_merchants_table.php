@@ -28,8 +28,10 @@ class CreateMerchantsTable extends Migration
             $table->increments('id');
             $table->integer('merchant_id')->unsigned();
             $table->integer('user_id')->unsigned();
+            $table->integer('lead_by')->unsigned();
             $table->foreign('merchant_id')->references('id')->on('merchants');
             $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('lead_by')->references('id')->on('users');
             $table->softDeletes();
         });
     }

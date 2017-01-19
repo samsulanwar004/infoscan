@@ -117,7 +117,7 @@ return [
                 'type' => 'range',
                 'data' => [
                     'min' => 0,
-                    'max' => 3000,
+                    'max' => 1000,
                 ]
             ],
             'total_price_quantity' => [
@@ -138,21 +138,26 @@ return [
             ],
             'purchase_time' => [
                 'label' => 'Purchase Time',
-                'type' => 'range',
+                'type' => 'dateRange',
                 'data' => [
-                    'min' => 0,
-                    'max' => 3000,
+                    'min' => -0,
+                    'max' => \Carbon\Carbon::today()->toDateString(),
+                    'format' => 'YYYY-MM-DD',
                 ]
             ],
             'sent_time' => [
-                'label' => 'Time Sent',
-                'type' => 'range',
+                'label' => 'Purchase Time',
+                'type' => 'dateRange',
                 'data' => [
-                    'min' => 0,
-                    'max' => 3000,
+                    'min' => -0,
+                    'max' => \Carbon\Carbon::today()->toDateString(),
+                    'format' => 'YYYY-MM-DD',
                 ]
             ],
-            //'monthly_expense' => 'Monthly Expense',
+        ],
+        'ignored_fields' => [
+            'user_id',
+            'receipt_number',
         ]
     ]
 ];

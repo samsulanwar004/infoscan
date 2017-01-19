@@ -73,6 +73,7 @@ Route::group([
         'Web\QuestionnaireController',
         ['except' => ['show'], 'names' => route_resource_name($routePrefix, 'questionnaire')]
     );
+
     Route::resource(
         '/questions',
         'Web\QuestionController',
@@ -84,6 +85,13 @@ Route::group([
         'Web\SnapController',
         ['names' => route_resource_name($routePrefix, 'snaps')]
     );
+
+    Route::get('/questionnaire/publish/{id}', 'Web\QuestionnaireController@publish')->name('questionnaire.publish');
+
+    Route::get(
+        '/users/{id}/activities',
+        'Web\UserController@activities'
+    )->name('users.activities');
 
     Route::get(
         '/users/{id}/activities',
@@ -131,33 +139,20 @@ Route::group([
         'Web\HistoryController@showTransaction'
     )->name('transaction.show');
 
-    /*Route::resource(
+    Route::get(
         '/reports',
-        'Web\ReportsController',
-        ['except' => ['show'], 'names' => route_resource_name($routePrefix, 'reports')]
-    );
+        'Web\ReportController@index'
+    )->name($routePrefix == null ? 'reports' : '.reports');
 
-    Route::get(
-        '/reports/formatPdf',
-        'Web\ReportsController@formatPdf'
-    )->name('reports.formatPdf');
+    Route::post(
+        '/merchants/settingReports',
+        'Web\MerchantController@storeSettingReports'
+    )->name($routePrefix == null ? 'merchants.settingReports.store' : '.merchants.settingReports.store');
 
-    Route::get(
-        '/reports/formatExcel',
-        'Web\ReportsController@formatExcel'
-    );
-
-    Route::get(
-        '/reports/formatWord',
-        'Web\ReportsController@formatWord'
-    );
-
-    Route::get(
-        '/reports/maps',
-        'Web\ReportsController@maps'
-    )->name('reports.maps');*/
-
-    Route::get('/reports', 'Web\ReportController@index')->name($routePrefix == null ? 'reports' : '.reports');
+    Route::put(
+        '/merchants/settingReports/{id}',
+        'Web\MerchantController@updateSettingReports'
+    )->name($routePrefix == null ? 'merchants.settingReports.update' : '.merchants.settingReports.update');
 });
 
 Auth::routes();

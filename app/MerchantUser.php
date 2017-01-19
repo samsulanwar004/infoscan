@@ -11,7 +11,7 @@ class MerchantUser extends Model
 
     protected $table = 'merchant_users';
 
-    protected $fillable = ['merchant_id', 'user_id'];
+    protected $fillable = ['merchant_id', 'user_id', 'lead_by'];
 
     public $timestamps = false;
 
@@ -23,6 +23,11 @@ class MerchantUser extends Model
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function lead()
+    {
+        return $this->belongsTo(User::class, 'lead_by');
     }
 
     protected static function boot()
