@@ -48,7 +48,7 @@ class UserEventSubscriber
         $ua->save();
     }
 
-    public function getIpAddress()
+    private function getIpAddress()
     {
         if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
             $ip = $_SERVER['HTTP_CLIENT_IP'];
