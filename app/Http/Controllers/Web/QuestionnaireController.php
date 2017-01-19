@@ -14,10 +14,11 @@ class QuestionnaireController extends AdminController
     public function index()
     {
         $this->isAllowed('Questionnaire.List');
-        if(auth()->user()->hasRole('Super Administrator')){
+        if ($this->isSuperAdministrator()) {
             $questionnaire = QuestionnaireTemplate::orderBy('status', 'desc')->orderBy('start_at', 'asc')->get();
-        } else{
-            $questionnaire = QuestionnaireTemplate::where('created_by', auth()->user()->id)->orderBy('status', 'desc')->orderBy('start_at', 'asc')->get();
+        } else {
+            $questionnaire = QuestionnaireTemplate::where('created_by', auth()->user()->id)->orderBy('status',
+                'desc')->orderBy('start_at', 'asc')->get();
         }
         return view('questionnaire.questionnaire_index', compact('questionnaire'));
     }
