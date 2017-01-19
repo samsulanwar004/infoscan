@@ -89,6 +89,11 @@ Route::group([
     Route::get('/questionnaire/publish/{id}', 'Web\QuestionnaireController@publish')->name('questionnaire.publish');
 
     Route::get(
+        '/users/{id}/activities',
+        'Web\UserController@activities'
+    )->name('users.activities');
+
+    Route::get(
         '/snaps/{id}/edit-snap-file',
         'Web\SnapController@editSnapFile'
     )->name('snaps.editSnapFile');
@@ -129,33 +134,15 @@ Route::group([
         'Web\HistoryController@showTransaction'
     )->name('transaction.show');
 
-    /*Route::resource(
+    Route::get(
         '/reports',
-        'Web\ReportsController',
-        ['except' => ['show'], 'names' => route_resource_name($routePrefix, 'reports')]
-    );
+        'Web\ReportController@index'
+    )->name($routePrefix == null ? 'reports' : '.reports');
 
-    Route::get(
-        '/reports/formatPdf',
-        'Web\ReportsController@formatPdf'
-    )->name('reports.formatPdf');
-
-    Route::get(
-        '/reports/formatExcel',
-        'Web\ReportsController@formatExcel'
-    );
-
-    Route::get(
-        '/reports/formatWord',
-        'Web\ReportsController@formatWord'
-    );
-
-    Route::get(
-        '/reports/maps',
-        'Web\ReportsController@maps'
-    )->name('reports.maps');*/
-
-    Route::get('/reports', 'Web\ReportController@index')->name($routePrefix == null ? 'reports' : '.reports');
+    Route::post(
+        '/merchants/settingReports',
+        'Web\MerchantController@settingReports'
+    )->name($routePrefix == null ? 'merchants.settingReports' : '.merchants.settingReports');
 });
 
 Auth::routes();

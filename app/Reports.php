@@ -18,4 +18,8 @@
     							'outlet_type',
                                 'snap_at',
     						  ];
+
+        public function member() {
+            return $this->belongsTo(\App\Member::class, 'member_id');
+        }
     }

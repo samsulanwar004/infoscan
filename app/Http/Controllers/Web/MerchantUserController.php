@@ -227,6 +227,7 @@ class MerchantUserController extends AdminController
         if ($mi)
         {
             $mu = $merchantUsers->where('merchant_id', '=', $mi->id);
+            $mus = $merchantUsers->where('lead_by', '=', $mi->user_id);
             return $mu;
         } else {
             return $merchantUsers;

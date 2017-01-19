@@ -9,7 +9,7 @@ class CreateUserSeeder extends Seeder
         'User.List','User.Create','User.Update','User.Delete',
         'Role.List','Role.Create','Role.Update','Role.Delete',
         'Permission.Create','Permission.Update',
-        'Merchant.List','Merchant.Create','Merchant.Update','Merchant.Delete',
+        'Merchant.List','Merchant.Create','Merchant.Update','Merchant.Delete', 'Merchant.Reports',
         'Brand.List','Brand.Create','Brand.Update','Brand.Delete',
         'Exchange.List','Exchange.Create','Exchange.Update','Exchange.Delete',
         'Promotion.List','Promotion.Create','Promotion.Update','Promotion.Delete',

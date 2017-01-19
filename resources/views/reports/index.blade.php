@@ -52,7 +52,6 @@
                 </div>
             </div>
         </div>
-        <!-- /.box -->
 
     </section>
     <!-- /.content -->
@@ -94,29 +93,35 @@
                                 </div>
                             </div>
 
-
-
                             <div class="col-md-6 d4-border-top" style="padding-top: 15px;">
                                 <div class="form-group checkbox-input-{{ $loop->index }}">
-                                    <?php
+                                    @php
+                                        $elementType = $label['type'];
                                         $options = [
-                                            'class' => sprintf("%s %s", 'input-sm form-control', $label['type'])
+                                            'class' => sprintf("%s %s", 'input-sm form-control', $elementType)
                                         ];
-                                        if('range' === $label['type']) {
+                                        if('range' === $elementType) {
                                             $options['data-min'] = $label['data']['min'];
                                             $options['data-max'] = $label['data']['max'];
                                         }
 
-                                        if('multiple' === $label['type']) {
+                                        if('multiple' === $elementType) {
                                             $options['style'] = 'width: 100%;';
                                             $options['multiple'] = 'multiple';
                                         }
 
-                                        if('single' === $label['type']) {
+                                        if('single' === $elementType) {
                                             $options['style'] = 'width: 100%;';
                                         }
-                                    ?>
-                                    {!! \RebelField::type($label['type'], $field, [], [], $options) !!}
+
+                                        if('dateRange' === $elementType) {
+                                            $options['date-min'] = $label['data']['min'];
+                                            $options['date-max'] = $label['data']['max'];
+                                            $options['date-format'] = $label['data']['format'];
+                                            $elementType = 'input';
+                                        }
+                                    @endphp
+                                    {!! \RebelField::type($elementType, $field, [], [], $options) !!}
                                 </div>
                             </div>
                         </div>
@@ -141,6 +146,10 @@
         whenLoaded();
         $('.range').each(function(i, obj) {
             buildRangeSlider($(obj));
+        });
+
+        $('.dateRange').each(function(i, obj) {
+            buildDateRange($(obj));
         });
 
         $('.multiple, .single').select2();
@@ -189,8 +198,8 @@
     }
 
     function buildRangeSlider(selector) {
-        var selector = $(".range"),
-            $min = selector.attr('data-min'),
+        //var selector = $(".range"),
+        var $min = selector.attr('data-min'),
             $max = selector.attr('data-max'),
             slider;
 
@@ -209,6 +218,27 @@
         };
 
         return create();
+    }
+
+    function buildDateRange(selector) {
+        var $min = selector.attr('date-min'),
+            $max = selector.attr('date-max'),
+            $format = selector.attr('date-format');
+
+        $(selector).daterangepicker({
+            timePicker: false,
+            drops: "up",
+            timePicker24Hour: false,
+            showDropdowns: true,
+            autoApply: true,
+            alwaysShowCalendars: true,
+            minDate: $min,
+            maxDate: $max,
+            cancelClass: "btn-danger",
+            locale: {
+                format: 'YYYY-MM-DD'
+            }
+        });
     }
 </script>
 @stop
