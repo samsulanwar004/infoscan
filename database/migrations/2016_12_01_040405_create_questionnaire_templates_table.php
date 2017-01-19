@@ -21,7 +21,7 @@ class CreateQuestionnaireTemplatesTable extends Migration
             $table->dateTime('end_at')->nullable();
             $table->unsignedInteger('created_by', 10);
             $table->integer('total_point')->default(0);
-            $table->string('status', 11)->index();
+            $table->string('status', 11)->default('new')->index();
             $table->timestamps();
             $table->softDeletes();
 
