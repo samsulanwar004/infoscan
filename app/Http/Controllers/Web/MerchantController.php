@@ -114,7 +114,7 @@ class MerchantController extends AdminController
 
         $this->validate($request, [
             'company_name' => 'required|min:3|max:200',
-            'achress' => 'required',
+            'address' => 'required',
             'company_email' => 'required|email',
             'company_logo' => 'mimes:jpg,jpeg,png',
             'user.name.*' => 'required|max:50',
