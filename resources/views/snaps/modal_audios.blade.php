@@ -98,6 +98,8 @@
                     REBEL.smallNotifTemplate(responseData.message, '.modal-content', 'success');
                     $.get( '/snaps/{{ $snapFile->snap_id }}/snap-detail' , function(view){ 
                         $(".snaps-detail").html(view);
+                        var totalValue = $('#snap-table').attr('totalValue');
+                        $('#total_value').val(totalValue);
                     });
                 }             
                 setTimeout(function () {

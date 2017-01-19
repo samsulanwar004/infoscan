@@ -29,7 +29,10 @@ class SnapController extends AdminController
             if(null === $snap) {
                 throw new Exception('Id Snap not valid!');
             }
-            return view('snaps.show', compact('snap'));
+
+            $paymentMethods = config("common.payment_methods");
+
+            return view('snaps.show', compact('snap', 'paymentMethods'));
         } catch (Exception $e) {
             logger($e->getMessage());
             return view('errors.404');
@@ -115,6 +118,11 @@ class SnapController extends AdminController
             'outlet_name' => 'max:100',
             'location' => 'max:100',
             'receipt_id' => 'max:100',
+            'outlet_type' => 'max:100',
+            'outlet_city' => 'max:100',
+            'outlet_province' => 'max:100',
+            'outlet_zip_code' => 'max:100',
+            'total_value' => 'max:100',
             'longitude' => 'max:100',
             'latitude' => 'max:100',
         ]);

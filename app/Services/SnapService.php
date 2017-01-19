@@ -94,10 +94,16 @@ class SnapService
         $snaps->approved_by = ($request->input('confirm') != 'approve') ? null : auth()->user()->id;
         $snaps->reject_by = ($request->input('confirm') != 'reject') ? null : auth()->user()->id;
         $snaps->comment = $request->input('comment');
-        $snaps->outlet_name = $request->input('outlet_name');
+        $snaps->receipt_id = $request->input('receipt_id');
         $snaps->location = $request->input('location');
         $snaps->purchase_time = $request->input('purchase_time');
-        $snaps->receipt_id = $request->input('receipt_id');
+        $snaps->outlet_name = $request->input('outlet_name');      
+        $snaps->outlet_type = $request->input('outlet_type');      
+        $snaps->outlet_city = $request->input('outlet_city');      
+        $snaps->outlet_province = $request->input('outlet_province');      
+        $snaps->outlet_zip_code = $request->input('outlet_zip_code');      
+        $snaps->payment_method = $request->input('payment_method');      
+        $snaps->total_value = $request->input('total_value');      
         $snaps->longitude = !$request->has('longitude') ? 0.00 : $request->input('longitude');
         $snaps->latitude = !$request->has('latitude') ? 0.00 : $request->input('latitude');
 
@@ -141,6 +147,8 @@ class SnapService
             $t->save();
         }
 
+        $this->totalValue($tags['total'], $newTags['total'], $id);
+
     }
 
     public function updateSnapModeTags(Request $request, $id)
@@ -182,6 +190,8 @@ class SnapService
             $t->save();
         }
 
+        $this->totalValue($tags['total'], $newTags['total'], $id);
+
     }
 
     public function updateSnapModeAudios($request, $id)
@@ -220,6 +230,8 @@ class SnapService
 
             $t->save();
         }
+
+        $this->totalValue($tags['total'], $newTags['total'], $id);
     }
 
     public function updateSnapModeImages($request, $id)
@@ -258,6 +270,8 @@ class SnapService
 
             $t->save();
         }
+
+        $this->totalValue($tags['total'], $newTags['total'], $id);
     }
 
     public function deleteSnapTags($ids, $snapFileId)
@@ -265,6 +279,24 @@ class SnapService
         $ids = is_null($ids) ? [0] : $ids;
         SnapTag::where('snap_file_id', '=', $snapFileId)
                     ->whereNotIn('id', $ids)->delete();
+    }
+
+    public function totalValue($tagsTotal, $newTagsTotal, $id)
+    {
+        $tagsTotal = ($tagsTotal == true) ? $tagsTotal : array();
+        $newTagsTotal = ($newTagsTotal == true) ? $newTagsTotal : array();
+
+        $total = collect(array_merge($tagsTotal, $newTagsTotal))->sum();
+
+        $snapFile = $this->getSnapFileById($id);
+        $snapFile->total = $total;
+        $snapFile->update();
+
+        $snapId = $snapFile->snap_id;
+
+        $snap = $this->getSnapByid($snapId);
+        $snap->total_value = $snap->files->pluck('total')->sum();
+        $snap->update();
     }
 
     /**

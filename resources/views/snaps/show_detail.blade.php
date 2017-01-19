@@ -1,5 +1,8 @@
 <div class="table-responsive table-custom">
-	<table class="table">
+	@php
+		$total_value = $snap->files->pluck('total')->sum();
+	@endphp
+	<table id="snap-table" class="table" totalValue="<?php echo $total_value ?>">
 		<thead>
 			<tr>
 				<th>Product Item</th>
@@ -29,3 +32,5 @@
 		</tbody>
 	</table>
 </div>
+
+
