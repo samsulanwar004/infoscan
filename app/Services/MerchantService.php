@@ -197,7 +197,6 @@ class MerchantService {
                 // add to merchant user
 
                 $mu = MerchantUser::create(['merchant_id' => $merchantId, 'user_id' => $u->id]);
-                dd($mu);
             }
         }
 

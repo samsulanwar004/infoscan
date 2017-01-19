@@ -149,10 +149,10 @@ return [
                     'format' => 'YYYY-MM-DD',
                 ]
             ],
-            //'monthly_expense' => 'Monthly Expense',
         ],
         'ignored_fields' => [
-            'user_id'
+            'user_id',
+            'receipt_number',
         ]
     ]
 ];
