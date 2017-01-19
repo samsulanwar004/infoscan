@@ -26,6 +26,7 @@ class CreateSnapTagsTable extends Migration
             $table->text('recognition_text')->nullable();
             $table->integer('recognition_score')->default('0');
             $table->string('process_status', 15)->index();
+            $table->decimal('total', 15,2)->default('0.00'); 
             $table->timestamps();
 
             $table->foreign('snap_id', 'FK_snap_id_in_snap_files')

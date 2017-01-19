@@ -69,15 +69,11 @@
                                     {{ method_field('PUT') }}
                                     <div class="form-group receipt_id">
                                         <label for="receipt_id">Receipt ID</label>
-                                        <input type="text" class="form-control" id="receipt_id" name="receipt_id" placeholder="Enter Receipt ID" value="{{ $snap->receipt_id }}">
-                                    </div>
-                                    <div class="form-group outlet_name">
-                                        <label for="outlet_name">Outlet Name</label>
-                                        <input type="text" class="form-control" id="outlet_name" name="outlet_name" placeholder="Enter outlet name" value="{{ $snap->outlet_name }}">
-                                    </div>
+                                        <input type="text" class="form-control input-sm" id="receipt_id" name="receipt_id" placeholder="Enter Receipt ID" value="{{ $snap->receipt_id }}">
+                                    </div>                                    
                                     <div class="form-group location">
                                         <label for="location">Location</label>
-                                        <input type="text" class="form-control" id="location" name="location" placeholder="Enter location" value="{{ $snap->location }}">
+                                        <input type="text" class="form-control input-sm" id="location" name="location" placeholder="Enter location" value="{{ $snap->location }}">
                                     </div>
                                     <div class="form-group purchase_time">
                                         <label for="purchase_time">Purchase Time</label>
@@ -86,20 +82,59 @@
                                                 <i class="fa fa-calendar"></i>
                                             </div>
                                             @if ($snap->purchase_time == true)
-                                                <input type="text" class="form-control datepicker" id="purchase_time" name="purchase_time" value="{{ $snap->purchase_time }}" placeholder="Enter Purchase Time">
+                                                <input type="text" class="form-control datepicker input-sm" id="purchase_time" name="purchase_time" value="{{ $snap->purchase_time }}" placeholder="Enter Purchase Time">
                                             @else
-                                                <input type="text" class="form-control datepicker" id="purchase_time" name="purchase_time" value="{{ date('Y-m-d') }}" placeholder="Enter Purchase Time">
+                                                <input type="text" class="form-control datepicker input-sm" id="purchase_time" name="purchase_time" value="{{ date('Y-m-d') }}" placeholder="Enter Purchase Time">
                                             @endif
                                         </div>
+                                    </div>
+                                    <div class="form-group outlet_name">
+                                        <label for="outlet_name">Outlet Name <a href="#accordion" data-toggle="collapse"><i class="fa fa-caret-square-o-down"></i></a></label>
+                                        <input type="text" class="form-control input-sm" id="outlet_name" name="outlet_name" placeholder="Enter outlet name" value="{{ $snap->outlet_name }}">
+                                    </div>
+                                    <div id="accordion" class="collapse">
+                                        <div class="form-group outlet_type">
+                                            <label for="outlet_type">Outlet Type</label>
+                                            <input type="text" class="form-control input-sm" list="outlet-type" id="outlet_type" name="outlet_type" placeholder="Enter outlet type" value="{{ $snap->outlet_type }}">
+                                        </div>
+                                        <div class="form-group outlet_city">
+                                            <label for="outlet_city">Outlet City</label>
+                                            <input type="text" class="form-control input-sm" id="outlet_city" name="outlet_city" placeholder="Enter outlet type" value="{{ $snap->outlet_city }}">
+                                        </div>
+                                        <div class="form-group outlet_province">
+                                            <label for="outlet_province">Outlet Province</label>
+                                            <input type="text" class="form-control input-sm" id="outlet_province" name="outlet_province" placeholder="Enter outlet province" value="{{ $snap->outlet_province }}">
+                                        </div>
+                                        <div class="form-group outlet_zip_code">
+                                            <label for="outlet_zip_code">Outlet Zipcode</label>
+                                            <input type="number" class="form-control input-sm" id="outlet_zip_code" name="outlet_zip_code" placeholder="Enter outlet zipcode" value="{{ $snap->outlet_zip_code }}">
+                                        </div>
+                                    </div>
+                                    <div class="form-group total_value">
+                                        <label for="total_value">Total Value</label>
+                                        <input type="number" class="form-control input-sm" id="total_value" placeholder="Enter Total Value" value="{{ $snap->total_value }}" readonly="readonly">
+                                    </div>                                    
+                                    <div class="form-group payment_method">
+                                        <label for="payment_method">Payment Method</label>
+                                        <select name="payment_method" class="form-control input-sm">
+                                            @if($snap->payment_method == true)
+                                                <option value="{{ $snap->payment_method }}" selected="selected">{{ $snap->payment_method }}</option>
+                                            @endif
+                                            @foreach($paymentMethods as $pm)
+                                                <option value="{{ $pm }}">{{ $pm }}</option>
+                                            @endforeach
+                                        </select>
                                     </div>
                                     <div class="form-group longitude latitude" style="display: none;">
                                         <label for="geography_location">Geographic Coordinates</label>
                                             <div class="form-inline">
-                                                <input type="text" class="form-control" id="longitude" name="longitude" placeholder="Enter Longitude" value="{{ $snap->longitude }}">
-                                                <input type="text" class="form-control" id="latitude" name="latitude" placeholder="Enter Latitude" value="{{ $snap->latitude }}">
+                                                <input type="text" class="form-control input-sm" id="longitude" name="longitude" placeholder="Enter Longitude" value="{{ $snap->longitude }}">
+                                                <input type="text" class="form-control input-sm" id="latitude" name="latitude" placeholder="Enter Latitude" value="{{ $snap->latitude }}">
                                             </div>
                                     </div>
-                                    <div class="form-group" id="map"></div>
+                                    @if($snap->longitude != 0.00000000 && $snap->latitude != 0.00000000 )
+                                        <div class="form-group" id="map"></div>
+                                    @endif
                                     <div class="form-group">
                                         <a href="{{ admin_route_url('snaps.edit', ['id' => $snap->id]) }}" class="btn btn-success btn-lg"
                                             data-toggle="modal"
@@ -112,6 +147,12 @@
                                         </button>
                                     </div>
                                 </form>
+                                <datalist id="outlet-type">
+                                  <option value="Minimarket">
+                                  <option value="Supermarket">
+                                  <option value="Hypermarket">
+                                  <option value="Drug Store">
+                                </datalist>
                             </div>
                         </div>
                 </div>
@@ -131,60 +172,6 @@
 
 @section('footer_scripts')
 <link rel="stylesheet" href="{{ elixirCDN('css/taggd.css') }}">
-
-<script>
-  function initMap() {
-    var longitude = parseFloat('{{ $snap->longitude }}');
-    var latitude = parseFloat('{{ $snap->latitude }}');
-
-    var geography_location = {lat: latitude, lng: longitude};
-    var map = new google.maps.Map(document.getElementById('map'), {
-      zoom: 20,
-      center: geography_location
-    });
-    var marker = new google.maps.Marker({
-      position: geography_location,
-      map: map
-    });
-  }
-</script>
-
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDL2kUSI8aZRZY2M1x3ios-LmwOoVYZ_9o&callback=initMap" async defer></script>
-<script src="{{ elixirCDN('js/taggd.js') }}"></script>
-<script src="{{ elixirCDN('js/elevate.js') }}"></script>
-<script type="text/javascript">
-
-    $(document).ready(function() {
-        $('#snapUpdate').on('submit', function (e) {
-            e.preventDefault();
-            REBEL.onSubmit($(this), function (responseData) {
-                REBEL.removeAllMessageAlert();
-                if (responseData.status == "ok") {
-                    REBEL.smallNotifTemplate(responseData.message, '.body', 'success');
-                }
-            }, true);
-
-            setTimeout(function() {
-                REBEL.removeAllMessageAlert();
-            }, 3000);
-        });
-
-        $('.datepicker').datepicker({
-            format: 'yyyy-mm-dd',
-            autoclose: true,
-        });
-
-        $(".img-tag").on('click', function(img) {
-            //console.log(img.toElement.id);
-            var link = $('#modal-edit');
-            var nameLink = img.toElement.id+'/edit-snap-file';
-            link.attr('href', nameLink);
-
-            link.trigger('click');
-
-        });
-    });
-</script>
 <style type="text/css">
     img.img-tag {
         cursor: pointer;
@@ -222,5 +209,77 @@
         border-bottom-right-radius: 6px;
     }
 
+    input[type=number]::-webkit-inner-spin-button, 
+    input[type=number]::-webkit-outer-spin-button 
+    { 
+      -webkit-appearance: none; 
+      margin: 0; 
+    }
+
 </style>
+<script>
+  function initMap() {
+    var longitude = parseFloat('{{ $snap->longitude }}');
+    var latitude = parseFloat('{{ $snap->latitude }}');
+
+    if (longitude != 0.0000000 && latitude != 0.0000000) {
+        var geography_location = {lat: latitude, lng: longitude};
+        var map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 20,
+          center: geography_location
+        });
+        var marker = new google.maps.Marker({
+          position: geography_location,
+          map: map
+        });
+    }
+  }
+</script>
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDL2kUSI8aZRZY2M1x3ios-LmwOoVYZ_9o&callback=initMap" async defer></script>
+<script src="{{ elixirCDN('js/taggd.js') }}"></script>
+<script src="{{ elixirCDN('js/elevate.js') }}"></script>
+<script type="text/javascript">
+
+    $(document).ready(function() {
+
+        $('#snapUpdate').on('submit', function (e) {
+            e.preventDefault();
+            REBEL.onSubmit($(this), function (responseData) {
+                REBEL.removeAllMessageAlert();
+                if (responseData.status == "ok") {
+                    REBEL.smallNotifTemplate(responseData.message, '.body', 'success');                    
+                }
+            }, true);
+
+            setTimeout(function() {
+                REBEL.removeAllMessageAlert();
+            }, 3000);
+        });
+
+        $('.datepicker').datepicker({
+            format: 'yyyy-mm-dd',
+            autoclose: true,
+        });
+
+        $(".img-tag").on('click', function(img) {
+            //console.log(img.toElement.id);
+            var link = $('#modal-edit');
+            var nameLink = img.toElement.id+'/edit-snap-file';
+            link.attr('href', nameLink);
+
+            link.trigger('click');
+
+        });
+
+        $('form').on('focus', 'input[type=number]', function(e) {
+          $(this).on('mousewheel.disableScroll', function(e) {
+            e.preventDefault()
+          })
+        });
+        $('form').on('blur', 'input[type=number]', function(e) {
+          $(this).off('mousewheel.disableScroll')
+        });
+    });
+</script>
 @stop

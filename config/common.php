@@ -21,6 +21,11 @@ return [
     	'gt' => 'generaltrade',
     	'hw' => 'handwritten',
     ],
+    'payment_methods' => [
+        'cash' => 'Cash',
+        'debit_card' => 'Debit Card',
+        'credit_card' => 'Credit Card',
+    ],
     'reports' => [
         'fields' => [
             'user_id' => [
