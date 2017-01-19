@@ -48,16 +48,16 @@ class QuestionnaireController extends AdminController
             'question.*' => 'required'
         ]);
 
-        if (!auth()->user()->hasRole('Questionnaire.Point') || !$request->input('total_point')) {
-            $input['total_point'] = 0;
+        $input = $request->all();
+
+        if (!auth()->user()->hasRole('Questionnaire.Point') || !$request->input('total_point') || $request->input('total_point') == 0) {
             $input['status'] = 'new';
+            $input['total_point'] = 0;
         }
 
         if (!auth()->user()->hasRole('Questionnaire.Publish')) {
             $input['status'] = 'new';
         }
-
-        $input = $request->all();
 
         $input['questionnaire_template_code'] = strtolower(str_random(5));
         $input['start_at'] = $period[0];
@@ -72,6 +72,7 @@ class QuestionnaireController extends AdminController
     {
         $this->isAllowed('Questionnaire.Update');
         try {
+
             $questionnaire = QuestionnaireTemplate::where('id', $id)->first();
             $input = $request->all();
 
