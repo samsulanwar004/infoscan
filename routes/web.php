@@ -149,7 +149,7 @@ Route::group([
         'Web\MerchantController@storeSettingReports'
     )->name($routePrefix == null ? 'merchants.settingReports.store' : '.merchants.settingReports.store');
 
-    Route::put(
+    Route::post(
         '/merchants/settingReports/{id}',
         'Web\MerchantController@updateSettingReports'
     )->name($routePrefix == null ? 'merchants.settingReports.update' : '.merchants.settingReports.update');
