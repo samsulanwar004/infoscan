@@ -91,7 +91,8 @@ class SnapService
 
     public function getSnapByLocation()
     {
-        return Snap::where('location', null)->get();
+        return Snap::where('location', null)
+            ->orWhere('location', '')->get();
     }
 
     public function updateSnap(Request $request, $id)
