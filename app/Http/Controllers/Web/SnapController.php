@@ -13,7 +13,7 @@ class SnapController extends AdminController
     public function index()
     {
         $this->isAllowed('Snaps.List');
-        $snaps = ( new SnapService)->getAvailableSnaps();
+        $snaps = (new SnapService)->getAvailableSnaps();
         $snapCategorys = config("common.snap_category");
         $snapCategoryModes = config("common.snap_category_mode");
 
