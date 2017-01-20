@@ -13,7 +13,7 @@ class SnapController extends AdminController
     public function index()
     {
         $this->isAllowed('Snaps.List');
-        $snaps = ( new SnapService)->getAvailableSnaps();
+        $snaps = (new SnapService)->getAvailableSnaps();
         $snapCategorys = config("common.snap_category");
         $snapCategoryModes = config("common.snap_category_mode");
 
@@ -116,13 +116,12 @@ class SnapController extends AdminController
             'newtag.total.*' => 'required|max:15',
             'comment' => 'max:100',
             'outlet_name' => 'max:100',
-            'location' => 'max:100',
+            'location' => 'max:255',
             'receipt_id' => 'max:100',
             'outlet_type' => 'max:100',
             'outlet_city' => 'max:100',
             'outlet_province' => 'max:100',
             'outlet_zip_code' => 'max:100',
-            'total_value' => 'max:100',
             'longitude' => 'max:100',
             'latitude' => 'max:100',
         ]);

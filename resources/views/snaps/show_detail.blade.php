@@ -2,7 +2,7 @@
 	@php
 		$total_value = $snap->files->pluck('total')->sum();
 	@endphp
-	<table id="snap-table" class="table" totalValue="<?php echo $total_value ?>">
+	<table id="snap-table" class="table" totalValue="{{ $total_value }}">
 		<thead>
 			<tr>
 				<th>Product Item</th>
