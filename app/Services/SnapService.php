@@ -109,8 +109,7 @@ class SnapService
         $snaps->outlet_city = $request->input('outlet_city');      
         $snaps->outlet_province = $request->input('outlet_province');      
         $snaps->outlet_zip_code = $request->input('outlet_zip_code');      
-        $snaps->payment_method = $request->input('payment_method');      
-        $snaps->total_value = $request->input('total_value');      
+        $snaps->payment_method = $request->input('payment_method');        
         $snaps->longitude = !$request->has('longitude') ? 0.00 : $request->input('longitude');
         $snaps->latitude = !$request->has('latitude') ? 0.00 : $request->input('latitude');
 

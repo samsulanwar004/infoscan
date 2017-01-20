@@ -122,7 +122,6 @@ class SnapController extends AdminController
             'outlet_city' => 'max:100',
             'outlet_province' => 'max:100',
             'outlet_zip_code' => 'max:100',
-            'total_value' => 'max:100',
             'longitude' => 'max:100',
             'latitude' => 'max:100',
         ]);
