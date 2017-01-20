@@ -116,7 +116,7 @@ class SnapController extends AdminController
             'newtag.total.*' => 'required|max:15',
             'comment' => 'max:100',
             'outlet_name' => 'max:100',
-            'location' => 'max:100',
+            'location' => 'max:255',
             'receipt_id' => 'max:100',
             'outlet_type' => 'max:100',
             'outlet_city' => 'max:100',

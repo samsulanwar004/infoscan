@@ -89,6 +89,11 @@ class SnapService
         return SnapTag::where('id', '=', $id)->first();
     }
 
+    public function getSnapByLocation()
+    {
+        return Snap::where('location', null)->get();
+    }
+
     public function updateSnap(Request $request, $id)
     {
         $snaps = $this->getSnapByid($id);
