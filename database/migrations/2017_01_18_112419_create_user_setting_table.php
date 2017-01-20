@@ -13,7 +13,7 @@ class CreateUserSettingTable extends Migration
      */
     public function up()
     {
-        Schema::create('merchant_users_report_setting', function (Blueprint $table) {
+        Schema::create('merchant_users_report_settings', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('report_template_id');
             $table->unsignedInteger('merchant_user_id');
@@ -36,6 +36,6 @@ class CreateUserSettingTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('merchant_users_report_setting');
+        Schema::dropIfExists('merchant_users_report_settings');
     }
 }

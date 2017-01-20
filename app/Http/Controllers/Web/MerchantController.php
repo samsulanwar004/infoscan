@@ -206,11 +206,11 @@ class MerchantController extends AdminController
         try {
             $content = json_encode($request->except(['_token']));
             $name = str_random(10);
-            $createdBy = auth()->user()->id;
+            $updatedBy = auth()->user()->id;
 
             DB::beginTransaction();
             $merchants = new MerchantService;
-            $merchant = $merchants->updateSettingReport($name, $content, $createdBy);
+            $merchant = $merchants->updateSettingReport($id, $name, $content, $updatedBy);
             DB::commit();
 
             return response()->json([
