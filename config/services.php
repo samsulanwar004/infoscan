@@ -42,6 +42,9 @@ return [
         'client_id'     => env('GOOGLE_CLIENT_ID'),
         'client_secret' => env('GOOGLE_CLIENT_SECRET'),
         'redirect'      => env('GOOGLE_REDIRECT'),
+        'map'           => [
+            'key' => env('GOOGLE_MAP_KEY'),
+        ],
     ],
 
     'facebook' => [

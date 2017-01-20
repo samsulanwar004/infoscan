@@ -44,9 +44,7 @@
 
 @section('footer_scripts')
 <script>
-    $(function() {
-        getSelected();
-    });
+
     $(".snap-type").on("change", function() {
 
         var type = $(this).val();

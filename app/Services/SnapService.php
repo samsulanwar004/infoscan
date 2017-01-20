@@ -12,6 +12,7 @@ use Dusterio\PlainSqs\Jobs\DispatcherJob;
 use Exception;
 use Illuminate\Http\Request;
 use Storage;
+use App\Libraries\GoogleMap;
 
 class SnapService
 {
@@ -297,6 +298,14 @@ class SnapService
         $snap = $this->getSnapByid($snapId);
         $snap->total_value = $snap->files->pluck('total')->sum();
         $snap->update();
+    }
+
+    public function handleMapAddress($latitude = 0.00000000, $longitude = 0.00000000)
+    {
+        $key = config('services.google.map.key');
+        $ocrProcess = (new GoogleMap($latitude, $longitude, $key));
+
+        return $ocrProcess->handle();
     }
 
     /**
