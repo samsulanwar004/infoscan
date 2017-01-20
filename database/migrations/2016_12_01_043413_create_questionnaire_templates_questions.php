@@ -15,8 +15,8 @@ class CreateQuestionnaireTemplatesQuestions extends Migration
     {
         Schema::create('questionnaire_templates_questions', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('template_id')->unsigned();
-            $table->integer('question_id')->unsigned();
+            $table->unsignedInteger('template_id');
+            $table->unsignedInteger('question_id');
             $table->foreign('template_id')->references('id')->on('questionnaire_templates');
             $table->foreign('question_id')->references('id')->on('questionnaire_questions');
             $table->softDeletes();

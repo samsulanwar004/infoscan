@@ -15,7 +15,7 @@
     <div class="login-logo">
         <!-- <a href="/"><b>Rekan</b>Raffi</a> -->
         <a href="#">
-            <img src="/img/lte/logo.png" width="150">
+            <img src="<?php echo env('CDN_URL', ''); ?>/img/lte/logo.png" width="150">
         </a>
     </div>
     <!-- /.login-logo -->
