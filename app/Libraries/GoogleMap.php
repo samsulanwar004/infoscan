@@ -8,6 +8,9 @@ class GoogleMap
 {
     const GM_URL = 'https://maps.googleapis.com/maps/api/geocode';
 
+    /**
+     * @var string
+     */
     private $key;
     /**
      * @var string
@@ -45,7 +48,7 @@ class GoogleMap
     }
 
     /**
-     * Get Google Vision API url.
+     * Get Google Map API url.
      *
      * @return string
      */
@@ -55,12 +58,8 @@ class GoogleMap
     }
 
     /**
-     * Push the body (images and properties) to google vision.
      *
-     * @param $gvUrl
-     * @param $requestBody
-     *
-     * @return mixed|string
+     * @param $gmUrl
      * @throws \Exception
      */
     private function push($gmUrl)
