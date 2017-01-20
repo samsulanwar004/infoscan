@@ -19,9 +19,6 @@
             <div class="box-header with-border">
                 <h3 class="box-title"></h3>
                 <div class="box-tools pull-right">
-                    @cando('Merchant.Reports')
-                    <a href="#"> <i class="fa fa-btn fa-cog"></i> Setting Reports</a>
-                    @endcando
                     <a href="{{ admin_route_url('merchants.index') }}" class="btn btn-box-tool"
                        data-toggle="tooltip" title="Back">
                         <i class="fa fa-times"></i></a>
@@ -100,7 +97,7 @@
                                     </div>
                                     @cando('Merchant.Reports')
                                         <div class="form-group has-feedback">
-                                            <a class="btn btn-default btn-modal" href="javascript:void(0)"><i class="fa fa-btn fa-filter"></i> Setting Reports</a>
+                                            <a class="btn btn-default btn-open-modal" href="#"><i class="fa fa-btn fa-filter"></i> Setting Reports</a>
                                         </div>
                                     @endcando
                                 </div>
@@ -155,7 +152,7 @@
                 </form>
             </div>
             <div id="loading"></div>
-            <div class="modal fade" tabindex="-1" role="dialog">
+            <div id="modals" class="modal fade" tabindex="-1" role="dialog">
                 <form id="settingReportsForm" role="form" action="{{ admin_route_url('merchants.settingReports.update', ['id' => 1]) }}" method="post" class="form" accept-charset="utf-8">
                     {{ csrf_field() }}
                     <div class="modal-dialog modal-lg" role="document">
@@ -171,7 +168,7 @@
                                             <div class="row bg-soft">
                                                 <div class="col-md-6 d4-border-top" style="min-height: 45px; padding-top: 15px;">
                                                     <div class="checkbox">
-                                                        <label><input checked type="checkbox" class="column-list" checkboxIndex="{{ $loop->index }}">{{ $label['label'] }}</label>
+                                                        <label><input checked name="check_{{ $field }}"type="checkbox" class="column-list" checkboxIndex="{{ $loop->index }}">{{ $label['label'] }}</label>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6 d4-border-top" style="padding-top: 15px;">
@@ -249,7 +246,8 @@
                 '<div class="form-group has-feedback"><label for="name">Name</label><input type="hidden" name="user[id][]" id="id"><input type="text" class="form-control" name="newuser[name][]" id="name" placeholder="Enter user name" required></div>' +
                 '<div class="form-group has-feedback"><label for="phone">Phone</label><input type="text" class="form-control" name="newuser[phone][]" id="phone" placeholder="Enter phone number" required></div>' +
                 '<div class="form-group has-feedback"><label for="position">Position</label><input type="text" class="form-control" name="newuser[position][]" id="position" placeholder="Enter position"required></div>' +
-                '<div class="form-group has-feedback"><label for="email">Email</label><input type="email" class="form-control" name="newuser[email][]" id="email" placeholder="Enter email" required></div></div>');
+                '<div class="form-group has-feedback"><label for="email">Email</label><input type="email" class="form-control" name="newuser[email][]" id="email" placeholder="Enter email" required></div></div>' +
+                '<div class="form-group has-feedback"><a class="btn btn-default btn-open-modal" href="#"><i class="fa fa-btn fa-filter"></i> Setting Reports</a></div>');
                 updateCounterForm(false);
                 window.location.href='#add';
             });
@@ -261,6 +259,9 @@
                     $(e.target).closest('#user').remove();
                     updateCounterForm(true);
                 }
+            });
+            $(document).on('click', '.btn-open-modal', function (e) {
+                $('#modals').modal('show');
             });
         });
         function myLoading() {
@@ -279,13 +280,10 @@
             $('.range').each(function(i, obj) {
                 buildRangeSlider($(obj));
             });
-
             $('.dateRange').each(function(i, obj) {
                 buildDateRange($(obj));
             });
-
             $('.multiple, .single').select2();
-
             $('.btn-modal').on('click', function(e) {
                 e.preventDefault();
                 $('.modal').modal('show');
@@ -299,7 +297,6 @@
                     format: 'YYYY-MM-DD'
                 }
             });
-
             $('.column-list').on('change', function() {
                 var checkboxIndex = $(this).attr('checkboxIndex');
                 var checkboxInput = $('.checkbox-input-' + checkboxIndex);
@@ -313,7 +310,6 @@
                     $(this).parents('.row').removeClass('bg-soft');
                 }
             });
-
             $('#settingReportsForm').on('submit', function (e) {
                 e.preventDefault();
                 REBEL.onSubmit($(this), function (responseData) {
@@ -328,7 +324,6 @@
                 });
             });
         });
-
         function whenLoaded() {
             //console.log(Cookies.get('reports'));
             var $cookies = Cookies.get('reportFilters');
@@ -339,7 +334,6 @@
                 console.log($cookies);
             }
         }
-
         function buildRangeSlider(selector) {
             var selector = $(".range"),
             $min = selector.attr('data-min'),
@@ -359,12 +353,10 @@
             };
             return create();
         }
-
         function buildDateRange(selector) {
             var $min = selector.attr('date-min'),
                 $max = selector.attr('date-max'),
                 $format = selector.attr('date-format');
-
             $(selector).daterangepicker({
                 timePicker: false,
                 drops: "up",
