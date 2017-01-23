@@ -123,6 +123,12 @@ Route::group([
         'Web\PointController@getTaskTable'
     )->name('points.task');
 
+    Route::get(
+        '/pages/404', function() {
+            return view('errors.404');
+        }
+    )->name('pages.404');
+
     Route::resource(
         '/members',
         'Web\MemberController',
