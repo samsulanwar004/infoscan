@@ -308,9 +308,9 @@ class SnapService
     public function handleMapAddress($latitude = 0.00000000, $longitude = 0.00000000)
     {
         $key = config('services.google.map.key');
-        $ocrProcess = (new GoogleMap($latitude, $longitude, $key));
+        $maprocess = (new GoogleMap($latitude, $longitude, $key));
 
-        return $ocrProcess->handle();
+        return $mapProcess->handle();
     }
 
     /**
