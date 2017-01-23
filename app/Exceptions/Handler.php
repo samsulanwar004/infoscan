@@ -56,9 +56,9 @@ class Handler extends ExceptionHandler
             return redirect('pages/404');
         }
 
-        if ($request->all() == null) {
-            return response()->view('errors.404');
-        }
+        // if ($request->all() == null) {
+        //     return response()->view('errors.404');
+        // }
 
         return parent::render($request, $exception);
     }
