@@ -1,6 +1,10 @@
 <form id="modalForm" action="{{ admin_route_url('snaps.update', ['id' => $snap->id]) }}"  method="POST">
     {{ csrf_field() }}
     {{ method_field('PUT') }}
+    <input type="hidden" name="member_id" value="{{ $snap->member_id }}">
+    <input type="hidden" name="snap_type" value="{{ $snap->snap_type }}">
+    <input type="hidden" name="mode_type" value="{{ $snap->mode_type }}">
+    <input type="hidden" name="city" value="{{ $snap->outlet_city }}">
     <div class="modal-header">
         <a class="close btn-modal-close" data-dismiss="modal">&times;</a>
         <h4><i class="fa fa-file-o fa-btn"></i> <span class="action-title">Snap </span> Confirmation</h4>
@@ -47,7 +51,7 @@
     <div class="modal-footer">
         <div class="button-container">
             <a class="btn btn-link btn-modal-close" data-dismiss="modal">Close</a>
-            <button class="btn btn-primary submit-to-server">
+            <button class="btn btn-primary submit-to-server" disabled="disabled">
                 <i class="fa fa-save fa-btn"></i> <span class="ladda-label">Save</span>
             </button>
             <div class="la-ball-fall">
@@ -73,11 +77,21 @@
 
       $('#approve').on('click', function() {
         $('#comment').removeAttr('required');
+        $('.submit-to-server').removeAttr('disabled');
       });
 
       $('#reject').on('click', function() {
         $('#comment').attr('required', 'required');
-      })
+        $('.submit-to-server').removeAttr('disabled');
+      });
+
+      if ('{{(bool)$snap->approved_by}}' == true) {
+        $('#approve').attr('disabled', 'disabled');
+        $('#reject').attr('disabled', 'disabled');
+      } else if ('{{(bool)$snap->reject_by}}' == true) {
+        $('#approve').attr('disabled', 'disabled');
+        $('#reject').attr('disabled', 'disabled');
+      }
   });
 
 </script>
