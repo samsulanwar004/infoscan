@@ -45,9 +45,9 @@ class LocationCron extends Command
 
         foreach ($snaps as $snap) {            
             $location = $snapService->handleMapAddress($snap->latitude, $snap->longitude);
-            $address = $location->results[0]->address_components;
-            $length = count($address);
             if ($location->status == "OK") {
+                $address = $location->results[0]->address_components;
+                $length = count($address);
                 $s = $snapService->getSnapByid($snap->id);
                 $s->location = $location->results[0]->formatted_address;
                 $s->outlet_city = in_array("administrative_area_level_2", $address[$length-4]->types) ? $address[$length-4]->long_name : null;
