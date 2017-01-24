@@ -43,30 +43,6 @@
             </div>
           </div>
           <!-- /.row -->
-
-          <!-- Table row -->
-          <div class="row">
-            <div class="col-xs-12 table-responsive" style="overflow-y:scroll;max-height: 500px;">
-              <table class="table table-striped">
-                <thead>
-                    <tr>
-                      <th>File Code</th>
-                      <th>Score</th>
-                    </tr>
-                </thead>
-                <tbody>
-                @foreach($snap->files as $file)
-                    <tr>
-                      <td>{{ $file->file_code }}</td>
-                      <td>{{ $file->recognition_score }}</td>
-                    </tr>
-                @endforeach
-                </tbody>
-              </table>
-            </div>
-            <!-- /.col -->
-          </div>
-          <!-- /.row -->
     </div>
     <div class="modal-footer">
         <div class="button-container">
