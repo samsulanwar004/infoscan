@@ -16,10 +16,10 @@ class BaseApiController extends Controller
      * @param  int $httpCode
      * @return \Illuminate\Http\Response
      */
-    protected function error($message, $httpCode = 500)
+    protected function error($message, $httpCode = 500, $isValidationMessage = false)
     {
         logger($message);
-        if(config('app.debug')) {
+        if(config('app.debug') || $isValidationMessage) {
             if ($message instanceof \Exception || $message instanceof \InvalidArgumentException) {
                 $message = $message->getMessage();
             }
