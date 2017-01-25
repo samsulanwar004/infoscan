@@ -9,25 +9,23 @@
             <div class="col-md-8">
                 <div class="form-group name">
                     <label for="name">Task Name</label>
-                    <input type="text" class="form-control" id="name" name="name" placeholder="Task Name" required="required">
+                    <input type="text" class="form-control" id="name" name="name" placeholder="Task Name" readonly="readonly" required="required">
                 </div>
 
                 <div class="form-group task_type">
                     <label for="name">Task Type</label>
-                    <select name="task_type" class="form-control">
-                        <option value="0">Select Task</option>
+                    <select name="task_type" class="form-control" id="task-type">
+                        <option value="0" nameValue="">Select Task</option>
                         @foreach(config('common.tasks.types') as $key => $type)
-                        <option value="{{ $key }}">{{ $type }}</option>
+                        <option value="{{ $key }}" nameValue="{{ $type }}">{{ $type }}</option>
                         @endforeach
                     </select>
                 </div>
 
-                <div class="form-group task_type">
+                <div class="form-group mode_type">
                     <label for="name">Task Mode</label>
-                    <select name="task_type" class="form-control">
-                        @foreach(config('common.tasks.modes') as $key => $mode)
-                        <option value="{{ $key }}" modeValue={{ $mode['value'] }}>{{ $mode['label'] }}</option>
-                        @endforeach
+                    <select name="task_mode" class="form-control" id="task-mode" disabled="disabled">
+                        <option value="0" nameValue="">Select Mode</option>
                     </select>
                 </div>
             </div>
@@ -112,7 +110,7 @@
             var nextLevel = countOfTextbox + 1;
             $("a#remove").removeAttr('disabled');
 
-            if(countOfTextbox >= 25) {
+            if(countOfTextbox >= 10) {
                 $(this).attr('disabled', 'disabled');
                 return;
             }
@@ -134,5 +132,28 @@
             }
 
         });
+
+        $('#task-type').on('change', function() {
+            var type = $(this).find(':selected').attr('nameValue');
+            $('#task-mode').removeAttr('disabled');
+
+            if (this.value == 'a') {
+                $("#task-mode").html('<select name="task_mode" class="form-control" id="task-mode">@foreach(config("common.tasks.select_mode.a") as $key => $mode)<option value="{{ $key }}{{ $mode["value"] }}" nameValue="{{ $mode["label"] }}">{{ $mode["label"] }}</option>@endforeach</select>');
+            } else if (this.value == 'b') {
+                $("#task-mode").html('<select name="task_mode" class="form-control" id="task-mode"><option value="0" nameValue="">Select Mode</option>@foreach(config("common.tasks.select_mode.b") as $key => $mode)<option value="{{ $key }}{{ $mode["value"] }}" nameValue="{{ $mode["label"] }}">{{ $mode["label"] }}</option>@endforeach</select>');
+            } else if (this.value == 'c') {
+                $("#task-mode").html('<select name="task_mode" class="form-control" id="task-mode"><option value="0" nameValue="">Select Mode</option>@foreach(config("common.tasks.select_mode.c") as $key => $mode)<option value="{{ $key }}{{ $mode["value"] }}" nameValue="{{ $mode["label"] }}">{{ $mode["label"] }}</option>@endforeach</select>');
+            } else {
+                $("#task-mode").attr('disabled', 'disabled');
+            }      
+            $("#name").val(type);
+        });
+
+        $('#task-mode').on('change', function() {
+            var type = $('#task-type').find(':selected').attr('nameValue');
+            var mode = $(this).find(':selected').attr('nameValue');
+            $("#name").val(type+' '+mode);
+        });
+
     });
 </script>
