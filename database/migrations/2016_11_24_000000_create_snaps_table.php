@@ -27,7 +27,7 @@ class CreateSnapsTable extends Migration
             $table->string('check_by', 100)->nullable()->index();
             $table->text('comment')->nullable();
             $table->string('receipt_id', 100)->nullable();
-            $table->string('location', 100)->nullable();
+            $table->string('location', 255)->nullable();
             $table->date('purchase_time')->nullable(); 
             $table->string('outlet_name', 100)->nullable();
             $table->string('outlet_type', 100)->nullable();

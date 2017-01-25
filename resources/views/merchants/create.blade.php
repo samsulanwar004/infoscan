@@ -71,7 +71,7 @@
                                     </div>
                                     @cando('Merchant.Reports')
                                         <div class="form-group has-feedback">
-                                            <a class="btn btn-default btn-modal" href="javascript:void(0)"><i class="fa fa-btn fa-filter"></i> Setting Reports</a>
+                                            <a class="btn btn-default btn-open-modal" href="#"><i class="fa fa-btn fa-filter"></i> Setting Reports</a>
                                         </div>
                                     @endcando
                                 </div>
@@ -90,7 +90,7 @@
                 </form>
             </div>
             <div id="loading"></div>
-            <div class="modal fade" tabindex="-1" role="dialog">
+            <div id="modals" class="modal fade" tabindex="-1" role="dialog">
                 <form id="settingReportsForm" role="form" action="{{ admin_route_url('merchants.settingReports.store') }}" method="post" class="form" accept-charset="utf-8">
                     {{ csrf_field() }}
                     <div class="modal-dialog modal-lg" role="document">
@@ -184,7 +184,8 @@
                     '<div class="form-group has-feedback"><label for="name">Name</label><input type="hidden" name="user[id][]" id="id"><input type="text" class="form-control" name="user[name][]" id="name" placeholder="Enter user name" required></div>' +
                     '<div class="form-group has-feedback"><label for="phone">Phone</label><input type="text" class="form-control" name="user[phone][]" id="phone" placeholder="Enter phone number" required></div>' +
                     '<div class="form-group has-feedback"><label for="position">Position</label><input type="text" class="form-control" name="user[position][]" id="position" placeholder="Enter position"required></div>' +
-                    '<div class="form-group has-feedback"><label for="email">Email</label><input type="email" class="form-control" name="user[email][]" id="email" placeholder="Enter email" required></div></div>');
+                    '<div class="form-group has-feedback"><label for="email">Email</label><input type="email" class="form-control" name="user[email][]" id="email" placeholder="Enter email" required></div></div>' +
+                    '<div class="form-group has-feedback"><a class="btn btn-default btn-open-modal" href="#"><i class="fa fa-btn fa-filter"></i> Setting Reports</a></div>');                
                 updateCounterForm(false);
                 window.location.href = '#add';
             });
@@ -196,6 +197,9 @@
                     $(e.target).closest('#user').remove();
                     updateCounterForm(true);
                 }
+            });
+            $(document).on('click', '.btn-open-modal', function (e) {
+                $('#modals').modal('show');
             });
         });
         function myLoading() {

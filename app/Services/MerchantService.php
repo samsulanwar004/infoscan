@@ -47,6 +47,12 @@ class MerchantService {
     	return $mu;
     }
 
+    public function getSettingReportsById($id)
+    {
+        $sr = MerchantSettingReport::where('id', '=', $id)->first();
+        return $sr;
+    }
+
     /*public function getMerchantLeadById($id)
     {
         $mu = MerchantUser::with('user')->where('lead_by', '=', $id)->get();
@@ -234,10 +240,12 @@ class MerchantService {
 
     public function updateSettingReport($id, $name, $content, $updatedBy)
     {
-        $m = new MerchantSettingReport;
-
-        MerchantSettingReport::where('id', '=', $merchantId)
-                              ->whereNotIn('user_id', $ids)->delete();
-
+        $m = MerchantSettingReport::findOrFail($id);
+        $m->name = $name;
+        $m->content = $content;
+        $m->created_by = $m->created_by;
+        $m->updated_by = $updatedBy;
+        $m->save();
+        return $m->id;
     }
 }

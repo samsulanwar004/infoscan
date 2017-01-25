@@ -12,6 +12,7 @@ use Dusterio\PlainSqs\Jobs\DispatcherJob;
 use Exception;
 use Illuminate\Http\Request;
 use Storage;
+use App\Libraries\GoogleMap;
 
 class SnapService
 {
@@ -88,6 +89,12 @@ class SnapService
         return SnapTag::where('id', '=', $id)->first();
     }
 
+    public function getSnapByLocation()
+    {
+        return Snap::where('location', null)
+            ->orWhere('location', '')->get();
+    }
+
     public function updateSnap(Request $request, $id)
     {
         $snaps = $this->getSnapByid($id);
@@ -102,8 +109,7 @@ class SnapService
         $snaps->outlet_city = $request->input('outlet_city');      
         $snaps->outlet_province = $request->input('outlet_province');      
         $snaps->outlet_zip_code = $request->input('outlet_zip_code');      
-        $snaps->payment_method = $request->input('payment_method');      
-        $snaps->total_value = $request->input('total_value');      
+        $snaps->payment_method = $request->input('payment_method');        
         $snaps->longitude = !$request->has('longitude') ? 0.00 : $request->input('longitude');
         $snaps->latitude = !$request->has('latitude') ? 0.00 : $request->input('latitude');
 
@@ -297,6 +303,14 @@ class SnapService
         $snap = $this->getSnapByid($snapId);
         $snap->total_value = $snap->files->pluck('total')->sum();
         $snap->update();
+    }
+
+    public function handleMapAddress($latitude = 0.00000000, $longitude = 0.00000000)
+    {
+        $key = config('services.google.map.key');
+        $ocrProcess = (new GoogleMap($latitude, $longitude, $key));
+
+        return $ocrProcess->handle();
     }
 
     /**
