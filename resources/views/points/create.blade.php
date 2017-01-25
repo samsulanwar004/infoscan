@@ -11,6 +11,25 @@
                     <label for="name">Task Name</label>
                     <input type="text" class="form-control" id="name" name="name" placeholder="Task Name" required="required">
                 </div>
+
+                <div class="form-group task_type">
+                    <label for="name">Task Type</label>
+                    <select name="task_type" class="form-control">
+                        <option value="0">Select Task</option>
+                        @foreach(config('common.tasks.types') as $key => $type)
+                        <option value="{{ $key }}">{{ $type }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="form-group task_type">
+                    <label for="name">Task Mode</label>
+                    <select name="task_type" class="form-control">
+                        @foreach(config('common.tasks.modes') as $key => $mode)
+                        <option value="{{ $key }}" modeValue={{ $mode['value'] }}>{{ $mode['label'] }}</option>
+                        @endforeach
+                    </select>
+                </div>
             </div>
             <div class="col-md-4" style="overflow-y:scroll;max-height: 250px;">
                 <div id="levels" style="overflow: hidden;padding-top: 25px;">
@@ -18,7 +37,7 @@
                         <?php
                             $levelArray = explode(' ', $level->name);
                         ?>
-                        <div id="level{{ $levelArray[1] }}">                            
+                        <div id="level{{ $levelArray[1] }}">
                             <div class="form-group">
                                 <label for="name" class="col-sm-4 control-label">{{ $level->name }}</label>
                                 <div class="col-sm-8">
@@ -71,13 +90,13 @@
                 REBEL.removeAllMessageAlert();
                 if (responseData.status == "ok") {
                     REBEL.smallNotifTemplate(responseData.message, '.modal-content', 'success');
-                    $.get( '/points/get-task-table' , function(view){ 
+                    $.get( '/points/get-task-table' , function(view){
                         $(".box-body").html(view);
                     });
                 }
             }, true);
         });
-        
+
         $('form').on('focus', 'input[type=number]', function (e) {
           $(this).on('mousewheel.disableScroll', function (e) {
             e.preventDefault()
@@ -85,14 +104,14 @@
         });
         $('form').on('blur', 'input[type=number]', function (e) {
           $(this).off('mousewheel.disableScroll')
-        });        
+        });
 
         $('a#add').on('click', function (e) {
-            e.preventDefault();     
-            var countOfTextbox = $('.level-name').length;       
+            e.preventDefault();
+            var countOfTextbox = $('.level-name').length;
             var nextLevel = countOfTextbox + 1;
             $("a#remove").removeAttr('disabled');
-            
+
             if(countOfTextbox >= 25) {
                 $(this).attr('disabled', 'disabled');
                 return;
@@ -103,7 +122,7 @@
 
         $('a#remove').on('click', function (e) {
             e.preventDefault();
-            var countOfTextbox = $('.level-name').length; 
+            var countOfTextbox = $('.level-name').length;
 
             if(countOfTextbox <= 1) {
                 $(this).attr('disabled', 'disabled');
@@ -113,7 +132,7 @@
             if (confirm('Are you sure want to delete this level?')) {
                 $('#level'+countOfTextbox).remove();
             }
-            
-        });        
+
+        });
     });
 </script>

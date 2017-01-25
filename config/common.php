@@ -159,5 +159,46 @@ return [
             'user_id',
             'receipt_number',
         ]
+    ],
+
+    // tasks code
+    'tasks' => [
+
+        'types' => [
+            'a' => 'Receipt',
+            'b' => 'Handwritten',
+            'c' => 'General Trade',
+        ],
+
+        'modes' => [
+            '11' => [
+                'label' => 'With Audio',
+                'value' => true,
+            ],
+            '12' => [
+                'label' => 'Without Audio',
+                'value' => false,
+            ],
+            '21' => [
+                'label' => 'With Tags',
+                'value' => true,
+            ],
+            '22' => [
+                'label' => 'Without Tags',
+                'value' => false,
+            ],
+            '31' => [
+                'label' => 'With Input',
+                'value' => true,
+            ],
+            '32' => [
+                'label' => 'Without Input',
+                'value' => false,
+            ],
+            '4' => [
+                'label' => 'No Mode',
+                'value' => false
+            ],
+        ]
     ]
 ];
