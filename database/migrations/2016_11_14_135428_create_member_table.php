@@ -20,6 +20,7 @@ class CreateMemberTable extends Migration
             $t->string('email', 150)->nullable()->index();
             $t->string('password', 150)->nullable();
             $t->string('gender', 1)->index();
+            $t->string('marital_status', 7)->index(); // married, single
             $t->string('avatar')->nullable();
             $t->string('status', 10)->index()->default('active');
             $t->boolean('is_login_by_social_media')->default(0);

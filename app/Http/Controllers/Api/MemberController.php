@@ -43,7 +43,7 @@ class MemberController extends BaseApiController
         try {
             $validation = (new MemberService)->validateProfileInput($request->all());
             if($validation->fails()) {
-                return $this->error($validation->errors(), 400);
+                return $this->error($validation->errors()->getMessages(), 400);
             }
 
             DB::beginTransaction();

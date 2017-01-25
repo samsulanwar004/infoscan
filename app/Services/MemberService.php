@@ -158,13 +158,15 @@ class MemberService
     public function validateProfileInput(array $data)
     {
         return Validator::make($data, [
+            'email' => 'required|email',
             'name' => 'required|min:3',
             'dob' => 'required|date_format:"d-m-Y"',
             'gender' => 'required|in:female,male',
+            'marital_status' => 'required|in:married,single',
             'monthly_expense' => 'required|integer',
-            'bank_name' => 'required|min:3|max:10',
-            'bank_account_name' => 'required|min:3|max:150',
-            'bank_account_number' => 'required|min:10|max:15',
+            //'bank_name' => 'required|min:3|max:10',
+            //'bank_account_name' => 'required|min:3|max:150',
+            //'bank_account_number' => 'required|min:10|max:15',
         ]);
     }
 
