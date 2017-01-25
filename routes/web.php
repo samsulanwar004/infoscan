@@ -69,6 +69,12 @@ Route::group([
     );
 
     Route::resource(
+        '/promo-points',
+        'Web\PromoPointController',
+        ['except' => ['show'], 'names' => route_resource_name($routePrefix, 'promo-points')]
+    );
+
+    Route::resource(
         '/questionnaire',
         'Web\QuestionnaireController',
         ['except' => ['show'], 'names' => route_resource_name($routePrefix, 'questionnaire')]
@@ -122,6 +128,11 @@ Route::group([
         '/points/get-task-table',
         'Web\PointController@getTaskTable'
     )->name('points.task');
+
+    Route::get(
+        '/promo-points/get-promo-level-table',
+        'Web\PromoPointController@getPromoLevelTable'
+    )->name('points.promo');
 
     Route::get(
         '/pages/404', function() {
