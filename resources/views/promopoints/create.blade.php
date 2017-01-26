@@ -9,12 +9,20 @@
             <div class="col-md-8">
                 <div class="form-group name">
                     <label for="name">City Name</label>
-                    <input type="text" class="form-control" id="name" name="name" placeholder="City Name" required="required">
+                    <select class="form-control" name="name" id="select-city" multiple="multiple">
+                        @foreach($provincies as $province)
+                            <optgroup label="{{ $province->name }}">
+                                @foreach($province->regencies as $regency)
+                                    <option value="{{ $regency->name }}">{{ $regency->name }}</option>
+                                @endforeach
+                            </optgroup>
+                        @endforeach
+                    </select>
                 </div>
 
-                <div class="form-group name">
+                <div class="form-group">
                     <label for="point_city">Point</label>
-                    <input type="text" class="form-control" id="point-city" name="point_city" placeholder="Point" required="required">
+                    <input type="number" class="form-control" id="point-city" name="point_city" placeholder="Point" required="required">
                 </div>
 
                 <div class="form-group">
@@ -135,9 +143,16 @@
         $('.datepicker').daterangepicker({
             timePicker: true,
             timePicker24Hour: true,
+            minDate: "<?php echo \Carbon\Carbon::today()->toDateString(); ?>",
+            maxDate: -0,
             locale: {
                 format: 'YYYY-MM-DD HH:mm:ss'
-            }
+            }            
+        });
+
+        $("#select-city").select2({
+            placeholder: "Select a City",
+            maximumSelectionLength: 1,
         });
 
     });

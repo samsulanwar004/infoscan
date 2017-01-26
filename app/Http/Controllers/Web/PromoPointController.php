@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Web;
 
 use Illuminate\Http\Request;
 use App\Services\PointService;
+use App\Services\LocationService;
 
 class PromoPointController extends AdminController
 {
@@ -32,6 +33,7 @@ class PromoPointController extends AdminController
         $this->isAllowed('Points.Create');
         $levels = $this->getLevels();
         $lastLevels = (new PointService)->lastLevel();
+        $provincies = (new LocationService)->getAllProvince();
 
         if ($lastLevels) {
             $arrayLevel = explode(' ', $lastLevels->name);
@@ -40,7 +42,7 @@ class PromoPointController extends AdminController
             $lastLevel = 0;
         }
 
-        return view('promopoints.create', compact('levels', 'lastLevel'));
+        return view('promopoints.create', compact('levels', 'lastLevel', 'provincies'));
     }
 
     /**
@@ -94,9 +96,10 @@ class PromoPointController extends AdminController
     {
         $this->isAllowed('Points.Update');
         $promo = (new PointService)->getPromoPointById($id);
+        $provincies = (new LocationService)->getAllProvince();
         $levels = $promo->levels;
 
-        return view('promopoints.edit', compact('promo', 'levels'));
+        return view('promopoints.edit', compact('promo', 'levels', 'provincies'));
     }
 
     /**
