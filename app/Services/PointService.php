@@ -49,13 +49,14 @@ inner join level_points as l on l.id = tlp.level_id;');
             return $pivots;
         }
 
-        $points = DB::select('select c.id, c.city_name as city_name, l.name as level_name, plp.point from promo_level_points as plp
+        $points = DB::select('select c.id, c.city_name as city_name, c.is_active, l.name as level_name, plp.point from promo_level_points as plp
 inner join promo_points as c on c.id = plp.promo_point_id
 inner join level_points as l on l.id = plp.level_id;');
         $result = [];
         foreach ($points as $pivot) {
+            $active = ($pivot->is_active == 0) ? '(Deactive)' : '';
             $result[] = [
-                'City' => $pivot->id.' '.$pivot->city_name,
+                'City' => $pivot->id.' '.$pivot->city_name.' '.$active,
                 'Level' => $pivot->level_name,
                 'Point' => $pivot->point,
             ];

@@ -10,12 +10,21 @@
             <div class="col-md-8">
                 <div class="form-group name">
                     <label for="name">City Name</label>
-                    <input type="text" class="form-control" id="name" name="name" value="{{ $promo->city_name }}" placeholder="City Name" required="required">
+                    <select class="form-control" name="name" id="select-city" multiple="multiple">
+                    <option value="{{ $promo->city_name }}" selected="selected">{{ $promo->city_name }}</option>
+                        @foreach($provincies as $province)
+                            <optgroup label="{{ $province->name }}">
+                                @foreach($province->regencies as $regency)
+                                    <option value="{{ $regency->name }}">{{ $regency->name }}</option>
+                                @endforeach
+                            </optgroup>
+                        @endforeach
+                    </select>
                 </div>
 
-                <div class="form-group name">
+                <div class="form-group">
                     <label for="point_city">Point</label>
-                    <input type="text" class="form-control" id="point-city" name="point_city" value="{{ $promo->point_city }}" placeholder="Point" required="required">
+                    <input type="number" class="form-control" id="point-city" name="point_city" value="{{ $promo->point_city }}" placeholder="Point" required="required">
                 </div>
 
                 <div class="form-group">
@@ -43,7 +52,7 @@
                             $levelArray = explode(' ', $level->name);
                         ?>
                         <div id="level{{ $levelArray[1] }}">                            
-                            <div class="form-group name">
+                            <div class="form-group">
                                 <label for="name" class="col-sm-4 control-label">{{ $level->name }}</label>
                                 <div class="col-sm-8">
                                     <input type="number" class="form-control level-name" name="levels[{{ $levelArray[1] }}]" value="{{ $level->pivot->point }}" placeholder="Point {{ $level->name }}" required="required">
@@ -134,12 +143,19 @@
         $('.datepicker').daterangepicker({
             timePicker: true,
             timePicker24Hour: true,
+            minDate: "<?php echo \Carbon\Carbon::today()->toDateString(); ?>",
+            maxDate: -0,
             locale: {
                 format: 'YYYY-MM-DD HH:mm:ss'
             },
             startDate: '{{ $promo->start_at }}',
             endDate: '{{ $promo->end_at }}'
         }); 
+
+        $("#select-city").select2({
+            placeholder: "Select a City",
+            maximumSelectionLength: 1,
+        });
 
     });
 </script>
