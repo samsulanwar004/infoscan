@@ -16,6 +16,7 @@ class CreateTaskPointAndLevelTable extends Migration
         Schema::create('tasks', function (Blueprint $t) {
             $t->increments('id');
             $t->string('name', 100)->unique();
+            $t->string('code', 10)->unique();
             $t->boolean('is_active')->default(1);
             $t->timestamps();
         });

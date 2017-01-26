@@ -55,15 +55,19 @@ class PointController extends AdminController
 
     public function store(Request $request)
     {        
-
         $this->validate($request, [
             'name' => 'required|unique:tasks,name',
             'levels.*' => 'required'
         ]);
 
         try {
+
+            if ($request->input('task_mode') == '0') {
+                throw new \Exception("Task Mode Required");                
+            }
+            
             (new PointService)->addTaskLevelPoint($request);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',
                 'message' => $e->getMessage(),
@@ -99,8 +103,13 @@ class PointController extends AdminController
         ]);
 
         try {
+
+            if ($request->input('task_mode') == '0') {
+                throw new \Exception("Task Mode Required");                
+            }
+
             (new PointService)->updateTaskLevelPoint($request, $id);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
              return response()->json([
                 'status' => 'error',
                 'message' => $e->getMessage(),

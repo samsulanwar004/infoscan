@@ -2,22 +2,22 @@
 
 namespace App\Listeners;
 
+use App\Events\UserActivitiesEvent;
+
 class UserEventSubscriber
 {
     /**
      * Handle user login events.
      */
     public function onUserLogin($event) {
-        $eventName = 'login';
-        //$this->saveActivtyLog($event, $eventName);
+        //event(new UserActivitiesEvent($event->user->id, 'login', '', $this->getIpAddress()));
     }
 
     /**
      * Handle user logout events.
      */
     public function onUserLogout($event) {
-        $eventName = 'logout';
-        //$this->saveActivtyLog($event, $eventName);
+        //event(new UserActivitiesEvent($event->user->id, 'logout', '', $this->getIpAddress()));
     }
 
     /**
@@ -36,16 +36,6 @@ class UserEventSubscriber
             'Illuminate\Auth\Events\Logout',
             'App\Listeners\UserEventSubscriber@onUserLogout'
         );
-    }
-
-    public function saveActivtyLog($event, $eventName) {
-
-        $ua = new \App\UserActivities;
-        $ua->action_in = $eventName;
-        $ua->description = '';
-        $ua->ip_address = $this->getIpAddress();
-        $ua->user()->associate($event->user);
-        $ua->save();
     }
 
     private function getIpAddress()

@@ -173,31 +173,76 @@ return [
         'modes' => [
             '11' => [
                 'label' => 'With Audio',
-                'value' => true,
+                'value' => 1,
             ],
             '12' => [
                 'label' => 'Without Audio',
-                'value' => false,
+                'value' => 0,
             ],
             '21' => [
                 'label' => 'With Tags',
-                'value' => true,
+                'value' => 1,
             ],
             '22' => [
                 'label' => 'Without Tags',
-                'value' => false,
+                'value' => 0,
             ],
             '31' => [
                 'label' => 'With Input',
-                'value' => true,
+                'value' => 1,
             ],
             '32' => [
                 'label' => 'Without Input',
-                'value' => false,
+                'value' => 0,
             ],
-            '4' => [
-                'label' => 'No Mode',
-                'value' => false
+            '10' => [
+                'label' => 'Without Mode',
+                'value' => 0,
+            ],
+        ],
+
+        'select_mode' => [
+            'a' => [
+                '10' => [
+                    'label' => 'Without Mode',
+                    'value' => 0,
+                ],
+            ],
+            'b' => [
+                '11' => [
+                    'label' => 'With Audio',
+                    'value' => 1,
+                ],
+                '12' => [
+                    'label' => 'Without Audio',
+                    'value' => 0,
+                ],
+                '31' => [
+                    'label' => 'With Input',
+                    'value' => 1,
+                ],
+                '32' => [
+                    'label' => 'Without Input',
+                    'value' => 0,
+                ],
+            ],
+            'c' => [
+                '11' => [
+                'label' => 'With Audio',
+                'value' => 1,
+                ],
+                '12' => [
+                    'label' => 'Without Audio',
+                    'value' => 0,
+                ],
+                '21' => [
+                    'label' => 'With Tags',
+                    'value' => 1,
+                ],
+                '22' => [
+                    'label' => 'Without Tags',
+                    'value' => 0,
+                ],
             ],
         ]
     ]
