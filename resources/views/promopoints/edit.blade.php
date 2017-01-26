@@ -1,34 +1,40 @@
-<form id="modalForm" action="{{ admin_route_url('points.update', ['id' => $task->id]) }}"  method="POST">
+<form id="modalForm" action="{{ admin_route_url('promo-points.update', ['id' => $promo->id]) }}"  method="POST">
     {{ csrf_field() }}
     {{ method_field('PUT') }}
     <div class="modal-header">
         <a class="close btn-modal-close" data-dismiss="modal">&times;</a>
-        <h4><i class="fa fa-tasks fa-btn"></i> <span class="action-title">Edit </span> Task</h4>
+        <h4><i class="fa fa-tasks fa-btn"></i> <span class="action-title">Edit </span> Promo Point</h4>
     </div>
     <div class="modal-body">
         <div class="form-horizontal">
             <div class="col-md-8">
                 <div class="form-group name">
-                    <label for="name">Task Name</label>
-                    <input type="text" class="form-control" id="name" name="name" value="{{ $task->name }}" placeholder="Task Name" readonly="readonly" required="required">
+                    <label for="name">City Name</label>
+                    <input type="text" class="form-control" id="name" name="name" value="{{ $promo->city_name }}" placeholder="City Name" required="required">
                 </div>
 
-                <div class="form-group task_type">
-                    <label for="name">Task Type</label>
-                    <select name="task_type" class="form-control" id="task-type">
-                        <option value="0" nameValue="">Select Task</option>
-                        @foreach(config('common.tasks.types') as $key => $type)
-                        <option value="{{ $key }}" nameValue="{{ $type }}">{{ $type }}</option>
-                        @endforeach
-                    </select>
+                <div class="form-group name">
+                    <label for="point_city">Point</label>
+                    <input type="text" class="form-control" id="point-city" name="point_city" value="{{ $promo->point_city }}" placeholder="Point" required="required">
                 </div>
 
-                <div class="form-group task_type">
-                    <label for="name">Task Mode</label>
-                    <select name="task_mode" class="form-control" id="task-mode">
-                        <option value="0" nameValue="">Select Mode</option>
-                    </select>
+                <div class="form-group">
+                    <label for="start_at">Start Date</label>
+                    <div class="input-group date">
+                        <div class="input-group-addon">
+                            <i class="fa fa-calendar"></i>
+                        </div>
+                        <input type="text" class="form-control datepicker" id="start_at" name="start_at">
+                    </div>
                 </div>
+
+                <div class="checkbox">
+                    <label>
+                        <input name="is_active" {{ (bool)$promo->is_active ? 'checked' : '' }} type="checkbox">
+                        Is Active ?
+                    </label>
+                </div>
+
             </div>
             <div class="col-md-4" style="overflow-y:scroll;max-height: 250px;">
                 <div id="levels" style="overflow: hidden;padding-top: 25px;">
@@ -37,7 +43,7 @@
                             $levelArray = explode(' ', $level->name);
                         ?>
                         <div id="level{{ $levelArray[1] }}">                            
-                            <div class="form-group">
+                            <div class="form-group name">
                                 <label for="name" class="col-sm-4 control-label">{{ $level->name }}</label>
                                 <div class="col-sm-8">
                                     <input type="number" class="form-control level-name" name="levels[{{ $levelArray[1] }}]" value="{{ $level->pivot->point }}" placeholder="Point {{ $level->name }}" required="required">
@@ -80,7 +86,7 @@
                 REBEL.removeAllMessageAlert();
                 if (responseData.status == "ok") {
                     REBEL.smallNotifTemplate(responseData.message, '.modal-content', 'success');
-                    $.get( '/points/get-task-table' , function(view){ 
+                    $.get( '/promo-points/get-promo-level-table' , function(view){ 
                         $(".box-body").html(view);
                     });
                 }
@@ -123,28 +129,17 @@
                 $('#level'+countOfTextbox).remove();
             }
             
-        });   
+        });  
 
-        $('#task-type').on('change', function() {
-            var type = $(this).find(':selected').attr('nameValue');
-            $('#task-mode').removeAttr('disabled');
+        $('.datepicker').daterangepicker({
+            timePicker: true,
+            timePicker24Hour: true,
+            locale: {
+                format: 'YYYY-MM-DD HH:mm:ss'
+            },
+            startDate: '{{ $promo->start_at }}',
+            endDate: '{{ $promo->end_at }}'
+        }); 
 
-            if (this.value == 'a') {
-                $("#task-mode").html('<select name="task_mode" class="form-control" id="task-mode">@foreach(config("common.tasks.select_mode.a") as $key => $mode)<option value="{{ $key }}{{ $mode["value"] }}" nameValue="{{ $mode["label"] }}">{{ $mode["label"] }}</option>@endforeach</select>');
-            } else if (this.value == 'b') {
-                $("#task-mode").html('<select name="task_mode" class="form-control" id="task-mode"><option value="0" nameValue="">Select Mode</option>@foreach(config("common.tasks.select_mode.b") as $key => $mode)<option value="{{ $key }}{{ $mode["value"] }}" nameValue="{{ $mode["label"] }}">{{ $mode["label"] }}</option>@endforeach</select>');
-            } else if (this.value == 'c') {
-                $("#task-mode").html('<select name="task_mode" class="form-control" id="task-mode"><option value="0" nameValue="">Select Mode</option>@foreach(config("common.tasks.select_mode.c") as $key => $mode)<option value="{{ $key }}{{ $mode["value"] }}" nameValue="{{ $mode["label"] }}">{{ $mode["label"] }}</option>@endforeach</select>');
-            } else {
-                $("#task-mode").attr('disabled', 'disabled');
-            }      
-            $("#name").val(type);
-        });
-
-        $('#task-mode').on('change', function() {
-            var type = $('#task-type').find(':selected').attr('nameValue');
-            var mode = $(this).find(':selected').attr('nameValue');
-            $("#name").val(type+' '+mode);
-        });
     });
 </script>

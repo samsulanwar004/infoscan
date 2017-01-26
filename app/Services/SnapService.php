@@ -96,7 +96,14 @@ class SnapService
     }
 
     public function updateSnap(Request $request, $id)
-    {
+    {    
+        $memberId = $request->input('member_id');
+        $snapType = $request->input('snap_type');
+        $modeType = $request->input('mode_type');
+        $city = $request->input('city');
+        if ($request->input('confirm') == 'approve') {
+            (new PointCalculateService($memberId, $snapType, $modeType, $city))->save();
+        }    
         $snaps = $this->getSnapByid($id);
         $snaps->approved_by = ($request->input('confirm') != 'approve') ? null : auth()->user()->id;
         $snaps->reject_by = ($request->input('confirm') != 'reject') ? null : auth()->user()->id;
@@ -113,7 +120,7 @@ class SnapService
         $snaps->longitude = !$request->has('longitude') ? 0.00 : $request->input('longitude');
         $snaps->latitude = !$request->has('latitude') ? 0.00 : $request->input('latitude');
 
-        $snaps->update();
+        $snaps->update();        
     }
 
     public function updateSnapModeInput(Request $request, $id)
@@ -308,9 +315,9 @@ class SnapService
     public function handleMapAddress($latitude = 0.00000000, $longitude = 0.00000000)
     {
         $key = config('services.google.map.key');
-        $ocrProcess = (new GoogleMap($latitude, $longitude, $key));
+        $mapProcess = (new GoogleMap($latitude, $longitude, $key));
 
-        return $ocrProcess->handle();
+        return $mapProcess->handle();
     }
 
     /**

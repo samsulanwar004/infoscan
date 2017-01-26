@@ -96,7 +96,8 @@
                     <li><a href="/settings"><i class="fa fa-circle-o"></i>General</a></li>
                     <li><a href="/promotions"><i class="fa fa-circle-o"></i>Promotion</a></li>
                     <li><a href="/lucky"><i class="fa fa-circle-o"></i>Lucky Draw</a></li>
-                    <li><a href="/points"><i class="fa fa-circle-o"></i>Points</a></li>
+                    <li><a href="/points"><i class="fa fa-circle-o"></i>Task Points</a></li>
+                    <li><a href="/promo-points"><i class="fa fa-circle-o"></i>Promo Points</a></li>
                 </ul>
             </li>
 
