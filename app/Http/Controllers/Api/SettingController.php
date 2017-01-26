@@ -14,11 +14,7 @@ class SettingController extends BaseApiController
     {
     	$commonConfigs = config('common');
 
-        $data['provinces'] = [
-        	'11' => 'ACEH',
-        	'12' => 'SUMATERA UTARA',
-        	'31' => 'DKI JAKARTA',
-        ];
+        $data['provinces'] = $this->provinceData();
         $data['monthly_expenses'] = [
         	['min' => 0, 'max' => 1000000],
         	['min' => 1000000, 'max' => 3000000],
@@ -30,5 +26,17 @@ class SettingController extends BaseApiController
         $data['latest_educations'] = $commonConfigs['latest_educations'];
 
         return $this->success($data, 200);
+    }
+
+    private function provinceData()
+    {
+    	$p = \App\Province::all(['id', 'name']);
+
+    	$data = [];
+    	foreach ($p as $province) {
+    		$data[$province->id] = $province->name;
+    	}
+
+    	return $data;
     }
 }
