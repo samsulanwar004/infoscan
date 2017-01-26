@@ -15,10 +15,11 @@ use Illuminate\Http\Request;
 
 Route::post('v1/login', 'SecureController@login');
 Route::post('v1/register', 'SecureController@register');
+Route::get('v1/settings', 'Api\SettingController@index');
 
 Route::group([
     'prefix' => 'v1',
-    'middleware' => 'api',
+    'middleware' => 'api,verifiSignature',
 ], function () {
     Route::post('/snap', 'Api\SnapController@store');
     Route::get('/promotion', 'Api\PromotionController@index');

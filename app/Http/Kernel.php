@@ -36,7 +36,6 @@ class Kernel extends HttpKernel
             'acceptHeader',
             'throttle:60,1',
             'auth:api',
-            'verifiSignature',
         ],
     ];
 
