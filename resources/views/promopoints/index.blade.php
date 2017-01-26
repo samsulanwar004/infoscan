@@ -41,6 +41,8 @@
 @endsection
 
 @section('footer_scripts')
+<link rel="stylesheet" href="{{ elixirCDN('css/report-vendor.css') }}" />
+<script src="{{ elixirCDN('js/report-vendor.js') }}"></script>
 <script type="text/javascript">
     $(function() {
          loadPointData();
