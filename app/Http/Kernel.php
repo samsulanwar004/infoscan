@@ -36,6 +36,7 @@ class Kernel extends HttpKernel
             'acceptHeader',
             'throttle:60,1',
             'auth:api',
+            'verifiSignature',
         ],
     ];
 
@@ -54,5 +55,6 @@ class Kernel extends HttpKernel
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'acceptHeader' => \App\Http\Middleware\VerifyAcceptHeader::class,
+        'verifiSignature' => \App\Http\Middleware\VerifySignature::class,
     ];
 }
