@@ -35,8 +35,8 @@ class SettingController extends BaseApiController
     private function provinceData()
     {
     	$p = collect(\App\Province::all(['id', 'name'])->toArray());
-    	$plucked = $p->pluck('name', 'id');
+    	//$plucked = $p->pluck('name', 'id');
 
-    	return $plucked->all();
+    	return $p;
     }
 }
