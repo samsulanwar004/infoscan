@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Web;
 
 use App\Services\SnapService;
+use App\Services\PointCalculateService;
 use Illuminate\Http\Request;
 use Exception;
 use PDOException;
@@ -67,8 +68,25 @@ class SnapController extends AdminController
     public function edit($id)
     {
         $snap = (new SnapService)->getSnapByid($id);
+        $snapFiles = $snap->files;
+        $memberId = $snap->member_id;
+        $snapType = $snap->snap_type;
 
-        return view('snaps.edit', compact('snap'));
+        $files = [];
+        foreach ($snapFiles as $snapFile) {
+            $modeType = $snapFile->mode_type;
+            $fileId = $snapFile->id;
+            $calculate = (new PointCalculateService($memberId, $snapType, $modeType))
+                ->getPoint($fileId);
+            $point = ($calculate != null) ? $calculate->point : '0';
+            $files[] = [
+                'filecode' => $snapFile->file_code,
+                'mode' => $snapFile->mode_type,
+                'point' => $point
+            ];
+        }   
+
+        return view('snaps.edit', compact('snap', 'files'));
     }
 
     public function editSnapFile($id)
