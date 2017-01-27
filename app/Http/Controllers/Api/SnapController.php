@@ -40,7 +40,7 @@ class SnapController extends BaseApiController
         } catch (Exception $e) {
             logger($e);
 
-            return $this->error($e);
+            return $this->error($e, 400, true);
         }
     }
 
