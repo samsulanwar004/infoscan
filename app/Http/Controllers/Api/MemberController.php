@@ -50,11 +50,15 @@ class MemberController extends BaseApiController
             $m = $this->getActiveMember();
 
             $m->name = $request->input('name');
+            $m->email = $request->input('email');
+            $m->marital_status = $request->input('marital_status');
             $m->gender = 'female' === $request->input('gender') ? 'f' : 'm';
             $m->dob = date_format(date_create($request->input('dob')), 'Y-m-d');
-            $m->monthly_expense = $request->input('monthly_expense');
+            $m->monthly_expense_min = $request->input('monthly_expense_min');
+            $m->monthly_expense_max = $request->input('monthly_expense_max');
             $m->person_in_house = $request->input('person_in_house');
             $m->city = $request->input('city');
+            $m->province_id = $request->input('province');
             $m->occupation = $request->input('occupation');
             $m->last_education = $request->input('last_education');
             $m->bank_name = $request->input('bank_name');

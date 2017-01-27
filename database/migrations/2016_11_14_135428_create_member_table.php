@@ -27,9 +27,11 @@ class CreateMemberTable extends Migration
             $t->string('social_media_url')->nullable();
             $t->string('social_media_type')->nullable();
             $t->date('dob')->index()->nullable();
-            $t->integer('monthly_expense')->index()->default(0);
+            $t->integer('monthly_expense_min')->index()->default(0);
+            $t->integer('monthly_expense_max')->index()->default(0);
             $t->tinyInteger('person_in_house', false, true)->index()->default(1);
             $t->string('city', 200)->nullable();
+            $t->char('province_id', 2);
             $t->string('occupation', 100)->nullable();
             $t->string('last_education', 5)->index()->nullable();
             $t->string('bank_name', 10)->nullable()->index();
@@ -37,6 +39,11 @@ class CreateMemberTable extends Migration
             $t->string('bank_account_number', 15)->nullable()->index();
             $t->string('api_token', 60)->unique();
             $t->timestamps();
+
+            $t->foreign('province_id', 'FK_province_id_on_members')
+                ->references('id')->on('provinces')
+                ->onUpdate('NO ACTION')
+                ->onDelete('NO ACTION');
         });
     }
 
