@@ -96,14 +96,14 @@ class SnapService
     }
 
     public function updateSnap(Request $request, $id)
-    {    
+    {
         $memberId = $request->input('member_id');
         $snapType = $request->input('snap_type');
         $modeType = $request->input('mode_type');
         $city = $request->input('city');
         if ($request->input('confirm') == 'approve') {
             (new PointCalculateService($memberId, $snapType, $modeType, $city))->save();
-        }    
+        }
         $snaps = $this->getSnapByid($id);
         $snaps->approved_by = ($request->input('confirm') != 'approve') ? null : auth()->user()->id;
         $snaps->reject_by = ($request->input('confirm') != 'reject') ? null : auth()->user()->id;
@@ -111,16 +111,16 @@ class SnapService
         $snaps->receipt_id = $request->input('receipt_id');
         $snaps->location = $request->input('location');
         $snaps->purchase_time = $request->input('purchase_time');
-        $snaps->outlet_name = $request->input('outlet_name');      
-        $snaps->outlet_type = $request->input('outlet_type');      
-        $snaps->outlet_city = $request->input('outlet_city');      
-        $snaps->outlet_province = $request->input('outlet_province');      
-        $snaps->outlet_zip_code = $request->input('outlet_zip_code');      
-        $snaps->payment_method = $request->input('payment_method');        
+        $snaps->outlet_name = $request->input('outlet_name');
+        $snaps->outlet_type = $request->input('outlet_type');
+        $snaps->outlet_city = $request->input('outlet_city');
+        $snaps->outlet_province = $request->input('outlet_province');
+        $snaps->outlet_zip_code = $request->input('outlet_zip_code');
+        $snaps->payment_method = $request->input('payment_method');
         $snaps->longitude = !$request->has('longitude') ? 0.00 : $request->input('longitude');
         $snaps->latitude = !$request->has('latitude') ? 0.00 : $request->input('latitude');
 
-        $snaps->update();        
+        $snaps->update();
     }
 
     public function updateSnapModeInput(Request $request, $id)
@@ -648,6 +648,7 @@ class SnapService
         $f->file_code = $data['file_code'];
         $f->file_mimes = $data['file_mime'];
         $f->file_dimension = null;
+        $f->process_status = 'new';
         if ($this->hasMode($request)) {
             $f->mode_type = $request->input('mode_type');
         }
