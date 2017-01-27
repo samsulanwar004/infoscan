@@ -134,11 +134,11 @@ Route::group([
         'Web\PromoPointController@getPromoLevelTable'
     )->name('points.promo');
 
-    Route::get(
+    /*Route::get(
         '/pages/404', function() {
             return view('errors.404');
         }
-    )->name('pages.404');
+    )->name('pages.404');*/
 
     Route::resource(
         '/members',
