@@ -47,6 +47,31 @@
             </div>
           </div>
           <!-- /.row -->
+          <!-- Table row -->
+        <div class="row">
+          <div class="col-xs-12 table-responsive">
+            <table class="table table-striped">
+              <thead>
+              <tr>
+                <th>File Code</th>
+                <th>Mode</th>
+                <th>Point</th>
+              </tr>
+              </thead>
+              <tbody>
+                @foreach($files as $file)
+                  <tr>
+                    <td>{{ $file['filecode'] }}</td>
+                    <td>{{ $file['mode'] }}</td>
+                    <td>{{ $file['point'] }}</td>
+                  </tr>
+                @endforeach
+              </tbody>
+            </table>
+          </div>
+          <!-- /.col -->
+        </div>
+        <!-- /.row -->
     </div>
     <div class="modal-footer">
         <div class="button-container">
