@@ -225,5 +225,13 @@ return [
                 ],
             ],
         ]
-    ]
+    ],
+
+    'latest_educations' => [
+        'sd', 'smp', 'sma', 'diploma', 'sarjana', 'other',
+    ],
+
+    'banks' => [
+        'bca', 'mandiri', 'ocbc'
+    ],
 ];
