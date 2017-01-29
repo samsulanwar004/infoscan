@@ -97,13 +97,6 @@ class SnapService
 
     public function updateSnap(Request $request, $id)
     {
-        $memberId = $request->input('member_id');
-        $snapType = $request->input('snap_type');
-        $modeType = $request->input('mode_type');
-        $city = $request->input('city');
-        if ($request->input('confirm') == 'approve') {
-            (new PointCalculateService($memberId, $snapType, $modeType, $city))->save();
-        }
         $snaps = $this->getSnapByid($id);
         $snaps->approved_by = ($request->input('confirm') != 'approve') ? null : auth()->user()->id;
         $snaps->reject_by = ($request->input('confirm') != 'reject') ? null : auth()->user()->id;

@@ -193,7 +193,7 @@ return [
             'a' => [
                 '4' => [
                     'label' => 'Without Anyting',
-                    'value' => 0,
+                    'value' => 1,
                 ],
             ],
             'b' => [

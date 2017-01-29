@@ -25,7 +25,7 @@
 
                 <div class="form-group task_type">
                     <label for="name">Task Mode</label>
-                    <select name="task_mode" class="form-control" id="task-mode">
+                    <select name="task_mode" class="form-control" id="task-mode" disabled="disabled">
                         <option value="0" nameValue="">Select Mode</option>
                     </select>
                 </div>

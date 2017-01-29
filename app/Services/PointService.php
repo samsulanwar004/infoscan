@@ -119,7 +119,7 @@ inner join level_points as l on l.id = plp.level_id;');
     {
         $task = $this->getTaskById($id);
         $task->name = $request->input('name');
-        $task->code = sprintf("%s.%s", $request['task_type'], $request['task_mode']);
+        $task->code = ($request['task_type'] == 0) ? $task->code : sprintf("%s%s", $request['task_type'], $request['task_mode']);
         $task->update();
 
         return $task;

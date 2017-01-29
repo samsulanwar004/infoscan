@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\SnapTag;
+
 class PointCalculateService 
 {
 	/**
@@ -21,7 +23,7 @@ class PointCalculateService
      */
 	private $city;
 
-	public function __construct($memberId, $snapType, $modeType, $city = '')
+	public function __construct($memberId = null, $snapType = null, $modeType = null, $city = null)
 	{
 		$this->member_id = $memberId;
 		$this->snap_type = $snapType;
@@ -31,7 +33,7 @@ class PointCalculateService
 
 	public function save()
 	{
-		$pointTask = $this->getPointBySnapType();
+		//$pointTask = $this->getPointBySnapType();
 		$memberCode = $this->getMemberCode();
 
 		$transaction = [
@@ -64,30 +66,6 @@ class PointCalculateService
 		return $memberId;
 	}
 
-	private function getPointBySnapType()
-	{
-		$taskId = $this->getTaskId();
-		$levelId = $this->getMemberLvl();
-		if ($taskId == false) {
-			throw new \Exception('Task not found!');
-		}
-		$point = \DB::select('select * from tasks as t inner join tasks_level_points as tlp on t.id = tlp.task_id inner join level_points as l on l.id = tlp.level_id where tlp.task_id = '.$taskId.' and tlp.level_id = '.$levelId);
-		return $point[0]->point;
-	}
-
-	private function getTaskId()
-	{
-		if ($this->mode_type == 'images') {
-			$taskName = $this->snap_type;
-		} else {
-			$taskName = $this->snap_type.' and '.$this->mode_type;
-		}
-
-		$task = \App\Task::where('name', ucfirst($taskName))->first();
-
-		return is_null($task) ? null : $task->id;
-	}
-
 	private function getMemberCode()
 	{
 		$memberId = $this->member_id;
@@ -95,5 +73,65 @@ class PointCalculateService
 		$member = \App\Member::where('id', $memberId)->first();
 
 		return $member->member_code;
+	}
+
+	public function getPoint($fileId)
+	{
+		$type = $this->snap_type;
+		$mode = $this->mode_type;
+		$type = $this->getTypeId($type);
+
+		$mode = $this->getModeId($mode);
+
+		$tag = $this->checkTags($fileId);
+
+		$status = ($tag == true) ? '1' : '0';
+
+		$code = ($status == 0) ? $type.'4'.$status : $type.$mode.$status;
+
+		$levelId = $this->getMemberLvl();
+
+		$point = \DB::table('tasks')
+            ->join('tasks_level_points', 'tasks.id', '=', 'tasks_level_points.task_id')
+            ->join('level_points', 'level_points.id', '=', 'tasks_level_points.level_id')
+            ->select('tasks_level_points.point')
+            ->where('tasks.code', $code)
+            ->where('tasks_level_points.level_id', $levelId)
+            ->first();
+
+		return $point;
+	}
+
+	protected function checkTags($fileId)
+	{
+		return SnapTag::where('snap_file_id', $fileId)->first();
+	}
+
+	protected function getTypeId($type)
+	{
+		if ($type == 'receipt') {
+			$type = 'a';
+		} elseif ($type == 'handwritten') {
+			$type = 'b';
+		} elseif ($type == 'generaltrade') {
+			$type = 'c';
+		}
+
+		return $type;
+	}
+
+	protected function getModeId($mode)
+	{
+		if ($mode == 'audio') {
+			$mode = '1';
+		} elseif ($mode == 'tags') {
+			$mode = '2';
+		} elseif ($mode == 'input') {
+			$mode = '3';
+		} else {
+			$mode = '4';
+		}
+
+		return $mode;
 	}
 }
