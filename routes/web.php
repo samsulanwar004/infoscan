@@ -130,6 +130,16 @@ Route::group([
     )->name('points.task');
 
     Route::get(
+        '/points/point-manager',
+        'Web\PointController@pointManager'
+    )->name('points.manager');
+
+    Route::post(
+        '/points/point-manager-update',
+        'Web\PointController@pointManagerUpdate'
+    )->name('points.manager.update');
+
+    Route::get(
         '/promo-points/get-promo-level-table',
         'Web\PromoPointController@getPromoLevelTable'
     )->name('points.promo');

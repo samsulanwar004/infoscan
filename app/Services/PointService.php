@@ -69,7 +69,7 @@ inner join level_points as l on l.id = plp.level_id;');
 
     public function getLevels()
     {
-        return TaskLevelPoint::orderBy('id', 'asc')->get(['id', 'name']);
+        return TaskLevelPoint::orderBy('id', 'asc')->get(['id', 'name', 'point_manager']);
     }
 
     protected function removeCache()
@@ -338,6 +338,22 @@ inner join level_points as l on l.id = plp.level_id;');
         DB::rollBack();
 
         return false;        
+    }
+
+    public function updatePointManager($request)
+    {
+        foreach ($request->input('levels') as $levelName => $point) {
+            $level = $this->findLevel($levelName);
+            $l = $this->getLevelById($level->id);
+            $l->point_manager = $point;
+            $l->update();
+        }
+
+    }
+
+    public function getLevelById($id)
+    {
+        return TaskLevelPoint::where('id', $id)->first();
     }
 
 }

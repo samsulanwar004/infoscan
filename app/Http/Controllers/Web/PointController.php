@@ -132,6 +132,48 @@ class PointController extends AdminController
 
     }
 
+    public function pointManager()
+    {
+        $this->isAllowed('Points.Create');
+        $levels = $this->getLevels();
+        $lastLevels = (new PointService)->lastLevel();
+
+        if ($lastLevels) {
+            $arrayLevel = explode(' ', $lastLevels->name);
+            $lastLevel = $arrayLevel[1];
+        } else {
+            $lastLevel = 0;
+        }
+
+        return view('points.manager_points', compact('levels', 'lastLevel'));
+    }
+
+    public function pointManagerUpdate(Request $request)
+    {
+        $this->validate($request, [
+            'levels.*' => 'required',
+        ]);
+        
+        try {
+            (new PointService)->updatePointManager($request);
+        } catch (\Exception $e) {
+             return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], 500);
+        } catch (\PDOException $e) {
+             return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+
+        return response()->json([
+            'status' => 'ok',
+            'message' => 'Point Manager successfully updated!',
+        ]);
+    }
+
     protected function getSnapCategory($key = null)
     {
         if($key) {
