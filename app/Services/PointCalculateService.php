@@ -81,13 +81,13 @@ class PointCalculateService
 		$mode = $this->mode_type;
 		$type = $this->getTypeId($type);
 
-		$mode = $this->getModeId($mode);
-
 		$tag = $this->checkTags($fileId);
+
+		$mode = $this->getModeId($mode, $tag);		
 
 		$status = ($tag == true) ? '1' : '0';
 
-		$code = ($status == 0) ? $type.'4'.$status : $type.$mode.$status;
+		$code = $type.$mode.$status;
 
 		$levelId = $this->getMemberLvl();
 
@@ -120,16 +120,28 @@ class PointCalculateService
 		return $type;
 	}
 
-	protected function getModeId($mode)
+	protected function getModeId($mode, $tag)
 	{
-		if ($mode == 'audio') {
-			$mode = '1';
-		} elseif ($mode == 'tags') {
-			$mode = '2';
-		} elseif ($mode == 'input') {
-			$mode = '3';
-		} else {
-			$mode = '4';
+		switch ($mode) {
+			case 'audio':
+				$with = ($tag == true) ? '1' : '2';
+				$mode = '1'.$with;
+				break;
+
+			case 'tags':
+				$with = ($tag == true) ? '1' : '2';
+				$mode = '2'.$with;
+				break;
+
+			case 'input':
+				$with = ($tag == true) ? '1' : '2';
+				$mode = '3'.$with;
+				break;
+			
+			default:
+				$with = ($tag == true) ? '1' : '2';
+				$mode = '4'.$with;
+				break;
 		}
 
 		return $mode;
