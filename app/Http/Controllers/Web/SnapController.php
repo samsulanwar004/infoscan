@@ -76,8 +76,8 @@ class SnapController extends AdminController
         foreach ($snapFiles as $snapFile) {
             $modeType = $snapFile->mode_type;
             $fileId = $snapFile->id;
-            $calculate = (new PointCalculateService($memberId, $snapType, $modeType))
-                ->getPoint($fileId);
+            $calculate = (new SnapService())
+                ->calculatePoint($memberId, $snapType, $modeType, $fileId);
             $point = ($calculate != null) ? $calculate->point : '0';
             $files[] = [
                 'filecode' => $snapFile->file_code,

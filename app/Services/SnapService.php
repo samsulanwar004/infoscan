@@ -772,4 +772,82 @@ class SnapService
 
         return false;
     }
+
+    public function getMemberLvl($memberId)
+    {
+        //dummy get level member
+        $memberId = '1';
+        return $memberId;
+    }
+
+    public function calculatePoint($memberId, $type, $mode, $fileId)
+    {
+
+        $type = $this->getTypeId($type);
+
+        $tag = $this->checkTags($fileId);
+
+        $mode = $this->getModeId($mode, $tag);      
+
+        $status = ($tag == true) ? '1' : '0';
+
+        $code = $type.$mode.$status;
+
+        $levelId = $this->getMemberLvl($memberId);
+
+        $point = \DB::table('tasks')
+            ->join('tasks_level_points', 'tasks.id', '=', 'tasks_level_points.task_id')
+            ->join('level_points', 'level_points.id', '=', 'tasks_level_points.level_id')
+            ->select('tasks_level_points.point')
+            ->where('tasks.code', $code)
+            ->where('tasks_level_points.level_id', $levelId)
+            ->first();
+
+        return $point;
+    }
+
+    protected function checkTags($fileId)
+    {
+        return SnapTag::where('snap_file_id', $fileId)->first();
+    }
+
+    protected function getTypeId($type)
+    {
+        if ($type == 'receipt') {
+            $type = 'a';
+        } elseif ($type == 'handwritten') {
+            $type = 'b';
+        } elseif ($type == 'generaltrade') {
+            $type = 'c';
+        }
+
+        return $type;
+    }
+
+    protected function getModeId($mode, $tag)
+    {
+        switch ($mode) {
+            case 'audio':
+                $with = ($tag == true) ? '1' : '2';
+                $mode = '1'.$with;
+                break;
+
+            case 'tags':
+                $with = ($tag == true) ? '1' : '2';
+                $mode = '2'.$with;
+                break;
+
+            case 'input':
+                $with = ($tag == true) ? '1' : '2';
+                $mode = '3'.$with;
+                break;
+            
+            default:
+                $with = ($tag == true) ? '1' : '2';
+                $mode = '4'.$with;
+                break;
+        }
+
+        return $mode;
+    }
 }
