@@ -327,7 +327,7 @@ class SnapService
 
         // build data
         $data = [
-            'request_code' => $request->input('request_code'),
+            'request_code' => $request->input('request_code'),            
             'snap_type' => 'receipt',
             'snap_mode' => 'images',
             'snap_files' => $images,
@@ -340,6 +340,8 @@ class SnapService
         // send dispatcher
         $job = $this->getPlainDispatcher($data);
         dispatch($job);
+
+        dispatch(new PointCalculation($data)))->onQueue('pointProcess');;
 
         return $data;
     }
