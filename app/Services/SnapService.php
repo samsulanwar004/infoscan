@@ -354,7 +354,7 @@ class SnapService
             'files' => count($images),
         ];
 
-        dispatch((new \App\Jobs\PointCalculation($dataSnap))->onQueue('pointProcess'));
+        $this->saveEstimatedPoint($dataSnap);        
 
         return $data;
     }
@@ -387,12 +387,12 @@ class SnapService
             $dataSnap = [
                 'request_code' => $request->input('request_code'),
                 'member_id' => auth('api')->user()->id,
-                'type' => 'handwritten',
+                'type' => $request->input('snap_type'),
                 'mode' => $mode,
                 'files' => count($images),
             ];
 
-            dispatch((new \App\Jobs\PointCalculation($dataSnap))->onQueue('pointProcess'));
+            $this->saveEstimatedPoint($dataSnap);  
 
             return [];
         }
@@ -403,12 +403,12 @@ class SnapService
             $dataSnap = [
                 'request_code' => $request->input('request_code'),
                 'member_id' => auth('api')->user()->id,
-                'type' => 'handwritten',
+                'type' => $request->input('snap_type'),
                 'mode' => $mode,
                 'files' => count($images),
             ];
 
-            dispatch((new \App\Jobs\PointCalculation($dataSnap))->onQueue('pointProcess'));
+            $this->saveEstimatedPoint($dataSnap);  
         }
 
         throw new Exception('Server Error');
@@ -446,12 +446,12 @@ class SnapService
             $dataSnap = [
                 'request_code' => $request->input('request_code'),
                 'member_id' => auth('api')->user()->id,
-                'type' => 'handwritten',
+                'type' => $request->input('snap_type'),
                 'mode' => $mode,
                 'files' => count($images),
             ];
 
-            dispatch((new \App\Jobs\PointCalculation($dataSnap))->onQueue('pointProcess'));
+            $this->saveEstimatedPoint($dataSnap);  
 
             return [];
         }
@@ -467,7 +467,7 @@ class SnapService
             // build data
             $data = [
                 'request_code' => $request->input('request_code'),
-                'snap_type' => 'handwritten',
+                'snap_type' => $request->input('snap_type'),
                 'snap_mode' => $mode,
                 'snap_files' => $audios,
             ];
@@ -483,12 +483,12 @@ class SnapService
             $dataSnap = [
                 'request_code' => $request->input('request_code'),
                 'member_id' => auth('api')->user()->id,
-                'type' => 'handwritten',
+                'type' => $request->input('snap_type'),
                 'mode' => $mode,
                 'files' => count($images),
             ];
 
-            dispatch((new \App\Jobs\PointCalculation($dataSnap))->onQueue('pointProcess'));
+            $this->saveEstimatedPoint($dataSnap);  
 
             return $data;
         }
@@ -717,15 +717,18 @@ class SnapService
         }
 
         $tags = $request->input(self::TAGS_FIELD_NAME);
-        foreach ($tags as $t) {
-            $tag = new \App\SnapTag();
-            $tag->name = $t['name'];
-            $tag->total_price = $t['price'];
-            $tag->quantity = $t['quantity'];
-            $tag->file()->associate($file);
+        if ($tags != null) {
+            foreach ($tags as $t) {
+                $tag = new \App\SnapTag();
+                $tag->name = $t['name'];
+                $tag->total_price = $t['price'];
+                $tag->quantity = $t['quantity'];
+                $tag->file()->associate($file);
 
-            $tag->save();
+                $tag->save();
+            }
         }
+        
 
         return $tags;
     }
@@ -824,6 +827,29 @@ class SnapService
         }
 
         return false;
+    }
+
+    /**
+    * Save Estimated point
+    * @param $data
+    * @return bool
+    */
+    public function saveEstimatedPoint($data)
+    {
+        $requestCode = $data['request_code'];
+        $memberId = $data['member_id'];
+        $type = $data['type'];
+        $mode = $data['mode'];
+        $files = $data['files'];
+
+        $calculate = (new PointService)->calculateEstimatedPoint($memberId, $type, $mode);
+        $point = ($calculate != null) ? $calculate->point : '0';
+        $total = $point * $files;
+        $snap = (new SnapService)->getSnapByCode($requestCode);
+        $snap->estimated_point = $total;
+        $snap->update();
+
+        return true;
     }
 
 }

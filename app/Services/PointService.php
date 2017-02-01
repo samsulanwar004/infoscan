@@ -360,11 +360,11 @@ inner join level_points as l on l.id = plp.level_id;');
     public function getMemberLvl($memberId)
     {
         //dummy get level member
-        //$memberId = '1';
+        $memberId = '1';
         return $memberId;
     }
 
-    public function calculatePointSnap($memberId, $type, $mode)
+    public function calculateEstimatedPoint($memberId, $type, $mode)
     {
 
         $type = $this->getTypeId($type);
@@ -436,7 +436,7 @@ inner join level_points as l on l.id = plp.level_id;');
     protected function getModeId($mode, $tag)
     {
         switch ($mode) {
-            case 'audio':
+            case 'audios':
                 $with = ($tag == true) ? '1' : '2';
                 $mode = '1'.$with;
                 break;
