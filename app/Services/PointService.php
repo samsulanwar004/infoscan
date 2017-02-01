@@ -357,13 +357,6 @@ inner join level_points as l on l.id = plp.level_id;');
         return TaskLevelPoint::where('id', $id)->first();
     }
 
-    public function getMemberLvl($memberId)
-    {
-        //dummy get level member
-        $memberId = '1';
-        return $memberId;
-    }
-
     public function calculateEstimatedPoint($memberId, $type, $mode)
     {
 
@@ -375,7 +368,7 @@ inner join level_points as l on l.id = plp.level_id;');
 
         $code = $type.$mode.$status;
 
-        $levelId = $this->getMemberLvl($memberId);
+        $levelId = (new MemberService)->getLevelIdByMemberId($memberId);
 
         $point = \DB::table('tasks')
             ->join('tasks_level_points', 'tasks.id', '=', 'tasks_level_points.task_id')
@@ -401,7 +394,7 @@ inner join level_points as l on l.id = plp.level_id;');
 
         $code = $type.$mode.$status;
 
-        $levelId = $this->getMemberLvl($memberId);
+        $levelId = (new MemberService)->getLevelIdByMemberId($memberId);
 
         $point = \DB::table('tasks')
             ->join('tasks_level_points', 'tasks.id', '=', 'tasks_level_points.task_id')

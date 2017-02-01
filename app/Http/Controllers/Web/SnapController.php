@@ -12,7 +12,7 @@ class SnapController extends AdminController
 {
 
     public function index()
-    {
+    {   
         $this->isAllowed('Snaps.List');
         $snaps = (new SnapService)->getAvailableSnaps();
         $snapCategorys = config("common.snap_category");
@@ -71,7 +71,7 @@ class SnapController extends AdminController
         $snapFiles = $snap->files;
         $memberId = $snap->member_id;
         $snapType = $snap->snap_type;
-        
+
         $files = [];
         foreach ($snapFiles as $snapFile) {
             $modeType = $snapFile->mode_type;
@@ -95,7 +95,7 @@ class SnapController extends AdminController
             $modeView = [
                 'input' => 'modal_inputs',
                 'tags' => 'modal_tags',
-                'audio' => 'modal_audios',
+                'audios' => 'modal_audios',
                 'image' => 'modal_snaps'
             ];
 
