@@ -21,7 +21,7 @@ class CreateSnapTagsTable extends Migration
             $table->string('file_path', 255);
             $table->string('file_mimes', 45)->nullable();
             $table->string('file_dimension', 12)->nullable(); // json string
-            $table->string('mode_type', 5)->nullable()->default(NULL);
+            $table->string('mode_type', 10)->nullable()->default(NULL);
             $table->tinyInteger('is_need_recognition')->default('1');
             $table->text('recognition_text')->nullable();
             $table->integer('recognition_score')->default('0');
