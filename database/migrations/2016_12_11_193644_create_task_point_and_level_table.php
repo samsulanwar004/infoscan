@@ -24,6 +24,7 @@ class CreateTaskPointAndLevelTable extends Migration
         Schema::create('level_points', function (Blueprint $t) {
             $t->increments('id');
             $t->string('name', 10)->unique();
+            $t->float('point_manager');
             $t->timestamps();
         });
 

@@ -84,6 +84,11 @@ class SnapService
         return Snap::with(['files'])->where('id', $id)->first();
     }
 
+    public function getSnapByCode($code)
+    {
+        return Snap::with(['files'])->where('request_code', $code)->first();
+    }
+
     public function getSnapTagById($id)
     {
         return SnapTag::where('id', '=', $id)->first();
@@ -327,7 +332,7 @@ class SnapService
 
         // build data
         $data = [
-            'request_code' => $request->input('request_code'),
+            'request_code' => $request->input('request_code'),            
             'snap_type' => 'receipt',
             'snap_mode' => 'images',
             'snap_files' => $images,
@@ -340,6 +345,16 @@ class SnapService
         // send dispatcher
         $job = $this->getPlainDispatcher($data);
         dispatch($job);
+
+        $dataSnap = [
+            'request_code' => $request->input('request_code'),
+            'member_id' => auth('api')->user()->id,
+            'type' => 'receipt',
+            'mode' => 'images',
+            'files' => count($images),
+        ];
+
+        dispatch((new \App\Jobs\PointCalculation($dataSnap))->onQueue('pointProcess'));
 
         return $data;
     }
@@ -369,13 +384,31 @@ class SnapService
                 throw new SnapServiceException($e->getMessage());
             }
 
+            $dataSnap = [
+                'request_code' => $request->input('request_code'),
+                'member_id' => auth('api')->user()->id,
+                'type' => 'handwritten',
+                'mode' => $mode,
+                'files' => count($images),
+            ];
+
+            dispatch((new \App\Jobs\PointCalculation($dataSnap))->onQueue('pointProcess'));
+
             return [];
         }
 
         if($this->isAudioMode()) {
             $mode = self::AUDIO_TYPE_NAME;
 
+            $dataSnap = [
+                'request_code' => $request->input('request_code'),
+                'member_id' => auth('api')->user()->id,
+                'type' => 'handwritten',
+                'mode' => $mode,
+                'files' => count($images),
+            ];
 
+            dispatch((new \App\Jobs\PointCalculation($dataSnap))->onQueue('pointProcess'));
         }
 
         throw new Exception('Server Error');
@@ -410,6 +443,16 @@ class SnapService
                 throw new SnapServiceException($e->getMessage());
             }
 
+            $dataSnap = [
+                'request_code' => $request->input('request_code'),
+                'member_id' => auth('api')->user()->id,
+                'type' => 'handwritten',
+                'mode' => $mode,
+                'files' => count($images),
+            ];
+
+            dispatch((new \App\Jobs\PointCalculation($dataSnap))->onQueue('pointProcess'));
+
             return [];
         }
 
@@ -436,6 +479,16 @@ class SnapService
             // send dispatcher
             $job = $this->getPlainDispatcher($data);
             dispatch($job);
+
+            $dataSnap = [
+                'request_code' => $request->input('request_code'),
+                'member_id' => auth('api')->user()->id,
+                'type' => 'handwritten',
+                'mode' => $mode,
+                'files' => count($images),
+            ];
+
+            dispatch((new \App\Jobs\PointCalculation($dataSnap))->onQueue('pointProcess'));
 
             return $data;
         }
@@ -772,4 +825,5 @@ class SnapService
 
         return false;
     }
+
 }

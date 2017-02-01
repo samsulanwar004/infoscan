@@ -171,19 +171,35 @@ return [
         ],
 
         'modes' => [
-            '1' => [
+            '11' => [
                 'label' => 'With Audio',
                 'value' => 1,
             ],
-            '2' => [
+            '12' => [
+                'label' => 'Without Audio',
+                'value' => 0,
+            ],
+            '21' => [
                 'label' => 'With Tags',
                 'value' => 1,
+            ],
+            '22' => [
+                'label' => 'Without Tags',
+                'value' => 0,
             ],   
-            '3' => [
+            '31' => [
                 'label' => 'With Input',
                 'value' => 1,
             ],
-            '4' => [
+            '32' => [
+                'label' => 'Without Input',
+                'value' => 0,
+            ],
+            '41' => [
+                'label' => 'With Anyting',
+                'value' => 1,
+            ],
+            '42' => [
                 'label' => 'Without Anyting',
                 'value' => 0,
             ],
@@ -191,36 +207,48 @@ return [
 
         'select_mode' => [
             'a' => [
-                '4' => [
-                    'label' => 'Without Anyting',
+                '41' => [
+                    'label' => 'With Anyting',
                     'value' => 1,
+                ],
+                '42' => [
+                    'label' => 'Without Anyting',
+                    'value' => 0,
                 ],
             ],
             'b' => [
-                '1' => [
-                    'label' => 'With Audio',
-                    'value' => 1,
-                ],               
-                '3' => [
-                    'label' => 'With Input',
-                    'value' => 1,
-                ],  
-                '4' => [
-                    'label' => 'Without Anyting',
-                    'value' => 0,
-                ], 
-            ],
-            'c' => [
-                '1' => [
+                '11' => [
                     'label' => 'With Audio',
                     'value' => 1,
                 ],
-                '2' => [
+                '12' => [
+                    'label' => 'Without Audio',
+                    'value' => 0,
+                ], 
+                '31' => [
+                    'label' => 'With Input',
+                    'value' => 1,
+                ],
+                '32' => [
+                    'label' => 'Without Input',
+                    'value' => 0,
+                ],
+            ],
+            'c' => [
+                '11' => [
+                    'label' => 'With Audio',
+                    'value' => 1,
+                ],
+                '12' => [
+                    'label' => 'Without Audio',
+                    'value' => 0,
+                ], 
+                '21' => [
                     'label' => 'With Tags',
                     'value' => 1,
                 ],
-                '4' => [
-                    'label' => 'Without Anyting',
+                '22' => [
+                    'label' => 'Without Tags',
                     'value' => 0,
                 ],
             ],

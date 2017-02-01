@@ -36,6 +36,7 @@ class CreateSnapsTable extends Migration
             $table->string('outlet_zip_code', 6)->nullable();
             $table->decimal('total_value', 15, 2)->default('0.00');   
             $table->string('payment_method', 100)->nullable();  
+            $table->float('estimated_point');  
             $table->decimal('longitude', 11, 8)->nullable();
             $table->decimal('latitude', 11, 8)->nullable();
             $table->timestamps();

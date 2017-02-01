@@ -12,6 +12,13 @@
                 <h3 class="box-title">
                 </h3>
 
+                <a href="{{ admin_route_url('points.manager') }}" class="btn btn-box-tool"
+                    data-toggle="modal"
+                    data-target="#"
+                    modal-size="modal-lg"
+                    title="Manager Points">
+                    <i class="fa fa-plus-circle fa-btn"></i>Point Manager</a>
+
                 <div class="box-tools pull-right">
                     @cando('Points.Create')
                     <a href="{{ admin_route_url('points.create') }}" class="btn btn-box-tool"
