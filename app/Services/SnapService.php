@@ -100,12 +100,29 @@ class SnapService
             ->orWhere('location', '')->get();
     }
 
+    public function confirmSnap(Request $request, $id)
+    {
+        $snaps = $this->getSnapByid($id);
+
+        if ($request->input('confirm') == 'approve') {
+            //queue for calculate point
+            (new PointService)->calculateApprovePoint($snaps);
+            $snaps->approved_by = auth()->user()->id;
+            $snaps->comment = $request->input('comment');
+            $snaps->update();
+        } elseif ($request->input('confirm') == 'reject') {
+            $snaps->reject_by = auth()->user()->id;
+            $snaps->comment = $request->input('comment');
+            $snaps->update();
+        }
+
+        return true;
+        
+    }
+
     public function updateSnap(Request $request, $id)
     {
         $snaps = $this->getSnapByid($id);
-        $snaps->approved_by = ($request->input('confirm') != 'approve') ? null : auth()->user()->id;
-        $snaps->reject_by = ($request->input('confirm') != 'reject') ? null : auth()->user()->id;
-        $snaps->comment = $request->input('comment');
         $snaps->receipt_id = $request->input('receipt_id');
         $snaps->location = $request->input('location');
         $snaps->purchase_time = $request->input('purchase_time');
@@ -141,6 +158,7 @@ class SnapService
             $t->variants = $tags['variants'][$i];
             $t->quantity = $tags['qty'][$i];
             $t->total_price = $tags['total'][$i];
+            $t->edited_signature = $this->generateSignature($tags['name'][$i],$tags['qty'][$i],$tags['total'][$i]);
 
             $t->update();
         }
@@ -182,6 +200,7 @@ class SnapService
             $t->variants = $tags['variants'][$i];
             $t->quantity = $tags['qty'][$i];
             $t->total_price = $tags['total'][$i];
+            $t->edited_signature = $this->generateSignature($tags['name'][$i],$tags['qty'][$i],$tags['total'][$i]);
 
             $t->update();
         }
@@ -225,6 +244,7 @@ class SnapService
             $t->variants = $tags['variants'][$i];
             $t->quantity = $tags['qty'][$i];
             $t->total_price = $tags['total'][$i];
+            $t->edited_signature = $this->generateSignature($tags['name'][$i],$tags['qty'][$i],$tags['total'][$i]);
 
             $t->update();
         }
@@ -265,6 +285,7 @@ class SnapService
             $t->variants = $tags['variants'][$i];
             $t->quantity = $tags['qty'][$i];
             $t->total_price = $tags['total'][$i];
+            $t->edited_signature = $this->generateSignature($tags['name'][$i],$tags['qty'][$i],$tags['total'][$i]);
 
             $t->update();
         }
@@ -283,6 +304,11 @@ class SnapService
         }
 
         $this->totalValue($tags['total'], $newTags['total'], $id);
+    }
+
+    public function generateSignature($name, $qty, $total)
+    {
+        return str_replace(' ', '', $name.'|'.$qty.'|'.clean_numeric($total,'%',false,'.'));
     }
 
     public function deleteSnapTags($ids, $snapFileId)

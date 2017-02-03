@@ -476,7 +476,7 @@ class MemberService
     {
         $latestPoint = $this->getLatestPointMemberById($id);
         $level = \DB::select('select max(id) as level_id from level_points where '.$latestPoint.' - point >= 0');
-        
-        return $level[0]->level_id;
+
+        return ($level[0]->level_id == true) ? $level[0]->level_id : 1;
     }
 }

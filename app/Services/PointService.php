@@ -9,12 +9,18 @@ use App\PromoPoint;
 use App\PromoLevelPoint;
 use App\SnapTag;
 use DB;
+use Carbon\Carbon;
 
 class PointService
 {
 
     const CACHE_NAME = 'point.pivot';
     const CACHE_PROMO_NAME = 'promo.point.pivot';
+
+    public function __construct()
+    {
+        $this->date = Carbon::now('Asia/Jakarta');
+    }
 
     /**
      * Get data and reformat data for pivot table
@@ -379,6 +385,70 @@ inner join level_points as l on l.id = plp.level_id;');
             ->first();
 
         return $point;
+    }
+
+    public function calculatePromoPoint($memberId, $city)
+    {
+        $levelId = (new MemberService)->getLevelIdByMemberId($memberId);
+        $cityName = strtoupper($city);
+        $cityPromo = \DB::table('promo_points')
+            ->join('promo_level_points', 'promo_points.id', '=', 'promo_level_points.promo_point_id')
+            ->join('level_points', 'level_points.id', '=', 'promo_level_points.level_id')
+            ->select('promo_points.point_city', 'promo_level_points.point')
+            ->where('promo_points.city_name', $cityName)
+            ->where('promo_level_points.level_id', $levelId)
+            ->where('start_at', '<=', $this->date)
+            ->where('end_at', '>=', $this->date)
+            ->where('is_active', '1')
+            ->first();
+
+        $data = [
+            'point_city' => isset($cityPromo) ? $cityPromo->point_city : 0,
+            'point_level_city' => isset($cityPromo) ? $cityPromo->point : 0,
+        ];
+
+        return $data;
+    }
+
+    public function calculateApprovePoint($snaps)
+    {
+        $memberId = $snaps->member_id;
+        $type = $snaps->snap_type;
+        $mode = $snaps->mode_type;
+        $city = $snaps->outlet_city;
+        $files = $snaps->files;
+
+        $calculateTask = $this->calculateEstimatedPoint($memberId, $type, $mode);
+
+        $calculatePromo = $this->calculatePromoPoint($memberId, $city);
+
+        $point = [];
+        foreach ($files as $file) {
+            $file = (new SnapService)->getSnapFileById($file->id);
+            $status = [];
+            foreach ($file->tag as $tag) {
+                $status[] = $this->checkTagStatus($tag->current_signature, $tag->edited_signature);
+            }
+            $count = array_count_values($status);
+            $memberAdd = isset($count['member_add']) ? $count['member_add'] : 0;
+            $crowdSourceEdit = isset($count['crowdsource_edit']) ? $count['crowdsource_edit'] : 0;
+            $crowdSourceAdd = isset($count['crowdsource_add']) ? $count['crowdsource_add'] : 0;
+            $point[] = $memberAdd / ($memberAdd + $crowdSourceEdit + $crowdSourceAdd) * ($calculateTask->point + $calculatePromo['point_city'] + $calculatePromo['point_level_city']);
+
+        }
+        $totalPoint = collect($point)->sum();
+
+    }
+
+    public function checkTagStatus($currentSignature, $editedSignature)
+    {
+        if ($currentSignature == null) {
+            return 'crowdsource_add';
+        } elseif ($currentSignature == $editedSignature) {
+            return 'member_add';
+        } elseif ($currentSignature != $editedSignature) {
+            return 'crowdsource_edit';
+        }
     }
 
     public function calculatePoint($memberId, $type, $mode, $fileId)
