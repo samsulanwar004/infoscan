@@ -58,6 +58,14 @@
                             <input type="text" name="url" class="form-control" value="{{ old('url', $promotion->url) }}" placeholder="Enter Url">
                         </div>
 
+                        <div class="form-group">
+                            <label for="image">Image</label><br>
+                            @if($promotion->image)
+                                <img width="200" height="200" src="{{ '/storage/promotions/'.$promotion->image }}">
+                            @endif
+                            <input type="file" class="form-control" id="image" name="image">
+                        </div>
+
                         <div class="checkbox">
                             <label>
                                 <input name="is_active" {{ (bool)$promotion->is_active ? 'checked' : '' }} type="checkbox">
@@ -87,6 +95,8 @@
         $('.datepicker').daterangepicker({
             timePicker: true,
             timePicker24Hour: true,
+            minDate: "<?php echo \Carbon\Carbon::today()->toDateString(); ?>",
+            maxDate: -0,
             locale: {
                 format: 'YYYY-MM-DD HH:mm:ss'
             },
