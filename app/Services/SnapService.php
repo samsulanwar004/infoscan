@@ -722,6 +722,8 @@ class SnapService
             $tag->name = $t['name'];
             $tag->total_price = $t['price'];
             $tag->quantity = $t['quantity'];
+            $tag->img_x = $t['tag_x'];
+            $tag->img_y = $t['tag_y'];
             $tag->file()->associate($file);
 
             $tag->save();
