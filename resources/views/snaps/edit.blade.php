@@ -1,10 +1,7 @@
 <form id="modalForm" action="{{ admin_route_url('snaps.update', ['id' => $snap->id]) }}"  method="POST">
     {{ csrf_field() }}
     {{ method_field('PUT') }}
-    <input type="hidden" name="member_id" value="{{ $snap->member_id }}">
-    <input type="hidden" name="snap_type" value="{{ $snap->snap_type }}">
-    <input type="hidden" name="mode_type" value="{{ $snap->mode_type }}">
-    <input type="hidden" name="city" value="{{ $snap->outlet_city }}">
+    <input type="hidden" name="mode" value="confirm">
     <div class="modal-header">
         <a class="close btn-modal-close" data-dismiss="modal">&times;</a>
         <h4><i class="fa fa-file-o fa-btn"></i> <span class="action-title">Snap </span> Confirmation</h4>
@@ -53,19 +50,15 @@
             <table class="table table-striped">
               <thead>
               <tr>
-                <th>File Code</th>
-                <th>Mode</th>
-                <th>Point</th>
+                <th>Estimated Point</th>
+                <th>Fixed Point</th>
               </tr>
               </thead>
               <tbody>
-                @foreach($files as $file)
                   <tr>
-                    <td>{{ $file['filecode'] }}</td>
-                    <td>{{ $file['mode'] }}</td>
-                    <td>{{ $file['point'] }}</td>
+                    <td>{{ $snap->estimated_point }}</td>
+                    <td>{{ $fixedPoint }}</td>
                   </tr>
-                @endforeach
               </tbody>
             </table>
           </div>

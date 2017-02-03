@@ -9,12 +9,18 @@ use App\PromoPoint;
 use App\PromoLevelPoint;
 use App\SnapTag;
 use DB;
+use Carbon\Carbon;
 
 class PointService
 {
 
     const CACHE_NAME = 'point.pivot';
     const CACHE_PROMO_NAME = 'promo.point.pivot';
+
+    public function __construct()
+    {
+        $this->date = Carbon::now('Asia/Jakarta');
+    }
 
     /**
      * Get data and reformat data for pivot table
@@ -70,7 +76,7 @@ inner join level_points as l on l.id = plp.level_id;');
 
     public function getLevels()
     {
-        return TaskLevelPoint::orderBy('id', 'asc')->get(['id', 'name', 'point_manager']);
+        return TaskLevelPoint::orderBy('id', 'asc')->get(['id', 'name', 'point']);
     }
 
     protected function removeCache()
@@ -346,7 +352,7 @@ inner join level_points as l on l.id = plp.level_id;');
         foreach ($request->input('levels') as $levelName => $point) {
             $level = $this->findLevel($levelName);
             $l = $this->getLevelById($level->id);
-            $l->point_manager = $point;
+            $l->point = $point;
             $l->update();
         }
 
@@ -357,14 +363,14 @@ inner join level_points as l on l.id = plp.level_id;');
         return TaskLevelPoint::where('id', $id)->first();
     }
 
-    public function getMemberLvl($memberId)
-    {
-        //dummy get level member
-        //$memberId = '1';
-        return $memberId;
-    }
-
-    public function calculatePointSnap($memberId, $type, $mode)
+    /**
+    * Get calculate Estimated point
+    * @param integer $memberId
+    * @param string $type
+    * @param string $mode
+    * @return integer point
+    */
+    public function calculateEstimatedPoint($memberId, $type, $mode)
     {
 
         $type = $this->getTypeId($type);
@@ -375,7 +381,7 @@ inner join level_points as l on l.id = plp.level_id;');
 
         $code = $type.$mode.$status;
 
-        $levelId = $this->getMemberLvl($memberId);
+        $levelId = (new MemberService)->getLevelIdByMemberId($memberId);
 
         $point = \DB::table('tasks')
             ->join('tasks_level_points', 'tasks.id', '=', 'tasks_level_points.task_id')
@@ -385,7 +391,79 @@ inner join level_points as l on l.id = plp.level_id;');
             ->where('tasks_level_points.level_id', $levelId)
             ->first();
 
-        return $point;
+        return ($point != null) ? $point->point : '0';
+    }
+
+    /**
+    * Get calculate Promo point
+    * @param integer $memberId
+    * @param string $city
+    * @return array
+    */
+    public function calculatePromoPoint($memberId, $city)
+    {
+        $levelId = (new MemberService)->getLevelIdByMemberId($memberId);
+        $cityName = strtoupper($city);
+        $cityPromo = \DB::table('promo_points')
+            ->join('promo_level_points', 'promo_points.id', '=', 'promo_level_points.promo_point_id')
+            ->join('level_points', 'level_points.id', '=', 'promo_level_points.level_id')
+            ->select('promo_points.point_city', 'promo_level_points.point')
+            ->where('promo_points.city_name', $cityName)
+            ->where('promo_level_points.level_id', $levelId)
+            ->where('start_at', '<=', $this->date)
+            ->where('end_at', '>=', $this->date)
+            ->where('is_active', '1')
+            ->first();
+
+        $data = [
+            'point_city' => isset($cityPromo) ? $cityPromo->point_city : 0,
+            'point_level_city' => isset($cityPromo) ? $cityPromo->point : 0,
+        ];
+
+        return $data;
+    }
+
+    public function calculateApprovePoint($snaps)
+    {
+        $memberId = $snaps->member_id;
+        $type = $snaps->snap_type;
+        $mode = $snaps->mode_type;
+        $city = $snaps->outlet_city;
+        $files = $snaps->files;
+
+        $calculateTask = $this->calculateEstimatedPoint($memberId, $type, $mode);
+
+        $calculatePromo = $this->calculatePromoPoint($memberId, $city);
+
+        $point = [];
+        foreach ($files as $file) {
+            $file = (new SnapService)->getSnapFileById($file->id);
+            $status = [];
+            foreach ($file->tag as $tag) {
+                $status[] = $this->checkTagStatus($tag->current_signature, $tag->edited_signature);
+            }
+            $count = array_count_values($status);
+            $memberAdd = isset($count['member_add']) ? $count['member_add'] : 0;
+            $crowdSourceEdit = isset($count['crowdsource_edit']) ? $count['crowdsource_edit'] : 0;
+            $crowdSourceAdd = isset($count['crowdsource_add']) ? $count['crowdsource_add'] : 0;
+            $point[] = $memberAdd / ($memberAdd + $crowdSourceEdit + $crowdSourceAdd) * ($calculateTask + $calculatePromo['point_city'] + $calculatePromo['point_level_city']);
+
+        }
+        
+        $totalPoint = collect($point)->sum();
+
+        return $totalPoint;
+    }
+
+    public function checkTagStatus($currentSignature, $editedSignature)
+    {
+        if ($currentSignature == null) {
+            return 'crowdsource_add';
+        } elseif ($currentSignature == $editedSignature || $editedSignature == null) {
+            return 'member_add';
+        } elseif ($currentSignature != $editedSignature) {
+            return 'crowdsource_edit';
+        }
     }
 
     public function calculatePoint($memberId, $type, $mode, $fileId)
@@ -401,7 +479,7 @@ inner join level_points as l on l.id = plp.level_id;');
 
         $code = $type.$mode.$status;
 
-        $levelId = $this->getMemberLvl($memberId);
+        $levelId = (new MemberService)->getLevelIdByMemberId($memberId);
 
         $point = \DB::table('tasks')
             ->join('tasks_level_points', 'tasks.id', '=', 'tasks_level_points.task_id')
@@ -436,7 +514,7 @@ inner join level_points as l on l.id = plp.level_id;');
     protected function getModeId($mode, $tag)
     {
         switch ($mode) {
-            case 'audio':
+            case 'audios':
                 $with = ($tag == true) ? '1' : '2';
                 $mode = '1'.$with;
                 break;

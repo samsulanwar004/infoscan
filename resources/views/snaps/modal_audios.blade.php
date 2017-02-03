@@ -41,7 +41,7 @@
                                 <td width="300"><input type="text" name="tag[brands][]" class="form-control input-sm" value="{{ $tag->brands }}" placeholder="Brands"></td>
                                 <td width="300"><input type="text" list="variants" name="tag[variants][]" class="form-control input-sm" value="{{ $tag->variants }}" placeholder="Variants"></td>
                                 <td width="100"><input type="number" name="tag[qty][]" class="form-control input-sm" value="{{ $tag->quantity }}" placeholder="QTY" required="required"></td>
-                                <td width="200"><input type="number" name="tag[total][]" class="form-control input-sm" value="{{ $tag->total_price }}" placeholder="Total Price" required="required"></td>
+                                <td width="200"><input type="number" name="tag[total][]" class="form-control input-sm" value="{{ clean_numeric($tag->total_price,'%',false,'.') }}" placeholder="Total Price" required="required"></td>
                                 <input type="hidden" name="tag[id][]" value="{{ $tag->id }}">
                             </tr>
                         @endforeach

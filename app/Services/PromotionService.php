@@ -30,6 +30,7 @@ class PromotionService
 	{
 		$date = $request->input('start_at');
 		$dateArray = explode(' - ', $date);
+		$randomName = strtolower(str_random(10));
 
 		$p = new Promotion;
 		$p->title = $request->input('title');
@@ -40,6 +41,22 @@ class PromotionService
 		$p->created_by = Auth::user()->id;
 		$p->is_active = $request->has('is_active') ? 1 : 0;
 		$p->merchant()->associate($mi);
+
+		if ($request->hasFile('image')) {
+            $file = $request->file('image');
+            $filename = sprintf(
+                "%s-%s.%s",
+                $randomName,
+                date('Ymdhis'),
+                $file->getClientOriginalExtension()
+            );
+
+            $p->image = $filename;
+            $path = storage_path('app/public')."/promotions/".$filename;
+            $resize = \Image::make($file)->resize(240, 240);
+            $resize->save($path);
+        }
+
 		$p->save();
 
 		return $p;
@@ -56,6 +73,7 @@ class PromotionService
 	{
 		$date = $request->input('start_at');
 		$dateArray = explode(' - ', $date);
+		$randomName = strtolower(str_random(10));
 
 		$p = $this->getPromotionById($id);
 		$p->title = $request->input('title');
@@ -65,6 +83,26 @@ class PromotionService
 		$p->url = $request->input('url');
 		$p->updated_by = Auth::user()->id;
 		$p->is_active = $request->has('is_active') ? 1 : 0;
+
+		if ($request->hasFile('image') != null && $p->image == true) {
+            \Storage::delete('public/promotions/' . $p->image);
+        }
+
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+            $filename = sprintf(
+                "%s-%s.%s",
+                $randomName,
+                date('Ymdhis'),
+                $file->getClientOriginalExtension()
+            );
+
+            $p->image = $filename;
+            $path = storage_path('app/public')."/promotions/".$filename;
+            $resize = \Image::make($file)->resize(240, 240);
+            $resize->save($path);
+        }
+
 		$p->update();
 
 		return $p;

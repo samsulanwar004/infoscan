@@ -22,7 +22,8 @@
         "maatwebsite/excel": "~2.0.0",
         "phpoffice/phpword": "dev-master",
         "socialiteproviders/instagram": "^2.0",
-        "socialiteproviders/linkedin": "^2.0"
+        "socialiteproviders/linkedin": "^2.0",
+        "intervention/image": "^2.3"
     },
     "require-dev": {
         "fzaninotto/faker": "^1.6",

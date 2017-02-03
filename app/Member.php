@@ -15,4 +15,9 @@ class Member extends Authenticable
     {
         return $this->belongsToMany(luckyDraw::class, 'members_lucky_draws', 'member_id', 'luckydraw_id');
     }
+
+    public function memberLevels()
+    {
+    	return $this->hasMany(MemberLevel::class, 'member_id', 'id');
+    }
 }
