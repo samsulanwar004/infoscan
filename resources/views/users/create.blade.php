@@ -69,7 +69,7 @@
                     <!-- /.box-body -->
 
                     <div class="box-footer text-right">
-                        <button type="submit" class="btn btn-primary">
+                        <button type="submit" class="btn btn-primary" id="save">
                             <i class="fa fa-save fa-btn"></i> Save User
                         </button>
                     </div>
