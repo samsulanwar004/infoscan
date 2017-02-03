@@ -18,7 +18,7 @@
                 </div>
             </div>
             <div class="box-body">
-                <form role="form" action="{{ route('promotions.store') }}" method="POST" onsubmit="myLoading()">
+                <form role="form" action="{{ route('promotions.store') }}" method="POST" onsubmit="myLoading()" enctype="multipart/form-data">
                     {{ csrf_field() }}
                     <div class="box-body">
                         <div class="form-group">
@@ -46,6 +46,11 @@
                         <div class="form-group">
                             <label for="url">Url</label>
                             <input type="text" name="url" class="form-control" value="{{ old('url') }}" placeholder="Enter Url">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="image">Image</label>
+                            <input type="file" class="form-control" id="image" name="image">
                         </div>
 
                         <div class="checkbox">
@@ -79,6 +84,8 @@
             $('.datepicker').daterangepicker({
                 timePicker: true,
                 timePicker24Hour: true,
+                minDate: "<?php echo \Carbon\Carbon::today()->toDateString(); ?>",
+                maxDate: -0,
                 locale: {
                     format: 'YYYY-MM-DD HH:mm:ss'
                 }

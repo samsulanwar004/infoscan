@@ -448,4 +448,35 @@ class MemberService
         return $this;
     }
 
+    /**
+     * Get latest point member by member id   
+     * @param int
+     * @return $latestPoint
+     */
+    public function getLatestPointMemberById($id)
+    {
+        $member = \DB::table('members')
+            ->join('member_levels', 'members.id', '=', 'member_levels.member_id')
+            ->where('members.id', $id)
+            ->select('latest_point as point')
+            ->orderBy('member_levels.id', 'DESC')
+            ->first();
+
+        $latestPoint = ($member == true) ? $member->point : 0;
+
+        return $latestPoint;
+    }
+
+    /**
+     * Get level id by member id   
+     * @param int
+     * @return $levelId
+     */
+    public function getLevelIdByMemberId($id)
+    {
+        $latestPoint = $this->getLatestPointMemberById($id);
+        $level = \DB::select('select max(id) as level_id from level_points where '.$latestPoint.' - point >= 0');
+
+        return ($level[0]->level_id == true) ? $level[0]->level_id : 1;
+    }
 }

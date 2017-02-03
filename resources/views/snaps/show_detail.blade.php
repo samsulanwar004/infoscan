@@ -23,7 +23,7 @@
 							<td>{{ $tag->brands }}</td>
 							<td style="max-width: 100px">{{ $tag->variants }}</td>
 							<td>{{ $tag->quantity }}</td>
-							<td>{{ $tag->total_price }}</td>
+							<td>{{ clean_numeric($tag->total_price,'%',false,'.') }}</td>
 						</tr>
 					@endforeach
 				@endif

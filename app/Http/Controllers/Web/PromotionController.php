@@ -49,7 +49,8 @@ class PromotionController extends AdminController
     {
         $this->validate($request, [
             'title' => 'required|max:255',
-            'description' => 'required|max:255'
+            'description' => 'max:255',
+            'image' => 'mimes:jpg,jpeg,png'
         ]);
 
         try {
@@ -87,7 +88,8 @@ class PromotionController extends AdminController
     {
         $this->validate($request, [
             'title' => 'required|max:255',
-            'description' => 'required|max:255'
+            'description' => 'max:255',
+            'image' => 'mimes:jpg,jpeg,png'
         ]);
 
         try {
@@ -107,6 +109,10 @@ class PromotionController extends AdminController
         try {
             $p = (new PromotionService)->getPromotionById($id);
             $p->delete();
+
+            if ($p->image != null) {
+                \Storage::delete('public/promotions/' . $p->image);
+            }
         } catch (\Exception $e) {
             return back()->with('errors'. $e->getMessage());
         }

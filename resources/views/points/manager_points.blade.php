@@ -17,7 +17,7 @@
                             <div class="form-group">
                                 <label for="name" class="col-sm-4 control-label">{{ $level->name }}</label>
                                 <div class="col-sm-8">
-                                    <input type="number" class="form-control level-name" name="levels[{{ $levelArray[1] }}]" value="{{ $level->point_manager }}" placeholder="Experience {{ $level->name }}" required="required">
+                                    <input type="number" class="form-control level-name" name="levels[{{ $levelArray[1] }}]" value="{{ $level->point }}" placeholder="Experience {{ $level->name }}" required="required">
                                 </div>
                             </div>
                         </div>

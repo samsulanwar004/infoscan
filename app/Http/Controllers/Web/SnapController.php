@@ -12,7 +12,7 @@ class SnapController extends AdminController
 {
 
     public function index()
-    {
+    {   
         $this->isAllowed('Snaps.List');
         $snaps = (new SnapService)->getAvailableSnaps();
         $snapCategorys = config("common.snap_category");
@@ -68,25 +68,10 @@ class SnapController extends AdminController
     public function edit($id)
     {
         $snap = (new SnapService)->getSnapByid($id);
-        $snapFiles = $snap->files;
-        $memberId = $snap->member_id;
-        $snapType = $snap->snap_type;
-        
-        $files = [];
-        foreach ($snapFiles as $snapFile) {
-            $modeType = $snapFile->mode_type;
-            $fileId = $snapFile->id;
-            $calculate = (new PointService())
-                ->calculatePoint($memberId, $snapType, $modeType, $fileId);
-            $point = ($calculate != null) ? $calculate->point : '0';
-            $files[] = [
-                'filecode' => $snapFile->file_code,
-                'mode' => $snapFile->mode_type,
-                'point' => $point
-            ];
-        }   
 
-        return view('snaps.edit', compact('snap', 'files'));
+        $fixedPoint = (new PointService)->calculateApprovePoint($snap);  
+
+        return view('snaps.edit', compact('snap', 'fixedPoint'));
     }
 
     public function editSnapFile($id)
@@ -95,7 +80,7 @@ class SnapController extends AdminController
             $modeView = [
                 'input' => 'modal_inputs',
                 'tags' => 'modal_tags',
-                'audio' => 'modal_audios',
+                'audios' => 'modal_audios',
                 'image' => 'modal_snaps'
             ];
 
@@ -149,10 +134,12 @@ class SnapController extends AdminController
                 (new SnapService)->updateSnapModeInput($request, $id);
             } else if ($request->input('mode') === 'tags') {
                 (new SnapService)->updateSnapModeTags($request, $id);
-            } else if ($request->input('mode') === 'audio') {
+            } else if ($request->input('mode') === 'audios') {
                 (new SnapService)->updateSnapModeAudios($request, $id);
             } else if ($request->input('mode') === 'image') {
                 (new SnapService)->updateSnapModeImages($request, $id);
+            }else if ($request->input('mode') === 'confirm') {
+                (new SnapService)->confirmSnap($request, $id);
             } else {
                 (new SnapService)->updateSnap($request, $id);
             }
