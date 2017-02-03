@@ -26,21 +26,31 @@ class SnapController extends BaseApiController
     public function store(Request $request)
     {
         try {
+            if($request->has('request_code')) {
+                return $this->error('There is no need [request_code] field anymore. Please [request_code] from request payloads.');
+            }
+
             $validation = $this->validRequest($request);
             if ($validation->fails()) {
-                return $this->error($validation->errors());
+                return $this->error($validation->errors(), 400, true);
             }
 
             $type = $request->input('snap_type');
             $method = strtolower($type) . 'Handler';
 
+            // add request code on the fly
+            // TODO: need to refactor!!!!!
+
+            $request->request->add([
+                'request_code' => strtolower(str_random(10)),
+            ]);
             (new SnapService)->{$method}($request);
 
             return $this->success();
         } catch (Exception $e) {
             logger($e);
 
-            return $this->error($e, 400, true);
+            return $this->error($e, 400);
         }
     }
 
@@ -55,7 +65,7 @@ class SnapController extends BaseApiController
         $snapType = strtolower($request->input('snap_type'));
 
         $rules = [
-            'request_code' => 'required|size:10|unique:snaps,request_code',
+            //'request_code' => 'required|size:10|unique:snaps,request_code',
             'snap_type' => 'required|in:receipt,generalTrade,handWritten',
             'snap_images' => 'array',
             'snap_images.*' => 'required|mimes:jpeg',

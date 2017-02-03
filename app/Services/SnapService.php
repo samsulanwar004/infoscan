@@ -358,7 +358,7 @@ class SnapService
 
         // build data
         $data = [
-            'request_code' => $request->input('request_code'),            
+            'request_code' => $request->input('request_code'),
             'snap_type' => 'receipt',
             'snap_mode' => 'images',
             'snap_files' => $images,
@@ -743,19 +743,21 @@ class SnapService
         }
 
         $tags = $request->input(self::TAGS_FIELD_NAME);
+
         if ($tags != null) {
             foreach ($tags as $t) {
                 $tag = new \App\SnapTag();
                 $tag->name = $t['name'];
                 $tag->total_price = $t['price'];
                 $tag->quantity = $t['quantity'];
+                $tag->img_x = isset($t['tag_x']) ? $t['tag_x'] : '';
+                $tag->img_y = isset($t['tag_y']) ? $t['tag_y'] : '';
                 $tag->current_signature = $this->generateSignature($t['name'],$t['qty'],$t['total']);
                 $tag->file()->associate($file);
 
                 $tag->save();
             }
-        }
-        
+        }        
 
         return $tags;
     }
