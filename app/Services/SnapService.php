@@ -749,6 +749,7 @@ class SnapService
                 $tag->name = $t['name'];
                 $tag->total_price = $t['price'];
                 $tag->quantity = $t['quantity'];
+                $tag->current_signature = $this->generateSignature($t['name'],$t['qty'],$t['total']);
                 $tag->file()->associate($file);
 
                 $tag->save();
@@ -868,8 +869,7 @@ class SnapService
         $mode = $data['mode'];
         $files = $data['files'];
 
-        $calculate = (new PointService)->calculateEstimatedPoint($memberId, $type, $mode);
-        $point = ($calculate != null) ? $calculate->point : '0';
+        $point = (new PointService)->calculateEstimatedPoint($memberId, $type, $mode);
         $total = $point * $files;
         $snap = (new SnapService)->getSnapByCode($requestCode);
         $snap->estimated_point = $total;

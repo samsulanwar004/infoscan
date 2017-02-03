@@ -363,6 +363,13 @@ inner join level_points as l on l.id = plp.level_id;');
         return TaskLevelPoint::where('id', $id)->first();
     }
 
+    /**
+    * Get calculate Estimated point
+    * @param integer $memberId
+    * @param string $type
+    * @param string $mode
+    * @return integer point
+    */
     public function calculateEstimatedPoint($memberId, $type, $mode)
     {
 
@@ -384,9 +391,15 @@ inner join level_points as l on l.id = plp.level_id;');
             ->where('tasks_level_points.level_id', $levelId)
             ->first();
 
-        return $point;
+        return ($point != null) ? $point->point : '0';
     }
 
+    /**
+    * Get calculate Promo point
+    * @param integer $memberId
+    * @param string $city
+    * @return array
+    */
     public function calculatePromoPoint($memberId, $city)
     {
         $levelId = (new MemberService)->getLevelIdByMemberId($memberId);
@@ -433,18 +446,20 @@ inner join level_points as l on l.id = plp.level_id;');
             $memberAdd = isset($count['member_add']) ? $count['member_add'] : 0;
             $crowdSourceEdit = isset($count['crowdsource_edit']) ? $count['crowdsource_edit'] : 0;
             $crowdSourceAdd = isset($count['crowdsource_add']) ? $count['crowdsource_add'] : 0;
-            $point[] = $memberAdd / ($memberAdd + $crowdSourceEdit + $crowdSourceAdd) * ($calculateTask->point + $calculatePromo['point_city'] + $calculatePromo['point_level_city']);
+            $point[] = $memberAdd / ($memberAdd + $crowdSourceEdit + $crowdSourceAdd) * ($calculateTask + $calculatePromo['point_city'] + $calculatePromo['point_level_city']);
 
         }
+        
         $totalPoint = collect($point)->sum();
 
+        return $totalPoint;
     }
 
     public function checkTagStatus($currentSignature, $editedSignature)
     {
         if ($currentSignature == null) {
             return 'crowdsource_add';
-        } elseif ($currentSignature == $editedSignature) {
+        } elseif ($currentSignature == $editedSignature || $editedSignature == null) {
             return 'member_add';
         } elseif ($currentSignature != $editedSignature) {
             return 'crowdsource_edit';

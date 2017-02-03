@@ -51,11 +51,13 @@
               <thead>
               <tr>
                 <th>Estimated Point</th>
+                <th>Fixed Point</th>
               </tr>
               </thead>
               <tbody>
                   <tr>
                     <td>{{ $snap->estimated_point }}</td>
+                    <td>{{ $fixedPoint }}</td>
                   </tr>
               </tbody>
             </table>

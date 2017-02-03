@@ -68,25 +68,10 @@ class SnapController extends AdminController
     public function edit($id)
     {
         $snap = (new SnapService)->getSnapByid($id);
-        $snapFiles = $snap->files;
-        $memberId = $snap->member_id;
-        $snapType = $snap->snap_type;
 
-        $files = [];
-        foreach ($snapFiles as $snapFile) {
-            $modeType = $snapFile->mode_type;
-            $fileId = $snapFile->id;
-            $calculate = (new PointService())
-                ->calculatePoint($memberId, $snapType, $modeType, $fileId);
-            $point = ($calculate != null) ? $calculate->point : '0';
-            $files[] = [
-                'filecode' => $snapFile->file_code,
-                'mode' => $snapFile->mode_type,
-                'point' => $point
-            ];
-        }   
+        $fixedPoint = (new PointService)->calculateApprovePoint($snap);  
 
-        return view('snaps.edit', compact('snap', 'files'));
+        return view('snaps.edit', compact('snap', 'fixedPoint'));
     }
 
     public function editSnapFile($id)
