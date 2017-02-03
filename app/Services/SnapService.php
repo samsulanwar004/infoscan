@@ -117,7 +117,6 @@ class SnapService
         }
 
         return true;
-        
     }
 
     public function updateSnap(Request $request, $id)
@@ -158,7 +157,7 @@ class SnapService
             $t->variants = $tags['variants'][$i];
             $t->quantity = $tags['qty'][$i];
             $t->total_price = $tags['total'][$i];
-            $t->edited_signature = $this->generateSignature($tags['name'][$i],$tags['qty'][$i],$tags['total'][$i]);
+            $t->edited_signature = $this->generateSignature($tags['name'][$i], $tags['qty'][$i], $tags['total'][$i]);
 
             $t->update();
         }
@@ -177,7 +176,6 @@ class SnapService
         }
 
         $this->totalValue($tags['total'], $newTags['total'], $id);
-
     }
 
     public function updateSnapModeTags(Request $request, $id)
@@ -200,7 +198,7 @@ class SnapService
             $t->variants = $tags['variants'][$i];
             $t->quantity = $tags['qty'][$i];
             $t->total_price = $tags['total'][$i];
-            $t->edited_signature = $this->generateSignature($tags['name'][$i],$tags['qty'][$i],$tags['total'][$i]);
+            $t->edited_signature = $this->generateSignature($tags['name'][$i], $tags['qty'][$i], $tags['total'][$i]);
 
             $t->update();
         }
@@ -221,7 +219,6 @@ class SnapService
         }
 
         $this->totalValue($tags['total'], $newTags['total'], $id);
-
     }
 
     public function updateSnapModeAudios($request, $id)
@@ -244,7 +241,7 @@ class SnapService
             $t->variants = $tags['variants'][$i];
             $t->quantity = $tags['qty'][$i];
             $t->total_price = $tags['total'][$i];
-            $t->edited_signature = $this->generateSignature($tags['name'][$i],$tags['qty'][$i],$tags['total'][$i]);
+            $t->edited_signature = $this->generateSignature($tags['name'][$i], $tags['qty'][$i], $tags['total'][$i]);
 
             $t->update();
         }
@@ -285,7 +282,7 @@ class SnapService
             $t->variants = $tags['variants'][$i];
             $t->quantity = $tags['qty'][$i];
             $t->total_price = $tags['total'][$i];
-            $t->edited_signature = $this->generateSignature($tags['name'][$i],$tags['qty'][$i],$tags['total'][$i]);
+            $t->edited_signature = $this->generateSignature($tags['name'][$i], $tags['qty'][$i], $tags['total'][$i]);
 
             $t->update();
         }
@@ -308,7 +305,7 @@ class SnapService
 
     public function generateSignature($name, $qty, $total)
     {
-        return str_replace(' ', '', $name.'|'.$qty.'|'.clean_numeric($total,'%',false,'.'));
+        return str_replace(' ', '', $name.'|'.$qty.'|'.clean_numeric($total, '%', false, '.'));
     }
 
     public function deleteSnapTags($ids, $snapFileId)
@@ -380,7 +377,7 @@ class SnapService
             'files' => count($images),
         ];
 
-        $this->saveEstimatedPoint($dataSnap);        
+        $this->saveEstimatedPoint($dataSnap);
 
         return $data;
     }
@@ -395,7 +392,7 @@ class SnapService
             throw new SnapServiceException('There is no images was processed. Something wrong with the system!');
         }
 
-        if($this->isTagsMode($request)) {
+        if ($this->isTagsMode($request)) {
             $mode = self::TAG_TYPE_NAME;
 
             DB::beginTransaction();
@@ -418,12 +415,12 @@ class SnapService
                 'files' => count($images),
             ];
 
-            $this->saveEstimatedPoint($dataSnap);  
+            $this->saveEstimatedPoint($dataSnap);
 
             return [];
         }
 
-        if($this->isAudioMode()) {
+        if ($this->isAudioMode()) {
             $mode = self::AUDIO_TYPE_NAME;
 
             $dataSnap = [
@@ -434,7 +431,7 @@ class SnapService
                 'files' => count($images),
             ];
 
-            $this->saveEstimatedPoint($dataSnap);  
+            $this->saveEstimatedPoint($dataSnap);
         }
 
         throw new Exception('Server Error');
@@ -477,7 +474,7 @@ class SnapService
                 'files' => count($images),
             ];
 
-            $this->saveEstimatedPoint($dataSnap);  
+            $this->saveEstimatedPoint($dataSnap);
 
             return [];
         }
@@ -514,7 +511,7 @@ class SnapService
                 'files' => count($images),
             ];
 
-            $this->saveEstimatedPoint($dataSnap);  
+            $this->saveEstimatedPoint($dataSnap);
 
             return $data;
         }
@@ -689,7 +686,6 @@ class SnapService
     private function createFiles($request, array $files, \App\Snap $snap)
     {
         if ($this->isMultidimensiArray($files)) {
-
             foreach ($files as $file) {
                 $snapFile = $this->persistFile($request, $file, $snap);
 
@@ -752,12 +748,12 @@ class SnapService
                 $tag->quantity = $t['quantity'];
                 $tag->img_x = isset($t['tag_x']) ? $t['tag_x'] : '';
                 $tag->img_y = isset($t['tag_y']) ? $t['tag_y'] : '';
-                $tag->current_signature = $this->generateSignature($t['name'],$t['qty'],$t['total']);
+                $tag->current_signature = $this->generateSignature($t['name'], $t['qty'], $t['total']);
                 $tag->file()->associate($file);
 
                 $tag->save();
             }
-        }        
+        }
 
         return $tags;
     }
@@ -879,5 +875,4 @@ class SnapService
 
         return true;
     }
-
 }
