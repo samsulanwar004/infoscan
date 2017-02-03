@@ -28,7 +28,7 @@ class SnapController extends BaseApiController
         try {
             $validation = $this->validRequest($request);
             if ($validation->fails()) {
-                return $this->error($validation->errors());
+                return $this->error($validation->errors(), 400, true);
             }
 
             $type = $request->input('snap_type');
@@ -40,7 +40,7 @@ class SnapController extends BaseApiController
         } catch (Exception $e) {
             logger($e);
 
-            return $this->error($e, 400, true);
+            return $this->error($e, 400);
         }
     }
 
