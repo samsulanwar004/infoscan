@@ -21,6 +21,7 @@ Route::group([
     'prefix' => 'v1',
     'middleware' => ['api', 'verifiSignature'],
 ], function () {
+    Route::get('/snap', 'Api\SnapController@index');
     Route::post('/snap', 'Api\SnapController@store');
     Route::get('/promotion', 'Api\PromotionController@index');
     Route::get('/lucky', 'Api\LuckyDrawController@index');

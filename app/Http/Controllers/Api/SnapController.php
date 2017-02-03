@@ -18,6 +18,24 @@ class SnapController extends BaseApiController
     ];
 
     /**
+     * Check snap status.
+     *
+     * @param  Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function index(Request $request)
+    {
+        try {
+            $memberId = $this->getActiveMember();
+            $results = (new SnapService)->getMemberSnaps($memberId);
+
+            return $this->success($results);
+        } catch (Exception $e) {
+            return $this->error($e, 400);
+        }
+    }
+
+    /**
      * Process the snap data.
      *
      * @param \Illuminate\Http\Request $request
@@ -27,7 +45,7 @@ class SnapController extends BaseApiController
     {
         try {
             if($request->has('request_code')) {
-                return $this->error('There is no need [request_code] field anymore. Please [request_code] from request payloads.');
+                return $this->error('There is no need [request_code] field anymore. Please remove [request_code] from request payloads.');
             }
 
             $validation = $this->validRequest($request);
@@ -44,9 +62,13 @@ class SnapController extends BaseApiController
             $request->request->add([
                 'request_code' => strtolower(str_random(10)),
             ]);
-            (new SnapService)->{$method}($request);
+            $process = (new SnapService)->{$method}($request);
 
-            return $this->success();
+            return $this->success([
+                'data' => [
+                    'request_code' => $process['request_code']
+                ]
+            ]);
         } catch (Exception $e) {
             logger($e);
 
