@@ -52,7 +52,7 @@ class SnapService
             return $snap->where('transaction_code', $code)->first();
         }
 
-        return $snap->paginate();
+        return $snap->orderBy('created_at', 'desc')->paginate(100);
     }
 
     public function getSnapsByFilter($type, $mode)
@@ -379,7 +379,7 @@ class SnapService
 
         $this->saveEstimatedPoint($dataSnap);
 
-        return $data;
+        return $dataSnap;
     }
 
     /**
@@ -417,7 +417,7 @@ class SnapService
 
             $this->saveEstimatedPoint($dataSnap);
 
-            return [];
+            return $dataSnap;
         }
 
         if ($this->isAudioMode()) {
@@ -432,6 +432,8 @@ class SnapService
             ];
 
             $this->saveEstimatedPoint($dataSnap);
+
+            return $dataSnap;
         }
 
         throw new Exception('Server Error');
@@ -476,7 +478,7 @@ class SnapService
 
             $this->saveEstimatedPoint($dataSnap);
 
-            return [];
+            return $dataSnap;
         }
 
         if ($this->isAudioMode($request)) {
@@ -513,7 +515,7 @@ class SnapService
 
             $this->saveEstimatedPoint($dataSnap);
 
-            return $data;
+            return $dataSnap;
         }
 
         throw new SnapServiceException('Server Error');
@@ -748,7 +750,7 @@ class SnapService
                 $tag->quantity = $t['quantity'];
                 $tag->img_x = isset($t['tag_x']) ? $t['tag_x'] : '';
                 $tag->img_y = isset($t['tag_y']) ? $t['tag_y'] : '';
-                $tag->current_signature = $this->generateSignature($t['name'], $t['qty'], $t['total']);
+                $tag->current_signature = $this->generateSignature($t['name'], $t['quantity'], $t['price']);
                 $tag->file()->associate($file);
 
                 $tag->save();
