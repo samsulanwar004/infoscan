@@ -449,7 +449,7 @@ inner join level_points as l on l.id = plp.level_id;');
             $point[] = $memberAdd / ($memberAdd + $crowdSourceEdit + $crowdSourceAdd) * ($calculateTask + $calculatePromo['point_city'] + $calculatePromo['point_level_city']);
 
         }
-        
+
         $totalPoint = collect($point)->sum();
 
         return $totalPoint;

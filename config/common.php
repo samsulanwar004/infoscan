@@ -262,4 +262,15 @@ return [
     'banks' => [
         'bca', 'mandiri', 'ocbc'
     ],
+    //transaction
+    'transaction' => [
+        'transaction_type' => [
+            'snaps' => '1',
+            'redeem' => '2',
+        ],
+        'member' => [
+            'kasir' => '101',
+            'snap' => '102',
+        ],
+    ]
 ];

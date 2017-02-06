@@ -13,6 +13,8 @@ use Exception;
 use Illuminate\Http\Request;
 use Storage;
 use App\Libraries\GoogleMap;
+use App\Events\TransactionEvent;
+use App\Jobs\PointCalculation;
 
 class SnapService
 {
@@ -106,7 +108,8 @@ class SnapService
 
         if ($request->input('confirm') == 'approve') {
             //queue for calculate point
-            (new PointService)->calculateApprovePoint($snaps);
+            $job = (new PointCalculation($snaps))->onQueue('pointProcess');
+            dispatch($job);
             $snaps->approved_by = auth()->user()->id;
             $snaps->comment = $request->input('comment');
             $snaps->update();
@@ -361,23 +364,31 @@ class SnapService
             'snap_files' => $images,
         ];
 
-        if (! $this->presistData($request, $images)) {
+        if (! $snap = $this->presistData($request, $images)) {
             throw new Exception('Error when saving data in database!');
         }
 
-        // send dispatcher
+        // // send dispatcher
         $job = $this->getPlainDispatcher($data);
         dispatch($job);
 
+        // Auth Member
+        $member = auth('api')->user();
+        $transactionType = config('common.transaction.transaction_type.snaps');
+        $snapId = $snap->id;
         $dataSnap = [
             'request_code' => $request->input('request_code'),
-            'member_id' => auth('api')->user()->id,
+            'member_id' => $member->id,
             'type' => 'receipt',
             'mode' => 'images',
             'files' => count($images),
         ];
-
+  
+        // Save estimated point calculate
         $this->saveEstimatedPoint($dataSnap);
+
+        // Save transaction
+        event(new TransactionEvent($member->member_code, $transactionType, $snapId));
 
         return $dataSnap;
     }
@@ -407,15 +418,23 @@ class SnapService
                 throw new SnapServiceException($e->getMessage());
             }
 
+            // Auth Member
+            $member = auth('api')->user();
+            $transactionType = config('common.transaction.transaction_type.snaps');
+            $snapId = $snap->id;
             $dataSnap = [
                 'request_code' => $request->input('request_code'),
-                'member_id' => auth('api')->user()->id,
+                'member_id' => $member->id,
                 'type' => $request->input('snap_type'),
                 'mode' => $mode,
                 'files' => count($images),
             ];
 
+            // Save estimated point calculate
             $this->saveEstimatedPoint($dataSnap);
+
+            // Save transaction
+            event(new TransactionEvent($member->member_code, $transactionType, $snapId));
 
             return $dataSnap;
         }
@@ -423,15 +442,23 @@ class SnapService
         if ($this->isAudioMode()) {
             $mode = self::AUDIO_TYPE_NAME;
 
+            // Auth Member
+            $member = auth('api')->user();
+            $transactionType = config('common.transaction.transaction_type.snaps');
+            $snapId = $snap->id;
             $dataSnap = [
                 'request_code' => $request->input('request_code'),
-                'member_id' => auth('api')->user()->id,
+                'member_id' => $member->id,
                 'type' => $request->input('snap_type'),
                 'mode' => $mode,
                 'files' => count($images),
             ];
 
+            // Save estimated point calculate
             $this->saveEstimatedPoint($dataSnap);
+
+            // Save transaction
+            event(new TransactionEvent($member->member_code, $transactionType, $snapId));
 
             return $dataSnap;
         }
@@ -468,15 +495,23 @@ class SnapService
                 throw new SnapServiceException($e->getMessage());
             }
 
+            // Auth Member
+            $member = auth('api')->user();
+            $transactionType = config('common.transaction.transaction_type.snaps');
+            $snapId = $snap->id;
             $dataSnap = [
                 'request_code' => $request->input('request_code'),
-                'member_id' => auth('api')->user()->id,
+                'member_id' => $member->id,
                 'type' => $request->input('snap_type'),
                 'mode' => $mode,
                 'files' => count($images),
             ];
 
+            // Save estimated point calculate
             $this->saveEstimatedPoint($dataSnap);
+
+            // Save transaction
+            event(new TransactionEvent($member->member_code, $transactionType, $snapId));
 
             return $dataSnap;
         }
@@ -497,7 +532,7 @@ class SnapService
                 'snap_files' => $audios,
             ];
 
-            if (! $this->presistData($request, $images)) {
+            if (! $snap = $this->presistData($request, $images)) {
                 throw new SnapServiceException('Error when saving data in database!');
             }
 
@@ -505,15 +540,23 @@ class SnapService
             $job = $this->getPlainDispatcher($data);
             dispatch($job);
 
+            // Auth Member
+            $member = auth('api')->user();
+            $transactionType = config('common.transaction.transaction_type.snaps');
+            $snapId = $snap->id;
             $dataSnap = [
                 'request_code' => $request->input('request_code'),
-                'member_id' => auth('api')->user()->id,
+                'member_id' => $member->id,
                 'type' => $request->input('snap_type'),
                 'mode' => $mode,
                 'files' => count($images),
             ];
 
+            // Save estimated point calculate
             $this->saveEstimatedPoint($dataSnap);
+
+            // Save transaction
+            event(new TransactionEvent($member->member_code, $transactionType, $snapId));
 
             return $dataSnap;
         }
@@ -655,7 +698,7 @@ class SnapService
 
         DB::commit();
 
-        return true;
+        return $snap;
     }
 
     /**
@@ -666,7 +709,7 @@ class SnapService
     {
         $snap = new \App\Snap;
         $snap->request_code = $request->input('request_code');
-        $snap->member_id = 1; // TODO: must get who is posting this data
+        $snap->member_id = auth('api')->user()->id;
         $snap->snap_type = $request->input('snap_type');
         if ($request->exists('mode_type') || 'receipt' !== strtolower($request->input('snap_type'))) {
             $snap->mode_type = $request->input('mode_type');
