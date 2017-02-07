@@ -450,7 +450,7 @@ inner join level_points as l on l.id = plp.level_id;');
 
         }
 
-        $totalPoint = collect($point)->sum();
+        $totalPoint = round(collect($point)->sum());
 
         return $totalPoint;
     }
