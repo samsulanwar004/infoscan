@@ -125,6 +125,9 @@ class SnapService
     public function updateSnap(Request $request, $id)
     {
         $snaps = $this->getSnapByid($id);
+        $firstFileId = $snaps->files->first()->id;
+        //update and new tag
+        $this->updateSnapModeInput($request, $firstFileId);
         $snaps->receipt_id = $request->input('receipt_id');
         $snaps->location = $request->input('location');
         $snaps->purchase_time = $request->input('purchase_time');
@@ -784,7 +787,7 @@ class SnapService
         }
 
         $tags = $request->input(self::TAGS_FIELD_NAME);
-
+        $total = [];
         if ($tags != null) {
             foreach ($tags as $t) {
                 $tag = new \App\SnapTag();
@@ -797,9 +800,11 @@ class SnapService
                 $tag->file()->associate($file);
 
                 $tag->save();
+                $total[] = $t['price'];
             }
         }
-
+        // add total value
+        $this->totalValue($total, [], $file->id);
         return $tags;
     }
 
