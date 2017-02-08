@@ -41,6 +41,14 @@ class SnapService
      * @var bool
      */
     private $isNeedRecognition = true;
+    /**
+     * @var int
+     */
+    private $countOfTags = 0;
+    /**
+     * @var int
+     */
+    private $totalValue = 0;
 
     public function __construct()
     {
@@ -337,6 +345,8 @@ class SnapService
         $snap = $this->getSnapByid($snapId);
         $snap->total_value = $snap->files->pluck('total')->sum();
         $snap->update();
+
+        $this->setTotalValue($snap->total_value);
     }
 
     public function handleMapAddress($latitude = 0.00000000, $longitude = 0.00000000)
@@ -379,12 +389,15 @@ class SnapService
         $member = auth('api')->user();
         $transactionType = config('common.transaction.transaction_type.snaps');
         $snapId = $snap->id;
+        $tags = $this->getCountOfTags();
+
         $dataSnap = [
             'request_code' => $request->input('request_code'),
             'member_id' => $member->id,
             'type' => 'receipt',
             'mode' => 'images',
             'files' => count($images),
+            'tags' => count($tags),
         ];
   
         // Save estimated point calculate
@@ -425,12 +438,15 @@ class SnapService
             $member = auth('api')->user();
             $transactionType = config('common.transaction.transaction_type.snaps');
             $snapId = $snap->id;
+            $tags = $this->getCountOfTags();
+
             $dataSnap = [
                 'request_code' => $request->input('request_code'),
                 'member_id' => $member->id,
                 'type' => $request->input('snap_type'),
                 'mode' => $mode,
                 'files' => count($images),
+                'tags' => count($tags),
             ];
 
             // Save estimated point calculate
@@ -449,12 +465,15 @@ class SnapService
             $member = auth('api')->user();
             $transactionType = config('common.transaction.transaction_type.snaps');
             $snapId = $snap->id;
+            $tags = $this->getCountOfTags();
+
             $dataSnap = [
                 'request_code' => $request->input('request_code'),
                 'member_id' => $member->id,
                 'type' => $request->input('snap_type'),
                 'mode' => $mode,
                 'files' => count($images),
+                'tags' => count($tags),
             ];
 
             // Save estimated point calculate
@@ -502,12 +521,15 @@ class SnapService
             $member = auth('api')->user();
             $transactionType = config('common.transaction.transaction_type.snaps');
             $snapId = $snap->id;
+            $tags = $this->getCountOfTags();
+
             $dataSnap = [
                 'request_code' => $request->input('request_code'),
                 'member_id' => $member->id,
                 'type' => $request->input('snap_type'),
                 'mode' => $mode,
                 'files' => count($images),
+                'tags' => count($tags),
             ];
 
             // Save estimated point calculate
@@ -547,12 +569,15 @@ class SnapService
             $member = auth('api')->user();
             $transactionType = config('common.transaction.transaction_type.snaps');
             $snapId = $snap->id;
+            $tags = $this->getCountOfTags();
+
             $dataSnap = [
                 'request_code' => $request->input('request_code'),
                 'member_id' => $member->id,
                 'type' => $request->input('snap_type'),
                 'mode' => $mode,
                 'files' => count($images),
+                'tags' => count($tags),
             ];
 
             // Save estimated point calculate
@@ -787,6 +812,7 @@ class SnapService
         }
 
         $tags = $request->input(self::TAGS_FIELD_NAME);
+        $this->setCountOfTags($tags);
         $total = [];
         if ($tags != null) {
             foreach ($tags as $t) {
@@ -916,13 +942,41 @@ class SnapService
         $type = $data['type'];
         $mode = $data['mode'];
         $files = $data['files'];
+        $tags = $data['tags'];
 
-        $point = (new PointService)->calculateEstimatedPoint($memberId, $type, $mode);
-        $total = $point * $files;
+        $point = (new PointService)->calculateEstimatedPoint($memberId, $type, $mode, $tags);
+
+        $total = $point['point'] * $files;
+
+        if ($tags <= 0) {
+            $total = ($point['percent'] / 100) * $point['point'] * $files;
+        }        
+        
         $snap = (new SnapService)->getSnapByCode($requestCode);
         $snap->estimated_point = $total;
         $snap->update();
 
         return true;
+    }
+
+    private function setCountOfTags($value)
+    {
+        $this->countOfTags = $value;
+        return $this;
+    }
+
+    private function getCountOfTags()
+    {
+        return $this->countOfTags;
+    }
+
+    private function setTotalValue($value)
+    {
+        return $this->totalValue = $value;
+    }
+
+    public function getTotalValue()
+    {
+        return $this->totalValue;
     }
 }
