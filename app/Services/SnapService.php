@@ -13,6 +13,8 @@ use Exception;
 use Illuminate\Http\Request;
 use Storage;
 use App\Libraries\GoogleMap;
+use App\Events\TransactionEvent;
+use App\Jobs\PointCalculation;
 
 class SnapService
 {
@@ -39,6 +41,14 @@ class SnapService
      * @var bool
      */
     private $isNeedRecognition = true;
+    /**
+     * @var int
+     */
+    private $countOfTags = 0;
+    /**
+     * @var int
+     */
+    private $totalValue = 0;
 
     public function __construct()
     {
@@ -106,7 +116,8 @@ class SnapService
 
         if ($request->input('confirm') == 'approve') {
             //queue for calculate point
-            (new PointService)->calculateApprovePoint($snaps);
+            $job = (new PointCalculation($snaps))->onQueue('pointProcess');
+            dispatch($job);
             $snaps->approved_by = auth()->user()->id;
             $snaps->comment = $request->input('comment');
             $snaps->update();
@@ -122,6 +133,9 @@ class SnapService
     public function updateSnap(Request $request, $id)
     {
         $snaps = $this->getSnapByid($id);
+        $firstFileId = $snaps->files->first()->id;
+        //update and new tag
+        $this->updateSnapModeInput($request, $firstFileId);
         $snaps->receipt_id = $request->input('receipt_id');
         $snaps->location = $request->input('location');
         $snaps->purchase_time = $request->input('purchase_time');
@@ -331,6 +345,8 @@ class SnapService
         $snap = $this->getSnapByid($snapId);
         $snap->total_value = $snap->files->pluck('total')->sum();
         $snap->update();
+
+        $this->setTotalValue($snap->total_value);
     }
 
     public function handleMapAddress($latitude = 0.00000000, $longitude = 0.00000000)
@@ -361,23 +377,34 @@ class SnapService
             'snap_files' => $images,
         ];
 
-        if (! $this->presistData($request, $images)) {
+        if (! $snap = $this->presistData($request, $images)) {
             throw new Exception('Error when saving data in database!');
         }
 
-        // send dispatcher
+        // // send dispatcher
         $job = $this->getPlainDispatcher($data);
         dispatch($job);
 
+        // Auth Member
+        $member = auth('api')->user();
+        $transactionType = config('common.transaction.transaction_type.snaps');
+        $snapId = $snap->id;
+        $tags = $this->getCountOfTags();
+
         $dataSnap = [
             'request_code' => $request->input('request_code'),
-            'member_id' => auth('api')->user()->id,
+            'member_id' => $member->id,
             'type' => 'receipt',
             'mode' => 'images',
             'files' => count($images),
+            'tags' => count($tags),
         ];
-
+  
+        // Save estimated point calculate
         $this->saveEstimatedPoint($dataSnap);
+
+        // Save transaction
+        event(new TransactionEvent($member->member_code, $transactionType, $snapId));
 
         return $dataSnap;
     }
@@ -407,15 +434,26 @@ class SnapService
                 throw new SnapServiceException($e->getMessage());
             }
 
+            // Auth Member
+            $member = auth('api')->user();
+            $transactionType = config('common.transaction.transaction_type.snaps');
+            $snapId = $snap->id;
+            $tags = $this->getCountOfTags();
+
             $dataSnap = [
                 'request_code' => $request->input('request_code'),
-                'member_id' => auth('api')->user()->id,
+                'member_id' => $member->id,
                 'type' => $request->input('snap_type'),
                 'mode' => $mode,
                 'files' => count($images),
+                'tags' => count($tags),
             ];
 
+            // Save estimated point calculate
             $this->saveEstimatedPoint($dataSnap);
+
+            // Save transaction
+            event(new TransactionEvent($member->member_code, $transactionType, $snapId));
 
             return $dataSnap;
         }
@@ -423,15 +461,26 @@ class SnapService
         if ($this->isAudioMode()) {
             $mode = self::AUDIO_TYPE_NAME;
 
+            // Auth Member
+            $member = auth('api')->user();
+            $transactionType = config('common.transaction.transaction_type.snaps');
+            $snapId = $snap->id;
+            $tags = $this->getCountOfTags();
+
             $dataSnap = [
                 'request_code' => $request->input('request_code'),
-                'member_id' => auth('api')->user()->id,
+                'member_id' => $member->id,
                 'type' => $request->input('snap_type'),
                 'mode' => $mode,
                 'files' => count($images),
+                'tags' => count($tags),
             ];
 
+            // Save estimated point calculate
             $this->saveEstimatedPoint($dataSnap);
+
+            // Save transaction
+            event(new TransactionEvent($member->member_code, $transactionType, $snapId));
 
             return $dataSnap;
         }
@@ -468,15 +517,26 @@ class SnapService
                 throw new SnapServiceException($e->getMessage());
             }
 
+            // Auth Member
+            $member = auth('api')->user();
+            $transactionType = config('common.transaction.transaction_type.snaps');
+            $snapId = $snap->id;
+            $tags = $this->getCountOfTags();
+
             $dataSnap = [
                 'request_code' => $request->input('request_code'),
-                'member_id' => auth('api')->user()->id,
+                'member_id' => $member->id,
                 'type' => $request->input('snap_type'),
                 'mode' => $mode,
                 'files' => count($images),
+                'tags' => count($tags),
             ];
 
+            // Save estimated point calculate
             $this->saveEstimatedPoint($dataSnap);
+
+            // Save transaction
+            event(new TransactionEvent($member->member_code, $transactionType, $snapId));
 
             return $dataSnap;
         }
@@ -497,7 +557,7 @@ class SnapService
                 'snap_files' => $audios,
             ];
 
-            if (! $this->presistData($request, $images)) {
+            if (! $snap = $this->presistData($request, $images)) {
                 throw new SnapServiceException('Error when saving data in database!');
             }
 
@@ -505,15 +565,26 @@ class SnapService
             $job = $this->getPlainDispatcher($data);
             dispatch($job);
 
+            // Auth Member
+            $member = auth('api')->user();
+            $transactionType = config('common.transaction.transaction_type.snaps');
+            $snapId = $snap->id;
+            $tags = $this->getCountOfTags();
+
             $dataSnap = [
                 'request_code' => $request->input('request_code'),
-                'member_id' => auth('api')->user()->id,
+                'member_id' => $member->id,
                 'type' => $request->input('snap_type'),
                 'mode' => $mode,
                 'files' => count($images),
+                'tags' => count($tags),
             ];
 
+            // Save estimated point calculate
             $this->saveEstimatedPoint($dataSnap);
+
+            // Save transaction
+            event(new TransactionEvent($member->member_code, $transactionType, $snapId));
 
             return $dataSnap;
         }
@@ -655,7 +726,7 @@ class SnapService
 
         DB::commit();
 
-        return true;
+        return $snap;
     }
 
     /**
@@ -666,7 +737,7 @@ class SnapService
     {
         $snap = new \App\Snap;
         $snap->request_code = $request->input('request_code');
-        $snap->member_id = 1; // TODO: must get who is posting this data
+        $snap->member_id = auth('api')->user()->id;
         $snap->snap_type = $request->input('snap_type');
         if ($request->exists('mode_type') || 'receipt' !== strtolower($request->input('snap_type'))) {
             $snap->mode_type = $request->input('mode_type');
@@ -741,7 +812,8 @@ class SnapService
         }
 
         $tags = $request->input(self::TAGS_FIELD_NAME);
-
+        $this->setCountOfTags($tags);
+        $total = [];
         if ($tags != null) {
             foreach ($tags as $t) {
                 $tag = new \App\SnapTag();
@@ -754,9 +826,11 @@ class SnapService
                 $tag->file()->associate($file);
 
                 $tag->save();
+                $total[] = $t['price'];
             }
         }
-
+        // add total value
+        $this->totalValue($total, [], $file->id);
         return $tags;
     }
 
@@ -868,13 +942,41 @@ class SnapService
         $type = $data['type'];
         $mode = $data['mode'];
         $files = $data['files'];
+        $tags = $data['tags'];
 
-        $point = (new PointService)->calculateEstimatedPoint($memberId, $type, $mode);
-        $total = $point * $files;
+        $point = (new PointService)->calculateEstimatedPoint($memberId, $type, $mode, $tags);
+
+        $total = $point['point'] * $files;
+
+        if ($tags <= 0) {
+            $total = ($point['percent'] / 100) * $point['point'] * $files;
+        }        
+        
         $snap = (new SnapService)->getSnapByCode($requestCode);
         $snap->estimated_point = $total;
         $snap->update();
 
         return true;
+    }
+
+    private function setCountOfTags($value)
+    {
+        $this->countOfTags = $value;
+        return $this;
+    }
+
+    private function getCountOfTags()
+    {
+        return $this->countOfTags;
+    }
+
+    private function setTotalValue($value)
+    {
+        return $this->totalValue = $value;
+    }
+
+    public function getTotalValue()
+    {
+        return $this->totalValue;
     }
 }

@@ -67,11 +67,20 @@ class SnapController extends AdminController
 
     public function edit($id)
     {
-        $snap = (new SnapService)->getSnapByid($id);
+        try {
+            $snap = (new SnapService)->getSnapByid($id);
 
-        $fixedPoint = (new PointService)->calculateApprovePoint($snap);  
+            $fixedPoint = (new PointService)->calculateApprovePoint($snap);
 
-        return view('snaps.edit', compact('snap', 'fixedPoint'));
+            return view('snaps.edit', compact('snap', 'fixedPoint'));
+        } catch (\Exception $e) {
+            logger($e->getMessage());
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], 404);
+        } 
+        
     }
 
     public function editSnapFile($id)
@@ -141,7 +150,9 @@ class SnapController extends AdminController
             }else if ($request->input('mode') === 'confirm') {
                 (new SnapService)->confirmSnap($request, $id);
             } else {
-                (new SnapService)->updateSnap($request, $id);
+                $snap = (new SnapService);
+                $snap->updateSnap($request, $id);
+                $totalValue = $snap->getTotalValue();
             }
 
         } catch (Exception $e) {
@@ -151,7 +162,7 @@ class SnapController extends AdminController
             ], 500);
         } catch (PDOException $e) {
             return response()->json([
-                'status' => 'error',
+                'status' => 'error',                
                 'message' => $e->getMessage(),
             ], 500);
         }
@@ -159,6 +170,7 @@ class SnapController extends AdminController
         $mode = ($request->has('mode') == true) ? $request->input('mode') : "";
         return response()->json([
             'status' => 'ok',
+            'data' => isset($totalValue) ? clean_numeric($totalValue,'%',false,'.') : '',
             'message' => 'Snaps '.$mode.' successfully updated!',
         ]);
 

@@ -455,21 +455,23 @@ class MemberService
      */
     public function getLatestPointMemberById($id)
     {
-        $member = \DB::table('members')
-            ->join('member_levels', 'members.id', '=', 'member_levels.member_id')
-            ->where('members.id', $id)
-            ->select('latest_point as point')
-            ->orderBy('member_levels.id', 'DESC')
-            ->first();
+        $member = $this->getMemberById($id);
+        $memberCode = $member->member_code;
+        //config transaction
+        $memberConfig = config('common.transaction.member.snap');
 
-        $latestPoint = ($member == true) ? $member->point : 0;
+        $latestPoint = \DB::table('transactions')
+            ->join('transaction_detail', 'transactions.id', '=', 'transaction_detail.transaction_id')
+            ->where('member_code', '=', $memberCode)
+            ->where('member_code_from', '=', $memberConfig)
+            ->sum('amount');
 
         return $latestPoint;
     }
 
     /**
      * Get level id by member id   
-     * @param int
+     * @param int $id
      * @return $levelId
      */
     public function getLevelIdByMemberId($id)
@@ -478,5 +480,15 @@ class MemberService
         $level = \DB::select('select max(id) as level_id from level_points where '.$latestPoint.' - point >= 0');
 
         return ($level[0]->level_id == true) ? $level[0]->level_id : 1;
+    }
+
+    /**
+     * Get member by id   
+     * @param int $id
+     * @return Member
+     */
+    public function getMemberById($id)
+    {
+        return Member::where('id', $id)->first();
     }
 }

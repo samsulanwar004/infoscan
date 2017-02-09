@@ -20,32 +20,11 @@ class TransactionService
 
     public function __construct($data = null)
     {
-    	$this->transactionCode = strtolower(str_random(10));
-    	$this->memberCode = $data['member_code'];
-    	$this->transactionType = $data['transaction_type'];
-    	$this->detailTransaction = $data['transaction_detail'];
-    }
-
-    public function create()
-    {
-    	//TODO : check member
-    	$t = new Transaction;
-    	$t->transaction_code = $this->transactionCode;
-    	$t->member_code = $this->memberCode;
-    	$t->transaction_type = $this->transactionType;
-    	$t->save();
-
-    	foreach($this->detailTransaction as $data) {
-    		$td = new TransactionDetail;
-	    	$td->member_code_from = $data['member_code_from'];
-	    	$td->member_code_to = $data['member_code_to'];
-	    	$td->amount = $data['amount'];
-	    	$td->detail_type = $data['detail_type'];
-	    	$td->transaction()->associate($t);
-	    	$td->save();
-	    }
-
-    	return true;
+    	$this->transaction_code = isset($data['transaction_code']) ? $data['transaction_code'] : '';
+    	$this->member_code = isset($data['member_code']) ? $data['member_code'] : '';
+    	$this->transaction_type = isset($data['transaction_type']) ? $data['transaction_type'] : '';
+        $this->snap_id = isset($data['snap_id']) ? $data['snap_id'] : '';
+    	$this->detail_transaction = isset($data['detail_transaction']) ? $data['detail_transaction'] : '';
     }
 
     public function getAllTransaction()
@@ -63,17 +42,20 @@ class TransactionService
 
     public function getCreditMember($member_code)
 	{
+        //config transaction
+        $member = config('common.transaction.member.snap');
+
 		$cr = \DB::table('transactions')
             ->join('transaction_detail', 'transactions.id', '=', 'transaction_detail.transaction_id')
             ->where('member_code', '=', $member_code)
-            ->where('member_code_from', '=', 'member')
+            ->where('member_code_from', '=', $member)
             ->where('detail_type', '=', 'cr')
             ->sum('amount');
 
         $db = \DB::table('transactions')
             ->join('transaction_detail', 'transactions.id', '=', 'transaction_detail.transaction_id')
             ->where('member_code', '=', $member_code)
-            ->where('member_code_from', '=', 'member')
+            ->where('member_code_from', '=', $member)
             ->where('detail_type', '=', 'db')
             ->sum('amount');
 
@@ -82,4 +64,36 @@ class TransactionService
         return $credit;
 	}
 
+    public function saveTransaction()
+    {
+        $t = new Transaction;
+        $t->transaction_code = $this->transaction_code;
+        $t->member_code = $this->member_code;
+        $t->transaction_type = $this->transaction_type;
+        $t->snap_id = $this->snap_id;
+
+        $t->save();
+    }
+
+    public function savePoint()
+    {
+        $snapId = $this->snap_id;
+        $t = $this->getTransactionBySnapId($snapId);
+        foreach($this->detail_transaction as $data) {
+            $td = new TransactionDetail;
+            $td->member_code_from = $data['member_code_from'];
+            $td->member_code_to = $data['member_code_to'];
+            $td->amount = $data['amount'];
+            $td->detail_type = $data['detail_type'];
+            $td->transaction()->associate($t);
+            $td->save();
+        }
+
+        return true;
+    }
+
+    public function getTransactionBySnapId($snapId)
+    {
+        return Transaction::where('snap_id', $snapId)->first();
+    }
 }

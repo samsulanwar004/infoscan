@@ -7,7 +7,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Services\PointService;
-use App\Services\SnapService;
+use App\Services\TransactionService;
 
 class PointCalculation implements ShouldQueue
 {
@@ -33,18 +33,27 @@ class PointCalculation implements ShouldQueue
     public function handle()
     {
         logger(serialize($this->data));
-        $requestCode = $this->data['request_code'];
-        $memberId = $this->data['member_id'];
-        $type = $this->data['type'];
-        $mode = $this->data['mode'];
-        $files = $this->data['files'];
-
-        $calculate = (new PointService)->calculatePointSnap($memberId, $type, $mode);
-        $point = ($calculate != null) ? $calculate->point : '0';
-        $total = $point * $files;
-        $snap = (new SnapService)->getSnapByCode($requestCode);
-        $snap->estimated_point = $total;
-        $snap->update();
+        $point = (new PointService)->calculateApprovePoint($this->data);
+        $kasir = config('common.transaction.member.kasir');
+        $member = config('common.transaction.member.snap');
+        $data = [
+            'snap_id' => $this->data->id,
+            'detail_transaction' => [
+                '0' => [
+                    'member_code_from' => $kasir,
+                    'member_code_to' => $member,
+                    'amount' => $point,
+                    'detail_type' => 'DB'
+                ],
+                '1' => [
+                    'member_code_from' => $member,
+                    'member_code_to' => $kasir,
+                    'amount' => $point,
+                    'detail_type' => 'CR'
+                ],
+            ],
+        ];
+        (new TransactionService($data))->savePoint();
 
     }
 }

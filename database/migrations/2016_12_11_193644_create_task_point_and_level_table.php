@@ -17,6 +17,7 @@ class CreateTaskPointAndLevelTable extends Migration
             $t->increments('id');
             $t->string('name', 100)->unique();
             $t->string('code', 10)->unique();
+            $t->float('percentage')->nullable();
             $t->boolean('is_active')->default(1);
             $t->timestamps();
         });

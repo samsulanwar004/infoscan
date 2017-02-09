@@ -28,6 +28,17 @@
                         <option value="0" nameValue="">Select Mode</option>
                     </select>
                 </div>
+
+                <div class="form-group percentage">
+                    <label for="name">Percentage</label>
+                    <div class="input-group">
+                        <span class="input-group-addon">
+                          <input type="checkbox" id="check-percent">
+                        </span>
+                        <input type="number" class="form-control input-sm" name="percentage" id="percentage" placeholder="Percentage Point" max=100 disabled="disabled">
+                    </div>
+                </div>
+
             </div>
             <div class="col-md-4" style="overflow-y:scroll;max-height: 250px;">
                 <div id="levels" style="overflow: hidden;padding-top: 25px;">
@@ -153,6 +164,15 @@
             var type = $('#task-type').find(':selected').attr('nameValue');
             var mode = $(this).find(':selected').attr('nameValue');
             $("#name").val(type+' '+mode);
+        });
+
+        $('#check-percent').on('click', function(e) {
+            if (this.checked == true) {
+                $('#percentage').removeAttr('disabled');
+                $('#percentage').attr('required', 'required');
+            } else {
+                $('#percentage').attr('disabled', 'disabled');                
+            }
         });
 
     });

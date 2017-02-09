@@ -102,6 +102,7 @@ inner join level_points as l on l.id = plp.level_id;');
         $task = new Task;
         $task->name = $request['name'];
         $task->code = sprintf("%s%s", $request['task_type'], $request['task_mode']);
+        $task->percentage = (isset($request['percentage'])) ? $request['percentage'] : null;
         $task->save();
 
         return $task;
@@ -127,6 +128,7 @@ inner join level_points as l on l.id = plp.level_id;');
         $task = $this->getTaskById($id);
         $task->name = $request->input('name');
         $task->code = ($request['task_type'] == 0) ? $task->code : sprintf("%s%s", $request['task_type'], $request['task_mode']);
+        $task->percentage = (isset($request['percentage'])) ? $request['percentage'] : null;
         $task->update();
 
         return $task;
@@ -368,16 +370,17 @@ inner join level_points as l on l.id = plp.level_id;');
     * @param integer $memberId
     * @param string $type
     * @param string $mode
+    * @param integer $tags
     * @return integer point
     */
-    public function calculateEstimatedPoint($memberId, $type, $mode)
+    public function calculateEstimatedPoint($memberId, $type, $mode, $tags)
     {
 
         $type = $this->getTypeId($type);
-        $tag = true;
+        $tag = ($tags <= 0) ? false : true;
         $mode = $this->getModeId($mode, $tag);      
 
-        $status = '1';
+        $status = ($tag == true) ? '1' : '0';
 
         $code = $type.$mode.$status;
 
@@ -386,12 +389,17 @@ inner join level_points as l on l.id = plp.level_id;');
         $point = \DB::table('tasks')
             ->join('tasks_level_points', 'tasks.id', '=', 'tasks_level_points.task_id')
             ->join('level_points', 'level_points.id', '=', 'tasks_level_points.level_id')
-            ->select('tasks_level_points.point')
+            ->select('tasks.percentage as percent', 'tasks_level_points.point as point')
             ->where('tasks.code', $code)
             ->where('tasks_level_points.level_id', $levelId)
             ->first();
 
-        return ($point != null) ? $point->point : '0';
+        $data = [
+            'percent' => isset($point) ? $point->percent : 0,
+            'point' => isset($point) ? $point->point : 0,
+        ];
+
+        return $data;
     }
 
     /**
@@ -431,11 +439,15 @@ inner join level_points as l on l.id = plp.level_id;');
         $city = $snaps->outlet_city;
         $files = $snaps->files;
 
-        $calculateTask = $this->calculateEstimatedPoint($memberId, $type, $mode);
+        $tags = $this->countOfTags($files);
+
+        $calculateTask = $this->calculateEstimatedPoint($memberId, $type, $mode, $tags);
 
         $calculatePromo = $this->calculatePromoPoint($memberId, $city);
 
-        $point = [];
+        $memberAdd = [];
+        $crowdSourceEdit = [];
+        $crowdSourceAdd = [];
         foreach ($files as $file) {
             $file = (new SnapService)->getSnapFileById($file->id);
             $status = [];
@@ -443,14 +455,29 @@ inner join level_points as l on l.id = plp.level_id;');
                 $status[] = $this->checkTagStatus($tag->current_signature, $tag->edited_signature);
             }
             $count = array_count_values($status);
-            $memberAdd = isset($count['member_add']) ? $count['member_add'] : 0;
-            $crowdSourceEdit = isset($count['crowdsource_edit']) ? $count['crowdsource_edit'] : 0;
-            $crowdSourceAdd = isset($count['crowdsource_add']) ? $count['crowdsource_add'] : 0;
-            $point[] = $memberAdd / ($memberAdd + $crowdSourceEdit + $crowdSourceAdd) * ($calculateTask + $calculatePromo['point_city'] + $calculatePromo['point_level_city']);
+            $memberAdd[] = isset($count['member_add']) ? $count['member_add'] : 0;
+            $crowdSourceEdit[] = isset($count['crowdsource_edit']) ? $count['crowdsource_edit'] : 0;
+            $crowdSourceAdd[] = isset($count['crowdsource_add']) ? $count['crowdsource_add'] : 0;
 
-        }
+        }        
+
+        $memberAdd = collect($memberAdd)->sum();
+        $crowdSourceEdit = collect($crowdSourceEdit)->sum();
+        $crowdSourceAdd = collect($crowdSourceAdd)->sum();
+        $totalTag = $memberAdd + $crowdSourceEdit + $crowdSourceAdd;
         
-        $totalPoint = collect($point)->sum();
+        if ($totalTag <= 0) {
+            throw new \Exception("Data product notfound! add product before approve this content!", 1);                
+        }
+
+        $point = $memberAdd / $totalTag * ($calculateTask['point'] + $calculatePromo['point_city'] + $calculatePromo['point_level_city']);
+
+        if ($point <= 0) {
+            $task = $calculateTask['point'] + $calculatePromo['point_city'] + $calculatePromo['point_level_city'];
+            $point = ($calculateTask['percent'] / 100) * $task;
+        }
+
+        $totalPoint = round($point);
 
         return $totalPoint;
     }
@@ -464,37 +491,6 @@ inner join level_points as l on l.id = plp.level_id;');
         } elseif ($currentSignature != $editedSignature) {
             return 'crowdsource_edit';
         }
-    }
-
-    public function calculatePoint($memberId, $type, $mode, $fileId)
-    {
-
-        $type = $this->getTypeId($type);
-
-        $tag = $this->checkTags($fileId);
-
-        $mode = $this->getModeId($mode, $tag);      
-
-        $status = ($tag == true) ? '1' : '0';
-
-        $code = $type.$mode.$status;
-
-        $levelId = (new MemberService)->getLevelIdByMemberId($memberId);
-
-        $point = \DB::table('tasks')
-            ->join('tasks_level_points', 'tasks.id', '=', 'tasks_level_points.task_id')
-            ->join('level_points', 'level_points.id', '=', 'tasks_level_points.level_id')
-            ->select('tasks_level_points.point')
-            ->where('tasks.code', $code)
-            ->where('tasks_level_points.level_id', $levelId)
-            ->first();
-
-        return $point;
-    }
-
-    protected function checkTags($fileId)
-    {
-        return SnapTag::where('snap_file_id', $fileId)->first();
     }
 
     protected function getTypeId($type)
@@ -536,6 +532,22 @@ inner join level_points as l on l.id = plp.level_id;');
         }
 
         return $mode;
+    }
+
+    private function countOfTags($files)
+    {   
+        $realTag = [];
+        foreach ($files as $file) {
+            $snapFile = (new SnapService)->getSnapFileById($file->id);
+            $tagCount = [];
+            foreach ($snapFile->tag as $tag) {
+                $tagCount[] = ($tag->current_signature == null) ? 'not_tag' : 'tag';
+            }
+            $count = array_count_values($tagCount);
+            $realTag[] = isset($count['tag']) ? $count['tag'] : 0;
+        }
+
+        return collect($realTag)->sum();
     }
 
 }
