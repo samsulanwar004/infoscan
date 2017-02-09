@@ -49,7 +49,7 @@
 	@if($snap->mode_type != 'tags')
 	<div class="button-container">
         <a class="btn btn-default" id="add-show">
-            <i class="fa fa-plus fa-btn"></i>Create New
+            <i class="fa fa-plus fa-btn"></i>New Create
         </a>
     </div>
     @endif

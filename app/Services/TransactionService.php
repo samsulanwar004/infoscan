@@ -49,14 +49,14 @@ class TransactionService
             ->join('transaction_detail', 'transactions.id', '=', 'transaction_detail.transaction_id')
             ->where('member_code', '=', $member_code)
             ->where('member_code_from', '=', $member)
-            ->where('detail_type', '=', 'CR')
+            ->where('detail_type', '=', 'cr')
             ->sum('amount');
 
         $db = \DB::table('transactions')
             ->join('transaction_detail', 'transactions.id', '=', 'transaction_detail.transaction_id')
             ->where('member_code', '=', $member_code)
             ->where('member_code_from', '=', $member)
-            ->where('detail_type', '=', 'DB')
+            ->where('detail_type', '=', 'db')
             ->sum('amount');
 
         $credit = $cr - $db;
