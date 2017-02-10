@@ -15,6 +15,7 @@ use Storage;
 use App\Libraries\GoogleMap;
 use App\Events\TransactionEvent;
 use App\Jobs\PointCalculation;
+use App\Events\CrowdsourceEvent;
 
 class SnapService
 {
@@ -33,6 +34,9 @@ class SnapService
     const INPUT_TYPE_NAME = 'input';
 
     const DEFAULT_FILE_DRIVER = 's3';
+
+    const ACTION_BEHAVIOUR = 'snap_management';
+
     /**
      * @var string
      */
@@ -113,19 +117,42 @@ class SnapService
     public function confirmSnap(Request $request, $id)
     {
         $snaps = $this->getSnapByid($id);
-
+        $userId = auth()->user()->id;
+        
         if ($request->input('confirm') == 'approve') {
             //queue for calculate point
             $job = (new PointCalculation($snaps))->onQueue('pointProcess');
             dispatch($job);
-            $snaps->approved_by = auth()->user()->id;
+            $snaps->approved_by = $userId;
             $snaps->comment = $request->input('comment');
             $snaps->update();
+
+            $data = [
+                'action' => 'approve',
+                'data' => [
+                    'snap_id' => $snaps->id,
+                    'comment' => $snaps->comment,
+                ],
+            ];
+
         } elseif ($request->input('confirm') == 'reject') {
-            $snaps->reject_by = auth()->user()->id;
+            $snaps->reject_by = $userId;
             $snaps->comment = $request->input('comment');
             $snaps->update();
+
+            $data = [
+                'action' => 'reject',
+                'data' => [
+                    'snap_id' => $snaps->id,
+                    'comment' => $snaps->comment,
+                ],
+            ];
+
         }
+        
+        $data = json_encode($data);
+        // event for crowdsource log
+        event(new CrowdsourceEvent($userId, self::ACTION_BEHAVIOUR, $data));   
 
         return true;
     }
@@ -148,7 +175,25 @@ class SnapService
         $snaps->longitude = !$request->has('longitude') ? 0.00 : $request->input('longitude');
         $snaps->latitude = !$request->has('latitude') ? 0.00 : $request->input('latitude');
 
+        if ($snaps->created_at == $snaps->updated_at) {
+            $userId = auth()->user()->id;
+            $tags = $this->getCountOfTags($snaps->files);
+            $data = [
+                'action' => 'update',
+                'data' => [
+                    'snap_id' => $snaps->id,
+                    'add_tag' => $tags['crowdsource_add'],
+                    'edit_tag' => $tags['crowdsource_edit'],
+                ],
+            ];
+
+            $data = json_encode($data);
+
+            event(new CrowdsourceEvent($userId, self::ACTION_BEHAVIOUR, $data));
+        }
+
         $snaps->update();
+        
     }
 
     public function updateSnapModeInput(Request $request, $id)
@@ -389,7 +434,7 @@ class SnapService
         $member = auth('api')->user();
         $transactionType = config('common.transaction.transaction_type.snaps');
         $snapId = $snap->id;
-        $tags = $this->getCountOfTags();
+        $tags = $this->getTags();
 
         $dataSnap = [
             'request_code' => $request->input('request_code'),
@@ -438,7 +483,7 @@ class SnapService
             $member = auth('api')->user();
             $transactionType = config('common.transaction.transaction_type.snaps');
             $snapId = $snap->id;
-            $tags = $this->getCountOfTags();
+            $tags = $this->getTags();
 
             $dataSnap = [
                 'request_code' => $request->input('request_code'),
@@ -465,7 +510,7 @@ class SnapService
             $member = auth('api')->user();
             $transactionType = config('common.transaction.transaction_type.snaps');
             $snapId = $snap->id;
-            $tags = $this->getCountOfTags();
+            $tags = $this->getTags();
 
             $dataSnap = [
                 'request_code' => $request->input('request_code'),
@@ -521,7 +566,7 @@ class SnapService
             $member = auth('api')->user();
             $transactionType = config('common.transaction.transaction_type.snaps');
             $snapId = $snap->id;
-            $tags = $this->getCountOfTags();
+            $tags = $this->getTags();
 
             $dataSnap = [
                 'request_code' => $request->input('request_code'),
@@ -569,7 +614,7 @@ class SnapService
             $member = auth('api')->user();
             $transactionType = config('common.transaction.transaction_type.snaps');
             $snapId = $snap->id;
-            $tags = $this->getCountOfTags();
+            $tags = $this->getTags();
 
             $dataSnap = [
                 'request_code' => $request->input('request_code'),
@@ -812,7 +857,7 @@ class SnapService
         }
 
         $tags = $request->input(self::TAGS_FIELD_NAME);
-        $this->setCountOfTags($tags);
+        $this->setTags($tags);
         $total = [];
         if ($tags != null) {
             foreach ($tags as $t) {
@@ -959,13 +1004,13 @@ class SnapService
         return true;
     }
 
-    private function setCountOfTags($value)
+    private function setTags($value)
     {
         $this->countOfTags = $value;
         return $this;
     }
 
-    private function getCountOfTags()
+    private function getTags()
     {
         return $this->countOfTags;
     }
@@ -978,5 +1023,47 @@ class SnapService
     public function getTotalValue()
     {
         return $this->totalValue;
+    }
+
+    public function getCountOfTags($files)
+    {
+        $memberAdd = [];
+        $crowdSourceEdit = [];
+        $crowdSourceAdd = [];
+        foreach ($files as $file) {
+            $file = $this->getSnapFileById($file->id);
+            $status = [];
+            foreach ($file->tag as $tag) {
+                $status[] = $this->checkTagStatus($tag->current_signature, $tag->edited_signature);
+            }
+            $count = array_count_values($status);
+            $memberAdd[] = isset($count['member_add']) ? $count['member_add'] : 0;
+            $crowdSourceEdit[] = isset($count['crowdsource_edit']) ? $count['crowdsource_edit'] : 0;
+            $crowdSourceAdd[] = isset($count['crowdsource_add']) ? $count['crowdsource_add'] : 0;
+
+        }        
+
+        $memberAdd = collect($memberAdd)->sum();
+        $crowdSourceEdit = collect($crowdSourceEdit)->sum();
+        $crowdSourceAdd = collect($crowdSourceAdd)->sum();
+
+        $data = [
+            'member_add' => $memberAdd,
+            'crowdsource_edit' => $crowdSourceEdit,
+            'crowdsource_add' => $crowdSourceAdd,
+        ];
+
+        return $data;
+    }
+
+    public function checkTagStatus($currentSignature, $editedSignature)
+    {
+        if ($currentSignature == null) {
+            return 'crowdsource_add';
+        } elseif ($currentSignature == $editedSignature || $editedSignature == null) {
+            return 'member_add';
+        } elseif ($currentSignature != $editedSignature) {
+            return 'crowdsource_edit';
+        }
     }
 }

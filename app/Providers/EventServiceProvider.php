@@ -26,6 +26,9 @@ class EventServiceProvider extends ServiceProvider
         \App\Events\TransactionEvent::class => [
             \App\Listeners\TransactionListener::class,
         ],
+        \App\Events\CrowdsourceEvent::class => [
+            \App\Listeners\CrowdsourceListener::class,
+        ],
     ];
 
     /**

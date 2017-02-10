@@ -58,4 +58,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(UserActivities::class, 'user_id', 'id')->limit(10);
     }
+
+    public function crowdsourceActivities()
+    {
+        return $this->hasMany(CrowdsourceActivity::class, 'user_id', 'id');
+    }
 }
