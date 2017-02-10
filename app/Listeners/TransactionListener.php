@@ -4,19 +4,13 @@ namespace App\Listeners;
 
 use App\Events\TransactionEvent;
 use App\Services\TransactionService;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Contracts\Queue\ShouldQueue;
 
-class TransactionListener
+class TransactionListener implements ShouldQueue
 {
 
-    /**
-     * Create the event listener.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        //
-    }
+    use InteractsWithQueue;
 
     /**
      * Handle the event.
@@ -27,10 +21,10 @@ class TransactionListener
     public function handle(TransactionEvent $event)
     {
         $data = [
-            'transaction_code' => $event->transaction_code,
-            'member_code' => $event->member_code,
-            'transaction_type' => $event->transaction_type,
-            'snap_id' => $event->snap_id,
+            'transaction_code' => $event->transactionCode,
+            'member_code' => $event->memberCode,
+            'transaction_type' => $event->transactionType,
+            'snap_id' => $event->snapId,
         ];
         (new TransactionService($data))->saveTransaction();
     }
