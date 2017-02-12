@@ -81,11 +81,11 @@
                         <div class="snaps-button">
                                 <div class="form-group receipt_id">
                                     <label for="receipt_id">Receipt ID</label>
-                                    <input type="text" class="form-control input-sm" id="receipt_id" name="receipt_id" placeholder="Enter Receipt ID" value="{{ $snap->receipt_id }}">
+                                    <input type="text" class="form-control input-sm tab-side" id="receipt_id" name="receipt_id" placeholder="Enter Receipt ID" value="{{ $snap->receipt_id }}" data-id="1">
                                 </div>                                    
                                 <div class="form-group location">
                                     <label for="location">Location</label>
-                                    <input type="text" class="form-control input-sm" id="location" name="location" placeholder="Enter location" value="{{ $snap->location }}">
+                                    <input type="text" class="form-control input-sm tab-side" id="location" name="location" placeholder="Enter location" value="{{ $snap->location }}" tabIndex="2">
                                 </div>
                                 <div class="form-group purchase_time">
                                     <label for="purchase_time">Purchase Date & Time</label>
@@ -94,39 +94,39 @@
                                             <span class="fa fa-calendar"></span>
                                         </span>
                                         @if($snap->purchase_time == true)
-                                            <input type='text' class="form-control input-sm" name="purchase_time" value="{{ $snap->purchase_time }}" />
+                                            <input type='text' class="form-control input-sm tab-side" name="purchase_time" value="{{ $snap->purchase_time }}" tabIndex="3"/>
                                         @else
-                                            <input type="text" class="form-control input-sm" name="purchase_time" value="{{ date('Y-m-d H:i')}}">
+                                            <input type="text" class="form-control input-sm tab-side" name="purchase_time" value="{{ date('Y-m-d H:i')}}" tabIndex="3">
                                         @endif                                  
                                     </div>
                                 </div>
                                 <div class="form-group outlet_name">
                                     <label for="outlet_name">Outlet Name</label>
-                                    <input type="text" class="form-control input-sm" id="outlet_name" name="outlet_name" placeholder="Enter outlet name" value="{{ $snap->outlet_name }}">
+                                    <input type="text" class="form-control input-sm tab-side" id="outlet_name" name="outlet_name" placeholder="Enter outlet name" value="{{ $snap->outlet_name }}" tabIndex="4">
                                 </div>
                                 <div class="form-group outlet_type">
                                     <label for="outlet_type">Outlet Type</label>
-                                    <input type="text" class="form-control input-sm" list="outlet-type" id="outlet_type" name="outlet_type" placeholder="Enter outlet type" value="{{ $snap->outlet_type }}">
+                                    <input type="text" class="form-control input-sm tab-side" list="outlet-type" id="outlet_type" name="outlet_type" placeholder="Enter outlet type" value="{{ $snap->outlet_type }}" tabIndex="5">
                                 </div>
                                 <div class="form-group outlet_city">
                                     <label for="outlet_city">Outlet City</label>
-                                    <input type="text" class="form-control input-sm" id="outlet_city" name="outlet_city" placeholder="Enter outlet type" value="{{ $snap->outlet_city }}">
+                                    <input type="text" class="form-control input-sm tab-side" id="outlet_city" name="outlet_city" placeholder="Enter outlet type" value="{{ $snap->outlet_city }}" tabIndex="6">
                                 </div>
                                 <div class="form-group outlet_province">
                                     <label for="outlet_province">Outlet Province</label>
-                                    <input type="text" class="form-control input-sm" id="outlet_province" name="outlet_province" placeholder="Enter outlet province" value="{{ $snap->outlet_province }}">
+                                    <input type="text" class="form-control input-sm tab-side" id="outlet_province" name="outlet_province" placeholder="Enter outlet province" value="{{ $snap->outlet_province }}" tabIndex="7">
                                 </div>
                                 <div class="form-group outlet_zip_code">
                                     <label for="outlet_zip_code">Outlet Zipcode</label>
-                                    <input type="number" class="form-control input-sm" id="outlet_zip_code" name="outlet_zip_code" placeholder="Enter outlet zipcode" value="{{ $snap->outlet_zip_code }}">
+                                    <input type="number" class="form-control input-sm tab-side" id="outlet_zip_code" name="outlet_zip_code" placeholder="Enter outlet zipcode" value="{{ $snap->outlet_zip_code }}" tabIndex="8">
                                 </div>
                                 <div class="form-group total_value">
                                     <label for="total_value">Total Value</label>
-                                    <input type="number" class="form-control input-sm" id="total_value" placeholder="Enter Total Value" value="{{ clean_numeric($snap->total_value,'%',false,'.') }}" readonly="readonly">
+                                    <input type="number" class="form-control input-sm tab-side" id="total_value" placeholder="Enter Total Value" value="{{ clean_numeric($snap->total_value,'%',false,'.') }}" readonly="readonly" tabIndex="9">
                                 </div>                                    
                                 <div class="form-group payment_method">
                                     <label for="payment_method">Payment Method</label>
-                                    <select name="payment_method" class="form-control input-sm">
+                                    <select name="payment_method" class="form-control input-sm tab-side" id="payment_method" tabIndex="10">
                                         @if($snap->payment_method == true)
                                             <option value="{{ $snap->payment_method }}" selected="selected">{{ $snap->payment_method }}</option>
                                         @endif
@@ -146,7 +146,7 @@
                                     <div class="form-group" id="map"></div>
                                 @endif -->                                
                                 <div class="form-group">
-                                    <button type="submit" class="btn btn-primary btn-sm btn-block">
+                                    <button type="submit" class="btn btn-primary btn-sm btn-block tab-side" tabIndex="11" id="submit">
                                         <i class="fa fa-save fa-btn"></i> Update Snap
                                     </button>
                                 </div>
@@ -331,6 +331,18 @@
             }
         });
 
+        $('.tab-side').keydown(function(e) {
+            return tab(this, e);
+        });
+
+        $('#receipt_id').focus(function(e) {
+            this.setAttribute('tabIndex', this.getAttribute( "data-id" ));
+        });
+
+        $('#payment_method').focus(function(e) {
+
+        });
+
     });
 
     function deleteTagShow(e)
@@ -339,5 +351,42 @@
             $('#input-show'+e).remove();
         }
     }
+
+    function tab(field, event) {
+        if (event.which == 13 /* IE9/Firefox/Chrome/Opera/Safari */ || event.keyCode == 13 /* IE8 and earlier */ ) {
+            for (i = 0; i < field.form.elements.length; i++) {
+                if (field.form.elements[i].tabIndex == field.tabIndex + 1) {
+                    field.form.elements[i].focus();
+                    if (field.form.elements[i].type == "text") {
+                        field.form.elements[i].select();
+                        break;
+                    }
+                }
+            }
+            return false;
+        }
+        return true;
+    }
+
+    $('#snapUpdate').on('keydown', 'input, select, textarea', function(e) {
+        var self = $(this)
+          , form = self.parents('form:eq(0)')
+          , focusable
+          , next
+          ;          
+        if (e.keyCode == 13) {
+            focusable = form.find('input,a,select,button,textarea').filter(':visible');
+            next = focusable.eq(focusable.index(this)+1);
+
+            if (next.length) {
+                next.focus();
+                next.select();
+            } else {
+                form.submit();
+            }
+            return false;
+        }
+    });
+
 </script>
 @stop

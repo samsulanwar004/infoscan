@@ -14,20 +14,22 @@ class TransactionEvent
 
     public $snapId;
 
+    public $transactionCode;
+
     /**
      * Create a new event instance.
      *
      * @param  integer  $memberCode
      * @param  integer  $transactionType
-     * @param  integer $snap_id
-     * @param  array  $detail
+     * @param  integer $snapId
+     * @param  string $transactionCode
      * @return void
      */
     public function __construct($memberCode, $transactionType, $snapId)
     {
-        $this->transaction_code = strtolower(str_random(10));
-        $this->member_code = $memberCode;
-        $this->transaction_type = $transactionType;
-        $this->snap_id = $snapId;
+        $this->transactionCode = strtolower(str_random(10));
+        $this->memberCode = $memberCode;
+        $this->transactionType = $transactionType;
+        $this->snapId = $snapId;
     }
 }

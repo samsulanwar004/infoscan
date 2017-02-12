@@ -439,31 +439,16 @@ inner join level_points as l on l.id = plp.level_id;');
         $city = $snaps->outlet_city;
         $files = $snaps->files;
 
-        $tags = $this->countOfTags($files);
+        $tags = (new SnapService)->getCountOfTags($files);
+        $memberTag = $tags['member_add'];
 
-        $calculateTask = $this->calculateEstimatedPoint($memberId, $type, $mode, $tags);
+        $calculateTask = $this->calculateEstimatedPoint($memberId, $type, $mode, $memberTag);
 
-        $calculatePromo = $this->calculatePromoPoint($memberId, $city);
+        $calculatePromo = $this->calculatePromoPoint($memberId, $city);       
 
-        $memberAdd = [];
-        $crowdSourceEdit = [];
-        $crowdSourceAdd = [];
-        foreach ($files as $file) {
-            $file = (new SnapService)->getSnapFileById($file->id);
-            $status = [];
-            foreach ($file->tag as $tag) {
-                $status[] = $this->checkTagStatus($tag->current_signature, $tag->edited_signature);
-            }
-            $count = array_count_values($status);
-            $memberAdd[] = isset($count['member_add']) ? $count['member_add'] : 0;
-            $crowdSourceEdit[] = isset($count['crowdsource_edit']) ? $count['crowdsource_edit'] : 0;
-            $crowdSourceAdd[] = isset($count['crowdsource_add']) ? $count['crowdsource_add'] : 0;
-
-        }        
-
-        $memberAdd = collect($memberAdd)->sum();
-        $crowdSourceEdit = collect($crowdSourceEdit)->sum();
-        $crowdSourceAdd = collect($crowdSourceAdd)->sum();
+        $memberAdd = $tags['member_add'];
+        $crowdSourceEdit = $tags['crowdsource_edit'];
+        $crowdSourceAdd = $tags['crowdsource_add'];
         $totalTag = $memberAdd + $crowdSourceEdit + $crowdSourceAdd;
         
         if ($totalTag <= 0) {
@@ -480,18 +465,7 @@ inner join level_points as l on l.id = plp.level_id;');
         $totalPoint = round($point);
 
         return $totalPoint;
-    }
-
-    public function checkTagStatus($currentSignature, $editedSignature)
-    {
-        if ($currentSignature == null) {
-            return 'crowdsource_add';
-        } elseif ($currentSignature == $editedSignature || $editedSignature == null) {
-            return 'member_add';
-        } elseif ($currentSignature != $editedSignature) {
-            return 'crowdsource_edit';
-        }
-    }
+    }    
 
     protected function getTypeId($type)
     {
@@ -532,22 +506,6 @@ inner join level_points as l on l.id = plp.level_id;');
         }
 
         return $mode;
-    }
-
-    private function countOfTags($files)
-    {   
-        $realTag = [];
-        foreach ($files as $file) {
-            $snapFile = (new SnapService)->getSnapFileById($file->id);
-            $tagCount = [];
-            foreach ($snapFile->tag as $tag) {
-                $tagCount[] = ($tag->current_signature == null) ? 'not_tag' : 'tag';
-            }
-            $count = array_count_values($tagCount);
-            $realTag[] = isset($count['tag']) ? $count['tag'] : 0;
-        }
-
-        return collect($realTag)->sum();
     }
 
 }
