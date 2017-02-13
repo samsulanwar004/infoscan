@@ -126,14 +126,7 @@
                                 </div>                                    
                                 <div class="form-group payment_method">
                                     <label for="payment_method">Payment Method</label>
-                                    <select name="payment_method" class="form-control input-sm tab-side" id="payment_method" tabIndex="10">
-                                        @if($snap->payment_method == true)
-                                            <option value="{{ $snap->payment_method }}" selected="selected">{{ $snap->payment_method }}</option>
-                                        @endif
-                                        @foreach($paymentMethods as $pm)
-                                            <option value="{{ $pm }}">{{ $pm }}</option>
-                                        @endforeach
-                                    </select>
+                                    <input type="text" class="form-control input-sm tab-side" list="payment-method" id="payment_method" name="payment_method" placeholder="Enter Payment Method" value="{{ $snap->payment_method }}" tabIndex="10">
                                 </div>
 <!--                                     <div class="form-group longitude latitude" style="display: none;">
                                     <label for="geography_location">Geographic Coordinates</label>
@@ -155,7 +148,7 @@
                                         data-toggle="modal"
                                         data-target="#"
                                         modal-size="modal-lg"
-                                        title="Approve">
+                                        title="Approve" id="confirm">
                                         <i class="fa fa-check-circle-o fa-btn"></i>Approve This Content</a>
                                 </div>
                             </form>
@@ -164,6 +157,12 @@
                               <option value="Supermarket">
                               <option value="Hypermarket">
                               <option value="Drug Store">
+                            </datalist>
+                            
+                            <datalist id="payment-method">
+                                @foreach($paymentMethods as $pm)
+                                  <option value="{{ $pm }}">
+                                @endforeach
                             </datalist>
                         </div>
                     </div>
@@ -342,10 +341,6 @@
             this.removeAttribute('tabIndex');
         });
 
-        $('#payment_method').focus(function(e) {
-
-        });
-
     });
 
     function deleteTagShow(e)
@@ -361,7 +356,11 @@
                 if (field.form.elements[i].tabIndex == field.tabIndex + 1) {
                     field.form.elements[i].focus();
                     if (field.form.elements[i].type == "text") {
-                        field.form.elements[i].select();
+                        field.form.elements[i].select();                           
+                        break;
+                    } else if (field.form.elements[i].type == "submit") {
+                        field.form.elements[i].click();
+                        $('#confirm').trigger('click');
                         break;
                     }
                 }
