@@ -3,14 +3,10 @@
 namespace App\Listeners;
 
 use App\Events\TransactionEvent;
-use App\Services\TransactionService;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
+use App\Jobs\TransactionJob;
 
-class TransactionListener implements ShouldQueue
+class TransactionListener
 {
-
-    use InteractsWithQueue;
 
     /**
      * Handle the event.
@@ -20,13 +16,8 @@ class TransactionListener implements ShouldQueue
      */
     public function handle(TransactionEvent $event)
     {
-        $data = [
-            'transaction_code' => $event->transactionCode,
-            'member_code' => $event->memberCode,
-            'transaction_type' => $event->transactionType,
-            'snap_id' => $event->snapId,
-        ];
-        (new TransactionService($data))->saveTransaction();
+        $job = (new TransactionJob($event))->onQueue('transactionProcess');
+        dispatch($job);
     }
 
 }

@@ -3,21 +3,15 @@
 namespace App\Listeners;
 
 use App\Events\CrowdsourceEvent;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use App\CrowdsourceActivity;
+use App\Jobs\CrowdsourceLog;
 
-class CrowdsourceListener implements ShouldQueue
+class CrowdsourceListener
 {
-    use InteractsWithQueue;
 
     public function handle(CrowdsourceEvent $event)
     {
-        $ca = new CrowdsourceActivity;
-        $ca->action_in = $event->action;
-        $ca->description = $event->description;
-        $ca->user()->associate($event->userId);
-        $ca->save();
+        $job = (new CrowdsourceLog($event))->onQueue('crowdsourceLog');
+        dispatch($job);
     }
 
 }
