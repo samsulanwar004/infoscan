@@ -33,6 +33,10 @@ elixir(mix => {
         ltePath + 'css/taggd.css'
     ], 'public/css/taggd.css');
 
+    mix.styles([
+        ltePath + 'plugins/datetimepicker/bootstrap-datetimepicker.min.css'
+    ], 'public/css/datetimepicker.css');
+
     /*mix.webpack('app.js');*/
 
     mix.scripts([
@@ -62,6 +66,11 @@ elixir(mix => {
     mix.scripts([
         ltePath + 'plugins/elevate/jquery.elevatezoom.js'
     ], 'public/js/elevate.js');
+
+    mix.scripts([
+        ltePath + 'plugins/datetimepicker/bootstrap-datetimepicker.min.js',
+        ltePath + 'plugins/datetimepicker/id.js',
+    ], 'public/js/datetimepicker.js');
 
     mix.scripts([
         ltePath + 'js/html5shiv.js',
@@ -99,5 +108,7 @@ elixir(mix => {
         'js/taggd.js',
         'js/report-vendor.js',
         'css/report-vendor.css',
+        'css/datetimepicker.css',
+        'js/datetimepicker.js',
     ]);
 });
