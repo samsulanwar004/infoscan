@@ -16,6 +16,7 @@ use App\Libraries\GoogleMap;
 use App\Events\TransactionEvent;
 use App\Jobs\PointCalculation;
 use App\Events\CrowdsourceEvent;
+use App\Events\MemberActivityEvent;
 
 class SnapService
 {
@@ -53,6 +54,10 @@ class SnapService
      * @var int
      */
     private $totalValue = 0;
+    /**
+     * @var int
+     */
+    private $estimatedPoint = 0;
 
     public function __construct()
     {
@@ -439,17 +444,28 @@ class SnapService
         $dataSnap = [
             'request_code' => $request->input('request_code'),
             'member_id' => $member->id,
-            'type' => 'receipt',
+            'type' => $request->input('snap_type'),
             'mode' => 'images',
             'files' => count($images),
             'tags' => count($tags),
         ];
-  
+        
         // Save estimated point calculate
         $this->saveEstimatedPoint($dataSnap);
 
         // Save transaction
         event(new TransactionEvent($member->member_code, $transactionType, $snapId));
+
+        //build data to save member log
+        $data = [
+            'action' => $request->input('snap_type'),
+            'data' => $dataSnap,
+        ];
+
+        $data = json_encode($data);
+
+        // Member log
+        event(new MemberActivityEvent($member->member_code, self::ACTION_BEHAVIOUR, $data));
 
         return $dataSnap;
     }
@@ -500,6 +516,17 @@ class SnapService
             // Save transaction
             event(new TransactionEvent($member->member_code, $transactionType, $snapId));
 
+            //build data to save member log
+            $data = [
+                'action' => $request->input('snap_type'),
+                'data' => $dataSnap,
+            ];
+
+            $data = json_encode($data);
+
+            // Member log
+            event(new MemberActivityEvent($member->member_code, self::ACTION_BEHAVIOUR, $data));
+
             return $dataSnap;
         }
 
@@ -526,6 +553,17 @@ class SnapService
 
             // Save transaction
             event(new TransactionEvent($member->member_code, $transactionType, $snapId));
+
+            //build data to save member log
+            $data = [
+                'action' => $request->input('snap_type'),
+                'data' => $dataSnap,
+            ];
+
+            $data = json_encode($data);
+
+            // Member log
+            event(new MemberActivityEvent($member->member_code, self::ACTION_BEHAVIOUR, $data));
 
             return $dataSnap;
         }
@@ -583,6 +621,17 @@ class SnapService
             // Save transaction
             event(new TransactionEvent($member->member_code, $transactionType, $snapId));
 
+            //build data to save member log
+            $data = [
+                'action' => $request->input('snap_type'),
+                'data' => $dataSnap,
+            ];
+
+            $data = json_encode($data);
+
+            // Member log
+            event(new MemberActivityEvent($member->member_code, self::ACTION_BEHAVIOUR, $data));
+
             return $dataSnap;
         }
 
@@ -630,6 +679,17 @@ class SnapService
 
             // Save transaction
             event(new TransactionEvent($member->member_code, $transactionType, $snapId));
+
+            //build data to save member log
+            $data = [
+                'action' => $request->input('snap_type'),
+                'data' => $dataSnap,
+            ];
+
+            $data = json_encode($data);
+
+            // Member log
+            event(new MemberActivityEvent($member->member_code, self::ACTION_BEHAVIOUR, $data));
 
             return $dataSnap;
         }
@@ -996,10 +1056,12 @@ class SnapService
         if ($tags <= 0) {
             $total = ($point['percent'] / 100) * $point['point'] * $files;
         }        
-        
+
         $snap = (new SnapService)->getSnapByCode($requestCode);
         $snap->estimated_point = $total;
         $snap->update();
+
+        $this->setEstimatedPoint($total);
 
         return true;
     }
@@ -1065,5 +1127,16 @@ class SnapService
         } elseif ($currentSignature != $editedSignature) {
             return 'crowdsource_edit';
         }
+    }
+
+    private function setEstimatedPoint($value)
+    {
+        $this->estimatedPoint = $value;
+        return $this;
+    }
+
+    public function getEstimatedPoint()
+    {
+        return $this->estimatedPoint;
     }
 }

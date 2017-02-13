@@ -24,7 +24,7 @@ class CreateSnapFilesTable extends Migration
             $table->integer('quantity')->default('0');
             $table->string('img_x', 20)->nullable();
             $table->string('img_y', 20)->nullable();
-            $table->string('current_signature');
+            $table->string('current_signature')->nullable();
             $table->string('edited_signature')->nullable();
             $table->timestamps();
 

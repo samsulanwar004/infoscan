@@ -126,14 +126,7 @@
                                 </div>                                    
                                 <div class="form-group payment_method">
                                     <label for="payment_method">Payment Method</label>
-                                    <select name="payment_method" class="form-control input-sm tab-side" id="payment_method" tabIndex="10">
-                                        @if($snap->payment_method == true)
-                                            <option value="{{ $snap->payment_method }}" selected="selected">{{ $snap->payment_method }}</option>
-                                        @endif
-                                        @foreach($paymentMethods as $pm)
-                                            <option value="{{ $pm }}">{{ $pm }}</option>
-                                        @endforeach
-                                    </select>
+                                    <input type="text" class="form-control input-sm tab-side" list="payment-method" id="payment_method" name="payment_method" placeholder="Enter Payment Method" value="{{ $snap->payment_method }}" tabIndex="10">
                                 </div>
 <!--                                     <div class="form-group longitude latitude" style="display: none;">
                                     <label for="geography_location">Geographic Coordinates</label>
@@ -155,7 +148,7 @@
                                         data-toggle="modal"
                                         data-target="#"
                                         modal-size="modal-lg"
-                                        title="Approve">
+                                        title="Approve" id="confirm">
                                         <i class="fa fa-check-circle-o fa-btn"></i>Approve This Content</a>
                                 </div>
                             </form>
@@ -164,6 +157,12 @@
                               <option value="Supermarket">
                               <option value="Hypermarket">
                               <option value="Drug Store">
+                            </datalist>
+                            
+                            <datalist id="payment-method">
+                                @foreach($paymentMethods as $pm)
+                                  <option value="{{ $pm }}">
+                                @endforeach
                             </datalist>
                         </div>
                     </div>
@@ -234,9 +233,8 @@
     }
 
 </style>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.45/css/bootstrap-datetimepicker.min.css" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.45/js/bootstrap-datetimepicker.min.js"></script>
-<script src="http://localhost/coba/id.js"></script>
+<link rel="stylesheet" href="{{ elixirCDN('css/datetimepicker.css') }}" />
+<script src="{{ elixirCDN('js/datetimepicker.js') }}"></script>
 <!-- <script>
   function initMap() {
     var longitude = parseFloat('{{ $snap->longitude }}');
@@ -339,8 +337,8 @@
             this.setAttribute('tabIndex', this.getAttribute( "data-id" ));
         });
 
-        $('#payment_method').focus(function(e) {
-
+        $('#receipt_id').blur(function(e) {
+            this.removeAttribute('tabIndex');
         });
 
     });
@@ -358,7 +356,11 @@
                 if (field.form.elements[i].tabIndex == field.tabIndex + 1) {
                     field.form.elements[i].focus();
                     if (field.form.elements[i].type == "text") {
-                        field.form.elements[i].select();
+                        field.form.elements[i].select();                           
+                        break;
+                    } else if (field.form.elements[i].type == "submit") {
+                        field.form.elements[i].click();
+                        $('#confirm').trigger('click');
                         break;
                     }
                 }
@@ -375,14 +377,15 @@
           , next
           ;          
         if (e.keyCode == 13) {
-            focusable = form.find('input,a,select,button,textarea').filter(':visible');
+            focusable = form.find('input,select,button,textarea').filter(':visible');
             next = focusable.eq(focusable.index(this)+1);
 
             if (next.length) {
                 next.focus();
                 next.select();
             } else {
-                form.submit();
+                $('#receipt_id').focus();
+                $('#receipt_id').select();
             }
             return false;
         }
