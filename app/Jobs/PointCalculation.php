@@ -32,7 +32,6 @@ class PointCalculation implements ShouldQueue
      */
     public function handle()
     {
-        logger(serialize($this->data));
         $point = (new PointService)->calculateApprovePoint($this->data);
         $kasir = config('common.transaction.member.kasir');
         $member = config('common.transaction.member.snap');
@@ -43,13 +42,13 @@ class PointCalculation implements ShouldQueue
                     'member_code_from' => $kasir,
                     'member_code_to' => $member,
                     'amount' => $point,
-                    'detail_type' => 'DB'
+                    'detail_type' => 'db'
                 ],
                 '1' => [
                     'member_code_from' => $member,
                     'member_code_to' => $kasir,
                     'amount' => $point,
-                    'detail_type' => 'CR'
+                    'detail_type' => 'cr'
                 ],
             ],
         ];
