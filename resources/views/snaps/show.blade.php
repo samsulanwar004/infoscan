@@ -234,9 +234,8 @@
     }
 
 </style>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.45/css/bootstrap-datetimepicker.min.css" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.45/js/bootstrap-datetimepicker.min.js"></script>
-<script src="http://localhost/coba/id.js"></script>
+<link rel="stylesheet" href="{{ elixirCDN('css/datetimepicker.css') }}" />
+<script src="{{ elixirCDN('js/datetimepicker.js') }}"></script>
 <!-- <script>
   function initMap() {
     var longitude = parseFloat('{{ $snap->longitude }}');
@@ -339,6 +338,10 @@
             this.setAttribute('tabIndex', this.getAttribute( "data-id" ));
         });
 
+        $('#receipt_id').blur(function(e) {
+            this.removeAttribute('tabIndex');
+        });
+
         $('#payment_method').focus(function(e) {
 
         });
@@ -375,14 +378,14 @@
           , next
           ;          
         if (e.keyCode == 13) {
-            focusable = form.find('input,a,select,button,textarea').filter(':visible');
+            focusable = form.find('input,select,button,textarea').filter(':visible');
             next = focusable.eq(focusable.index(this)+1);
 
             if (next.length) {
                 next.focus();
                 next.select();
             } else {
-                form.submit();
+                $('#receipt_id').focus();
             }
             return false;
         }
