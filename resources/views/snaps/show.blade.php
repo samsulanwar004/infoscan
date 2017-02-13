@@ -385,6 +385,7 @@
                 next.select();
             } else {
                 $('#receipt_id').focus();
+                $('#receipt_id').select();
             }
             return false;
         }
