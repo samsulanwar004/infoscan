@@ -62,11 +62,13 @@ class SnapController extends BaseApiController
             $request->request->add([
                 'request_code' => strtolower(str_random(10)),
             ]);
-            $process = (new SnapService)->{$method}($request);
+            $snap = (new SnapService);
+            $process = $snap->{$method}($request);
 
             return $this->success([
                 'data' => [
-                    'request_code' => $process['request_code']
+                    'request_code' => $process['request_code'],
+                    'estimated_point' => $snap->getEstimatedPoint(),
                 ]
             ]);
         } catch (Exception $e) {
