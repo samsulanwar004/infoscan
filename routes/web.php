@@ -92,6 +92,12 @@ Route::group([
         ['names' => route_resource_name($routePrefix, 'snaps')]
     );
 
+    Route::resource(
+        '/product-categories',
+        'Web\ProductCategoryController',
+        ['names' => route_resource_name($routePrefix, 'product-categories')]
+    );
+
     Route::get('/questionnaire/publish/{id}', 'Web\QuestionnaireController@publish')->name('questionnaire.publish');
 
     Route::get(

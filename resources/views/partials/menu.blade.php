@@ -94,6 +94,7 @@
                 </a>
                 <ul class="treeview-menu">
                     <li><a href="/settings"><i class="fa fa-circle-o"></i>General</a></li>
+                    <li><a href="/product-categories"><i class="fa fa-circle-o"></i>Product Categories</a></li>
                     <li><a href="/promotions"><i class="fa fa-circle-o"></i>Promotion</a></li>
                     <li><a href="/lucky"><i class="fa fa-circle-o"></i>Lucky Draw</a></li>
                     <li><a href="/points"><i class="fa fa-circle-o"></i>Task Points</a></li>

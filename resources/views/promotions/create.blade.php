@@ -28,6 +28,16 @@
                         </div>
 
                         <div class="form-group">
+                            <label for="category">Category</label>
+                            <select class="form-control" name="category" required="required">
+                                <option value="">Select Category</option>
+                                @foreach($categories as $category)
+                                    <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="form-group">
                             <label for="start_at">Start Date</label>
                             <div class="input-group date">
                                 <div class="input-group-addon">

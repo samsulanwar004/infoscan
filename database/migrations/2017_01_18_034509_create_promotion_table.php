@@ -16,6 +16,7 @@ class CreatePromotionTable extends Migration
         Schema::create('promotions', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('merchant_id')->nullable()->unsigned();
+            $table->integer('category_id')->nullable()->unsigned();
             $table->string('title')->index();
             $table->text('description')->nullable();
             $table->dateTime('start_at');
@@ -31,6 +32,10 @@ class CreatePromotionTable extends Migration
               ->references('id')
               ->on('merchants')
               ->onDelete('NO ACTION');
+            $table->foreign('category_id', 'FK_category_id_in_promotions')
+            ->references('id')
+            ->on('product_categories')
+            ->onDelete('NO ACTION');
         });
     }
 

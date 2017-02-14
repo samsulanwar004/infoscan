@@ -13,4 +13,9 @@ class Promotion extends Model
     {
     	return $this->belongsTo(Merchant::class, 'merchant_id');
     }
+
+    public function category()
+    {
+    	return $this->belongsTo(ProductCategory::class, 'category_id');
+    }
 }

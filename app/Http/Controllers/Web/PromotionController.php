@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Services\PromotionService;
 use App\Services\MerchantService;
 use App\Services\TransactionService;
+use App\Services\CategoryService;
 
 
 class PromotionController extends AdminController
@@ -37,7 +38,9 @@ class PromotionController extends AdminController
     public function create()
     {
         $this->isAllowed('Promotion.Create');
-        return view('promotions.create');
+        $categories = (new CategoryService)->getAllCategories();
+
+        return view('promotions.create', compact('categories'));
     }
 
     /**
@@ -50,7 +53,7 @@ class PromotionController extends AdminController
         $this->validate($request, [
             'title' => 'required|max:255',
             'description' => 'max:255',
-            'image' => 'mimes:jpg,jpeg,png'
+            'image' => 'mimes:jpg,jpeg,png',
         ]);
 
         try {
@@ -75,7 +78,9 @@ class PromotionController extends AdminController
         $this->isAllowed('Promotion.Update');
         $promotion = (new PromotionService)->getPromotionById($id);
 
-        return view('promotions.edit', compact('promotion'));
+        $categories = (new CategoryService)->getAllCategories();
+
+        return view('promotions.edit', compact('promotion', 'categories'));
     }
 
     /**

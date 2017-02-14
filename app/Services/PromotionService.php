@@ -41,6 +41,7 @@ class PromotionService
 		$p->created_by = Auth::user()->id;
 		$p->is_active = $request->has('is_active') ? 1 : 0;
 		$p->merchant()->associate($mi);
+		$p->category()->associate($request->input('category'));
 
 		if ($request->hasFile('image')) {
             $file = $request->file('image');
@@ -83,6 +84,7 @@ class PromotionService
 		$p->url = $request->input('url');
 		$p->updated_by = Auth::user()->id;
 		$p->is_active = $request->has('is_active') ? 1 : 0;
+		$p->category_id = $request->input('category');
 
 		if ($request->hasFile('image') != null && $p->image == true) {
             \Storage::delete('public/promotions/' . $p->image);
