@@ -13,7 +13,7 @@ class PromotionController extends BaseApiController
 
 			$promos = (new PromotionService)->getApiAllPromotion();
 			
-			return response()->json($promos, 200);
+			return $this->success($promos, 200);
 		} catch (Exception $e) {
 			return $this->error($e);
 		}

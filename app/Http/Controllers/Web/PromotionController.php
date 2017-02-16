@@ -115,9 +115,6 @@ class PromotionController extends AdminController
             $p = (new PromotionService)->getPromotionById($id);
             $p->delete();
 
-            if ($p->image != null) {
-                \Storage::delete('public/promotions/' . $p->image);
-            }
         } catch (\Exception $e) {
             return back()->with('errors'. $e->getMessage());
         }

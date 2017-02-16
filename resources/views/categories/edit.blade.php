@@ -40,7 +40,7 @@
                         <div class="form-group">
                             <label for="icon">Icon</label><br>
                             @if($category->icon)
-                                <img src="{{ '/storage/product-categories/'.$category->icon }}">
+                                <img src="{{ $category->icon }}">
                             @endif
                             <input type="file" class="form-control" id="icon" name="icon">
                         </div>
@@ -48,7 +48,7 @@
                         <div class="form-group">
                             <label for="background">Background</label><br>
                             @if($category->background)
-                                <img src="{{ '/storage/product-categories/'.$category->background }}">
+                                <img src="{{ $category->background }}">
                             @endif
                             <input type="file" class="form-control" id="background" name="background">
                         </div>

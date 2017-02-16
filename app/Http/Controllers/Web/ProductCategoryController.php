@@ -122,13 +122,6 @@ class ProductCategoryController extends AdminController
             $c = (new CategoryService)->getCategoryById($id);
             $c->delete();
 
-            if ($c->icon != null) {
-                \Storage::delete('public/product-categories/' . $c->icon);
-            }
-
-            if($c->background != null) {
-                \Storage::delete('public/product-categories/' . $c->background);
-            }
         } catch (\Exception $e) {
             return back()->with('errors'. $e->getMessage());
         }

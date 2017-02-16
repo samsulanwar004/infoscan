@@ -38,12 +38,12 @@
                             </td>
                             <td class="vertical-middle">
                                 @if($category->icon)
-                                    <img src="{{ '/storage/product-categories/'.$category->icon }}" style="width: 50px;">
+                                    <img src="{{ $category->icon }}" style="width: 50px;">
                                 @endif
                             </td>
                             <td class="vertical-middle">
                                 @if($category->background)
-                                    <img src="{{ '/storage/product-categories/'.$category->background }}" style="width: 150px;">
+                                    <img src="{{ $category->background }}" style="width: 150px;">
                                 @endif
                             </td>
                             <td class="text-right vertical-middle">
