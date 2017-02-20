@@ -52,6 +52,7 @@ class SecureService
             'data' => [
                 'has_registered' => $hasRegistered,
                 'token' => $member->api_token,
+                'name' => $member->name,
                 'email' => $member->email,
                 'gender' => $member->gender,
                 'avatar' => $member->avatar,
