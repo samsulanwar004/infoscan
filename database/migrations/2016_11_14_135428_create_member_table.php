@@ -20,7 +20,7 @@ class CreateMemberTable extends Migration
             $t->string('email', 150)->nullable()->index();
             $t->string('password', 150)->nullable();
             $t->string('gender', 1)->index();
-            $t->string('marital_status', 7)->index(); // married, single
+            $t->string('marital_status', 7)->index()->nullable(); // married, single
             $t->string('avatar')->nullable();
             $t->string('status', 10)->index()->default('active');
             $t->boolean('is_login_by_social_media')->default(0);
@@ -31,7 +31,7 @@ class CreateMemberTable extends Migration
             $t->integer('monthly_expense_max')->index()->default(0);
             $t->tinyInteger('person_in_house', false, true)->index()->default(1);
             $t->string('city', 200)->nullable();
-            $t->char('province_id', 2);
+            $t->char('province_id', 2)->nullbale();
             $t->string('occupation', 100)->nullable();
             $t->string('last_education', 5)->index()->nullable();
             $t->string('bank_name', 10)->nullable()->index();

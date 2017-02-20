@@ -50,7 +50,13 @@ class SecureService
         return [
             'data' => [
                 'has_registered' => $hasRegistered,
-                'token' => $this->memberService->getToken()
+                'token' => $this->memberService->getToken(),
+                'email' => $this->memberService->getEmail(),
+                'gender' => $this->memberService->getGender(),
+                'avatar' => $this->memberService->getAvatar(),
+                'social_media_type' => $this->memberService->getSocialMediaType(),
+                'social_media_id' => $this->memberService->getMemberCode(),
+                'social_media_url' => $this->memberService->getSocialMediaUrl(),
             ]
         ];
     }

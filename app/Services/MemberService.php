@@ -82,6 +82,11 @@ class MemberService
      * @var string
      */
     private $bankAccountNumber;
+    /**
+     * @var string
+     */
+    private $maritalStatus;
+
 
     /**
      * Add new a member into database.
@@ -100,6 +105,7 @@ class MemberService
         $member->email = $this->getEmail();
         $member->password = $this->getPassword();
         $member->gender = $this->getGender();
+        $member->marital_status = $this->getMaritalStatus();
         $member->avatar = $this->getAvatar();
         $member->status = $this->getStatus();
         $member->is_login_by_social_media = $this->getIsLoginBySocialMedia();
@@ -109,7 +115,7 @@ class MemberService
 
         if (!$member->save()) {
             DB::rollback();
-            throw new \App\Services\MemberServiceException('Can not register member.');
+            throw new MemberServiceException('Can not register member.');
         }
 
         DB::commit();
@@ -134,7 +140,7 @@ class MemberService
      * Get registered member by member code.
      *
      * @param  string $memberCode
-     * @return \Illuminate\Database\Collection
+     * @return \Illuminate\Database\Eloquent\Collection
      */
     public function getMemberByCode($memberCode)
     {
@@ -175,7 +181,7 @@ class MemberService
 
     public function getToken()
     {
-        if(null === $this->member) {
+        if (null === $this->member) {
             throw new MemberServiceException('Can not get Token');
         }
 
@@ -449,7 +455,8 @@ class MemberService
     }
 
     /**
-     * Get latest point member by member id   
+     * Get latest point member by member id
+     *
      * @param int
      * @return $latestPoint
      */
@@ -461,34 +468,54 @@ class MemberService
         $memberConfig = config('common.transaction.member.snap');
 
         $latestPoint = \DB::table('transactions')
-            ->join('transaction_detail', 'transactions.id', '=', 'transaction_detail.transaction_id')
-            ->where('member_code', '=', $memberCode)
-            ->where('member_code_from', '=', $memberConfig)
-            ->sum('amount');
+                          ->join('transaction_detail', 'transactions.id', '=', 'transaction_detail.transaction_id')
+                          ->where('member_code', '=', $memberCode)
+                          ->where('member_code_from', '=', $memberConfig)
+                          ->sum('amount');
 
         return $latestPoint;
     }
 
     /**
-     * Get level id by member id   
+     * Get level id by member id
+     *
      * @param int $id
      * @return $levelId
      */
     public function getLevelIdByMemberId($id)
     {
         $latestPoint = $this->getLatestPointMemberById($id);
-        $level = \DB::select('select max(id) as level_id from level_points where '.$latestPoint.' - point >= 0');
+        $level = \DB::select('select max(id) as level_id from level_points where ' . $latestPoint . ' - point >= 0');
 
         return ($level[0]->level_id == true) ? $level[0]->level_id : 1;
     }
 
     /**
-     * Get member by id   
+     * Get member by id
+     *
      * @param int $id
      * @return Member
      */
     public function getMemberById($id)
     {
         return Member::where('id', $id)->first();
+    }
+
+    /**
+     * @return string
+     */
+    public function getMaritalStatus()
+    {
+        return $this->maritalStatus;
+    }
+
+    /**
+     * @param string $maritalStatus
+     */
+    public function setMaritalStatus($maritalStatus)
+    {
+        $this->maritalStatus = $maritalStatus;
+
+        return $this;
     }
 }
