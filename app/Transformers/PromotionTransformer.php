@@ -12,7 +12,10 @@ class PromotionTransformer extends TransformerAbstract
             'id'   => $promotion->id,
             'title'   => $promotion->title,
             'description'  => $promotion->description,
+            'image'  => $promotion->image,
             'url' => $promotion->url,
+            'icon' => $promotion->icon,
+            'background' => $promotion->background,
         ];
     }
 }

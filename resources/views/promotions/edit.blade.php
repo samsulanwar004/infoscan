@@ -38,6 +38,16 @@
                         </div>
 
                         <div class="form-group">
+                            <label for="category">Category</label>
+                            <select class="form-control" name="category" required="required">
+                                <option value="">Select Category</option>
+                                @foreach($categories as $category)
+                                    <option @if($promotion->category_id == $category->id) selected @endif value="{{ $category->id }}">{{ $category->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="form-group">
                             <label for="start_at">Start Date</label>
                             <div class="input-group date">
                                 <div class="input-group-addon">
@@ -61,7 +71,7 @@
                         <div class="form-group">
                             <label for="image">Image</label><br>
                             @if($promotion->image)
-                                <img width="200" height="200" src="{{ '/storage/promotions/'.$promotion->image }}">
+                                <img width="200" height="200" src="{{ $promotion->image }}">
                             @endif
                             <input type="file" class="form-control" id="image" name="image">
                         </div>

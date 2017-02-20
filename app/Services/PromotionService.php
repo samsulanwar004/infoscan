@@ -9,17 +9,28 @@ use Auth;
 use Carbon\Carbon;
 use Cache;
 use App\Transformers\PromotionTransformer;
+use App\Libraries\ImageFile;
+use Image;
+use Storage;
 
 class PromotionService
 {
+	const DEFAULT_FILE_DRIVER = 's3';
+	const RESIZE_IMAGE = [240,240];
 	/**
      * @var string
      */
 	protected $date;
 
+	/**
+     * @var string
+     */
+	protected $s3Url;
+
 	public function __construct()
 	{
 		$this->date = Carbon::now('Asia/Jakarta');
+		$this->s3Url = env('S3_URL', '');
 	}
 	/**
      * @param $request
@@ -41,6 +52,7 @@ class PromotionService
 		$p->created_by = Auth::user()->id;
 		$p->is_active = $request->has('is_active') ? 1 : 0;
 		$p->merchant()->associate($mi);
+		$p->category()->associate($request->input('category'));
 
 		if ($request->hasFile('image')) {
             $file = $request->file('image');
@@ -51,10 +63,20 @@ class PromotionService
                 $file->getClientOriginalExtension()
             );
 
-            $p->image = $filename;
+            //tmp file in storage local
             $path = storage_path('app/public')."/promotions/".$filename;
-            $resize = \Image::make($file)->resize(240, 240);
-            $resize->save($path);
+            //resize image
+            $image = new ImageFile(Image::make($file->path())
+            	->resize(self::RESIZE_IMAGE[0], self::RESIZE_IMAGE[1])
+            	->save($path));
+
+            Storage::disk(self::DEFAULT_FILE_DRIVER)
+            	->putFileAs('promotions', $image, $filename, 'public');
+
+            //delete file tmp
+            Storage::delete('public/promotions/' . $filename);
+
+            $p->image = $this->completeImageLink('promotions/'.$filename);
         }
 
 		$p->save();
@@ -83,10 +105,7 @@ class PromotionService
 		$p->url = $request->input('url');
 		$p->updated_by = Auth::user()->id;
 		$p->is_active = $request->has('is_active') ? 1 : 0;
-
-		if ($request->hasFile('image') != null && $p->image == true) {
-            \Storage::delete('public/promotions/' . $p->image);
-        }
+		$p->category_id = $request->input('category');
 
         if ($request->hasFile('image')) {
             $file = $request->file('image');
@@ -97,10 +116,20 @@ class PromotionService
                 $file->getClientOriginalExtension()
             );
 
-            $p->image = $filename;
+            //tmp file in storage local
             $path = storage_path('app/public')."/promotions/".$filename;
-            $resize = \Image::make($file)->resize(240, 240);
-            $resize->save($path);
+            //resize image
+            $image = new ImageFile(Image::make($file->path())
+            	->resize(self::RESIZE_IMAGE[0], self::RESIZE_IMAGE[1])
+            	->save($path));
+
+            Storage::disk(self::DEFAULT_FILE_DRIVER)
+            	->putFileAs('promotions', $image, $filename, 'public');
+
+            //delete file tmp
+            Storage::delete('public/promotions/' . $filename);
+
+            $p->image = $this->completeImageLink('promotions/'.$filename);
         }
 
 		$p->update();
@@ -154,10 +183,13 @@ class PromotionService
 			return Cache::get('promotion');
 		} else {
 
-			$p = Promotion::where('is_active', '=', 1)
-				->where('start_at', '<=', $this->date)
-				->where('end_at', '>=', $this->date)
-				->get();
+			$p = DB::table('promotions')
+            ->join('product_categories', 'promotions.category_id', '=', 'product_categories.id')
+            ->select('promotions.id', 'promotions.title', 'promotions.description', 'promotions.url', 'promotions.image', 'product_categories.icon', 'product_categories.background')
+            ->where('is_active', '=', 1)
+			->where('start_at', '<=', $this->date)
+			->where('end_at', '>=', $this->date)
+            ->get();
 
 			$transform = fractal()
 				->collection($p)
@@ -170,5 +202,14 @@ class PromotionService
 		}
 
 	}
+
+	/**
+     * @param $filename
+     * @return string
+     */
+    protected function completeImageLink($filename)
+    {
+        return $this->s3Url . '' . $filename;
+    }
 
 }
