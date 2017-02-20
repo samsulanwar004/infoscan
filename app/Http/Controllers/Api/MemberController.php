@@ -35,7 +35,6 @@ class MemberController extends BaseApiController
      * Update member profile
      *
      * @param \Illuminate\Http\Request $request
-     * @param $memberCode
      * @return \Illuminate\Http\JsonResponse
      */
     function update(Request $request)

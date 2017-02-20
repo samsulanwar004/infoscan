@@ -1,12 +1,12 @@
 <?php
 
-
 namespace App\Http\Controllers\Web;
 
 use App\Contracts\UriTrait;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Exceptions\PermissionDeniedException;
+
 class AdminController extends Controller
 {
     use UriTrait;

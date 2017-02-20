@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Events\MemberActivityEvent;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
 use Illuminate\Validation\ValidationException;
 use Tymon\JWTAuth\Providers\Auth\Illuminate;
@@ -14,7 +15,7 @@ class BaseApiController extends Controller
      *
      * @param  string|\Exception $message
      * @param  int $httpCode
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\Response|JsonResponse
      */
     protected function error($message, $httpCode = 500, $isValidationMessage = false)
     {
@@ -36,7 +37,7 @@ class BaseApiController extends Controller
     /**
      * Send the not found response.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\Response|JsonResponse
      */
     protected function notFound()
     {
@@ -50,7 +51,7 @@ class BaseApiController extends Controller
      *
      * @param  mixed|null $message
      * @param  integer $httpCode
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\Response|JsonResponse
      */
     protected function success($message = null, $httpCode = 200)
     {
