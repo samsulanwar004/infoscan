@@ -31,10 +31,11 @@ class SecureService
         }
 
         $member = $this->memberService->getMemberByCode($user['member_code']);
+
         $hasRegistered = true;
         if (!$member) {
             $hasRegistered = false;
-            $this->memberService
+            $member = $this->memberService
                 ->setMemberCode($user['member_code'])
                 ->setName($user['name'])
                 ->setEmail($user['email'])
@@ -50,13 +51,13 @@ class SecureService
         return [
             'data' => [
                 'has_registered' => $hasRegistered,
-                'token' => $this->memberService->getToken(),
-                'email' => $this->memberService->getEmail(),
-                'gender' => $this->memberService->getGender(),
-                'avatar' => $this->memberService->getAvatar(),
-                'social_media_type' => $this->memberService->getSocialMediaType(),
-                'social_media_id' => $this->memberService->getMemberCode(),
-                'social_media_url' => $this->memberService->getSocialMediaUrl(),
+                'token' => $member->api_token,
+                'email' => $member->email,
+                'gender' => $member->gender,
+                'avatar' => $member->avatar,
+                'social_media_type' => $member->social_media_type,
+                'social_media_id' => $member->member_code,
+                'social_media_url' => $member->social_media_url,
             ]
         ];
     }
