@@ -1,9 +1,12 @@
 {
   "css/app.css": "css/app-b1c167678e.css",
+  "css/colorpicker.css": "css/colorpicker-44da566818.css",
   "css/datetimepicker.css": "css/datetimepicker-ee50f4154a.css",
   "css/report-vendor.css": "css/report-vendor-2211936f45.css",
   "css/taggd.css": "css/taggd-65dd15db81.css",
+  "js/Chart.bundle.min.js": "js/Chart-6b2cecbd81.bundle.min.js",
   "js/admin.js": "js/admin-0664de596a.js",
+  "js/colorpicker.js": "js/colorpicker-b80f44ea39.js",
   "js/datetimepicker.js": "js/datetimepicker-397d9aad96.js",
   "js/elevate.js": "js/elevate-ae62de6f1b.js",
   "js/ie-support.js": "js/ie-support-fddb44178b.js",

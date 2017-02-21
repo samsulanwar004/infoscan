@@ -2,7 +2,7 @@
 
 @section('content')
     @include('partials.content_header', ['pageTitle' => 'Reports', 'pageDescription' => '', 'breadcrumbs' => ['Reports' => false]])
-    <?php $configurations = config('common.reports.fields'); ?>
+    <?php $configurations = config('common.reports.fields'); ?>   
     <!-- Main content -->
     <section class="content">
 
@@ -11,6 +11,8 @@
             <div class="box-header with-border form-inline" style="height: 45px;">
 
                 <div class="box-tools pull-right ">
+                    <button type="button" class="btn btn-default" data-toggle="modal" data-target="#modal-chart"><i class="fa fa-line-chart"></i> Chart
+                            </button>
                     <a class="btn btn-default btn-modal" href="javascript:void(0)"><i class="fa fa-btn fa-filter"></i> Filter</a>
                     <!-- Single button -->
                     <div class="btn-group">
@@ -49,14 +51,16 @@
                             @endforeach
                         </tbody>
                     </table>
-                </div>
+                </div>                
             </div>
-        </div>
+        </div>  
+
+        <div id="chart"></div>    
 
     </section>
     <!-- /.content -->
 
-    <div class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal fade" tabindex="-1" role="dialog" id="modal-filter">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -136,11 +140,61 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade" tabindex="-1" role="dialog" id="modal-chart">
+      <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Create Chart</h4>
+          </div>
+          <div class="modal-body">
+            <form action="/reports/chart" method="POST" id="submit-chart">
+                {{ csrf_field() }}
+                {{ method_field('POST') }}
+                <div class="form-group">
+                    <label for="type">Type Chart</label>
+                    <select class="form-control" id="type" name="type">
+                        <option value="line">Line</option>
+                        <option value="bar">Bar</option>
+                        <option value="horizontalBar">Horizontal Bar</option>
+                        <option value="radar">Radar</option>
+                        <option value="pie">Pie</option>
+                        <option value="doughnut">Doughnut</option>
+                        <option value="polarArea">Polar Area</option>
+                    </select>
+                </div>   
+                <div class="form-group">
+                    <label for="label">Month</label>
+                    <input type="text" name="month_labels" id="range-month">
+                </div>  
+                <div class="form-group">
+                    <label for="dataset">Dataset</label>
+                    <select name="dataset" id="dataset" class="form-control" multiple="multiple" required="required" style="width: 100%;">
+                        <option>Sari Roti</option>
+                        <option>Equil</option>
+                        <option>Sprite</option>
+                        <option>Mizone</option>
+                        <option>Aqua</option>
+                    </select>
+                </div> 
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Save changes</button>
+            </form>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
 @endsection
 
 @section('footer_scripts')
 <link rel="stylesheet" href="{{ elixirCDN('css/report-vendor.css') }}" />
+<link rel="stylesheet" href="{{ elixirCDN('css/colorpicker.css') }}" />
+<script src="{{ elixirCDN('js/colorpicker.js') }}"></script>
 <script src="{{ elixirCDN('js/report-vendor.js') }}"></script>
+<script src="{{ elixirCDN('js/Chart.bundle.min.js') }}"></script>
 <script type="text/javascript">
     $(document).ready(function() {
         whenLoaded();
@@ -156,7 +210,7 @@
 
         $('.btn-modal').on('click', function(e) {
             e.preventDefault();
-            $('.modal').modal('show');
+            $('#modal-filter').modal('show');
         })
 
         $('.datepicker').daterangepicker({
@@ -183,6 +237,49 @@
                 $(this).parents('.row').removeClass('bg-soft');
             }
         });
+
+        $('#submit-chart').on('submit', function() {
+            $.ajax({
+              url: this.action,
+              type: "post",
+              data: {
+                '_token':$('input[name=_token]').val(),
+                '_method':$('input[name=_method]').val(),  
+                'type':$('select[name=type]').val(),                  
+                'dataset':$('select[name=dataset]').val(),                  
+                'month_labels':$('input[name=month_labels]').val(),                               
+            },
+                success: function(msg){
+                    REBEL.smallNotifTemplate('Success Create Chart', 'body', 'success');
+                    $('#modal-chart').modal('hide');
+                    $('#chart').html(msg);
+                    setTimeout(function () {
+                        REBEL.removeAllMessageAlert();                         
+                    }, 3000)
+                },
+                error: function (msg) {
+                    REBEL.smallNotifTemplate(msg.message, '.modal-content', 'error');
+                    setTimeout(function () {
+                        REBEL.removeAllMessageAlert();
+                    }, 3000)
+                }
+            }); 
+
+            return false;
+        });
+
+        $("#range-month").ionRangeSlider({
+            type: 'double',
+            min: 1,
+            max: 12,
+        });
+
+        $('#dataset').select2();
+
+        //Colorpicker
+        $('#background-color').colorpicker();
+        $('#border-color').colorpicker();
+
     });
 
     function whenLoaded() {

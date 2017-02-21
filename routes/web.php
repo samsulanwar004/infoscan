@@ -186,6 +186,11 @@ Route::group([
         '/merchants/settingReports/{id}',
         'Web\MerchantController@updateSettingReports'
     )->name($routePrefix == null ? 'merchants.settingReports.update' : '.merchants.settingReports.update');
+
+    Route::post(
+        '/reports/chart',
+        'Web\ReportController@createChart'
+    )->name('create.chart');
 });
 
 Auth::routes();
