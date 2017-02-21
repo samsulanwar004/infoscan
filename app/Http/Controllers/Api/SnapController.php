@@ -93,6 +93,7 @@ class SnapController extends BaseApiController
             'snap_type' => 'required|in:receipt,generalTrade,handWritten',
             'snap_images' => 'array',
             'snap_images.*' => 'required|mimes:jpeg',
+            'mode_type' => 'required|in:input,tags,audios,image'
         ];
 
         // declare new rules depend on handler type (snap_type)
