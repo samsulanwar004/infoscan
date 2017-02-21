@@ -91,8 +91,7 @@ class SnapController extends BaseApiController
         $rules = [
             //'request_code' => 'required|size:10|unique:snaps,request_code',
             'snap_type' => 'required|in:receipt,generalTrade,handWritten',
-            'snap_images' => 'array',
-            'snap_images.*' => 'required|mimes:jpeg',
+            'snap_images' => 'required|mimes:jpeg,jpg,png,bmp',
             'mode_type' => 'required|in:input,tags,audios,image'
         ];
 
