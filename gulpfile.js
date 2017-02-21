@@ -37,10 +37,6 @@ elixir(mix => {
         ltePath + 'plugins/datetimepicker/bootstrap-datetimepicker.min.css'
     ], 'public/css/datetimepicker.css');
 
-    mix.styles([
-        ltePath + 'plugins/colorpicker/bootstrap-colorpicker.min.css'
-    ], 'public/css/colorpicker.css');
-
     /*mix.webpack('app.js');*/
 
     mix.scripts([
@@ -77,10 +73,6 @@ elixir(mix => {
     ], 'public/js/datetimepicker.js');
 
     mix.scripts([
-        ltePath + 'plugins/colorpicker/bootstrap-colorpicker.min.js',
-    ], 'public/js/colorpicker.js');
-
-    mix.scripts([
         ltePath + 'plugins/chartjs/Chart.bundle.min.js',
     ], 'public/js/Chart.bundle.min.js');
 
@@ -108,7 +100,6 @@ elixir(mix => {
     mix.copy(ltePath + 'plugins/easyui/images', 'public/img/easyui'); // lte image
     mix.copy(ltePath + 'plugins/icheck/square/blue.png', 'public/img');
     mix.copy(ltePath + 'plugins/ionrange/img/sprite-skin-modern.png', 'public/img');
-    mix.copy(ltePath + 'plugins/colorpicker/img', 'public/build/css/img'); // colorpicker image
 
     mix.version([
         'css/app.css',
@@ -123,8 +114,6 @@ elixir(mix => {
         'css/report-vendor.css',
         'css/datetimepicker.css',
         'js/datetimepicker.js',
-        'css/colorpicker.css',
-        'js/colorpicker.js',
         'js/Chart.bundle.min.js',
     ]);
 });
