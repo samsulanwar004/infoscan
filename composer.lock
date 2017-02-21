@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "c60b15bf2d5511d8748a84561382484e",
-    "content-hash": "ffc8a045521c53f2cd078fef7a3c16e8",
+    "hash": "79e31f188b0778b8f5a2f65000f20c0d",
+    "content-hash": "8c5af79bef4b288ac57d25a4c00fca51",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -2484,7 +2484,7 @@
                 "log",
                 "logging"
             ],
-            "time": "2017-02-03T07:32:53+00:00"
+            "time": "2017-02-03 07:32:53"
         },
         {
             "name": "sentry/sentry-laravel",
@@ -2538,7 +2538,7 @@
                 "logging",
                 "sentry"
             ],
-            "time": "2017-02-09T17:35:04+00:00"
+            "time": "2017-02-09 17:35:04"
         },
         {
             "name": "socialiteproviders/instagram",
