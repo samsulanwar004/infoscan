@@ -82,7 +82,6 @@ class SecureController extends BaseApiController
     public function register(Request $request)
     {
         $validation = Validator::make($request->all(), [
-            'social_media_id' => 'required',
             'name' => 'required',
             'social_media_type' => 'required|in:facebook,google',
         ]);

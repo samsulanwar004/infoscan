@@ -77,6 +77,13 @@ class SecureService
         $hasRegistered = true;
         if (!$member) {
             $hasRegistered = false;
+
+            // check if member code exists
+            $memberCode = $this->getMemberByCode($request->input('social_media_id'))->pluck('member_code')->first();
+            if ($memberCode) {
+                throw new \Exception('Cannot register this member. The social media id is exists.');
+            }
+
             $this->memberService
                 ->setMemberCode($request->input('social_media_id'))
                 ->setName($request->input('name'))
