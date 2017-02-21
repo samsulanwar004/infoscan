@@ -95,9 +95,7 @@ class SnapController extends AdminController
 
             $snapFile = (new SnapService)->getSnapFileById($id);
 
-            if(null === $snapFile->mode_type) {
-                throw new \Exception('Mode type cannot be empty!');
-            }
+            $view = null === $snapFile->mode_type ? 'image' : $snapFile->mode_type;
             $mode = $modeView[$snapFile->mode_type];
 
             return view("snaps.$mode", compact('snapFile'));
