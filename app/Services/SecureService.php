@@ -59,7 +59,7 @@ class SecureService
                 'social_media_type' => $member->social_media_type,
                 'social_media_id' => $member->member_code,
                 'social_media_url' => $member->social_media_url,
-            ]
+            ],
         ];
     }
 
@@ -71,12 +71,11 @@ class SecureService
         }
 
         $member = $request->has('email') ?
-                        $this->getMemberByEmail($request->input('email')) :
-                        $this->getMemberByCode($request->input('social_media_id'))
-                    ;
+            $this->getMemberByEmail($request->input('email')) :
+            $this->getMemberByCode($request->input('social_media_id'));
 
         $hasRegistered = true;
-        if (! $member) {
+        if (!$member) {
             $hasRegistered = false;
             $this->memberService
                 ->setMemberCode($request->input('social_media_id'))
@@ -94,8 +93,8 @@ class SecureService
         return [
             'data' => [
                 'has_registered' => $hasRegistered,
-                'token' => $this->memberService->getToken()
-            ]
+                'token' => $this->memberService->getToken(),
+            ],
         ];
     }
 

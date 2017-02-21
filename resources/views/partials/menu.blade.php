@@ -5,7 +5,8 @@
         <!-- Sidebar user panel -->
         <div class="user-panel">
             <div class="pull-left image">
-                <img src="<?php echo env('CDN_URL', ''); ?>/img/lte/user2-160x160.jpg" class="img-circle" alt="User Image">
+                <img src="<?php echo env('CDN_URL', ''); ?>/img/lte/user2-160x160.jpg" class="img-circle"
+                     alt="User Image">
             </div>
             <div class="pull-left info">
                 <p>{{ auth()->user()->name }}</p>
@@ -62,13 +63,7 @@
 
             <li class="snaps">
                 <a href="/snaps">
-                    <i class="fa fa-file-o"></i> <span>Snaps Management</span>
-                </a>
-            </li>
-
-            <li class="ses">
-                <a href="/ses">
-                    <i class="fa fa-money"></i> <span>Socio Economic Status</span>
+                    <i class="fa fa-picture-o"></i> <span>Snaps Management</span>
                 </a>
             </li>
 
@@ -94,11 +89,12 @@
                 </a>
                 <ul class="treeview-menu">
                     <li><a href="/settings"><i class="fa fa-circle-o"></i>General</a></li>
-                    <li><a href="/product-categories"><i class="fa fa-circle-o"></i>Product Categories</a></li>
-                    <li><a href="/promotions"><i class="fa fa-circle-o"></i>Promotion</a></li>
                     <li><a href="/lucky"><i class="fa fa-circle-o"></i>Lucky Draw</a></li>
-                    <li><a href="/points"><i class="fa fa-circle-o"></i>Task Points</a></li>
+                    <li><a href="/product-categories"><i class="fa fa-circle-o"></i>Product Categories</a></li>
                     <li><a href="/promo-points"><i class="fa fa-circle-o"></i>Promo Points</a></li>
+                    <li><a href="/promotions"><i class="fa fa-circle-o"></i>Promotion</a></li>
+                    <li><a href="/ses"><i class="fa fa-circle-o"></i>Socio Economic Status</a></li>
+                    <li><a href="/points"><i class="fa fa-circle-o"></i>Task Points</a></li>
                 </ul>
             </li>
 
@@ -122,15 +118,9 @@
                     </span>
                 </a>
                 <ul class="treeview-menu">
-                    <li><a href="/reports"><i class="fa fa-circle-o"></i>Index</a></li>
+                    <li><a href="/reports"><i class="fa fa-circle-o"></i>General</a></li>
                 </ul>
             </li>
-
-            <li class="header">LABELS</li>
-            <!-- <li class="header">LABELS</li>
-            <li><a href="#"><i class="fa fa-circle-o text-red"></i> <span>Important</span></a></li>
-            <li><a href="#"><i class="fa fa-circle-o text-yellow"></i> <span>Warning</span></a></li>
-            <li><a href="#"><i class="fa fa-circle-o text-aqua"></i> <span>Information</span></a></li> -->
         </ul>
     </section>
     <!-- /.sidebar -->
