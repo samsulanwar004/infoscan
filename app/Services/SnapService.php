@@ -411,6 +411,7 @@ class SnapService
      * @param \Illuminate\Http\Request $request
      * @return array|mixed
      * @throws \App\Exceptions\Services\SnapServiceException
+     * @throws \Exception
      */
     public function receiptHandler(Request $request)
     {
@@ -472,6 +473,9 @@ class SnapService
 
     /**
      * @param \Illuminate\Http\Request $request
+     * @return array
+     * @throws \App\Exceptions\Services\SnapServiceException
+     * @throws \Exception
      */
     public function generalTradeHandler(Request $request)
     {
@@ -530,7 +534,7 @@ class SnapService
             return $dataSnap;
         }
 
-        if ($this->isAudioMode()) {
+        if ($this->isAudioMode($request)) {
             $mode = self::AUDIO_TYPE_NAME;
 
             // Auth Member
