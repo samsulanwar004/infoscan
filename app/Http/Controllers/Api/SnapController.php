@@ -45,7 +45,7 @@ class SnapController extends BaseApiController
     {
         try {
             if($request->has('request_code')) {
-                return $this->error('There is no need [request_code] field anymore. Please remove [request_code] from request payloads.');
+                return $this->error('There is no need [request_code] field anymore. Please remove [request_code] from request payloads.', 400, true);
             }
 
             $validation = $this->validRequest($request);
