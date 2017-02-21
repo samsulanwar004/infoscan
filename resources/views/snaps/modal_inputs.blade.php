@@ -59,7 +59,7 @@
                 <i class="fa fa-save fa-btn"></i> <span class="ladda-label">Save Item</span>
             </button>
                 <a class="btn btn-default" id="add">
-                    <i class="fa fa-plus fa-btn"></i>New Create
+                    <i class="fa fa-plus fa-btn"></i>Create New
                 </a>
             <div class="la-ball-fall">
                 <div></div>
