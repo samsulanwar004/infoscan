@@ -19,7 +19,7 @@ Route::get('v1/settings', 'Api\SettingController@index');
 
 Route::group([
     'prefix' => 'v1',
-    'middleware' => ['api', 'verifiSignature'],
+    'middleware' => ['api', 'verifySignature'],
 ], function () {
     Route::get('/snap', 'Api\SnapController@index');
     Route::post('/snap', 'Api\SnapController@store');

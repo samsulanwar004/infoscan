@@ -177,6 +177,7 @@ return [
         Dusterio\PlainSqs\Integrations\LaravelServiceProvider::class,
         Barryvdh\Debugbar\ServiceProvider::class,
         Elibyy\TCPDF\ServiceProvider::class,
+        Sentry\SentryLaravel\SentryLaravelServiceProvider::class,
         //
 
         /*
@@ -240,6 +241,7 @@ return [
         'RebelField' => Rebel\Component\Util\BladeDirectives\Facades\RebelField::class,
         'Socialize' => Laravel\Socialite\Facades\Socialite::class,
         'Image' => Intervention\Image\Facades\Image::class,
+        'Sentry' => Sentry\SentryLaravel\SentryFacade::class,
     ],
 
 ];

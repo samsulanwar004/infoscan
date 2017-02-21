@@ -15,15 +15,15 @@ class SecureController extends BaseApiController
         // validate the input
         $validation = Validator::make([
             'request_code' => $requestCode,
-            'social' => $social
+            'social' => $social,
         ], [
             'request_code' => 'required',
-            'social' => 'required|in:facebook,linkedin,instagram,google'
+            'social' => 'required|in:facebook,linkedin,instagram,google',
         ]);
 
         try {
             if ($validation->fails()) {
-                throw new \Exception('Something problem with your request', 400);
+                $this->error($validation->errors(), 400, true);
             }
 
             return Socialite::with($social)->redirect();
@@ -39,7 +39,7 @@ class SecureController extends BaseApiController
             $object = Socialite::driver($social)->user();
 
             $user = [
-                'member_code' => $object->getId()?:strtolower(str_random(10)),
+                'member_code' => $object->getId() ?: strtolower(str_random(10)),
                 'name' => $object->getName(),
                 'email' => $object->getEmail(),
                 'avatar' => $object->getAvatar(),
@@ -49,9 +49,9 @@ class SecureController extends BaseApiController
             $secure = (new SecureService)->socialHandle($social, $user);
 
             return $this->success($secure);
-        } catch (\Exception $e) {
-            return $this->error($e);
         } catch (\InvalidArgumentException $e) {
+            return $this->error($e);
+        } catch (\Exception $e) {
             return $this->error($e);
         }
     }
@@ -69,26 +69,21 @@ class SecureController extends BaseApiController
             'password' => $request->input('password'),
         ])
         ) {
-            return response()->json([
-                'status' => 'ok',
-                'message' => 'Authenticated',
-                'data' => [
-                    'token' => $member->api_token,
-                ],
-            ]);
+            return $this->success(['token' => $member->api_token]);
         }
+
+        return $this->error('Unauthenticated', 401);
     }
 
     /**
-     * @param  Register member manualy
-     * @return \Response
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Response
      */
     public function register(Request $request)
     {
         $validation = Validator::make($request->all(), [
-            'social_media_id' => 'required',
             'name' => 'required',
-            'social_media_type' => 'required|in:facebook,google'
+            'social_media_type' => 'required|in:facebook,google',
         ]);
 
         if ($validation->passes()) {

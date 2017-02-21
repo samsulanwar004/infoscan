@@ -31,10 +31,11 @@ class SecureService
         }
 
         $member = $this->memberService->getMemberByCode($user['member_code']);
+
         $hasRegistered = true;
         if (!$member) {
             $hasRegistered = false;
-            $this->memberService
+            $member = $this->memberService
                 ->setMemberCode($user['member_code'])
                 ->setName($user['name'])
                 ->setEmail($user['email'])
@@ -50,8 +51,15 @@ class SecureService
         return [
             'data' => [
                 'has_registered' => $hasRegistered,
-                'token' => $this->memberService->getToken()
-            ]
+                'token' => $member->api_token,
+                'name' => $member->name,
+                'email' => $member->email,
+                'gender' => $member->gender,
+                'avatar' => $member->avatar,
+                'social_media_type' => $member->social_media_type,
+                'social_media_id' => $member->member_code,
+                'social_media_url' => $member->social_media_url,
+            ],
         ];
     }
 
@@ -63,13 +71,19 @@ class SecureService
         }
 
         $member = $request->has('email') ?
-                        $this->getMemberByEmail($request->input('email')) :
-                        $this->getMemberByCode($request->input('social_media_id'))
-                    ;
+            $this->getMemberByEmail($request->input('email')) :
+            $this->getMemberByCode($request->input('social_media_id'));
 
         $hasRegistered = true;
-        if (! $member) {
+        if (!$member) {
             $hasRegistered = false;
+
+            // check if member code exists
+            $memberCode = $this->getMemberByCode($request->input('social_media_id'));
+            if ($memberCode) {
+                throw new \Exception('Cannot register this member. The social media id is exists.');
+            }
+
             $this->memberService
                 ->setMemberCode($request->input('social_media_id'))
                 ->setName($request->input('name'))
@@ -86,8 +100,8 @@ class SecureService
         return [
             'data' => [
                 'has_registered' => $hasRegistered,
-                'token' => $this->memberService->getToken()
-            ]
+                'token' => $this->memberService->getToken(),
+            ],
         ];
     }
 

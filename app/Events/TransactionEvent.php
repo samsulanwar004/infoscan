@@ -19,11 +19,10 @@ class TransactionEvent
     /**
      * Create a new event instance.
      *
-     * @param  integer  $memberCode
-     * @param  integer  $transactionType
+     * @param  integer $memberCode
+     * @param  integer $transactionType
      * @param  integer $snapId
-     * @param  string $transactionCode
-     * @return void
+     * @internal param string $transactionCode
      */
     public function __construct($memberCode, $transactionType, $snapId)
     {

@@ -13,9 +13,9 @@ class LuckyDrawController extends BaseApiController
 	{
 		try {
 
-			$luckys = (new LuckyDrawService)->getApiAllLuckyDraw();
+			$lucky = (new LuckyDrawService)->getApiAllLuckyDraw();
 			
-			return response()->json($luckys, 200);
+			return response()->json($lucky, 200);
 		} catch (Exception $e) {
 			return $this->error($e);
 		}

@@ -31,6 +31,7 @@ class PointLevelSeeder extends Seeder
         try {
             foreach ($this->tasks as $value) {
                 $t = new \App\Task;
+                $t->code = str_random(10);
                 $t->name = $value;
                 $t->save();
             }
