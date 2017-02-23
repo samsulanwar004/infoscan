@@ -48,7 +48,6 @@ class ReportService
 
 			$size = [
 				'padding' => 20,
-				'width' => 80,
 			];
 
 			$this->setSize($size);
@@ -88,7 +87,6 @@ class ReportService
 
 			$size = [
 				'padding' => 30,
-				'width' => 50,
 			];
 
 			$this->setSize($size);
