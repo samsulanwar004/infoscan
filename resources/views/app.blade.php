@@ -6,7 +6,7 @@
     <title>Admin Panel</title>
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <meta id="token" content="{{ csrf_token() }}">
-    <link rel="stylesheet" href="{{ elixirCDN('css/app.css') }}">
+    <link rel="stylesheet" href="{{ elixirCDN('css/app.css') }}">    
     <!--[if lt IE 9]>
     <script src="{{ elixirCDN('js/ie-support.js') }}"></script>
     <![endif]-->

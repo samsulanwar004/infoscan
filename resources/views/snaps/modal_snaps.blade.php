@@ -9,10 +9,10 @@
     <div class="modal-body">
         <div class="form-horizontal">
             <div class="col-md-4">
-                <img src="{{ config('filesystems.s3url') . $snapFile->file_path }}" style="height: 300px" class="margin img-responsive img-zoom">
+                <img src="{{ config('filesystems.s3url') . $snapFile->file_path }}" style="height: 500px" class="margin img-responsive img-zoom">
             </div>
             <div class="col-md-2">
-                <textarea class="form-control" style="resize:none;width: 100%;height: 300px;" 
+                <textarea class="form-control" style="resize:none;width: 100%;height: 500px;margin-top: 10px;" 
                 cols="50" readonly="readonly">{{ $snapFile->recognition_text }}</textarea>
             </div>
             <div class="col-md-6 table-custom" style="overflow-y:scroll;height: 300px;">
@@ -63,7 +63,7 @@
                 <i class="fa fa-save fa-btn"></i> <span class="ladda-label">Save Item</span>
             </button>
                 <a class="btn btn-default" id="add">
-                    <i class="fa fa-plus fa-btn"></i>New Create
+                    <i class="fa fa-plus fa-btn"></i>Create New
                 </a>
             <div class="la-ball-fall">
                 <div></div>

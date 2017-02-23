@@ -51,13 +51,13 @@ class Handler extends ExceptionHandler
             return response()->view('errors.403');
         }
 
-        if ($exception instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException) {
-            return redirect('pages/404');
-        }
+        // if ($exception instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException) {
+        //     return redirect('pages/404');
+        // }
 
-        if ($exception instanceof \Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException) {
-            return redirect('pages/404');
-        }
+        // if ($exception instanceof \Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException) {
+        //     return redirect('pages/404');
+        // }
 
         return parent::render($request, $exception);
     }

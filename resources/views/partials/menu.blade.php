@@ -61,6 +61,18 @@
                 </ul>
             </li>
 
+            <li class="treeview">
+                <a href="#">
+                    <i class="fa fa-desktop"></i> <span>Monitoring</span>
+                    <span class="pull-right-container">
+                      <i class="fa fa-angle-left pull-right"></i>
+                    </span>
+                </a>
+                <ul class="treeview-menu">
+                    <li><a href="/crowdsource"><i class="fa fa-circle-o"></i>Crowdsource Account</a></li>
+                </ul>
+            </li>
+
             <li class="snaps">
                 <a href="/snaps">
                     <i class="fa fa-picture-o"></i> <span>Snaps Management</span>

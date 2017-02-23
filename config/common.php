@@ -272,5 +272,48 @@ return [
             'kasir' => '101',
             'snap' => '102',
         ],
-    ]
+    ],
+    //chart
+    'chart' => [
+        'month' => [
+            '1' => 'January',
+            '2' => 'Februari',
+            '3' => 'Maret',
+            '4' => 'April',
+            '5' => 'Mei',
+            '6' => 'Juni',
+            '7' => 'Juli',
+            '8' => 'Agustus',
+            '9' => 'September',
+            '10' => 'Oktober',
+            '11' => 'November',
+            '12' => 'Desember',
+        ],
+        'color' => [
+            '0' => [
+                'background' => 'rgba(255, 99, 132, 0.2)',
+                'border' => 'rgba(255,99,132,1)',
+            ], 
+            '1' => [
+                'background' => 'rgba(54, 162, 235, 0.2)',
+                'border' => 'rgba(54, 162, 235, 1)',
+            ],
+            '2' => [
+                'background' => 'rgba(255, 206, 86, 0.2)',
+                'border' => 'rgba(255, 206, 86, 1)',
+            ],
+            '3' => [
+                'background' => 'rgba(75, 192, 192, 0.2)',
+                'border' => 'rgba(75, 192, 192, 1)',
+            ],
+            '4' => [
+                'background' => 'rgba(153, 102, 255, 0.2)',
+                'border' => 'rgba(153, 102, 255, 1)',
+            ],
+            '5' => [
+                'background' => 'rgba(255, 159, 64, 0.2)',
+                'border' => 'rgba(255, 159, 64, 1)',
+            ],
+        ],
+    ],
 ];

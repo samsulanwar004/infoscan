@@ -186,6 +186,32 @@ Route::group([
         '/merchants/settingReports/{id}',
         'Web\MerchantController@updateSettingReports'
     )->name($routePrefix == null ? 'merchants.settingReports.update' : '.merchants.settingReports.update');
+
+    Route::post(
+        '/reports/chart',
+        'Web\ReportController@createChart'
+    )->name('create.chart');
+
+    Route::get(
+        '/crowdsource',
+        'Web\CrowdsourceController@index'
+    )->name('crowdsource.index');
+
+    Route::get(
+        '/crowdsource/{id}',
+        'Web\CrowdsourceController@show'
+    )->name('crowdsource.show');
+
+    Route::get(
+        '/crowdsource/{id}/detail-activity',
+        'Web\CrowdsourceController@detailActivity'
+    )->name('crowdsource.detail-activity');
+
+    Route::post(
+        '/crowdsource/date-filter',
+        'Web\CrowdsourceController@dateFilter'
+    )->name('crowdsource.date-filter');
+
 });
 
 Auth::routes();
