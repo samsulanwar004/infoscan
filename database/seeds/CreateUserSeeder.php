@@ -24,6 +24,7 @@ class CreateUserSeeder extends Seeder
         'Settings.List',
         'Transactions.List',
         'Reports.List',
+        'Crowdsource.List',
     ];
 
     protected $createPermissionsCrowdsourceAdmin = [
@@ -42,12 +43,14 @@ class CreateUserSeeder extends Seeder
         'Settings.List',
         'Transactions.List',
         'Reports.List',
+        'Crowdsource.List',
     ];
 
     protected $createPermissionsCrowdsourceSupervisor = [
         'Brand.List','Brand.Create','Brand.Update','Brand.Delete',
         'Exchange.List','Exchange.Create','Exchange.Update','Exchange.Delete',
         'Promotion.List','Promotion.Create','Promotion.Update','Promotion.Delete',
+        'ProductCategories.List','ProductCategories.Create','ProductCategories.Update','ProductCategories.Delete',
         'LuckyDraw.List','LuckyDraw.Create','LuckyDraw.Update','LuckyDraw.Delete',
         'Questionnaire.List','Questionnaire.Create','Questionnaire.Update','Questionnaire.Delete',
         'Questions.List','Questions.Create','Questions.Update','Questions.Delete',
@@ -57,6 +60,7 @@ class CreateUserSeeder extends Seeder
         'Snaps.List','Snaps.Show',
         'Transactions.List',
         'Reports.List',
+        'Crowdsource.List',
     ];
 
     protected $createPermissionsCrowdsourceAccount = [

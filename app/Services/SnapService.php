@@ -132,11 +132,14 @@ class SnapService
             $snaps->comment = $request->input('comment');
             $snaps->update();
 
+            $tags = $this->getCountOfTags($snaps->files);
             $data = [
                 'action' => 'approve',
                 'data' => [
                     'snap_id' => $snaps->id,
                     'comment' => $snaps->comment,
+                    'add_tag' => $tags['crowdsource_add'],
+                    'edit_tag' => $tags['crowdsource_edit'],
                 ],
             ];
 
@@ -145,11 +148,14 @@ class SnapService
             $snaps->comment = $request->input('comment');
             $snaps->update();
 
+            $tags = $this->getCountOfTags($snaps->files);
             $data = [
                 'action' => 'reject',
                 'data' => [
                     'snap_id' => $snaps->id,
                     'comment' => $snaps->comment,
+                    'add_tag' => $tags['crowdsource_add'],
+                    'edit_tag' => $tags['crowdsource_edit'],
                 ],
             ];
 
@@ -179,23 +185,6 @@ class SnapService
         $snaps->payment_method = $request->input('payment_method');
         $snaps->longitude = !$request->has('longitude') ? 0.00 : $request->input('longitude');
         $snaps->latitude = !$request->has('latitude') ? 0.00 : $request->input('latitude');
-
-        if ($snaps->created_at == $snaps->updated_at) {
-            $userId = auth()->user()->id;
-            $tags = $this->getCountOfTags($snaps->files);
-            $data = [
-                'action' => 'update',
-                'data' => [
-                    'snap_id' => $snaps->id,
-                    'add_tag' => $tags['crowdsource_add'],
-                    'edit_tag' => $tags['crowdsource_edit'],
-                ],
-            ];
-
-            $data = json_encode($data);
-
-            event(new CrowdsourceEvent($userId, self::ACTION_BEHAVIOUR, $data));
-        }
 
         $snaps->update();
         

@@ -61,6 +61,6 @@ class User extends Authenticatable
 
     public function crowdsourceActivities()
     {
-        return $this->hasMany(CrowdsourceActivity::class, 'user_id', 'id');
+        return $this->hasMany(CrowdsourceActivity::class, 'user_id', 'id')->orderBy('created_at', 'DESC');
     }
 }

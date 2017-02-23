@@ -10,7 +10,7 @@
         <div class="form-horizontal">
             <div class="col-md-4">
                 <div id="imgtag">
-                    <img src="{{ config('filesystems.s3url') . $snapFile->file_path }}" id="tag-image" alt="{{ $snapFile->id }}" class="margin img-responsive">
+                    <img src="{{ config('filesystems.s3url') . $snapFile->file_path }}" id="tag-image" alt="{{ $snapFile->id }}" class="margin img-responsive" style="height: 500px">
                     <div id="tagbox">
                     </div>                    
                 </div>                
@@ -172,15 +172,17 @@
             'display' : 'none',
         });
         var options = {};
-        var data = [
-            Taggd.Tag.createFromObject({
-                position: { x: img_x, y: img_y },
-                text: this.value,
-                popupAttributes: {
-                    id: id+"popup",
-                },
-            }),
-        ];
+        if (img_x != '' || img_y != '') {
+            var data = [
+                Taggd.Tag.createFromObject({
+                    position: { x: img_x, y: img_y },
+                    text: this.value,
+                    popupAttributes: {
+                        id: id+"popup",
+                    },
+                }),
+            ];
+        }
 
         var taggd = new Taggd(image, options, data);
 
@@ -301,16 +303,17 @@
             var taggd;
             $.getJSON( id+"/tagging" , function( datas ) {
                 $.each( datas, function( key, value ) {
-
-                    data.push(
-                        Taggd.Tag.createFromObject({
-                            position: { x: value.img_x, y: value.img_y },
-                            text: value.name,
-                            buttonAttributes: {
-                                id: value.id+"-tag",
-                            },
-                        })
-                    );
+                    if (value.img_x != null || value.img_y != null) {
+                        data.push(
+                            Taggd.Tag.createFromObject({
+                                position: { x: value.img_x, y: value.img_y },
+                                text: value.name,
+                                buttonAttributes: {
+                                    id: value.id+"-tag",
+                                },
+                            })
+                        );
+                    }
                 });
                 taggd = new Taggd(image, options, data);
             }, "json");
