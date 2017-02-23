@@ -139,7 +139,7 @@
                                     <div class="form-group" id="map"></div>
                                 @endif -->                                
                                 <div class="form-group">
-                                    <button type="submit" class="btn btn-primary btn-sm btn-block tab-side" tabIndex="11" id="submit">
+                                    <button type="submit" class="btn btn-primary btn-sm btn-block tab-side" id="submit">
                                         <i class="fa fa-save fa-btn"></i> Update Snap
                                     </button>
                                 </div>
