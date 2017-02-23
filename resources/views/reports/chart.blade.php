@@ -19,7 +19,7 @@
                 </div>
             </div>
             <div class="box-body" style="padding-left: {{$size['padding']}}%;"> 
-                <div class="chart-js" align="center" style="width: {{$size['width']}}%!important;">
+                <div class="col-md-6">
                     <canvas id="myChart" width="400" height="400"></canvas>
                 </div>                                  
             </div>
