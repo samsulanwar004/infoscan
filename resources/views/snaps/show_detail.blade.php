@@ -46,7 +46,7 @@
 	  <option value="PC Packaging: Sachet| PC Weight: ">
 	</datalist>
 
-	@if($snap->mode_type != 'tags')
+	@if($snap->mode_type == 'image' || $snap->mode_type == 'audios')
 	<div class="button-container">
         <a class="btn btn-default" id="add-show">
             <i class="fa fa-plus fa-btn"></i>Create New
