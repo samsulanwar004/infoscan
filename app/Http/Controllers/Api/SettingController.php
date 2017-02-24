@@ -16,12 +16,7 @@ class SettingController extends BaseApiController
 
         try {
         	$data['provinces'] = $this->provinceData();
-	        $data['monthly_expenses'] = [
-	        	['min' => 0, 'max' => 1000000],
-	        	['min' => 1000000, 'max' => 3000000],
-	        	['min' => 3000000, 'max' => 5000000],
-	        	['min' => 5000000, 'max' => 10000000],
-	        ];
+	        $data['monthly_expenses'] = $this->sesData();
 	        $data['toc'] = 'Lorem ipsum dolor sit amet aja dah mah';
 	        $data['banks'] = $commonConfigs['banks'];
 	        $data['latest_educations'] = $commonConfigs['latest_educations'];
@@ -38,5 +33,15 @@ class SettingController extends BaseApiController
     	//$plucked = $p->pluck('name', 'id');
 
     	return $p;
+    }
+
+    private function sesData()
+    {
+        $ses = \App\SocioEconomicStatus::orderBy('range_start')
+            ->select('range_start as min', 'range_end as max')
+            ->get();
+        $s = collect($ses)->toArray();
+        
+        return $s;
     }
 }
