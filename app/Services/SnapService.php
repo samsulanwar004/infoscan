@@ -64,32 +64,35 @@ class SnapService
         $this->s3Url = env('S3_URL', '');
     }
 
-    public function getAvailableSnaps($code = null)
+    public function getAvailableSnaps()
     {
-        $snap = new Snap;
-        if ($code) {
-            return $snap->where('transaction_code', $code)->first();
-        }
-
-        return $snap->orderBy('created_at', 'desc')->paginate(100);
+        return Snap::with('member')
+            ->with('files')
+            ->paginate(50);
     }
 
     public function getSnapsByFilter($type, $mode)
     {
-        return Snap::where('snap_type', '=', $type)
+        return Snap::with('member')
+            ->with('files')
+            ->where('snap_type', '=', $type)
             ->where('mode_type', '=', $mode)
             ->paginate(50);
     }
 
     public function getSnapsByType($type)
     {
-        return Snap::where('snap_type', '=', $type)
+        return Snap::with('member')
+            ->with('files')
+            ->where('snap_type', '=', $type)
             ->paginate(50);
     }
 
     public function getSnapsByMode($mode)
     {
-        return Snap::where('mode_type', '=', $mode)
+        return Snap::with('member')
+            ->with('files')
+            ->where('mode_type', '=', $mode)
             ->paginate(50);
     }
 
