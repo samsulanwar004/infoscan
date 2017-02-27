@@ -9,7 +9,10 @@
             'Edit' => false]
         ]
     )
-
+<?php 
+  $type = config('common.transaction.transaction_type');
+  $memberCode = config('common.transaction.member');
+?>
     <!-- Main content -->
     <section class="content">
 
@@ -38,7 +41,7 @@
                   <div class="row invoice-info">                
                     <div class="col-sm-4 invoice-col">
                       <b>Transaction Code :</b> {{ $transaction->transaction_code }}<br>                      
-                      <b>Transaction Type :</b> {{ $transaction->transaction_type }}<br>
+                      <b>Transaction Type :</b> {{ array_search($transaction->transaction_type, $type) }}<br>
                       <b>Member Code :</b> {{ $transaction->member_code }}<br>
                     </div>
                     <!-- /.col -->
@@ -60,8 +63,8 @@
                         <tbody>
                         @foreach($transaction->transactionDetail as $detail)
                         <tr>
-                          <td>{{ $detail->member_code_from }}</td>
-                          <td>{{ $detail->member_code_to }}</td>
+                          <td>{{ array_search($detail->member_code_from, $memberCode) }}</td>
+                          <td>{{ array_search($detail->member_code_to, $memberCode) }}</td>
                           <td>{{ $detail->amount }}</td>
                           <td>{{ $detail->detail_type }}</td>
                         </tr>   

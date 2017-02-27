@@ -43,7 +43,7 @@ class TransactionService
     public function getCreditMember($member_code)
 	{
         //config transaction
-        $member = config('common.transaction.member.snap');
+        $member = config('common.transaction.member.user');
 
 		$cr = \DB::table('transactions')
             ->join('transaction_detail', 'transactions.id', '=', 'transaction_detail.transaction_id')
@@ -95,5 +95,26 @@ class TransactionService
     public function getTransactionBySnapId($snapId)
     {
         return Transaction::where('snap_id', $snapId)->first();
+    }
+
+    public function redeemPointToLuckyDraw($transaction, $datas)
+    {
+        $t = new Transaction;
+        $t->transaction_code = strtolower(str_random(10));
+        $t->member_code = $transaction['member_code'];
+        $t->transaction_type = config('common.transaction.transaction_type.redeem');
+
+        $t->save();
+
+        foreach($datas['detail_transaction'] as $data) {
+            $td = new TransactionDetail;
+            $td->member_code_from = $data['member_code_from'];
+            $td->member_code_to = $data['member_code_to'];
+            $td->amount = $data['amount'];
+            $td->detail_type = $data['detail_type'];
+            $td->transaction()->associate($t);
+            $td->save();
+        }
+
     }
 }

@@ -33,8 +33,8 @@ class PointCalculation implements ShouldQueue
     public function handle()
     {
         $point = (new PointService)->calculateApprovePoint($this->data);
-        $kasir = config('common.transaction.member.kasir');
-        $member = config('common.transaction.member.snap');
+        $kasir = config('common.transaction.member.cashier');
+        $member = config('common.transaction.member.user');
         $data = [
             'snap_id' => $this->data->id,
             'detail_transaction' => [

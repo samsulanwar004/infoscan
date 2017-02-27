@@ -16,8 +16,8 @@ class SosioEconomicStatus extends Migration
         Schema::create('socio_economic_status', function (Blueprint $table) {
             $table->increments('id');
             $table->string('code', 2)->unique();
-            $table->decimal('range_start', 15, 5)->default(0);
-            $table->decimal('range_end', 15, 5)->default(0);
+            $table->double('range_start');
+            $table->double('range_end');
 
             $table->timestamps();
             $table->softDeletes();

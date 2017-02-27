@@ -49,3 +49,10 @@
     @endforelse
     </tbody>
 </table>
+<script type="text/javascript">
+    loadTotal();
+    function loadTotal()
+    {
+       document.getElementById('total').innerHTML = "Total Action : {{ $data['totalApprove'] + $data['totalReject']}} Total Add : {{ $data['totalAddTag'] }} Total Edit : {{ $data['totalEditTag'] }}";
+    }
+</script>

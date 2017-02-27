@@ -25,7 +25,8 @@
                     <thead>
                     <tr>
                         <th width="50">#</th>
-                        <th width="300">Title of Promo</th>
+                        <th width="150">Title of Promo</th>
+                        <th>Category</th>
                         <th>Start Date</th>
                         <th>End Date</th>
                         <th width="250"></th>
@@ -39,6 +40,9 @@
                             </td>
                             <td class="vertical-middle">
                                 {{ $promo->title }} <br>
+                            </td>
+                            <td class="vertical-middle">
+                                {{ $promo->category->name }} <br>
                             </td>
                             <td class="vertical-middle">{{ date_format(date_create($promo->start_at), 'M, d Y') }}</td>
                             <td class="vertical-middle">{{ date_format(date_create($promo->end_at), 'M, d Y') }}</td>
@@ -64,7 +68,7 @@
                             </td>
                         </tr>
                     @empty
-                        <td colspan="5"> There is no record for promotions data!</td>
+                        <td colspan="8"> There is no record for promotions data!</td>
                     @endforelse
                     </tbody>
                 </table>

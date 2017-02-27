@@ -15,6 +15,9 @@ class LuckyDrawTransformer extends TransformerAbstract
             'description'  => $lucky->description,
             'point' => $lucky->point,
             'image' => $lucky->image,
+            'start_at' => $lucky->start_at,
+            'end_at' => $lucky->end_at,
+            'multiple' => $lucky->is_multiple,
         ];
     }
 }

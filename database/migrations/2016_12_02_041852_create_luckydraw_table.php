@@ -32,6 +32,7 @@ class CreateLuckydrawTable extends Migration
             $t->increments('id');
             $t->integer('member_id')->unsigned();
             $t->integer('luckydraw_id')->unsigned();
+            $t->integer('random_number', 7);
             $t->timestamps();
 
             $t->foreign('member_id', 'FK_member_id_in_member_lucky_draws')

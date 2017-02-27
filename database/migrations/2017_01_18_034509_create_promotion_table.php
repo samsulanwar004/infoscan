@@ -26,6 +26,7 @@ class CreatePromotionTable extends Migration
             $table->string('updated_by', 150)->nullable();
             $table->boolean('is_active')->default(1);
             $table->string('image')->nullable();
+            $table->double('point')->nullable();
             $table->timestamps();
 
             $table->foreign('merchant_id', 'FK_merchant_id_in_promotions')
