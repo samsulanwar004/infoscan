@@ -11,44 +11,6 @@ class CrowdsourceService
 
 	const NAME_ROLE = 'Crowdsource Account';
 
-	public function getActivityById($id)
-	{
-		
-		$user = $this->getCrowdsourceById($id);
-
-    	$action = [];
-    	$addTag = [];
-    	$editTag = [];
-
-    	foreach ($user->crowdsourceActivities as $activities) {
-    		$extract = json_decode($activities->description);
-    		$action[] =  $extract->action;
-    		
-    		if ($extract->action == 'update') {
-    			$addTag[] = $extract->data->add_tag;
-    			$editTag[] = $extract->data->edit_tag;
-    		}
-    	}
-    	
-    	$action = array_count_values($action);
-
-    	$totalAddTag = collect($addTag)->sum();
-    	$totalEditTag = collect($editTag)->sum();  	
-    	$totalUpdate = isset($action['update']) ? $action['update'] : 0;
-    	$totalApprove = isset($action['approve']) ? $action['approve'] : 0;
-    	$totalReject = isset($action['reject']) ? $action['reject'] : 0;
-
-    	$data = [
-    		'totalAddTag' => $totalAddTag,
-    		'totalEditTag' => $totalEditTag,
-    		'totalUpdate' => $totalUpdate,
-    		'totalApprove' => $totalApprove,
-    		'totalReject' => $totalReject,
-    	];
-
-    	return $data;
-	}
-
 	public function getCrowdsourceById($id)
 	{
 		return User::with('crowdsourceActivities')
@@ -77,5 +39,53 @@ class CrowdsourceService
 	{
 		return CrowdsourceActivity::where('id', $id)->first();
 	}
+
+    public function getCrowdsourceActivityByFilter($request)
+    {
+        $id = $request->input('id');
+        $start = $request->input('start_at');
+        $end = $request->input('end_at');
+
+        $activities = $this->getCrowdsourceActivityByUserId($id);
+
+        $activities = $activities->filter(function($value, $Key) use ($start, $end) {
+            return $value->created_at->format('Y-m-d') >= $start &&
+                    $value->created_at->format('Y-m-d') <= $end;
+        });
+
+        return $activities;
+    }
+
+    public function getCalculateCrowdsource($activities)
+    {
+
+        $action = [];
+        $addTag = [];
+        $editTag = [];
+
+        foreach ($activities as $activity) {
+            $extract = json_decode($activity->description);
+            $action[] =  $extract->action;
+            $addTag[] = $extract->data->add_tag;
+            $editTag[] = $extract->data->edit_tag;
+        }
+        
+        $action = array_count_values($action);
+
+        $totalAddTag = collect($addTag)->sum();
+        $totalEditTag = collect($editTag)->sum();   
+        $totalUpdate = isset($action['update']) ? $action['update'] : 0;
+        $totalApprove = isset($action['approve']) ? $action['approve'] : 0;
+        $totalReject = isset($action['reject']) ? $action['reject'] : 0;
+
+        $data = [
+            'totalAddTag' => $totalAddTag,
+            'totalEditTag' => $totalEditTag,
+            'totalApprove' => $totalApprove,
+            'totalReject' => $totalReject,
+        ];
+
+        return $data;
+    }
 
 }
