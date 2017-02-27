@@ -15,7 +15,7 @@ class CreateTransactionTable extends Migration
     {
         Schema::create('transactions', function (Blueprint $t) {
             $t->increments('id');
-            $t->unsignedInteger('snap_id');
+            $t->unsignedInteger('snap_id')->nullable();
             $t->string('transaction_code', 20)->unique();
             $t->string('member_code', 10)->index();
             $t->unsignedInteger('transaction_type')->index(); // [1=>'add_point_to_member', 2=>'redeem_point_to_cash']

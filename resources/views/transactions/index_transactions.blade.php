@@ -33,7 +33,10 @@
                                 {{ $transaction->member_code }} <br>
                             </td>
                             <td class="vertical-middle">
-                                {{ $transaction->transaction_type }} <br>
+                               <?php 
+                                    $type = config('common.transaction.transaction_type');
+                                    echo array_search($transaction->transaction_type, $type);
+                                ?> <br>
                             </td>
                             <td class="vertical-middle">
                                 {{ date_format(date_create($transaction->created_at), 'M, d Y') }} <br>
