@@ -9,6 +9,7 @@ use Cache;
 use App\Transformers\LuckyDrawTransformer;
 use App\Services\TransactionService;
 use Auth;
+use App\MemberLuckyDraw;
 
 class LuckyDrawService
 {
@@ -141,50 +142,95 @@ class LuckyDrawService
 				->transformWith(new LuckyDrawTransformer)
 				->toArray();
 			// save in lucky cache	
-			Cache::put('lucky', $transform, $this->date->addMinutes(10));
+			//Cache::put('lucky', $transform, $this->date->addMinutes(10));
 
 			return $transform;
 		}
 	}
 
-	public function redeemPoint(Request $request)
+	public function getRandomNumber($request)
 	{
-		//check point member
-		$member_code = '123'; //dummy
-		$point = (new TransactionService)->getCreditMember($member_code);
+		$code = $request->input('code');
+		$point = $request->input('point');
+		$lucky = $this->getLuckyDrawByCode($code);
+		$member = auth('api')->user();
 
-		if ($point < $request->input('point'))
+		if ($lucky == false)
 		{
-			$message = "Point not enough";
-			return $message;
-		} else if ($request->input('point') == 0) {
-			$message = "Request point is not 0";
-			return $message;
+			throw new \Exception("Lucky Draw Code not found!", 1);			
 		}
 
-		$data = [
-            'member_code' => 123,
-            'transaction_type' => 102,
-            'transaction_detail' =>
-            [
-                '0' => array (
-                'member_code_from' => 'kasir',
-                'member_code_to' => 'member',
-                'amount' => $request->input('point'),
-                'detail_type' => 'cr'
-                ),
-                '1' => array (
-                    'member_code_from' => 'member',
-                    'member_code_to' => 'kasir',
-                    'amount' => $request->input('point'),
+		if ($lucky->is_multiple == 0)
+		{
+			$checkMultiple = $this->isMultipleLuckyDraw($member->id, $lucky->id);
+
+			if ($checkMultiple == true) {
+				throw new \Exception("Lucky Draw is not multiple", 1);				
+			}
+		}
+
+		$currentMemberPoint = (new TransactionService)->getCreditMember($member->member_code);
+
+		if ($currentMemberPoint < $point)
+		{
+			throw new \Exception("Credit not enough!", 1);			
+		}
+
+		$transaction = [
+			'member_code' => $member->member_code,
+			'point' => $point,
+		];
+
+		//credit point to member
+		$this->transactionCredit($transaction);
+
+		$randomNumber = pseudo_random_text('numeric', 7);
+
+		$mld = new MemberLuckyDraw;
+		$mld->random_number = $randomNumber;
+		$mld->member()->associate($member);
+		$mld->luckydraw()->associate($lucky);
+
+		$mld->save();
+
+		return $randomNumber;		
+	}
+
+	public function getLuckyDrawByCode($code)
+	{
+		return LuckyDraw::where('luckydraw_code', '=', $code)
+			->first();
+	}
+
+	public function transactionCredit($transaction)
+	{
+		$kasir = config('common.transaction.member.cashier');
+        $member = config('common.transaction.member.user');
+        $data = [
+            'detail_transaction' => [
+                '0' => [
+                    'member_code_from' => $kasir,
+                    'member_code_to' => $member,
+                    'amount' => $transaction['point'],
+                    'detail_type' => 'cr'
+                ],
+                '1' => [
+                    'member_code_from' => $member,
+                    'member_code_to' => $kasir,
+                    'amount' => $transaction['point'],
                     'detail_type' => 'db'
-                ),
-            ]
-        ];  
-		//save to transaction
-		(new TransactionService($data))->create();
-		//TODO: undian voucher
-		return "ok";
+                ],
+            ],
+        ];
+
+        (new TransactionService())->redeemPointToLuckyDraw($transaction, $data);
+	}
+
+	public function isMultipleLuckyDraw($memberId, $luckydrawId)
+	{
+		return MemberLuckyDraw::where('member_id', '=', $memberId)
+			->where('luckydraw_id', '=', $luckydrawId)
+			->first();
 	}
 
 }

@@ -30,17 +30,11 @@ class LuckyDrawController extends BaseApiController
                 return $this->error($validation->errors());
             }
 
-			$lucky = (new LuckyDrawService)->redeemPoint($request);
+			$number = (new LuckyDrawService)->getRandomNumber($request);
 
-			if ($lucky == "ok") {
-				return $this->success();
-			} else {
-				return $this->error($lucky);
-			}
+			return $this->success($number, 200);
 			
 		} catch (Exception $e) {
-			logger($e);
-
             return $this->error($e);
 		}
 	}
@@ -55,7 +49,7 @@ class LuckyDrawController extends BaseApiController
     {
 
         $rules = [
-            'luckydraw_code' => 'required|size:10',
+            'code' => 'required|size:10',
             'point' => 'required',
         ];
 

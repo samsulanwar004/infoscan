@@ -96,6 +96,8 @@
         $('.datepicker').daterangepicker({
             timePicker: true,
             timePicker24Hour: true,
+            minDate: "<?php echo \Carbon\Carbon::today()->toDateString(); ?>",
+            maxDate: -0,
             locale: {
                 format: 'YYYY-MM-DD HH:mm:ss'
             },
