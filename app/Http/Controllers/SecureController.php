@@ -84,7 +84,7 @@ class SecureController extends BaseApiController
         try {
             $validation = Validator::make($request->all(), [
                 'name' => 'required',
-                'social_media_type' => 'required|in:facebook,google',
+                'social_media_type' => 'required|in:facebook,google,instagram',
             ]);
 
             if ($validation->fails()) {
