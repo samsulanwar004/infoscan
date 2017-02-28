@@ -24,6 +24,7 @@ Route::group([
     Route::get('/snap', 'Api\SnapController@index');
     Route::post('/snap', 'Api\SnapController@store');
     Route::get('/promotion', 'Api\PromotionController@index');
+    Route::get('/categories', 'Api\PromotionController@categories');
     Route::get('/luckydraw', 'Api\LuckyDrawController@index');
     Route::post('/luckydraw', 'Api\LuckyDrawController@store');
     Route::get('/me', 'Api\MemberController@show');
