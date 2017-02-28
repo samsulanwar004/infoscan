@@ -19,4 +19,15 @@ class PromotionController extends BaseApiController
 		}
 	}
 
+	public function categories()
+	{
+		try {
+			$categories = (new PromotionService)->getApiCategories();
+
+			return $this->success($categories, 200);
+		} catch (Exception $e) {
+			return $this->error($e);
+		}
+	}
+
 }
