@@ -20,9 +20,11 @@ class CrowdsourceController extends AdminController
     public function show($id)
     {
         $this->isAllowed('Crowdsource.List');
-    	$activities = (new CrowdsourceService)->getCrowdsourceActivityByUserId($id);
+        $crowdsource = (new CrowdsourceService);
+    	$activities = $crowdsource->getCrowdsourceActivityByUserId($id);
+        $data = $crowdsource->getCalculateCrowdsource($activities);
 
-    	return view('crowdsource.show', compact('activities', 'id'));
+    	return view('crowdsource.show', compact('activities', 'data', 'id'));
     }
 
     public function detailActivity($id)
@@ -37,18 +39,13 @@ class CrowdsourceController extends AdminController
     }
 
     public function dateFilter(Request $request)
-    {
+    {        
         $id = $request->input('id');
-    	$start = $request->input('start_at');
-    	$end = $request->input('end_at');
+        $crowdsource = (new CrowdsourceService);
+        $activities = $crowdsource->getCrowdsourceActivityByFilter($request);
 
-    	$activities = (new CrowdsourceService)->getCrowdsourceActivityByUserId($id);
+        $data = $crowdsource->getCalculateCrowdsource($activities);
 
-        $activities = $activities->filter(function($value, $Key) use ($start, $end) {
-            return $value->created_at->format('Y-m-d') >= $start &&
-                    $value->created_at->format('Y-m-d') <= $end;
-        });
-
-    	return view('crowdsource.table_activity', compact('activities'));
+    	return view('crowdsource.table_activity', compact('activities', 'data', 'id'));
     }
 }

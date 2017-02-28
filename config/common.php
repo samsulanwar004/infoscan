@@ -269,8 +269,8 @@ return [
             'redeem' => '2',
         ],
         'member' => [
-            'kasir' => '101',
-            'snap' => '102',
+            'cashier' => '101',
+            'user' => '102',
         ],
     ],
     //chart

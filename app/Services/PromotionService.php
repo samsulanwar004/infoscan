@@ -49,6 +49,7 @@ class PromotionService
 		$p->start_at = $dateArray[0];
 		$p->end_at = $dateArray[1];
 		$p->url = $request->input('url');
+		$p->point = $request->input('point');
 		$p->created_by = Auth::user()->id;
 		$p->is_active = $request->has('is_active') ? 1 : 0;
 		$p->merchant()->associate($mi);
@@ -103,6 +104,7 @@ class PromotionService
 		$p->start_at = $dateArray[0];
 		$p->end_at = $dateArray[1];
 		$p->url = $request->input('url');
+		$p->point = $request->input('point');
 		$p->updated_by = Auth::user()->id;
 		$p->is_active = $request->has('is_active') ? 1 : 0;
 		$p->category_id = $request->input('category');
@@ -142,7 +144,8 @@ class PromotionService
      */
 	public function getAllPromotion()
 	{
-		$p = Promotion::where('is_active', '=', 1)
+		$p = Promotion::with('category')
+			->where('is_active', '=', 1)
             ->orderBy('id', 'DESC')
             ->paginate(50);
 
@@ -155,8 +158,8 @@ class PromotionService
      */
 	public function getPromotionByMerchantId($mi)
 	{
-		$p = DB::table('merchants')
-            ->join('promotions', 'merchants.id', '=', 'promotions.merchant_id')
+		$p = Promotion::with('category')
+			->with('merchant')
             ->where('merchant_id', '=', $mi->id)
             ->where('is_active', '=', 1)
             ->orderBy('promotions.id', 'DESC')
@@ -183,13 +186,11 @@ class PromotionService
 			return Cache::get('promotion');
 		} else {
 
-			$p = DB::table('promotions')
-            ->join('product_categories', 'promotions.category_id', '=', 'product_categories.id')
-            ->select('promotions.id', 'promotions.title', 'promotions.description', 'promotions.url', 'promotions.image', 'product_categories.icon', 'product_categories.background')
-            ->where('is_active', '=', 1)
-			->where('start_at', '<=', $this->date)
-			->where('end_at', '>=', $this->date)
-            ->get();
+			$p = Promotion::with('category')
+	            ->where('is_active', '=', 1)
+				->where('start_at', '<=', $this->date)
+				->where('end_at', '>=', $this->date)
+	            ->get();
 
 			$transform = fractal()
 				->collection($p)

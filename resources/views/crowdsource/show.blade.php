@@ -19,8 +19,9 @@
                             <i class="fa fa-calendar"></i>
                         </div>
                         <meta name="csrf-token" content="{{ csrf_token() }}">
-                        <input type="text" class="form-control datepicker" name="filter_date" id="filter-date">
+                        <input type="text" class="form-control datepicker" name="filter_date" id="filter-date">                  
                     </div>
+                    <span id="total">Total Action : {{ $data['totalApprove'] + $data['totalReject']}} Total Add : {{ $data['totalAddTag'] }} Total Edit : {{ $data['totalEditTag'] }}</span>
                 </div>
                 <div class="box-tools pull-right">
                     <a href="/crowdsource" class="btn btn-box-tool" data-toggle="tooltip" title="Back"> <i

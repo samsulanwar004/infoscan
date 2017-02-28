@@ -28,7 +28,7 @@
                     </span>
                     <br>
                     <span class="small">
-                        Total image: {{ $snap->files()->count() }}
+                        Total image: {{ $snap->files->count() }}
                     </span>
 
                     <span class="small ml10">Uploaded by: <a href="{{ admin_route_url('members.show', ['id' => $snap->member->id]) }}">{{ $snap->member->email }}</a></span>

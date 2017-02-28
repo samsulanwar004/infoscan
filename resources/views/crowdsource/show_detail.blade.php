@@ -24,7 +24,7 @@
             <div class="box-body">
                 <div class="row">
 
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <p class="no-shadow">
 
                         </p>
@@ -96,7 +96,7 @@
                                                         @endforeach
                                                     @endif
 
-                                                @endforeach
+                                                @endforeach                                                       
                                             </tbody>
                                         </table>
                                     </div>
@@ -108,7 +108,7 @@
                         </div>
 
                     </div>   
-                    <div class="col-md-2">
+                    <!-- <div class="col-md-2">
                         <p class="no-shadow">
 
                         </p>
@@ -126,7 +126,7 @@
                                 <td><span class="badge bg-blue">{{ $extract->data->edit_tag }}</span></td>
                             </tr>                            
                           </table>
-                    </div>          
+                    </div>      -->     
                 </div>
             </div>
         </div>
