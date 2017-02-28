@@ -19,7 +19,6 @@ class CreateSnapsTable extends Migration
             $table->increments('id');
             $table->string('request_code', 10)->unique();
             $table->integer('member_id')->unsigned();
-            $table->unsignedInteger('user_id')->nullable();
             $table->string('snap_type', 15);
             $table->string('mode_type', 10)->nullable();
             $table->string('status', 10)->default('new');
@@ -46,6 +45,7 @@ class CreateSnapsTable extends Migration
                   ->references('id')->on('members')
                   ->onDelete('no action')
                   ->onUpdate('no action');
+
         });
     }
 

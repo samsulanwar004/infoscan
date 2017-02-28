@@ -53,7 +53,7 @@ class LuckyDrawController extends AdminController
         try {
             (new LuckyDrawService)->createLuckyDraw($request);
         } catch (\Exception $e) {
-            return back()->with('errors', $e->getMessage);
+            return back()->with('errors', $e->getMessage());
         }
 
         return redirect($this->redirectAfterSave)->with('success', 'Lucky draw successfully created!');
@@ -121,9 +121,6 @@ class LuckyDrawController extends AdminController
             $l = (new LuckyDrawService)->getLuckyDrawById($id);
             $l->delete();
 
-            if ($l->image != null) {
-                \Storage::delete('public/luckydraws/' . $l->image);
-            }
         } catch (\Exception $e) {
             return back()->with('errors', $e->getMessage);
         }

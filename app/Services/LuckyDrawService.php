@@ -10,18 +10,30 @@ use App\Transformers\LuckyDrawTransformer;
 use App\Services\TransactionService;
 use Auth;
 use App\MemberLuckyDraw;
+use App\Libraries\ImageFile;
+use Image;
+use Storage;
 
 class LuckyDrawService
 {
+
+	const DEFAULT_FILE_DRIVER = 's3';
+	const RESIZE_IMAGE = [240,240];
 
 	/**
      * @var string
      */
 	protected $date;
 
+	/**
+     * @var string
+     */
+	protected $s3Url;
+
 	public function __construct()
 	{
 		$this->date = Carbon::now('Asia/Jakarta');
+		$this->s3Url = env('S3_URL', '');
 	}
 
 	/**
@@ -53,8 +65,20 @@ class LuckyDrawService
                 $file->getClientOriginalExtension()
             );
 
-            $l->image = $filename;
-            $file->storeAs('luckydraws', $filename, 'public');
+            //tmp file in storage local
+            $path = storage_path('app/public')."/luckydraws/".$filename;
+            //resize image
+            $image = new ImageFile(Image::make($file->path())
+            	->resize(self::RESIZE_IMAGE[0], self::RESIZE_IMAGE[1])
+            	->save($path));
+
+            Storage::disk(self::DEFAULT_FILE_DRIVER)
+            	->putFileAs('luckydraws', $image, $filename, 'public');
+
+            //delete file tmp
+            Storage::delete('public/luckydraws/' . $filename);
+
+            $l->image = $this->completeImageLink('luckydraws/'.$filename);
         }
 
 		$l->save();
@@ -72,6 +96,7 @@ class LuckyDrawService
 
 		$date = $request->input('start_at');
 		$dateArray = explode(' - ', $date);
+		$LuckyDrawCode = strtolower(str_random(10));
 
 		$l = $this->getLuckyDrawById($id);
 		$l->title = $request->input('title');
@@ -89,13 +114,25 @@ class LuckyDrawService
             $file = $request->file('image');
             $filename = sprintf(
                 "%s-%s.%s",
-                $l->luckydraw_code,
+                $LuckyDrawCode,
                 date('Ymdhis'),
                 $file->getClientOriginalExtension()
             );
 
-            $l->image = $filename;
-            $file->storeAs('luckydraws', $filename, 'public');
+            //tmp file in storage local
+            $path = storage_path('app/public')."/luckydraws/".$filename;
+            //resize image
+            $image = new ImageFile(Image::make($file->path())
+            	->resize(self::RESIZE_IMAGE[0], self::RESIZE_IMAGE[1])
+            	->save($path));
+
+            Storage::disk(self::DEFAULT_FILE_DRIVER)
+            	->putFileAs('luckydraws', $image, $filename, 'public');
+
+            //delete file tmp
+            Storage::delete('public/luckydraws/' . $filename);
+
+            $l->image = $this->completeImageLink('luckydraws/'.$filename);
         }
 
 		$l->update();
@@ -232,5 +269,14 @@ class LuckyDrawService
 			->where('luckydraw_id', '=', $luckydrawId)
 			->first();
 	}
+
+	/**
+     * @param $filename
+     * @return string
+     */
+    protected function completeImageLink($filename)
+    {
+        return $this->s3Url . '' . $filename;
+    }
 
 }

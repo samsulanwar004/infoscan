@@ -199,7 +199,7 @@ class PromotionService
 				->transformWith(new PromotionTransformer)
 				->toArray();
 			// save in promotion cache	
-			Cache::put('promotion', $transform, $this->date->addMinutes(10));
+			//Cache::put('promotion', $transform, $this->date->addMinutes(10));
 
 			return $transform;
 		}

@@ -13,7 +13,7 @@ class UpdateTable extends Migration
      */
     public function up()
     {
-        Schema::table('transaction', function (Blueprint $t) {
+        Schema::table('transactions', function (Blueprint $t) {
             $t->unsignedInteger('snap_id')->nullable();
         });
 
