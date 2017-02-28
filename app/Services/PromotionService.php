@@ -9,9 +9,11 @@ use Auth;
 use Carbon\Carbon;
 use Cache;
 use App\Transformers\PromotionTransformer;
+use App\Transformers\CategoriesTransformer;
 use App\Libraries\ImageFile;
 use Image;
 use Storage;
+use App\ProductCategory;
 
 class PromotionService
 {
@@ -211,6 +213,18 @@ class PromotionService
     protected function completeImageLink($filename)
     {
         return $this->s3Url . '' . $filename;
+    }
+
+    public function getApiCategories()
+    {
+    	$c = ProductCategory::get();
+
+    	$transform = fractal()
+			->collection($c)
+			->transformWith(new CategoriesTransformer)
+			->toArray();
+
+		return $transform;
     }
 
 }
