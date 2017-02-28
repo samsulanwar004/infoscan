@@ -27,6 +27,7 @@ class CreateMemberTable extends Migration
             $t->string('social_media_url')->nullable();
             $t->string('social_media_type')->nullable();
             $t->date('dob')->index()->nullable();
+            $t->integer('monthly_expense_code')->index()->nullable();
             $t->integer('monthly_expense_min')->index()->default(0);
             $t->integer('monthly_expense_max')->index()->default(0);
             $t->tinyInteger('person_in_house', false, true)->index()->default(1);

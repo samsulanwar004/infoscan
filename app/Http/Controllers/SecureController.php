@@ -81,21 +81,21 @@ class SecureController extends BaseApiController
      */
     public function register(Request $request)
     {
-        $validation = Validator::make($request->all(), [
-            'name' => 'required',
-            'social_media_type' => 'required|in:facebook,google',
-        ]);
+        try {
+            $validation = Validator::make($request->all(), [
+                'name' => 'required',
+                'social_media_type' => 'required|in:facebook,google,instagram',
+            ]);
 
-        if ($validation->passes()) {
-            try {
-                $secure = (new SecureService)->registerManualHandle($request);
-
-                return $this->success($secure);
-            } catch (\Exception $e) {
-                return $this->error($e);
+            if ($validation->fails()) {
+                return $this->error($validation->errors(), 400, true);
             }
-        }
 
-        return $this->error($validation->errors());
+            $secure = (new SecureService)->registerManualHandle($request);
+
+            return $this->success($secure);
+        } catch (\Exception $e) {
+            return $this->error($e);
+        }
     }
 }
