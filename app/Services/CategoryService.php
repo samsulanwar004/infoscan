@@ -147,7 +147,7 @@ class CategoryService
             //delete file tmp
             Storage::delete('public/product-categories/' . $backgroundname);
 
-            $category->icon = $this->completeImageLink('product-categories/'.$backgroundname);
+            $category->background = $this->completeImageLink('product-categories/'.$backgroundname);
         }
 
         $category->update();
