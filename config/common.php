@@ -316,4 +316,12 @@ return [
             ],
         ],
     ],
+    //queue list
+    'queue_list' => [
+        'crowdsource_log' => 'crowdsourceLog',
+        'member_log' => 'memberLog',
+        'point_process' => 'pointProcess',
+        'transaction_process' => 'transactionProcess',
+        'assign_process' => 'assignProcess',
+    ],
 ];
