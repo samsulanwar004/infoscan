@@ -24,7 +24,11 @@ class CrowdsourceController extends AdminController
     	$activities = $crowdsource->getCrowdsourceActivityByUserId($id);
         $data = $crowdsource->getCalculateCrowdsource($activities);
 
-    	return view('crowdsource.show', compact('activities', 'data', 'id'));
+        $user = $crowdsource->getSnapByUserId($id);
+
+        $assign = count($user->snaps);
+
+    	return view('crowdsource.show', compact('activities', 'data', 'id', 'assign'));
     }
 
     public function detailActivity($id)
@@ -46,6 +50,10 @@ class CrowdsourceController extends AdminController
 
         $data = $crowdsource->getCalculateCrowdsource($activities);
 
-    	return view('crowdsource.table_activity', compact('activities', 'data', 'id'));
+        $snap = $crowdsource->getSnapByFilter($request, $id);
+
+        $assign = count($snap);
+
+    	return view('crowdsource.table_activity', compact('activities', 'data', 'id', 'assign'));
     }
 }
