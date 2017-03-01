@@ -10,8 +10,8 @@ use Storage;
 class CategoryService
 {
 
-    const RESIZE_ICON = [200,200];
-    const RESIZE_BACKGROUND = [400,150];
+    const RESIZE_ICON = [200,null];
+    const RESIZE_BACKGROUND = [400,null];
     const DEFAULT_FILE_DRIVER = 's3';
 
     public function __construct()
@@ -49,8 +49,9 @@ class CategoryService
             $path = storage_path('app/public')."/product-categories/".$iconname;
             //resize image
             $image = new ImageFile(Image::make($icon->path())
-                ->resize(self::RESIZE_ICON[0],self::RESIZE_ICON[1])
-                ->save($path));
+                ->resize(self::RESIZE_ICON[0],self::RESIZE_ICON[1], function ($constraint) {
+                    $constraint->aspectRatio();
+                })->save($path));
 
             Storage::disk(self::DEFAULT_FILE_DRIVER)
                 ->putFileAs('product-categories', $image, $iconname, 'public');
@@ -75,8 +76,9 @@ class CategoryService
             $path = storage_path('app/public')."/product-categories/".$backgroundname;
             //resize image
             $image = new ImageFile(Image::make($background->path())
-                ->resize(self::RESIZE_BACKGROUND[0],self::RESIZE_BACKGROUND[1])
-                ->save($path));
+                ->resize(self::RESIZE_BACKGROUND[0],self::RESIZE_BACKGROUND[1], function ($constraint) {
+                    $constraint->aspectRatio();
+                })->save($path));
 
             Storage::disk(self::DEFAULT_FILE_DRIVER)
                 ->putFileAs('product-categories', $image, $backgroundname, 'public');
