@@ -24,6 +24,7 @@
                 <table class="table table-striped">
                     <thead>
                     <tr>
+                        <th width="50">#</th>
                         <th>Lucky Draw Code</th>
                         <th>Title of Lucky Draw</th>
                         <th>Point</th>
@@ -36,6 +37,9 @@
                     <tbody>
                     @forelse($luckys as $lucky)
                         <tr>
+                            <td class="vertical-middle">
+                                <i class="fa fa-check-circle {{ $lucky->is_active == 1 ? 'text-green' : 'text-default' }}"></i>
+                            </td>
                             <td class="vertical-middle">{{ $lucky->luckydraw_code }}</td>
                             <td class="vertical-middle">
                                 {{ $lucky->title }} <br>

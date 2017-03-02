@@ -61,7 +61,7 @@
                         <div class="form-group">
                             <label for="image">Image</label><br>
                             @if($lucky->image)
-                                <img width="200" height="200" src="{{ $lucky->image }}">
+                                <img height="200" src="{{ $lucky->image }}">
                             @endif
                             <input type="file" class="form-control" id="image" name="image">
                         </div>
@@ -70,6 +70,13 @@
                             <label>
                                 <input name="is_multiple" {{ (bool)$lucky->is_multiple ? 'checked' : '' }} type="checkbox">
                                 Is Multiple ?
+                            </label>
+                        </div>
+
+                        <div class="checkbox">
+                            <label>
+                                <input name="is_active" {{ (bool)$lucky->is_active ? 'checked' : '' }} type="checkbox">
+                                Is Active ?
                             </label>
                         </div>
 
