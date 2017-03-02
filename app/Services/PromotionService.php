@@ -193,7 +193,7 @@ class PromotionService
         } else {
 
             $p = DB::table('promotions as p')
-                ->join('product_categories as pc', 'p.category_id', '=', 'pc.id')
+                ->join('product_categories as pc', 'p.product_category_id', '=', 'pc.id')
                 ->where('p.is_active', '=', 1)
                 ->where('p.start_at', '<=', $this->date)
                 ->where('p.end_at', '>=', $this->date);
