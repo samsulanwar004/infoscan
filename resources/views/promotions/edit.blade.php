@@ -42,7 +42,7 @@
                             <select class="form-control" name="category" required="required">
                                 <option value="">Select Category</option>
                                 @foreach($categories as $category)
-                                    <option @if($promotion->category_id == $category->id) selected @endif value="{{ $category->id }}">{{ $category->name }}</option>
+                                    <option @if($promotion->product_category_id == $category->id) selected @endif value="{{ $category->id }}">{{ $category->name }}</option>
                                 @endforeach
                             </select>
                         </div>

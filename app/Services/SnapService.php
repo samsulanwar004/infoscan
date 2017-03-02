@@ -15,6 +15,7 @@ use Storage;
 use App\Libraries\GoogleMap;
 use App\Events\TransactionEvent;
 use App\Jobs\PointCalculation;
+use App\Jobs\AssignJob;
 use App\Events\CrowdsourceEvent;
 use App\Events\MemberActivityEvent;
 
@@ -68,6 +69,16 @@ class SnapService
     {
         return Snap::with('member')
             ->with('files')
+            ->orderBy('created_at', 'DESC')
+            ->paginate(50);
+    }
+
+    public function getAvailableSnapByUserId($id)
+    {
+        return Snap::with('member')
+            ->with('files')
+            ->where('user_id', $id)
+            ->orderBy('created_at', 'DESC')
             ->paginate(50);
     }
 
@@ -424,7 +435,7 @@ class SnapService
             throw new Exception('Error when saving data in database!');
         }
 
-        // // send dispatcher
+        // send dispatcher
         $job = $this->getPlainDispatcher($data);
         dispatch($job);
 
@@ -459,6 +470,9 @@ class SnapService
 
         // Member log
         event(new MemberActivityEvent($member->member_code, self::ACTION_BEHAVIOUR, $data));
+
+        //assign to crowdsource
+        $this->assignToCrowdsource();
 
         return $dataSnap;
     }
@@ -523,6 +537,9 @@ class SnapService
             // Member log
             event(new MemberActivityEvent($member->member_code, self::ACTION_BEHAVIOUR, $data));
 
+            //assign to crowdsource
+            $this->assignToCrowdsource();
+
             return $dataSnap;
         }
 
@@ -560,6 +577,9 @@ class SnapService
 
             // Member log
             event(new MemberActivityEvent($member->member_code, self::ACTION_BEHAVIOUR, $data));
+
+            //assign to crowdsource
+            $this->assignToCrowdsource();
 
             return $dataSnap;
         }
@@ -628,6 +648,9 @@ class SnapService
             // Member log
             event(new MemberActivityEvent($member->member_code, self::ACTION_BEHAVIOUR, $data));
 
+            //assign to crowdsource
+            $this->assignToCrowdsource();
+
             return $dataSnap;
         }
 
@@ -686,6 +709,9 @@ class SnapService
 
             // Member log
             event(new MemberActivityEvent($member->member_code, self::ACTION_BEHAVIOUR, $data));
+
+            //assign to crowdsource
+            $this->assignToCrowdsource();
 
             return $dataSnap;
         }
@@ -1134,5 +1160,18 @@ class SnapService
     public function getEstimatedPoint()
     {
         return $this->estimatedPoint;
+    }
+
+    public function getSnapToAssign()
+    {
+        return collect(Snap::whereNull('user_id')
+            ->get())->toArray();
+    }
+
+    public function assignToCrowdsource()
+    {
+        $config = config('common.queue_list.assign_process');
+        $job = (new AssignJob())->onQueue($config);
+        dispatch($job);
     }
 }

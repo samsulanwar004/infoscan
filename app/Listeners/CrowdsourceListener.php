@@ -10,7 +10,8 @@ class CrowdsourceListener
 
     public function handle(CrowdsourceEvent $event)
     {
-        $job = (new CrowdsourceLog($event))->onQueue('crowdsourceLog');
+    	$config = config('common.queue_list.crowdsource_log');
+        $job = (new CrowdsourceLog($event))->onQueue($config);
         dispatch($job);
     }
 
