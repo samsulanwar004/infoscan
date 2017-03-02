@@ -33,7 +33,7 @@
         "symfony/css-selector": "3.1.*",
         "symfony/dom-crawler": "3.1.*"
     },
-    "repositories": [{
+   "repositories": [{
         "type": "git",
         "url": "https://pieter-rebel-works@bitbucket.org/rebelworksco/rebel-component-utilities.git"
     }, {

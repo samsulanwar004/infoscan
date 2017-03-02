@@ -191,8 +191,6 @@
 
 @section('footer_scripts')
 <link rel="stylesheet" href="{{ elixirCDN('css/report-vendor.css') }}" />
-<link rel="stylesheet" href="{{ elixirCDN('css/colorpicker.css') }}" />
-<script src="{{ elixirCDN('js/colorpicker.js') }}"></script>
 <script src="{{ elixirCDN('js/report-vendor.js') }}"></script>
 <script src="{{ elixirCDN('js/Chart.bundle.min.js') }}"></script>
 <script type="text/javascript">
