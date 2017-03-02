@@ -35,13 +35,13 @@
     },
     "repositories": [{
         "type": "git",
-        "url": "git@bitbucket.org:rebelworksco/rebel-component-utilities.git"
+        "url": "https://pieter-rebel-works@bitbucket.org/rebelworksco/rebel-component-utilities.git"
     }, {
         "type": "git",
-        "url": "git@bitbucket.org:rebelworksco/rebel-component-rbac.git"
+        "url": "https://pieter-rebel-works@bitbucket.org/rebelworksco/rebel-component-rbac.git"
     }, {
         "type": "git",
-        "url": "git@bitbucket.org:rebelworksco/rebel-component-setting.git"
+        "url": "https://pieter-rebel-works@bitbucket.org/rebelworksco/rebel-component-setting.git"
     }, {
         "type": "composer",
         "url": "https://packagist.org"
