@@ -63,4 +63,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(CrowdsourceActivity::class, 'user_id', 'id')->orderBy('created_at', 'DESC');
     }
+
+    public function snaps()
+    {
+        return $this->hasMany(Snap::class, 'user_id', 'id')->orderBy('created_at', 'DESC');
+    }
 }
