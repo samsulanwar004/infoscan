@@ -140,7 +140,7 @@ class SnapService
         
         if ($request->input('confirm') == 'approve') {
             //queue for calculate point
-            $job = (new PointCalculation($snaps))->onQueue('pointProcess');
+            $job = (new PointCalculation($snaps))->onQueue('pointProcess')->onConnection('sqs');
             dispatch($job);
             $snaps->approved_by = $userId;
             $snaps->comment = $request->input('comment');
@@ -1171,7 +1171,7 @@ class SnapService
     public function assignToCrowdsource()
     {
         $config = config('common.queue_list.assign_process');
-        $job = (new AssignJob())->onQueue($config);
+        $job = (new AssignJob())->onQueue($config)->onConnection('sqs');
         dispatch($job);
     }
 }
