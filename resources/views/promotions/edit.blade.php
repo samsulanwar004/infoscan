@@ -71,7 +71,7 @@
                         <div class="form-group">
                             <label for="image">Image</label><br>
                             @if($promotion->image)
-                                <img width="200" height="200" src="{{ $promotion->image }}">
+                                <img height="200" src="{{ $promotion->image }}">
                             @endif
                             <input type="file" class="form-control" id="image" name="image">
                         </div>
