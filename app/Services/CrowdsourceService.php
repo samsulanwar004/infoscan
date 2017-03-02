@@ -88,4 +88,36 @@ class CrowdsourceService
         return $data;
     }
 
+    public function getCrowdsourceToAssign()
+    {
+        return collect(DB::table('users')
+            ->join('users_roles', 'users.id', '=', 'users_roles.user_id')
+            ->join('roles', 'roles.id', '=', 'users_roles.role_id')
+            ->select('users.id')
+            ->where('roles.role_name', '=', self::NAME_ROLE)
+            ->get())->toArray();
+    }
+
+    public function getSnapByFilter($request, $id)
+    {
+        $start = $request->input('start_at');
+        $end = $request->input('end_at');
+
+        $user = $this->getSnapByUserId($id);
+
+        $snaps = $user->snaps->filter(function($value, $Key) use ($start, $end) {
+            return $value->created_at->format('Y-m-d') >= $start &&
+                    $value->created_at->format('Y-m-d') <= $end;
+        });
+
+        return $snaps;
+    }
+
+    public function getSnapByUserId($id)
+    {
+        return User::with('snaps')
+            ->where('id', $id)
+            ->first();
+    }
+
 }

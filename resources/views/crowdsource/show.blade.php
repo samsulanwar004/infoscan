@@ -24,6 +24,7 @@
                     <span id="total">Total Action : {{ $data['totalApprove'] + $data['totalReject']}} Total Add : {{ $data['totalAddTag'] }} Total Edit : {{ $data['totalEditTag'] }}</span>
                 </div>
                 <div class="box-tools pull-right">
+                <span id="total-assign">Total Assign : {{ $assign }}</span>
                     <a href="/crowdsource" class="btn btn-box-tool" data-toggle="tooltip" title="Back"> <i
                             class="fa fa-times"></i></a>
                 </div>

@@ -10,7 +10,8 @@ class MemberActivityListener
 
     public function handle(MemberActivityEvent $event)
     {
-        $job = (new MemberLog($event))->onQueue('memberLog');
+    	$config = config('common.queue_list.member_log');
+        $job = (new MemberLog($event))->onQueue($config);
         dispatch($job);
     }
 

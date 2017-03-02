@@ -54,5 +54,7 @@
     function loadTotal()
     {
        document.getElementById('total').innerHTML = "Total Action : {{ $data['totalApprove'] + $data['totalReject']}} Total Add : {{ $data['totalAddTag'] }} Total Edit : {{ $data['totalEditTag'] }}";
+
+       document.getElementById('total-assign').innerHTML = "Total Assign : {{ $assign }}";
     }
 </script>

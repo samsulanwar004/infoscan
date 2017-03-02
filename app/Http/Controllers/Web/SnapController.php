@@ -11,10 +11,21 @@ use PDOException;
 class SnapController extends AdminController
 {
 
+    const NAME_ROLE = 'Crowdsource Account';
+
     public function index()
     {   
         $this->isAllowed('Snaps.List');
-        $snaps = (new SnapService)->getAvailableSnaps();  
+        $user = auth('web')->user();
+        if ($user->roles[0]->role_name == self::NAME_ROLE) {
+            $id = $user->id;
+            $snaps = (new SnapService)->getAvailableSnaps();
+            $snaps = $snaps->filter(function($value, $Key) use ($id) {
+                        return $value->user_id == $id;
+                    });
+        } else {
+            $snaps = (new SnapService)->getAvailableSnaps();
+        } 
 
         $snapCategorys = config("common.snap_category");
         $snapCategoryModes = config("common.snap_category_mode");
@@ -45,22 +56,55 @@ class SnapController extends AdminController
     public function filter($type, $mode)
     {
         $this->isAllowed('Snaps.List');
-
+        $user = auth('web')->user();
         $snaps = ( new SnapService);
 
         if ($type == 'all' && $mode == 'all') {
-            $snaps = $snaps->getAvailableSnaps();            
+            if ($user->roles[0]->role_name == self::NAME_ROLE) {
+                $id = $user->id;
+                $snaps = (new SnapService)->getAvailableSnaps();
+                $snaps = $snaps->filter(function($value, $Key) use ($id) {
+                            return $value->user_id == $id;
+                        });
+            } else {
+                $snaps = (new SnapService)->getAvailableSnaps();
+            }            
         } else if($type == 'all') {
-            $mode = config("common.snap_mode.$mode");
-            $snaps = $snaps->getSnapsByMode($mode);
+            $mode = config("common.snap_mode.$mode");            
+            if ($user->roles[0]->role_name == self::NAME_ROLE) {
+                $id = $user->id;
+                $snaps = $snaps->getSnapsByMode($mode);
+                $snaps = $snaps->filter(function($value, $Key) use ($id) {
+                            return $value->user_id == $id;
+                        });
+            } else {
+                $snaps = $snaps->getSnapsByMode($mode);
+            } 
         } else if($mode == 'all') {
-            $type = config("common.snap_type.$type");
-            $snaps = $snaps->getSnapsByType($type);
+            $type = config("common.snap_type.$type");            
+            if ($user->roles[0]->role_name == self::NAME_ROLE) {
+                $id = $user->id;
+                $snaps = $snaps->getSnapsByType($type);
+                $snaps = $snaps->filter(function($value, $Key) use ($id) {
+                            return $value->user_id == $id;
+                        });
+            } else {
+                $snaps = $snaps->getSnapsByType($type);
+            }
         } else {
             $type = config("common.snap_type.$type");
             $mode = config("common.snap_mode.$mode");
 
-            $snaps = $snaps->getSnapsByFilter($type, $mode);
+            if ($user->roles[0]->role_name == self::NAME_ROLE) {
+                $id = $user->id;
+                $snaps = $snaps->getSnapsByFilter($type, $mode);
+                $snaps = $snaps->filter(function($value, $Key) use ($id) {
+                            return $value->user_id == $id;
+                        });
+            } else {
+                $snaps = $snaps->getSnapsByFilter($type, $mode);
+            }
+            
         }
 
         return view('snaps.table_snaps', compact('snaps'));

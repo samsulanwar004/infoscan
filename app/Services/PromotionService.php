@@ -18,7 +18,7 @@ use App\ProductCategory;
 class PromotionService
 {
 	const DEFAULT_FILE_DRIVER = 's3';
-	const RESIZE_IMAGE = [240,240];
+	const RESIZE_IMAGE = [240,null];
 	/**
      * @var string
      */
@@ -70,8 +70,9 @@ class PromotionService
             $path = storage_path('app/public')."/promotions/".$filename;
             //resize image
             $image = new ImageFile(Image::make($file->path())
-            	->resize(self::RESIZE_IMAGE[0], self::RESIZE_IMAGE[1])
-            	->save($path));
+            	->resize(self::RESIZE_IMAGE[0], self::RESIZE_IMAGE[1], function ($constraint) {
+            		$constraint->aspectRatio();
+            	})->save($path));
 
             Storage::disk(self::DEFAULT_FILE_DRIVER)
             	->putFileAs('promotions', $image, $filename, 'public');
@@ -124,8 +125,9 @@ class PromotionService
             $path = storage_path('app/public')."/promotions/".$filename;
             //resize image
             $image = new ImageFile(Image::make($file->path())
-            	->resize(self::RESIZE_IMAGE[0], self::RESIZE_IMAGE[1])
-            	->save($path));
+            	->resize(self::RESIZE_IMAGE[0], self::RESIZE_IMAGE[1], function ($constraint) {
+            		$constraint->aspectRatio();
+            	})->save($path));
 
             Storage::disk(self::DEFAULT_FILE_DRIVER)
             	->putFileAs('promotions', $image, $filename, 'public');
