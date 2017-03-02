@@ -186,7 +186,7 @@ return [
             '22' => [
                 'label' => 'Without Tags',
                 'value' => 0,
-            ],   
+            ],
             '31' => [
                 'label' => 'With Input',
                 'value' => 1,
@@ -224,7 +224,7 @@ return [
                 '12' => [
                     'label' => 'Without Audio',
                     'value' => 0,
-                ], 
+                ],
                 '31' => [
                     'label' => 'With Input',
                     'value' => 1,
@@ -242,7 +242,7 @@ return [
                 '12' => [
                     'label' => 'Without Audio',
                     'value' => 0,
-                ], 
+                ],
                 '21' => [
                     'label' => 'With Tags',
                     'value' => 1,
@@ -293,7 +293,7 @@ return [
             '0' => [
                 'background' => 'rgba(255, 99, 132, 0.2)',
                 'border' => 'rgba(255,99,132,1)',
-            ], 
+            ],
             '1' => [
                 'background' => 'rgba(54, 162, 235, 0.2)',
                 'border' => 'rgba(54, 162, 235, 1)',
@@ -318,8 +318,8 @@ return [
     ],
     //queue list
     'queue_list' => [
-        'crowdsource_log' => 'crowdsourceLog',
-        'member_log' => 'memberLog',
+        'crowdsource_log' => 'userBehaviourLog',
+        'member_log' => 'userBehaviourLog',
         'point_process' => 'pointProcess',
         'transaction_process' => 'transactionProcess',
         'assign_process' => 'assignProcess',
