@@ -20,4 +20,9 @@ class Member extends Authenticable
     {
     	return $this->hasMany(MemberLevel::class, 'member_id', 'id');
     }
+
+    public function snap()
+    {
+        return $this->hasMany(Snap::class, 'member_id', 'id');
+    }
 }

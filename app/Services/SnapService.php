@@ -18,6 +18,7 @@ use App\Jobs\PointCalculation;
 use App\Jobs\AssignJob;
 use App\Events\CrowdsourceEvent;
 use App\Events\MemberActivityEvent;
+use App\Member;
 
 class SnapService
 {
@@ -1173,5 +1174,14 @@ class SnapService
         $config = config('common.queue_list.assign_process');
         $job = (new AssignJob())->onQueue($config)->onConnection('sqs');
         dispatch($job);
+    }
+
+    public function getSnapByMemberCode($memberCode)
+    {
+        $member = Member::with('snap')
+            ->where('member_code', $memberCode)
+            ->first();
+
+        return $member->snap;
     }
 }

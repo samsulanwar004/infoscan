@@ -10,6 +10,7 @@ use App\PromoLevelPoint;
 use App\SnapTag;
 use DB;
 use Carbon\Carbon;
+use App\Transformers\PortalPointTransformer;
 
 class PointService
 {
@@ -506,6 +507,90 @@ inner join level_points as l on l.id = plp.level_id;');
         }
 
         return $mode;
+    }
+
+    public function getPortalPoint($memberCode)
+    {
+        $point = (new TransactionService)->getCreditMember($memberCode);
+
+        $snaps = (new SnapService)->getSnapByMemberCode($memberCode);
+
+        $notifications = $snaps->filter(function($value, $Key) {
+            return $value->approved_by != null || $value->reject_by != null;
+        });
+
+        $notif = [];
+        foreach ($notifications as $notification) {
+            $notif[] = $this->getWording($notification);
+        }
+
+        $snaps = $snaps->filter(function($value, $Key) {
+            return $value->approved_by == null && $value->reject_by == null;
+        });
+
+        $estimated = [];
+        foreach ($snaps as $snap) {
+            $estimated[] = $snap->estimated_point;
+        }
+
+        $estimated = collect($estimated)->sum();
+
+        $data = [
+            'current_point' => $point,
+            'estimated_point' => $estimated,
+            'description' => $notif,
+        ];
+
+        return $data;
+    }
+
+    private function getWording($notification)
+    {
+        $snapType = $notification->snap_type;        
+
+        switch ($snapType) {
+            case 'handWritten':
+                $title = isset($notification->approved_by) ? 'Transaksi Nota tulis berhasil' : 'Transaksi Nota tulis gagal';
+                $description = isset($notification->approved_by) ? 'Transaksi nota tulis kamu telah berhasil! Kluk!' : 'Transaksi nota tulis kamu belum berhasil :(';
+                $status = isset($notification->approved_by) ? 1 : 0;
+
+                $data = [
+                    'title' => $title,
+                    'description' => $description,
+                    'status' => $status,
+                ];
+
+                return $data;
+                break;
+            case 'generalTrade':
+                $title = isset($notification->approved_by) ? 'Transaksi Warung berhasil' : 'Transaksi Warung gagal';
+                $description = isset($notification->approved_by) ? 'Transaksi warung kamu telah berhasil! Kluk!' : 'Transaksi warung kamu belum berhasil :(';
+                $status = isset($notification->approved_by) ? 1 : 0;
+
+                $data = [
+                    'title' => $title,
+                    'description' => $description,
+                    'status' => $status,
+                ];
+
+                return $data;
+                break;
+                
+            default:
+                $title = isset($notification->approved_by) ? 'Transaksi Struk berhasil' : 'Transaksi Struk gagal';
+                $description = isset($notification->approved_by) ? 'Transaksi struk belanja kamu telah berhasil! Kluk!' : 'Transaksi struk belanja kamu belum berhasil :(';
+                $status = isset($notification->approved_by) ? 1 : 0;
+
+                $data = [
+                    'title' => $title,
+                    'description' => $description,
+                    'status' => $status,
+                ];
+
+                return $data;
+                break;
+                
+        }
     }
 
 }
