@@ -31,4 +31,5 @@ Route::group([
     Route::put('/me', 'Api\MemberController@update');
     Route::get('/questionnaires', 'Api\QuestionnaireController@index');
     Route::get('/questionnaires/{id}', 'Api\QuestionnaireController@show');
+    Route::get('/portalpoint', 'Api\PortalPointController@index');
 });
