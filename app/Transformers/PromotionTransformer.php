@@ -17,9 +17,7 @@ class PromotionTransformer extends TransformerAbstract
             'point' => $promotion->point,            
             'start_at' => $promotion->start_at,
             'end_at' => $promotion->end_at,
-            'category' => $promotion->category->name,            
-            'icon' => $promotion->category->icon,
-            'background' => $promotion->category->background,
+            'category' => $promotion->category,
         ];
     }
 }
