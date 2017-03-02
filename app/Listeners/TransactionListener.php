@@ -17,7 +17,7 @@ class TransactionListener
     public function handle(TransactionEvent $event)
     {
         $config = config('common.queue_list.transaction_process');
-        $job = (new TransactionJob($event))->onQueue($config);
+        $job = (new TransactionJob($event))->onQueue($config)->onConnection('sqs');
         dispatch($job);
     }
 
