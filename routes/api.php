@@ -19,12 +19,15 @@ Route::get('v1/settings', 'Api\SettingController@index');
 Route::get('v1/promotion', 'Api\PromotionController@index');
 Route::get('v1/categories', 'Api\PromotionController@categories');
 
+Route::get('v1/questionnaires', 'Api\QuestionnaireController@index');
+Route::get('v1/questionnaires/{id}', 'Api\QuestionnaireController@show');
+
 Route::group([
     'prefix' => 'v1',
     'middleware' => ['api', 'verifySignature'],
 ], function () {
     Route::get('/snap', 'Api\SnapController@index');
-    Route::post('/snap', 'Api\SnapController@store');    
+    Route::post('/snap', 'Api\SnapController@store');
     Route::get('/luckydraw', 'Api\LuckyDrawController@index');
     Route::post('/luckydraw', 'Api\LuckyDrawController@store');
     Route::get('/me', 'Api\MemberController@show');
