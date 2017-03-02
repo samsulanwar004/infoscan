@@ -29,6 +29,6 @@ Route::group([
     Route::post('/luckydraw', 'Api\LuckyDrawController@store');
     Route::get('/me', 'Api\MemberController@show');
     Route::put('/me', 'Api\MemberController@update');
-    Route::get('v1/questionnaires', 'Api\QuestionnaireController@index');
-    Route::get('v1/questionnaires/{id}', 'Api\QuestionnaireController@show');
+    Route::get('/questionnaires', 'Api\QuestionnaireController@index');
+    Route::get('/questionnaires/{id}', 'Api\QuestionnaireController@show');
 });
