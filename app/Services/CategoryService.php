@@ -34,6 +34,7 @@ class CategoryService
 		$randomName = strtolower(str_random(10));
 		$category = new ProductCategory;
 		$category->name = $request->input('name');
+		$category->slug = str_slug($category->name);
 
 		if ($request->hasFile('icon')) {
             $icon = $request->file('icon');
@@ -99,6 +100,7 @@ class CategoryService
 		$randomName = strtolower(str_random(10));
 		$category = $this->getCategoryById($id);
 		$category->name = $request->input('name');
+        $category->slug = str_slug($category->name);
 
         if ($request->hasFile('icon')) {
             $icon = $request->file('icon');
