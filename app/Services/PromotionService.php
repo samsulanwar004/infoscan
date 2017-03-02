@@ -112,7 +112,7 @@ class PromotionService
         $p->point = $request->input('point');
         $p->updated_by = Auth::user()->id;
         $p->is_active = $request->has('is_active') ? 1 : 0;
-        $p->category_id = $request->input('category');
+        $p->product_category_id = $request->input('category');
 
         if ($request->hasFile('image')) {
             $file = $request->file('image');
