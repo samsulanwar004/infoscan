@@ -17,7 +17,7 @@ class LuckyDrawController extends AdminController
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {
+    {        
         $this->isAllowed('LuckyDraw.List');
         $luckys = (new LuckyDrawService)->getAllLuckyDraw();
 

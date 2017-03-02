@@ -14,6 +14,7 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         Commands\LocationCron::class,
+        Commands\LotteryCron::class,
     ];
 
     /**
@@ -29,6 +30,10 @@ class Kernel extends ConsoleKernel
 
         $schedule->command('location:cron')
             ->everyMinute();
+
+        $schedule->command('lottery:cron')
+            ->hourly()
+            ->between('7:00', '22:00');
     }
 
     /**
