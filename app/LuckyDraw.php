@@ -10,8 +10,9 @@ class LuckyDraw extends Model
 	use SoftDeletes;
     protected $table = 'lucky_draws';
 
-    public function luckyDraws()
+    public function memberLuckyDraws()
     {
-        return $this->belongsToMany(luckyDraw::class, 'members_lucky_draws', 'member_id', 'luckydraw_id');
+        return $this->hasMany(MemberLuckyDraw::class, 'luckydraw_id', 'id');
     }
+    
 }

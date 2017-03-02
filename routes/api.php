@@ -24,9 +24,11 @@ Route::group([
     'middleware' => ['api', 'verifySignature'],
 ], function () {
     Route::get('/snap', 'Api\SnapController@index');
-    Route::post('/snap', 'Api\SnapController@store');    
+    Route::post('/snap', 'Api\SnapController@store');
     Route::get('/luckydraw', 'Api\LuckyDrawController@index');
     Route::post('/luckydraw', 'Api\LuckyDrawController@store');
     Route::get('/me', 'Api\MemberController@show');
     Route::put('/me', 'Api\MemberController@update');
+    Route::get('/questionnaires', 'Api\QuestionnaireController@index');
+    Route::get('/questionnaires/{id}', 'Api\QuestionnaireController@show');
 });

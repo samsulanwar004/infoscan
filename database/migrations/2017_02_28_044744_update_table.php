@@ -23,11 +23,7 @@ class UpdateTable extends Migration
 
         Schema::table('promotions', function (Blueprint $t) {
             $t->double('point')->nullable();
-        });
-
-        Schema::table('snaps', function (Blueprint $t) {
-            $t->unsignedInteger('user_id')->nullable();
-        });
+        });        
     }
 
     /**

@@ -61,6 +61,13 @@
                             </label>
                         </div>
 
+                        <div class="checkbox">
+                            <label>
+                                <input name="is_active" checked="checked" type="checkbox">
+                                Is Active ?
+                            </label>
+                        </div>
+
                     </div>
                     <!-- /.box-body -->
 
