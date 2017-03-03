@@ -53,7 +53,7 @@ class PromotionService
         $p->start_at = $dateArray[0];
         $p->end_at = $dateArray[1];
         $p->url = $request->input('url');
-        $p->point = $request->input('point');
+//        $p->point = $request->input('point');
         $p->created_by = Auth::user()->id;
         $p->is_active = $request->has('is_active') ? 1 : 0;
         $p->merchant()->associate($mi);
@@ -109,7 +109,7 @@ class PromotionService
         $p->start_at = $dateArray[0];
         $p->end_at = $dateArray[1];
         $p->url = $request->input('url');
-        $p->point = $request->input('point');
+//        $p->point = $request->input('point');
         $p->updated_by = Auth::user()->id;
         $p->is_active = $request->has('is_active') ? 1 : 0;
         $p->product_category_id = $request->input('category');
@@ -203,7 +203,7 @@ class PromotionService
             }
 
             $p = $p->select('p.id as id', 'p.title as title', 'p.description as description', 'p.image as image',
-                'p.url as url', 'p.point as point', 'p.start_at as start_at', 'p.end_at as end_at',
+                'p.url as url', 'p.start_at as start_at', 'p.end_at as end_at',
                 'pc.name as category')
                 ->get();
 

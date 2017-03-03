@@ -63,10 +63,10 @@
                             <input type="file" class="form-control" id="image" name="image">
                         </div>
 
-                        <div class="form-group">
+                        {{--<div class="form-group">
                             <label for="point">Point</label>
                             <input type="text" name="point" class="form-control" value="{{ old('point') }}" placeholder="Enter Point">
-                        </div>
+                        </div>--}}
 
                         <div class="checkbox">
                             <label>
