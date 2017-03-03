@@ -42,26 +42,29 @@ class LotteryCron extends Command
     {
         $this->info('Lottery:Cron Command Run successfully');
         $date = Carbon::now();
+        $date = '2017-04-01 06:00:00';
         $luckys = (new LuckyDrawService)->getEndDateLuckyDraw($date);
 
         foreach ($luckys as $lucky) {
-            $win = collect($lucky->memberLuckyDraws)->random();
-            $lucky->is_active = 0;
-            $lucky->update();
+            if (count($lucky->memberLuckyDraws) > 0) {
+                $win = collect($lucky->memberLuckyDraws)->random();
+                $lucky->is_active = 0;
+                $lucky->update();
 
-            $data = [
-                'code' => $lucky->luckydraw_code,
-                'title' => $lucky->title,
-                'description' => $lucky->description,
-                'point' => $lucky->point,
-                'random_number' => $win->random_number,
-            ];
+                $data = [
+                    'code' => $lucky->luckydraw_code,
+                    'title' => $lucky->title,
+                    'description' => $lucky->description,
+                    'point' => $lucky->point,
+                    'random_number' => $win->random_number,
+                ];
 
-            $ldw = new LuckyDrawWinner;
-            $ldw->description = json_encode($data);
-            $ldw->member()->associate($win->member_id);
-            $ldw->luckydraw()->associate($lucky->id);           
-            $ldw->save();
+                $ldw = new LuckyDrawWinner;
+                $ldw->description = json_encode($data);
+                $ldw->member()->associate($win->member_id);
+                $ldw->luckydraw()->associate($lucky->id);           
+                $ldw->save();
+            }
         }
         
     }
