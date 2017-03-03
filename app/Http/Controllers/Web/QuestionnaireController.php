@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Web;
 
 use App\QuestionnaireQuestion;
+use App\QuestionnaireSubmit;
 use App\QuestionnaireTemplate;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use League\Flysystem\Exception;
 
 class QuestionnaireController extends AdminController
@@ -133,5 +135,58 @@ class QuestionnaireController extends AdminController
         } else {
             return back()->with('errors', 'Total points must be greater than 0');
         }
+    }
+
+    public function resultShow($id)
+    {
+        $this->isAllowed('Questionnaire.List');
+
+        $results = DB::table('questionnaire_submits as qs')
+            ->join('questionnaire_submit_questions as qsq', 'qs.id', '=', 'qsq.submit_id')
+            ->join('questionnaire_submit_answers as qsa', 'qsq.id', '=', 'qsa.question_id')
+            ->join('questionnaire_templates as qt', 'qs.template_id', '=', 'qt.id')
+            ->join('members as m', 'qs.member_id', '=', 'm.id')
+            ->where('qs.id', $id)
+            ->select('qs.template_id as template_id', 'qs.created_at as created_at', 'qs.total_point as total_point',
+                'qsq.id as question_id', 'qsq.question as question', 'qsq.type as question_type', 'qsa.id as answer_id',
+                'qsa.answer as answer', 'qt.description as description', 'm.name as member')
+            ->get()
+            ->groupBy('question_id')
+            ->values()
+            ->all();
+
+        $details = new \stdClass;
+        $details->description = $results[0][0]->description;
+        $details->template_id = $results[0][0]->template_id;
+        $details->total_point = $results[0][0]->total_point;
+        $details->created_at = $results[0][0]->created_at;
+        $details->member = $results[0][0]->member;
+
+        $questions = [];
+        foreach ($results as $result) {
+            $q = new \stdClass;
+            $q->question = $result[0]->question;
+            $q->question_type = $result[0]->question_type;
+
+            $answers = [];
+            foreach ($result as $answer) {
+                $answers[] = $answer->answer;
+            }
+
+            $q->answers = $answers;
+
+            $questions[] = $q;
+        }
+
+        $details->questions = $questions;
+
+        return view('questionnaire.result_show', compact('details'));
+    }
+
+    public function resultList($id)
+    {
+        $this->isAllowed('Questionnaire.List');
+        $results = QuestionnaireSubmit::with('member', 'template')->where('template_id', $id)->get();
+        return view('questionnaire.result_index', compact('results'));
     }
 }

@@ -20,4 +20,9 @@ class Member extends Authenticable
     {
     	return $this->hasMany(MemberLevel::class, 'member_id', 'id');
     }
+
+    public function questionnaireSubmit()
+    {
+        return $this->hasMany(QuestionnaireSubmit::class, 'member_id');
+    }
 }

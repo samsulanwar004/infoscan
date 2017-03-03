@@ -31,4 +31,9 @@ class QuestionnaireTemplate extends Model
     {
         return $this->belongsTo(User::class, 'created_by');
     }
+
+    public function submit()
+    {
+        return $this->hasMany(QuestionnaireSubmit::class, 'template_id');
+    }
 }
