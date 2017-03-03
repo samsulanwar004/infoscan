@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use Illuminate\Http\Request;
+use App\Services\TransactionService;
 
 class SecureService
 {
@@ -46,6 +47,13 @@ class SecureService
                 ->setSocialMediaType($social)
                 ->setApiToken(str_random(60))
                 ->register($user);
+
+            //debit for new member
+            $transaction = [
+                'member_code' => $user['member_code'],
+                'point' => 1000,
+            ];
+            $this->transactionDebit($transaction);
         }
 
         return [
@@ -95,6 +103,14 @@ class SecureService
                 ->setSocialMediaType($request->input('social_media_type'))
                 ->setApiToken(str_random(60))
                 ->register($request->all());
+
+            //debit for new member
+            $transaction = [
+                'member_code' => $request->input('social_media_id'),
+                'point' => 1000,
+            ];
+            $this->transactionDebit($transaction);
+
         }
 
         return [
@@ -113,5 +129,29 @@ class SecureService
     public function getMemberByEmail($email)
     {
         return $this->memberService->member($email);
+    }
+
+    public function transactionDebit($transaction)
+    {
+        $kasir = config('common.transaction.member.cashier');
+        $member = config('common.transaction.member.user');
+        $data = [
+            'detail_transaction' => [
+                '0' => [
+                    'member_code_from' => $kasir,
+                    'member_code_to' => $member,
+                    'amount' => $transaction['point'],
+                    'detail_type' => 'db'
+                ],
+                '1' => [
+                    'member_code_from' => $member,
+                    'member_code_to' => $kasir,
+                    'amount' => $transaction['point'],
+                    'detail_type' => 'cr'
+                ],
+            ],
+        ];
+
+        (new TransactionService())->debitNewMember($transaction, $data);
     }
 }

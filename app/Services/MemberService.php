@@ -465,12 +465,13 @@ class MemberService
         $member = $this->getMemberById($id);
         $memberCode = $member->member_code;
         //config transaction
-        $memberConfig = config('common.transaction.member.snap');
+        $memberConfig = config('common.transaction.member.user');
 
         $latestPoint = \DB::table('transactions')
                           ->join('transaction_detail', 'transactions.id', '=', 'transaction_detail.transaction_id')
                           ->where('member_code', '=', $memberCode)
                           ->where('member_code_from', '=', $memberConfig)
+                          ->where('detail_type', '=', 'cr')
                           ->sum('amount');
 
         return $latestPoint;
@@ -487,7 +488,9 @@ class MemberService
         $latestPoint = $this->getLatestPointMemberById($id);
         $level = \DB::select('select max(id) as level_id from level_points where ' . $latestPoint . ' - point >= 0');
 
-        return ($level[0]->level_id == true) ? $level[0]->level_id : 1;
+        $firtLevel = \DB::select('select id from level_points limit 1');
+
+        return ($level[0]->level_id == true) ? $level[0]->level_id : $firtLevel[0]->id;
     }
 
     /**
