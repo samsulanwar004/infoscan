@@ -18,11 +18,17 @@ class Member extends Authenticable
 
     public function memberLevels()
     {
-    	return $this->hasMany(MemberLevel::class, 'member_id', 'id');
+        return $this->hasMany(MemberLevel::class, 'member_id', 'id');
+    }
+
+    public function questionnaireSubmit()
+    {
+        return $this->hasMany(QuestionnaireSubmit::class, 'member_id');
     }
 
     public function snap()
     {
         return $this->hasMany(Snap::class, 'member_id', 'id');
     }
+    
 }

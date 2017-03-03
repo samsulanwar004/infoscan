@@ -100,6 +100,10 @@ Route::group([
 
     Route::get('/questionnaire/publish/{id}', 'Web\QuestionnaireController@publish')->name('questionnaire.publish');
 
+    Route::get('/questionnaire/results/{id}', 'Web\QuestionnaireController@resultList')->name('questionnaire.result');
+
+    Route::get('/questionnaire/results/{id}/detail', 'Web\QuestionnaireController@resultShow')->name('questionnaire.resultDetail');
+
     Route::get(
         '/users/{id}/activities',
         'Web\UserController@activities'
