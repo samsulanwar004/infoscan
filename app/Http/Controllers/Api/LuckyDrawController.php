@@ -27,7 +27,7 @@ class LuckyDrawController extends BaseApiController
 
 			$validation = $this->validRequest($request);
             if ($validation->fails()) {
-                return $this->error($validation->errors());
+                return $this->error($validation->errors(), 400, true);
             }
 
 			$number = (new LuckyDrawService)->getRandomNumber($request);

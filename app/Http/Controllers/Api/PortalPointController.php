@@ -16,7 +16,7 @@ class PortalPointController extends BaseApiController
     		
     		return $this->success($point, 200);
     	} catch (Exception $e) {
-    		return $this->error($e);
+    		return $this->error($e, 400, true);
     	}
     }
 }
