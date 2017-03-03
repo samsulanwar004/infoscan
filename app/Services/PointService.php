@@ -600,22 +600,28 @@ inner join level_points as l on l.id = plp.level_id;');
     public function getDetailMe($member)
     {
         $point = (new TransactionService)->getCreditMember($member->member_code);
-        $memberService = (new MemberService);
-        $levelId = $memberService->getLevelIdByMemberId($member->id);
-        $latestPoint = $memberService->getLatestPointMemberById($member->id);
-        $level = \App\TaskLevelPoint::where('id', $levelId)->first();
-
-        $nextLevel = \App\TaskLevelPoint::where('id', $levelId+1)->first();
+        $memberService = (new MemberService)->getLevelByMemberId($member->id);
+        $levelId = $memberService['level_id'];
+        $latestPoint = $memberService['latest_point'];
+        $level = $this->getLevel($levelId);
+        $levelArray = explode(' ', $level->name);
+        $levelId = $levelId + 1;
+        $nextLevel = $this->getLevel($levelId);
 
         $pointNextLevel = $nextLevel->point - $latestPoint;
 
         $data = [
             'current_point' => $point,
-            'current_level' => $level->name,
+            'current_level' => $levelArray[1],
             'point_next_level' => $pointNextLevel,
         ];
         
         return $data;
+    }
+
+    private function getLevel($levelId)
+    {
+        return \App\TaskLevelPoint::where('id', $levelId)->first();
     }
 
 }
