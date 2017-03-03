@@ -11,8 +11,24 @@ use Auth;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\MerchantUser as MailMerchantUser;
 use Rebel\Component\Rbac\Models\Role;
+use App\Libraries\ImageFile;
+use Image;
+use Storage;
 
-class MerchantService {
+class MerchantService 
+{
+    const DEFAULT_FILE_DRIVER = 's3';
+    const RESIZE_IMAGE = [240, null];
+
+    /**
+     * @var string
+     */
+    protected $s3Url;
+
+    public function __construct()
+    {
+        $this->s3Url = env('S3_URL', '');
+    }
 
 	public function getMerchantIdByAuth()
     {
@@ -106,13 +122,26 @@ class MerchantService {
             $file = $request->file('company_logo');
             $filename = sprintf(
                 "%s-%s.%s",
-                is_null($id) ? $memberCode : $m->merchant_code,
+                $m->merchant_code,
                 date('Ymdhis'),
                 $file->getClientOriginalExtension()
             );
 
-            $m->company_logo = $filename;
-            $file->storeAs('merchants', $filename, 'public');
+            //tmp file in storage local
+            $path = storage_path('app/public') . "/merchants/" . $filename;
+            //resize image
+            $image = new ImageFile(Image::make($file->path())
+                ->resize(self::RESIZE_IMAGE[0], self::RESIZE_IMAGE[1], function ($constraint) {
+                    $constraint->aspectRatio();
+                })->save($path));
+
+            Storage::disk(self::DEFAULT_FILE_DRIVER)
+                ->putFileAs('merchants', $image, $filename, 'public');
+
+            //delete file tmp
+            Storage::delete('public/merchants/' . $filename);
+
+            $m->company_logo = $this->completeImageLink('merchants/' . $filename);
         }
 
         $m->save();
@@ -247,5 +276,14 @@ class MerchantService {
         $m->updated_by = $updatedBy;
         $m->save();
         return $m->id;
+    }
+
+    /**
+     * @param $filename
+     * @return string
+     */
+    protected function completeImageLink($filename)
+    {
+        return $this->s3Url . '' . $filename;
     }
 }
