@@ -547,6 +547,7 @@ inner join level_points as l on l.id = plp.level_id;');
     private function getWording($notification)
     {
         $snapType = $notification->snap_type;        
+        $dateTime = $notification->created_at->toDateTimeString();
 
         switch ($snapType) {
             case 'handWritten':
@@ -558,6 +559,7 @@ inner join level_points as l on l.id = plp.level_id;');
                     'title' => $title,
                     'description' => $description,
                     'status' => $status,
+                    'date_time' => $dateTime,
                 ];
 
                 return $data;
@@ -571,6 +573,7 @@ inner join level_points as l on l.id = plp.level_id;');
                     'title' => $title,
                     'description' => $description,
                     'status' => $status,
+                    'date_time' => $dateTime,
                 ];
 
                 return $data;
@@ -585,12 +588,34 @@ inner join level_points as l on l.id = plp.level_id;');
                     'title' => $title,
                     'description' => $description,
                     'status' => $status,
+                    'date_time' => $dateTime,
                 ];
 
                 return $data;
                 break;
                 
         }
+    }
+
+    public function getDetailMe($member)
+    {
+        $point = (new TransactionService)->getCreditMember($member->member_code);
+        $memberService = (new MemberService);
+        $levelId = $memberService->getLevelIdByMemberId($member->id);
+        $latestPoint = $memberService->getLatestPointMemberById($member->id);
+        $level = \App\TaskLevelPoint::where('id', $levelId)->first();
+
+        $nextLevel = \App\TaskLevelPoint::where('id', $levelId+1)->first();
+
+        $pointNextLevel = $nextLevel->point - $latestPoint;
+
+        $data = [
+            'current_point' => $point,
+            'current_level' => $level->name,
+            'point_next_level' => $pointNextLevel,
+        ];
+        
+        return $data;
     }
 
 }

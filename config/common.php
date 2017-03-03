@@ -267,6 +267,7 @@ return [
         'transaction_type' => [
             'snaps' => '1',
             'redeem' => '2',
+            'register' => '3',
         ],
         'member' => [
             'cashier' => '101',
