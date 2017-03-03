@@ -36,7 +36,7 @@
                         <div class="form-group has-feedback">
                             <label for="company_logo">Company Logo</label><br>
                             @if($merchant->company_logo)
-                                <img width="200" height="200" src="{{ '/storage/merchants/'.$merchant->company_logo }}">
+                                <img height="200" src="{{ $merchant->company_logo }}">
                             @endif
                             <input type="file" class="form-control" id="company_logo" name="company_logo">
                         </div>
