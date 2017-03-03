@@ -2,9 +2,14 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\QuestionnaireSubmit;
+use App\QuestionnaireSubmitAnswer;
+use App\QuestionnaireSubmitQuestion;
 use App\Services\QuestionnaireService;
 use App\Transformers\QuestionnaireTransformer;
 use Exception;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class QuestionnaireController extends BaseApiController
 {
@@ -68,6 +73,64 @@ class QuestionnaireController extends BaseApiController
             return $this->success($questionnaireResult);
         } catch (Exception $e) {
             return $this->error($e->getMessage());
+        }
+    }
+
+    public function store(Request $request)
+    {
+        $validation = \Validator::make($request->all(), [
+            'template' => 'required',
+            'total_point' => 'required',
+            'questions.*.type' => 'required',
+            'questions.*.description' => 'required',
+            'questions.*.answers.*' => 'required'
+        ]);
+
+        if ($validation->fails()) {
+            return $this->error('Bad Request', 400);
+        }
+
+        $member = $this->getActiveMember();
+
+        if (!$member) {
+            return $this->error('Unauthenticated', 401);
+        }
+
+        DB::beginTransaction();
+        try {
+
+            $submit = new QuestionnaireSubmit;
+            $submit->member_id = $member->id;
+            $submit->template_id = $request->input('template');
+            $submit->total_point = $request->input('total_point');
+            $submit->save();
+
+            $questions = $request->input('questions');
+
+            foreach ($questions as $question) {
+                $submitQuestion = new QuestionnaireSubmitQuestion;
+                $submitQuestion->submit_id = $submit->id;
+                $submitQuestion->type = $question['type'];
+                $submitQuestion->question = $question['description'];
+                $submitQuestion->save();
+
+                foreach ($question['answers'] as $answer) {
+                    $submitAnswer = new QuestionnaireSubmitAnswer;
+                    $submitAnswer->question_id = $submitQuestion->id;
+                    $submitAnswer->answer = $answer;
+                    $submitAnswer->save();
+                }
+            }
+
+            DB::commit();
+
+            return $this->success();
+
+        } catch (Exception $e) {
+
+            DB::rollback();
+
+            return $this->error($e->getMessage() . $e->getFile() . $e->getLine());
         }
     }
 }

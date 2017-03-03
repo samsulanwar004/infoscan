@@ -30,6 +30,7 @@
                         <th>Period</th>
                         <th>Author</th>
                         <th>Point</th>
+                        <th width="150"></th>
                         <th width="250"></th>
                     </tr>
                     </thead>
@@ -41,10 +42,11 @@
                             <td>{{ date_format(date_create($item->start_at), 'd M Y H:i:s') . ' - '. date_format(date_create($item->end_at), 'd M Y H:i:s') }}</td>
                             <td>{{ $item->user->name }}</td>
                             <td class="point">{{ $item->total_point }}</td>
+                            <td><a href="{{ admin_route_url('questionnaire.result', ['id' => $item->id]) }}"><i class="fa fa-list"></i> See Results</a></td>
                             <td class="text-right vertical-middle">
                                 <div class="btn-group">
                                     <button class="btn btn-default" data-toggle="modal"
-                                            data-target="#dataquestionnaire{{ $item->id }}"><i class="fa fa-search"></i>
+                                            data-target="#dataquestionnaire{{ $item->id }}"><i class="fa fa-eye"></i>
                                     </button>
                                     @cando('Questionnaire.Publish')
                                     <a href="#" data-id="{{ $item->id }}" class="btn btn-success publish">
