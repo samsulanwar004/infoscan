@@ -21,9 +21,9 @@ class UpdateTable extends Migration
             $t->string('random_number', 7);
         });
 
-        Schema::table('promotions', function (Blueprint $t) {
-            $t->double('point')->nullable();
-        });        
+        /*Schema::table('promotions', function (Blueprint $t) {
+            $t->double('point')->default(0.00);
+        });*/
     }
 
     /**
