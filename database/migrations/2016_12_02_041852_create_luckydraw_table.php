@@ -24,6 +24,7 @@ class CreateLuckydrawTable extends Migration
             $table->string('image')->nullable();
             $table->string('created_by', 150)->index();
             $table->boolean('is_multiple')->default(0);
+            $table->boolean('is_active')->default(1);
             $table->timestamps();
             $table->softDeletes();
         });

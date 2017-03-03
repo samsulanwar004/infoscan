@@ -18,7 +18,7 @@ class LuckyDrawService
 {
 
 	const DEFAULT_FILE_DRIVER = 's3';
-	const RESIZE_IMAGE = [240,240];
+	const RESIZE_IMAGE = [240,null];
 
 	/**
      * @var string
@@ -55,6 +55,7 @@ class LuckyDrawService
 		$l->point = $request->input('point');
 		$l->created_by = Auth::user()->id;
 		$l->is_multiple = $request->has('is_multiple') ? 1 : 0;
+		$l->is_active = $request->has('is_active') ? 1 : 0;
 
         if ($request->hasFile('image')) {
             $file = $request->file('image');
@@ -105,6 +106,7 @@ class LuckyDrawService
 		$l->description = $request->input('description');
 		$l->point = $request->input('point');
 		$l->is_multiple = $request->has('is_multiple') ? 1 : 0;
+		$l->is_active = $request->has('is_active') ? 1 : 0;
 
 		if ($request->hasFile('image') != null && $l->image == true) {
             \Storage::delete('public/luckydraws/' . $l->image);
@@ -123,8 +125,9 @@ class LuckyDrawService
             $path = storage_path('app/public')."/luckydraws/".$filename;
             //resize image
             $image = new ImageFile(Image::make($file->path())
-            	->resize(self::RESIZE_IMAGE[0], self::RESIZE_IMAGE[1])
-            	->save($path));
+            	->resize(self::RESIZE_IMAGE[0], self::RESIZE_IMAGE[1], function ($constraint) {
+            		$constraint->aspectRatio();
+            	})->save($path));
 
             Storage::disk(self::DEFAULT_FILE_DRIVER)
             	->putFileAs('luckydraws', $image, $filename, 'public');
@@ -277,6 +280,14 @@ class LuckyDrawService
     protected function completeImageLink($filename)
     {
         return $this->s3Url . '' . $filename;
+    }
+
+    public function getEndDateLuckyDraw($date)
+    {
+    	return LuckyDraw::with('memberLuckyDraws')
+    		->where('end_at', '<=', $date)
+    		->where('is_active', '=', 1)
+    		->get();
     }
 
 }

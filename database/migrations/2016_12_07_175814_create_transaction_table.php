@@ -16,7 +16,7 @@ class CreateTransactionTable extends Migration
         Schema::create('transactions', function (Blueprint $t) {
             $t->increments('id');
             $t->string('transaction_code', 20)->unique();
-            $t->string('member_code', 10)->index();
+            $t->string('member_code', 50)->index();
             $t->unsignedInteger('transaction_type')->index(); // [1=>'add_point_to_member', 2=>'redeem_point_to_cash']
             $t->timestamps();
 
@@ -25,8 +25,8 @@ class CreateTransactionTable extends Migration
         Schema::create('transaction_detail', function (Blueprint $t) {
             $t->increments('id');
             $t->unsignedInteger('transaction_id');
-            $t->string('member_code_from', 10)->index();
-            $t->string('member_code_to', 10)->index();
+            $t->string('member_code_from', 50)->index();
+            $t->string('member_code_to', 50)->index();
             $t->double('amount', 15, 2)->default(0);
             $t->string('detail_type', 5)->index(); // point, cash
             $t->timestamps();

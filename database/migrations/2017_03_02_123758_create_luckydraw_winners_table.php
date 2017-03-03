@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateMemberActivityTable extends Migration
+class CreateLuckydrawWinnersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,10 @@ class CreateMemberActivityTable extends Migration
      */
     public function up()
     {
-        Schema::create('member_activities', function (Blueprint $table) {
+        Schema::create('luckydraw_winners', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('member_code', 50)->index();
-            $table->string('action_in', 50)->index();
+            $table->unsignedInteger('member_id');
+            $table->unsignedInteger('luckydraw_id');
             $table->text('description')->nullable();
             $table->timestamps();
         });
@@ -29,6 +29,6 @@ class CreateMemberActivityTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('member_activities');
+        Schema::dropIfExists('luckydraw_winners');
     }
 }

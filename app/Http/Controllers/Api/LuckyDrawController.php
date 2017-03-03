@@ -17,7 +17,7 @@ class LuckyDrawController extends BaseApiController
 			
 			return $this->success($lucky, 200);
 		} catch (Exception $e) {
-			return $this->error($e);
+			return $this->error($e, 400, true);
 		}
 	}
 
@@ -35,7 +35,7 @@ class LuckyDrawController extends BaseApiController
 			return $this->success($number, 200);
 			
 		} catch (Exception $e) {
-            return $this->error($e);
+            return $this->error($e, 400, true);
 		}
 	}
 

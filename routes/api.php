@@ -32,4 +32,5 @@ Route::group([
     Route::get('/questionnaires', 'Api\QuestionnaireController@index');
     Route::get('/questionnaires/{id}', 'Api\QuestionnaireController@show');
     Route::post('/questionnaires', 'Api\QuestionnaireController@store');
+    Route::get('/portalpoint', 'Api\PortalPointController@index');
 });

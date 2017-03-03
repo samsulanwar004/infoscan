@@ -274,10 +274,6 @@
 
         $('#dataset').select2();
 
-        //Colorpicker
-        $('#background-color').colorpicker();
-        $('#border-color').colorpicker();
-
     });
 
     function whenLoaded() {
