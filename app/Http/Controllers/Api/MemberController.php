@@ -41,7 +41,7 @@ class MemberController extends BaseApiController
     {
         try {
             $validation = (new MemberService)->validateProfileInput($request->all());
-            if($validation->fails()) {
+            if ($validation->fails()) {
                 return $this->error($validation->errors()->getMessages(), 200, true);
             }
 
@@ -100,5 +100,84 @@ class MemberController extends BaseApiController
         } catch (Exception $e) {
             return $this->error($e);
         }
+    }
+
+    public function updatePartial(Request $request)
+    {
+        $validation = Validator::make($request->all(), [
+            'email' => 'required',
+            'name' => 'required'
+        ]);
+
+        if ($validation->fails()) {
+            throw new Exception($validation->errors()->first());
+        }
+
+        DB::beginTransaction();
+        try {
+
+            $member = $this->getActiveMember();
+            $member->email = $request->input('email');
+            $member->name = $request->input('name');
+            $member->save();
+
+            DB::commit();
+
+            return $this->success();
+
+        } catch (Exception $e) {
+            DB::rollBack();
+            return $this->error($e);
+        }
+
+    }
+
+    public function changeAvatar(Request $request)
+    {
+        $validation = Validator::make($request->all(), [
+            'image' => 'required|image'
+        ]);
+
+        if ($validation->fails()) {
+            throw new Exception($validation->errors()->first());
+        }
+
+        DB::beginTransaction();
+        try {
+
+            $member = $this->getActiveMember();
+            $image = $this->uploadImage($request, $member);
+            $member->avatar = $image;
+            $member->save();
+
+            DB::commit();
+            return $this->success();
+        } catch (Exception $e) {
+            DB::rollBack();
+            return $this->error($e);
+        }
+    }
+
+    public function uploadImage(Request $request, $member = null)
+    {
+        if ($photo = $request->file('image')) {
+            if ($member != null) {
+                \Storage::disk('s3')->delete($member->avatar);
+            }
+
+            $filename = sprintf(
+                "%s-%s-%s.%s",
+                $member->member_code,
+                date('YmdHis'),
+                strtolower(str_random(10)),
+                $photo->getClientOriginalExtension()
+            );
+
+            $name = $photo->storeAs('images/avatars', $filename, 's3');
+
+            return $name;
+        }
+
+        return null;
     }
 }

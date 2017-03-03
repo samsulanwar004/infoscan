@@ -29,6 +29,8 @@ Route::group([
     Route::post('/luckydraw', 'Api\LuckyDrawController@store');
     Route::get('/me', 'Api\MemberController@show');
     Route::put('/me', 'Api\MemberController@update');
+    Route::patch('/me', 'Api\MemberController@updatePartial');
+    Route::post('/avatar', 'Api\MemberController@changeAvatar');
     Route::get('/questionnaires', 'Api\QuestionnaireController@index');
     Route::get('/questionnaires/{id}', 'Api\QuestionnaireController@show');
     Route::post('/questionnaires', 'Api\QuestionnaireController@store');
