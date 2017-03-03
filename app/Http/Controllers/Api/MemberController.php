@@ -102,7 +102,7 @@ class MemberController extends BaseApiController
         }
     }
 
-    public function updatePartial(Request $request)
+    public function updateEmailAndName(Request $request)
     {
         $validation = Validator::make($request->all(), [
             'email' => 'required',
