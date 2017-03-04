@@ -17,7 +17,7 @@ class PromotionController extends BaseApiController
 
 			return $this->success($promos, 200);
 		} catch (Exception $e) {
-			return $this->error($e);
+			return $this->error($e, 400, true);
 		}
 	}
 
@@ -28,7 +28,7 @@ class PromotionController extends BaseApiController
 
 			return $this->success($categories, 200);
 		} catch (Exception $e) {
-			return $this->error($e);
+			return $this->error($e, 400, true);
 		}
 	}
 
