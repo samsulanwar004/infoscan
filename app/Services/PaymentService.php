@@ -133,4 +133,25 @@ class PaymentService
 
 		$redeem->save();
 	}
+
+	public function getListPaymentPortal()
+	{
+		return RedeemPoint::with('member')
+			->orderBy('created_at', 'DESC')
+			->paginate(50);
+	}
+
+	public function getPaymentPortalById($id)
+	{
+		return RedeemPoint::with('member')
+			->where('id', $id)
+			->first();
+	}
+
+	public function saveConfirmation($request, $id)
+	{
+		$payment = $this->getPaymentPortalById($id);
+		$payment->approved_by = auth('web')->user()->id;
+		$payment->update();
+	}
 }
