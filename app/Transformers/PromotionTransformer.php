@@ -14,7 +14,7 @@ class PromotionTransformer extends TransformerAbstract
             'description'  => $promotion->description,
             'image'  => $promotion->image,
             'url' => $promotion->url,            
-            'point' => $promotion->point,            
+//            'point' => $promotion->point,
             'start_at' => $promotion->start_at,
             'end_at' => $promotion->end_at,
             'category' => $promotion->category,
