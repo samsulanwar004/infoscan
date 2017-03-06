@@ -24,8 +24,8 @@
 
                 <div class="form-group mode_type">
                     <label for="name">Task Mode</label>
-                    <select name="task_mode" class="form-control" id="task-mode" disabled="disabled">
-                        <option value="0" nameValue="">Select Mode</option>
+                    <select name="task_mode" class="form-control" id="task-mode" disabled="disabled" required>
+                        <option value=" " nameValue="">Select Mode</option>
                     </select>
                 </div>
 
@@ -149,11 +149,11 @@
             $('#task-mode').removeAttr('disabled');
 
             if (this.value == 'a') {
-                $("#task-mode").html('<select name="task_mode" class="form-control" id="task-mode"><option value="0" nameValue="">Select Mode</option>@foreach(config("common.tasks.select_mode.a") as $key => $mode)<option value="{{ $key }}{{ $mode["value"] }}" nameValue="{{ $mode["label"] }}">{{ $mode["label"] }}</option>@endforeach</select>');
+                $("#task-mode").html('<select name="task_mode" class="form-control" id="task-mode">@foreach(config("common.tasks.select_mode.a") as $key => $mode)<option value="{{ $key }}" nameValue="{{ $mode["label"] }}">{{ $mode["label"] }}</option>@endforeach</select>');
             } else if (this.value == 'b') {
-                $("#task-mode").html('<select name="task_mode" class="form-control" id="task-mode"><option value="0" nameValue="">Select Mode</option>@foreach(config("common.tasks.select_mode.b") as $key => $mode)<option value="{{ $key }}{{ $mode["value"] }}" nameValue="{{ $mode["label"] }}">{{ $mode["label"] }}</option>@endforeach</select>');
+                $("#task-mode").html('<select name="task_mode" class="form-control" id="task-mode">@foreach(config("common.tasks.select_mode.b") as $key => $mode)<option value="{{ $key }}" nameValue="{{ $mode["label"] }}">{{ $mode["label"] }}</option>@endforeach</select>');
             } else if (this.value == 'c') {
-                $("#task-mode").html('<select name="task_mode" class="form-control" id="task-mode"><option value="0" nameValue="">Select Mode</option>@foreach(config("common.tasks.select_mode.c") as $key => $mode)<option value="{{ $key }}{{ $mode["value"] }}" nameValue="{{ $mode["label"] }}">{{ $mode["label"] }}</option>@endforeach</select>');
+                $("#task-mode").html('<select name="task_mode" class="form-control" id="task-mode">@foreach(config("common.tasks.select_mode.c") as $key => $mode)<option value="{{ $key }}" nameValue="{{ $mode["label"] }}">{{ $mode["label"] }}</option>@endforeach</select>');
             } else {
                 $("#task-mode").attr('disabled', 'disabled');
             }      

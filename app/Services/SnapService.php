@@ -1076,9 +1076,11 @@ class SnapService
 
         $total = $point['point'] * $files;
 
-        if ($tags <= 0) {
-            $total = ($point['percent'] / 100) * $point['point'] * $files;
-        }        
+        if ($type != 'receipt') {
+            if ($tags <= 0) {
+                $total = ($point['percent'] / 100) * $point['point'] * $files;
+            } 
+        }       
 
         $snap = (new SnapService)->getSnapByCode($requestCode);
         $snap->estimated_point = $total;

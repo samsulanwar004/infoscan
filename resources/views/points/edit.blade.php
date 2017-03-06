@@ -12,11 +12,16 @@
                     <label for="name">Task Name</label>
                     <input type="text" class="form-control" id="name" name="name" value="{{ $task->name }}" placeholder="Task Name" readonly="readonly" required="required">
                 </div>
-
+                <?php
+                    $type = substr($task->code, 0,1);
+                    $mode = substr($task->code, 1);
+                    $types = config('common.tasks.types.'.$type);
+                    $modes = config('common.tasks.select_mode.'.$type.'.'.$mode.'.label');
+                ?>
                 <div class="form-group task_type">
                     <label for="name">Task Type</label>
                     <select name="task_type" class="form-control" id="task-type">
-                        <option value="0" nameValue="">Select Task</option>
+                        <option value="{{ $type }}">{{ $types }}</option>
                         @foreach(config('common.tasks.types') as $key => $type)
                         <option value="{{ $key }}" nameValue="{{ $type }}">{{ $type }}</option>
                         @endforeach
@@ -25,8 +30,8 @@
 
                 <div class="form-group task_type">
                     <label for="name">Task Mode</label>
-                    <select name="task_mode" class="form-control" id="task-mode" disabled="disabled">
-                        <option value="0" nameValue="">Select Mode</option>
+                    <select name="task_mode" class="form-control" id="task-mode" readonly>
+                        <option value="{{ $mode }}">{{ $modes }}</option>
                     </select>
                 </div>
 
@@ -138,16 +143,16 @@
 
         $('#task-type').on('change', function() {
             var type = $(this).find(':selected').attr('nameValue');
-            $('#task-mode').removeAttr('disabled');
+            $('#task-mode').removeAttr('readonly');
 
             if (this.value == 'a') {
-                $("#task-mode").html('<select name="task_mode" class="form-control" id="task-mode"><option value="0" nameValue="">Select Mode</option>@foreach(config("common.tasks.select_mode.a") as $key => $mode)<option value="{{ $key }}{{ $mode["value"] }}" nameValue="{{ $mode["label"] }}">{{ $mode["label"] }}</option>@endforeach</select>');
+                $("#task-mode").html('<select name="task_mode" class="form-control" id="task-mode">@foreach(config("common.tasks.select_mode.a") as $key => $mode)<option value="{{ $key }}" nameValue="{{ $mode["label"] }}">{{ $mode["label"] }}</option>@endforeach</select>');
             } else if (this.value == 'b') {
-                $("#task-mode").html('<select name="task_mode" class="form-control" id="task-mode"><option value="0" nameValue="">Select Mode</option>@foreach(config("common.tasks.select_mode.b") as $key => $mode)<option value="{{ $key }}{{ $mode["value"] }}" nameValue="{{ $mode["label"] }}">{{ $mode["label"] }}</option>@endforeach</select>');
+                $("#task-mode").html('<select name="task_mode" class="form-control" id="task-mode">@foreach(config("common.tasks.select_mode.b") as $key => $mode)<option value="{{ $key }}" nameValue="{{ $mode["label"] }}">{{ $mode["label"] }}</option>@endforeach</select>');
             } else if (this.value == 'c') {
-                $("#task-mode").html('<select name="task_mode" class="form-control" id="task-mode"><option value="0" nameValue="">Select Mode</option>@foreach(config("common.tasks.select_mode.c") as $key => $mode)<option value="{{ $key }}{{ $mode["value"] }}" nameValue="{{ $mode["label"] }}">{{ $mode["label"] }}</option>@endforeach</select>');
+                $("#task-mode").html('<select name="task_mode" class="form-control" id="task-mode">@foreach(config("common.tasks.select_mode.c") as $key => $mode)<option value="{{ $key }}" nameValue="{{ $mode["label"] }}">{{ $mode["label"] }}</option>@endforeach</select>');
             } else {
-                $("#task-mode").attr('disabled', 'disabled');
+                $("#task-mode").attr('readonly', 'readonly');
             }      
             $("#name").val(type);
         });

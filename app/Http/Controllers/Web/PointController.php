@@ -54,7 +54,7 @@ class PointController extends AdminController
     }
 
     public function store(Request $request)
-    {        
+    {  
         $this->validate($request, [
             'name' => 'required|unique:tasks,name',
             'levels.*' => 'required'
