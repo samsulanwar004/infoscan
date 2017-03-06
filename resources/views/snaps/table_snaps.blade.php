@@ -45,6 +45,8 @@
             </tr>
         @empty
             <td colspan="4"> There is no record for snaps data!</td>
-        @endforelse                    
+        @endforelse
     </tbody>
 </table>
+
+{{ $snaps->links() }}
