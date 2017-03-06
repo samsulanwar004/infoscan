@@ -24,7 +24,7 @@ class CreateRedeemPointTable extends Migration
             $table->timestamps();
 
             $table->foreign('member_id', 'FK_member_id_in_redeem_point')
-              ->references('id')->on('member')
+              ->references('id')->on('members')
               ->onUpdate('NO ACTION')
               ->onDelete('NO ACTION');
         });
