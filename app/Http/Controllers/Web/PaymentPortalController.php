@@ -9,6 +9,7 @@ class PaymentPortalController extends AdminController
 {
     public function index()
     {
+        $this->isAllowed('PaymentPortal.List');
     	$payment = (new PaymentService)->getListPaymentPortal();
 
     	return view('payment.index', compact('payment'));
