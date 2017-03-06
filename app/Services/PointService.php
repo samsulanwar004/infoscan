@@ -103,7 +103,7 @@ inner join level_points as l on l.id = plp.level_id;');
         $task = new Task;
         $task->name = $request['name'];
         $task->code = sprintf("%s%s", $request['task_type'], $request['task_mode']);
-        $task->percentage = (isset($request['percentage'])) ? $request['percentage'] : null;
+        $task->percentage = (isset($request['percentage'])) ? $request['percentage'] : 0;
         $task->save();
 
         return $task;
@@ -128,8 +128,8 @@ inner join level_points as l on l.id = plp.level_id;');
     {
         $task = $this->getTaskById($id);
         $task->name = $request->input('name');
-        $task->code = ($request['task_type'] == 0) ? $task->code : sprintf("%s%s", $request['task_type'], $request['task_mode']);
-        $task->percentage = (isset($request['percentage'])) ? $request['percentage'] : null;
+        $task->code = sprintf("%s%s", $request['task_type'], $request['task_mode']);
+        $task->percentage = (isset($request['percentage'])) ? $request['percentage'] : 0;
         $task->update();
 
         return $task;
@@ -378,12 +378,10 @@ inner join level_points as l on l.id = plp.level_id;');
     {
 
         $type = $this->getTypeId($type);
-        $tag = ($tags <= 0) ? false : true;
-        $mode = $this->getModeId($mode, $tag);      
+        $mode = ($tags <= 0) ? 'nomode' : $mode;
+        $mode = $this->getModeId($mode);      
 
-        $status = ($tag == true) ? '1' : '0';
-
-        $code = $type.$mode.$status;
+        $code = $type.$mode;
 
         $levelId = (new MemberService)->getLevelIdByMemberId($memberId);
 
@@ -458,9 +456,13 @@ inner join level_points as l on l.id = plp.level_id;');
 
         $point = $memberAdd / $totalTag * ($calculateTask['point'] + $calculatePromo['point_city'] + $calculatePromo['point_level_city']);
 
-        if ($point <= 0) {
-            $task = $calculateTask['point'] + $calculatePromo['point_city'] + $calculatePromo['point_level_city'];
-            $point = ($calculateTask['percent'] / 100) * $task;
+        if ($type == 'receipt') {
+            $point = $calculateTask['point'] + $calculatePromo['point_city'] + $calculatePromo['point_level_city'];
+        } else {
+            if ($point <= 0) {
+                $task = $calculateTask['point'] + $calculatePromo['point_city'] + $calculatePromo['point_level_city'];
+                $point = ($calculateTask['percent'] / 100) * $task;
+            }
         }
 
         $totalPoint = round($point);
@@ -482,27 +484,23 @@ inner join level_points as l on l.id = plp.level_id;');
         return $type;
     }
 
-    protected function getModeId($mode, $tag)
+    protected function getModeId($mode)
     {
         switch ($mode) {
             case 'audios':
-                $with = ($tag == true) ? '1' : '2';
-                $mode = '1'.$with;
+                $mode = '3';
                 break;
 
             case 'tags':
-                $with = ($tag == true) ? '1' : '2';
-                $mode = '2'.$with;
+                $mode = '2';
                 break;
 
             case 'input':
-                $with = ($tag == true) ? '1' : '2';
-                $mode = '3'.$with;
+                $mode = '2';
                 break;
             
             default:
-                $with = ($tag == true) ? '1' : '2';
-                $mode = '4'.$with;
+                $mode = '1';
                 break;
         }
 

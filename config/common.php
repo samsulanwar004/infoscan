@@ -170,86 +170,32 @@ return [
             'c' => 'General Trade',
         ],
 
-        'modes' => [
-            '11' => [
-                'label' => 'With Audio',
-                'value' => 1,
-            ],
-            '12' => [
-                'label' => 'Without Audio',
-                'value' => 0,
-            ],
-            '21' => [
-                'label' => 'With Tags',
-                'value' => 1,
-            ],
-            '22' => [
-                'label' => 'Without Tags',
-                'value' => 0,
-            ],
-            '31' => [
-                'label' => 'With Input',
-                'value' => 1,
-            ],
-            '32' => [
-                'label' => 'Without Input',
-                'value' => 0,
-            ],
-            '41' => [
-                'label' => 'With Anyting',
-                'value' => 1,
-            ],
-            '42' => [
-                'label' => 'Without Anyting',
-                'value' => 0,
-            ],
-        ],
-
         'select_mode' => [
             'a' => [
-                '41' => [
-                    'label' => 'With Anyting',
-                    'value' => 1,
-                ],
-                '42' => [
-                    'label' => 'Without Anyting',
-                    'value' => 0,
+                '1' => [
+                    'label' => 'No Mode',
                 ],
             ],
             'b' => [
-                '11' => [
-                    'label' => 'With Audio',
-                    'value' => 1,
+                '1' => [
+                    'label' => 'No Mode',
                 ],
-                '12' => [
-                    'label' => 'Without Audio',
-                    'value' => 0,
-                ],
-                '31' => [
+                '2' => [
                     'label' => 'With Input',
-                    'value' => 1,
                 ],
-                '32' => [
-                    'label' => 'Without Input',
-                    'value' => 0,
+                '3' => [
+                    'label' => 'With Audio',
                 ],
             ],
             'c' => [
-                '11' => [
+                '1' => [
+                    'label' => 'No Mode',
+                ],
+                '2' => [
+                    'label' => 'With Tag',
+                ],
+                '3' => [
                     'label' => 'With Audio',
-                    'value' => 1,
-                ],
-                '12' => [
-                    'label' => 'Without Audio',
-                    'value' => 0,
-                ],
-                '21' => [
-                    'label' => 'With Tags',
-                    'value' => 1,
-                ],
-                '22' => [
-                    'label' => 'Without Tags',
-                    'value' => 0,
                 ],
             ],
         ]
