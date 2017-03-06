@@ -94,6 +94,19 @@
 
             <li class="treeview">
                 <a href="#">
+                    <i class="fa fa-money"></i> <span>Payment Portal</span>
+                    <span class="pull-right-container">
+                      <i class="fa fa-angle-left pull-right"></i>
+                    </span>
+                </a>
+                <ul class="treeview-menu">
+                    <li><a href="/payment-portal"><i class="fa fa-circle-o"></i>Payment Portal</a></li>
+                    <li><a href="/exchange"><i class="fa fa-circle-o"></i>Exchange Rates</a></li>
+                </ul>
+            </li>
+
+            <li class="treeview">
+                <a href="#">
                     <i class="fa fa-cogs"></i> <span>Settings</span>
                     <span class="pull-right-container">
                       <i class="fa fa-angle-left pull-right"></i>

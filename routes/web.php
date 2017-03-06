@@ -98,6 +98,18 @@ Route::group([
         ['names' => route_resource_name($routePrefix, 'product-categories')]
     );
 
+    Route::resource(
+        '/exchange',
+        'Web\ExchangeController',
+        ['names' => route_resource_name($routePrefix, 'exchange')]
+    );
+
+    Route::resource(
+        '/payment-portal',
+        'Web\PaymentPortalController',
+        ['names' => route_resource_name($routePrefix, 'payment-portal')]
+    );
+
     Route::get('/questionnaire/publish/{id}', 'Web\QuestionnaireController@publish')->name('questionnaire.publish');
 
     Route::get('/questionnaire/results/{id}', 'Web\QuestionnaireController@resultList')->name('questionnaire.result');
