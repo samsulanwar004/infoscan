@@ -11,7 +11,7 @@ class MemberActivityListener
     public function handle(MemberActivityEvent $event)
     {
     	$config = config('common.queue_list.member_log');
-        $job = (new MemberLog($event))->onQueue($config)->onConnection('sqs');
+        $job = (new MemberLog($event))->onQueue($config)->onConnection(env('INFOSCAN_QUEUE'));
         dispatch($job);
     }
 

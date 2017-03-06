@@ -18,7 +18,7 @@ class ExchangeController extends AdminController
     public function index()
     {
         $this->isAllowed('Exchange.List');
-        $rates = Exchange::orderBy('created_at', 'DESC')->get();
+        $rates = Exchange::orderBy('created_at', 'DESC')->paginate(50);
 
         return view('exchange.index', compact('rates'));
     }
@@ -39,13 +39,21 @@ class ExchangeController extends AdminController
      */
     public function store(Request $request)
     {
+        $this->validate($request, [
+            'cash' => 'required|numeric|different:point',
+            'point' => 'required|numeric',
+        ]);
+
         try {
+            if ($request->input('cash') > $request->input('point')) {
+                throw new \Exception("Point must be greater than Cash", 1);                
+            }
             $this->persistExchange($request);
         } catch (\Exception $e) {
             return back()->with('errors', $e->getMessage());
         }
 
-        return redirect($this->redirectAfterSave)->with('success', 'Exchange Rate Successfully Created!');
+        return redirect($this->redirectAfterSave)->with('success', 'Exchange Rate successfully created!');
     }
 
     /**
@@ -58,7 +66,7 @@ class ExchangeController extends AdminController
         $this->isAllowed('Exchange.Update');
         $rate = $this->getRateById($id);
 
-        return view('exchange.edit', compact($rate));
+        return view('exchange.edit', compact('rate'));
     }
 
     /**
@@ -69,13 +77,33 @@ class ExchangeController extends AdminController
      */
     public function update(Request $request, $id = null)
     {
+        $this->validate($request, [
+            'cash' => 'required|numeric|different:point',
+            'point' => 'required|numeric',
+        ]);
+
         try {
+            if ($request->input('cash') > $request->input('point')) {
+                throw new \Exception("Point must be greater than Cash", 1);                
+            }
             $this->persistExchange($request, $id);
         } catch (\Exception $e) {
             return back()->with('errors', $e->getMessage());
         }
 
-        return redirect($this->redirectAfterSave)->with('success', 'Exchange Rate Successfully Updated!');
+        return redirect($this->redirectAfterSave)->with('success', 'Exchange Rate successfully updated!');
+    }
+
+    public function destroy($id)
+    {
+        try {
+            $exchange = $this->getRateById($id);
+            $exchange->delete();
+        } catch (\Exception $e) {
+            return back()->with('errors', $e->getMessage());
+        }
+
+        return redirect($this->redirectAfterSave)->with('success', 'Exchange Rate successfully deleted!');
     }
 
     /**
@@ -87,8 +115,8 @@ class ExchangeController extends AdminController
     public function persistExchange(Request $request, $id = null)
     {
         $r = is_null($id) ? new Exchange : $this->getRateById($id);
-        $r->cash_per_unit = $request->input('cash_per_unit');
-        $r->point_unit_count = $request->input('point_unit_count');
+        $r->cash_per_unit = $request->input('cash');
+        $r->point_unit_count = $request->input('point');
 
         return $r->save();
     }
