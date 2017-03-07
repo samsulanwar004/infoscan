@@ -135,7 +135,8 @@ class SnapController extends AdminController
                 'input' => 'modal_tags',
                 'tags' => 'modal_tags',
                 'audios' => 'modal_audios',
-                'image' => 'modal_snaps'
+                'image' => 'modal_snaps',
+                'no_mode' => 'modal_tags',
             ];
 
             $snapFile = (new SnapService)->getSnapFileById($id);
@@ -145,7 +146,6 @@ class SnapController extends AdminController
 
             return view("snaps.$mode", compact('snapFile'));
         } catch (\Exception $e) {
-            logger($e->getMessage());
             return response()->json([
                 'status' => 'error',
                 'message' => $e->getMessage(),
@@ -185,6 +185,8 @@ class SnapController extends AdminController
             if ($request->input('mode') === 'input') {
                 (new SnapService)->updateSnapModeTags($request, $id);
             } else if ($request->input('mode') === 'tags') {
+                (new SnapService)->updateSnapModeTags($request, $id);
+            } else if ($request->input('mode') === 'no_mode') {
                 (new SnapService)->updateSnapModeTags($request, $id);
             } else if ($request->input('mode') === 'audios') {
                 (new SnapService)->updateSnapModeAudios($request, $id);
