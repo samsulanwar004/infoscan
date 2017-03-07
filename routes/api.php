@@ -37,4 +37,5 @@ Route::group([
     Route::get('/portalpoint', 'Api\PortalPointController@index');
     Route::get('/paymentportal', 'Api\PaymentPortalController@index');
     Route::post('/paymentportal', 'Api\PaymentPortalController@store');
+    Route::get('/history', 'Api\HistoryController@index');
 });

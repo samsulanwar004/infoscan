@@ -270,5 +270,6 @@ return [
         'point_process' => 'pointProcess',
         'transaction_process' => 'transactionProcess',
         'assign_process' => 'assignProcess',
+        'history_member' => 'historyMember',
     ],
 ];

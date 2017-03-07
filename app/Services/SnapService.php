@@ -15,6 +15,7 @@ use Storage;
 use App\Libraries\GoogleMap;
 use App\Events\TransactionEvent;
 use App\Jobs\PointCalculation;
+use App\Jobs\HistoryMemberTransactionJob;
 use App\Jobs\AssignJob;
 use App\Events\CrowdsourceEvent;
 use App\Events\MemberActivityEvent;
@@ -202,7 +203,17 @@ class SnapService
         
         $data = json_encode($data);
         // event for crowdsource log
-        event(new CrowdsourceEvent($userId, self::ACTION_BEHAVIOUR, $data));   
+        event(new CrowdsourceEvent($userId, self::ACTION_BEHAVIOUR, $data));  
+
+        $history = [
+            'action' => 'snap',
+            'status' => $request->input('confirm'),
+            'data' => $snaps,
+        ];
+
+        $config = config('common.queue_list.history_member');
+        $job = (new HistoryMemberTransactionJob($history))->onQueue($config)->onConnection(env('INFOSCAN_QUEUE'));
+        dispatch($job); 
 
         return true;
     }
