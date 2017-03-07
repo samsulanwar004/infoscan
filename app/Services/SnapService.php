@@ -73,6 +73,15 @@ class SnapService
         return Snap::with('member')
             ->with('files')
             ->orderBy('created_at', 'DESC')
+            ->paginate(5);
+    }
+
+    public function getAvailableSnapsByUser($id)
+    {
+        return Snap::with('member')
+            ->with('files')
+            ->where('user_id', $id)
+            ->orderBy('created_at', 'DESC')
             ->paginate(50);
     }
 
@@ -94,19 +103,31 @@ class SnapService
             ->paginate(50);
     }
 
-    public function getSnapsByType($type)
+    public function getSnapsByType($type, $userId = null)
     {
-        return Snap::with('member')
-            ->with('files')
-            ->where('snap_type', '=', $type)
-            ->paginate(50);
+        return ($userId == null) ? 
+            Snap::with('member')
+                ->with('files')
+                ->where('snap_type', '=', $type)
+                ->paginate(50) : 
+            Snap::with('member')
+                ->with('files')
+                ->where('snap_type', '=', $type)
+                ->where('user_id', '=', $userId)
+                ->paginate(50);
     }
 
-    public function getSnapsByMode($mode)
+    public function getSnapsByMode($mode, $userId = null)
     {
-        return Snap::with('member')
+        return ($userId == null) ?
+            Snap::with('member')
             ->with('files')
             ->where('mode_type', '=', $mode)
+            ->paginate(50) :
+            Snap::with('member')
+            ->with('files')
+            ->where('mode_type', '=', $mode)
+            ->where('user_id', '=', $userId)
             ->paginate(50);
     }
 
