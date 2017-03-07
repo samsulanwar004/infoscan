@@ -73,7 +73,7 @@ class SnapService
         return Snap::with('member')
             ->with('files')
             ->orderBy('created_at', 'DESC')
-            ->paginate(5);
+            ->paginate(50);
     }
 
     public function getAvailableSnapsByUser($id)
