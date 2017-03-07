@@ -49,22 +49,14 @@
 
         var type = $(this).val();
         var mode = $(".snap-mode").val();
-
-        $.get( '/snaps/'+type+'/'+mode+'/filter' , function(view){
-            $(".box-body").html(view);
-        });
-
+        window.location.href = '/snaps?type='+type;
     });
 
     $(".snap-mode").on("change", function() {
 
         var mode = $(this).val();
         var type = $(".snap-type").val();
-
-        $.get( '/snaps/'+type+'/'+mode+'/filter' , function(view){
-            $(".box-body").html(view);
-        });
-
+        window.location.href = '/snaps?mode='+mode;
     });
 
 </script>

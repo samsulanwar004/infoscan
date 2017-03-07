@@ -45,6 +45,12 @@
                                    value="{{ old('point', $rate->point_unit_count) }}"
                                    placeholder="Enter point" required>
                         </div>
+                        <div class="form-group has-feedback">
+                            <label for="minimum_point">Minimum Point</label>
+                            <input type="number" class="form-control" name="minimum_point" id="minimum-point"
+                                   value="{{ old('minimum_point', $rate->minimum_point) }}"
+                                   placeholder="Enter minimum point" required>
+                        </div>
                     </div>
                     <!-- /.box-body -->
                     <div class="box-footer text-right">

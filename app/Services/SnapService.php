@@ -40,6 +40,8 @@ class SnapService
 
     const ACTION_BEHAVIOUR = 'snap_management';
 
+    const NO_MODE_TYPE_NAME = 'no_mode';
+
     /**
      * @var string
      */
@@ -74,6 +76,15 @@ class SnapService
             ->paginate(50);
     }
 
+    public function getAvailableSnapsByUser($id)
+    {
+        return Snap::with('member')
+            ->with('files')
+            ->where('user_id', $id)
+            ->orderBy('created_at', 'DESC')
+            ->paginate(50);
+    }
+
     public function getAvailableSnapByUserId($id)
     {
         return Snap::with('member')
@@ -92,19 +103,31 @@ class SnapService
             ->paginate(50);
     }
 
-    public function getSnapsByType($type)
+    public function getSnapsByType($type, $userId = null)
     {
-        return Snap::with('member')
-            ->with('files')
-            ->where('snap_type', '=', $type)
-            ->paginate(50);
+        return ($userId == null) ? 
+            Snap::with('member')
+                ->with('files')
+                ->where('snap_type', '=', $type)
+                ->paginate(50) : 
+            Snap::with('member')
+                ->with('files')
+                ->where('snap_type', '=', $type)
+                ->where('user_id', '=', $userId)
+                ->paginate(50);
     }
 
-    public function getSnapsByMode($mode)
+    public function getSnapsByMode($mode, $userId = null)
     {
-        return Snap::with('member')
+        return ($userId == null) ?
+            Snap::with('member')
             ->with('files')
             ->where('mode_type', '=', $mode)
+            ->paginate(50) :
+            Snap::with('member')
+            ->with('files')
+            ->where('mode_type', '=', $mode)
+            ->where('user_id', '=', $userId)
             ->paginate(50);
     }
 
@@ -586,6 +609,59 @@ class SnapService
             return $dataSnap;
         }
 
+        if ($this->isNoMode($request)) {
+            $mode = self::NO_MODE_TYPE_NAME;
+
+            DB::beginTransaction();
+            try {
+                $snap = $this->createSnap($request);
+                $this->createFiles($request, $images, $snap);
+
+                DB::commit();
+            } catch (Exception $e) {
+                DB::rollback();
+
+                throw new SnapServiceException($e->getMessage());
+            }
+
+            // Auth Member
+            $member = auth('api')->user();
+            $transactionType = config('common.transaction.transaction_type.snaps');
+            $snapId = $snap->id;
+            $tags = $this->getTags();
+
+            $dataSnap = [
+                'request_code' => $request->input('request_code'),
+                'member_id' => $member->id,
+                'type' => $request->input('snap_type'),
+                'mode' => $mode,
+                'files' => count($images),
+                'tags' => count($tags),
+            ];
+
+            // Save estimated point calculate
+            $this->saveEstimatedPoint($dataSnap);
+
+            // Save transaction
+            event(new TransactionEvent($member->member_code, $transactionType, $snapId));
+
+            //build data to save member log
+            $data = [
+                'action' => $request->input('snap_type'),
+                'data' => $dataSnap,
+            ];
+
+            $data = json_encode($data);
+
+            // Member log
+            event(new MemberActivityEvent($member->member_code, self::ACTION_BEHAVIOUR, $data));
+
+            //assign to crowdsource
+            $this->assignToCrowdsource();
+
+            return $dataSnap;
+        }
+
         throw new Exception('Server Error');
     }
 
@@ -679,6 +755,59 @@ class SnapService
             // send dispatcher
             $job = $this->getPlainDispatcher($data);
             dispatch($job);
+
+            // Auth Member
+            $member = auth('api')->user();
+            $transactionType = config('common.transaction.transaction_type.snaps');
+            $snapId = $snap->id;
+            $tags = $this->getTags();
+
+            $dataSnap = [
+                'request_code' => $request->input('request_code'),
+                'member_id' => $member->id,
+                'type' => $request->input('snap_type'),
+                'mode' => $mode,
+                'files' => count($images),
+                'tags' => count($tags),
+            ];
+
+            // Save estimated point calculate
+            $this->saveEstimatedPoint($dataSnap);
+
+            // Save transaction
+            event(new TransactionEvent($member->member_code, $transactionType, $snapId));
+
+            //build data to save member log
+            $data = [
+                'action' => $request->input('snap_type'),
+                'data' => $dataSnap,
+            ];
+
+            $data = json_encode($data);
+
+            // Member log
+            event(new MemberActivityEvent($member->member_code, self::ACTION_BEHAVIOUR, $data));
+
+            //assign to crowdsource
+            $this->assignToCrowdsource();
+
+            return $dataSnap;
+        }
+
+        if ($this->isNoMode($request)) {
+            $mode = self::NO_MODE_TYPE_NAME;
+
+            DB::beginTransaction();
+            try {
+                $snap = $this->createSnap($request);
+                $this->createFiles($request, $images, $snap);
+
+                DB::commit();
+            } catch (Exception $e) {
+                DB::rollback();
+
+                throw new SnapServiceException($e->getMessage());
+            }
 
             // Auth Member
             $member = auth('api')->user();
@@ -1011,6 +1140,19 @@ class SnapService
         return false;
     }
 
+    /**
+     * @param \Illuminate\Http\Request $request
+     * @return bool
+     */
+    private function isNoMode(Request $request)
+    {
+        if ($this->hasMode($request)) {
+            return strtolower(self::NO_MODE_TYPE_NAME) === strtolower($request->input('mode_type')) ? true : false;
+        }
+
+        return false;
+    }
+
 
     /**
      * @param \Illuminate\Http\Request $request
@@ -1077,11 +1219,13 @@ class SnapService
 
         $total = $point['point'] * $files;
 
-        if ($type != 'receipt') {
-            if ($tags <= 0) {
-                $total = ($point['percent'] / 100) * $point['point'] * $files;
-            } 
-        }       
+        // if ($type != 'receipt') {
+        //     if ($mode != 'no_mode') {
+        //         if ($tags <= 0) {
+        //             $total = ($point['percent'] / 100) * $point['point'] * $files;
+        //         }
+        //     }            
+        // }       
 
         $snap = (new SnapService)->getSnapByCode($requestCode);
         $snap->estimated_point = $total;
