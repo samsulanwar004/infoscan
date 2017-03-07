@@ -146,12 +146,12 @@ class MemberController extends BaseApiController
         try {
 
             $member = $this->getActiveMember();
-            $image = $this->uploadImage($request, $member);
+            $image = env('S3_URL') . $this->uploadImage($request, $member);
             $member->avatar = $image;
             $member->save();
 
             DB::commit();
-            return $this->success(['avatar' => env('S3_URL') . $image], 200);
+            return $this->success(['avatar' => $image], 200);
         } catch (Exception $e) {
             DB::rollBack();
             return $this->error($e);
