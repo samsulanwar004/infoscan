@@ -48,7 +48,7 @@ class SecureController extends BaseApiController
 
             $secure = (new SecureService)->socialHandle($social, $user);
 
-            return $this->isIphone($request) ? view('api_register_callback', [
+            return $this->isIphone($request) ? view('auth.api_register_callback', [
                 'register' => [
                     'status' => 'ok',
                     'message' => 'Success',
