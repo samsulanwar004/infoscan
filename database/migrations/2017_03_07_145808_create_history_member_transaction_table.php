@@ -13,11 +13,23 @@ class CreateHistoryMemberTransactionTable extends Migration
      */
     public function up()
     {
-        Schema::create('history_member_transactions', function (Blueprint $table) {
+        Schema::create('member_action_logs', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('member_id');
-            $table->string('title');
-            $table->text('description');
+            $table->string('group', 15)->index(); // snap, redeem, authentication, etc.
+
+            // will be a json string. should be casted to array in model.
+            /*
+             * format json
+             * ex:
+             *     {
+             *         "type": "tags", // this key will determine the type of content. Can be a snap mode (tags, input, no mode, etc), authentication type (login, logout), etc.
+             *         "title": "",
+             *         "description": ""
+             *     }
+             *
+             */
+            $table->text('content');
             $table->timestamps();
 
             $table->foreign('member_id', 'FK_member_id_in_history_member_transactions')
@@ -34,6 +46,6 @@ class CreateHistoryMemberTransactionTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('history_member_transactions');
+        Schema::dropIfExists('member_action_logs');
     }
 }
