@@ -202,7 +202,7 @@ return [
     ],
 
     'latest_educations' => [
-        'sd', 'smp', 'sma', 'diploma', 'sarjana', 'other',
+        'SD', 'SMP', 'SMA', 'Diploma', 'Sarjana', 'Other',
     ],
 
     'banks' => [
