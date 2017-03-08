@@ -48,7 +48,13 @@ class SecureController extends BaseApiController
 
             $secure = (new SecureService)->socialHandle($social, $user);
 
-            return $this->success($secure);
+            return $this->isIphone($request) ? view('api_register_callback', [
+                'register' => [
+                    'status' => 'ok',
+                    'message' => 'Success',
+                    'data' => $secure['data'],
+                ]
+            ]) : $this->success($secure);
         } catch (\InvalidArgumentException $e) {
             return $this->error($e);
         } catch (\Exception $e) {
@@ -97,5 +103,14 @@ class SecureController extends BaseApiController
         } catch (\Exception $e) {
             return $this->error($e);
         }
+    }
+
+    private function isIphone(Request $request)
+    {
+        if(preg_match("/iphone/", strtolower($request->header('User-Agent')))) {
+            return true;
+        }
+
+        return false;
     }
 }
