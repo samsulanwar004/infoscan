@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Transaction;
 use App\TransactionDetail;
+use App\HistoryMemberTransaction;
 
 class TransactionService
 {
@@ -157,5 +158,47 @@ class TransactionService
             $td->transaction()->associate($t);
             $td->save();
         }
+    }
+
+    public function getHistoryMember($memberId)
+    {
+        return HistoryMemberTransaction::where('member_id', $memberId)
+            ->orderBy('created_at', 'DESC')
+            ->get();
+    }
+
+    public function getHistoryTransaction($member)
+    {
+
+        $point = $this->getCreditMember($member->member_code);
+        $snaps = (new SnapService)->getSnapByMemberCode($member->member_code);
+        $historys = $this->getHistoryMember($member->id);
+
+        $notif = [];
+        foreach ($historys as $history) {
+            $notif[] = [
+                'title' => $history->title,
+                'description' => $history->description,
+                'date'  => $history->created_at->toDateTimeString(),
+            ];
+        }
+        $snaps = $snaps->filter(function($value, $Key) {
+            return $value->approved_by == null && $value->reject_by == null;
+        });
+
+        $estimated = [];
+        foreach ($snaps as $snap) {
+            $estimated[] = $snap->estimated_point;
+        }
+
+        $estimated = collect($estimated)->sum();
+
+        $data = [
+            'current_point' => $point,
+            'estimated_point' => $estimated,
+            'history' => $notif,
+        ];
+
+        return $data;
     }
 }
