@@ -32,7 +32,7 @@ class CreateHistoryMemberTransactionTable extends Migration
             $table->text('content');
             $table->timestamps();
 
-            $table->foreign('member_id', 'FK_member_id_in_history_member_transactions')
+            $table->foreign('member_id', 'FK_member_id_in_member_action_logs')
               ->references('id')->on('members')
               ->onUpdate('NO ACTION')
               ->onDelete('NO ACTION');

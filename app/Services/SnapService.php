@@ -15,7 +15,7 @@ use Storage;
 use App\Libraries\GoogleMap;
 use App\Events\TransactionEvent;
 use App\Jobs\PointCalculation;
-use App\Jobs\HistoryMemberTransactionJob;
+use App\Jobs\MemberActionJob;
 use App\Jobs\AssignJob;
 use App\Events\CrowdsourceEvent;
 use App\Events\MemberActivityEvent;
@@ -205,14 +205,26 @@ class SnapService
         // event for crowdsource log
         event(new CrowdsourceEvent($userId, self::ACTION_BEHAVIOUR, $data));  
 
-        $history = [
-            'action' => 'snap',
-            'status' => $request->input('confirm'),
-            'data' => $snaps,
+        if ($request->input('confirm') == 'approve') {
+            $point = (new PointService)->calculateApprovePoint($snaps);
+            $title = $this->getType($snaps->snap_type);
+            $description = $this->getWording($request->input('confirm'), $point);                
+        } else {
+            $title = $this->getType($snaps->snap_type);
+            $description = $this->getWording($request->input('confirm')); 
+        }
+
+        //build data for member history
+        $content = [
+            'type' => $snaps->mode_type,
+            'title' => $title,
+            'description' => $description,
         ];
 
-        $config = config('common.queue_list.history_member');
-        $job = (new HistoryMemberTransactionJob($history))->onQueue($config)->onConnection(env('INFOSCAN_QUEUE'));
+        $content = json_encode($content);
+
+        $config = config('common.queue_list.member_action_log');
+        $job = (new MemberActionJob($snaps->member_id, 'snap'.$snaps->snap_type, $content))->onQueue($config)->onConnection(env('INFOSCAN_QUEUE'));
         dispatch($job); 
 
         return true;
@@ -1341,5 +1353,25 @@ class SnapService
             ->first();
 
         return $member->snap;
+    }
+
+    private function getWording($status, $point = null)
+    {
+        if ($status == 'approve') {
+            return 'Selamat, klaim sebesar '.$point.' poin telah berhasil! Kluk!';
+        } else {
+            return 'Sayang sekali, transaksi kamu gagal. Ayo coba lagi!';
+        }
+    }
+
+    private function getType($type)
+    {
+        if ($type == 'handWritten') {
+            return 'Nota Tulis';
+        } else if ($type == 'generalTrade') {
+            return 'Warung';
+        } else if ($type == 'receipt') {
+            return 'Struk';
+        }
     }
 }
