@@ -4,7 +4,7 @@ namespace App\Services;
 
 use App\Transaction;
 use App\TransactionDetail;
-use App\HistoryMemberTransaction;
+use App\MemberActionLog;
 
 class TransactionService
 {
@@ -162,7 +162,7 @@ class TransactionService
 
     public function getHistoryMember($memberId)
     {
-        return HistoryMemberTransaction::where('member_id', $memberId)
+        return MemberActionLog::where('member_id', $memberId)
             ->orderBy('created_at', 'DESC')
             ->get();
     }
@@ -177,8 +177,8 @@ class TransactionService
         $notif = [];
         foreach ($historys as $history) {
             $notif[] = [
-                'title' => $history->title,
-                'description' => $history->description,
+                'title' => $history->content['title'],
+                'description' => $history->content['description'],
                 'date'  => $history->created_at->toDateTimeString(),
             ];
         }
