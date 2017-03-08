@@ -40,6 +40,9 @@ class CreateMemberTable extends Migration
             $t->string('bank_account_number', 15)->nullable()->index();
             $t->string('api_token', 60)->unique();
             $t->float('temporary_point')->default(0);
+            $t->boolean('is_verified')->default(0);
+            $t->string('verification_token', 60)->nullable();
+            $t->timestamp('verification_expired')->nullable();
             $t->timestamps();
 
             $t->foreign('province_id', 'FK_province_id_on_members')

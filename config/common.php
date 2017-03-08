@@ -271,5 +271,6 @@ return [
         'transaction_process' => 'transactionProcess',
         'assign_process' => 'assignProcess',
         'member_action_log' => 'memberActionLog',
+        'member_register_verification_email' => 'userBehaviourLog',
     ],
 ];

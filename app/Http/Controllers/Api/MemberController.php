@@ -2,15 +2,21 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Mail\RegisterVerification;
 use App\Services\MemberService;
 use App\Transformers\MemberTransformer;
+use Carbon\Carbon;
 use DB;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Validator;
 
 class MemberController extends BaseApiController
 {
+
+    const EXPIRED_VERIFICATION_TOKEN_IN = 2;
+
     /**
      * Get member profile
      *
@@ -45,9 +51,10 @@ class MemberController extends BaseApiController
                 return $this->error($validation->errors()->getMessages(), 200, true);
             }
 
+            $mustSendVerificationEmail = false;
+
             DB::beginTransaction();
             $m = $this->getActiveMember();
-
             $m->name = $request->input('name');
             $m->email = $request->input('email');
             $m->marital_status = $request->input('marital_status');
@@ -63,9 +70,20 @@ class MemberController extends BaseApiController
             $m->bank_name = $request->input('bank_name');
             $m->bank_account_name = $request->input('bank_account_name');
             $m->bank_account_number = $request->input('bank_account_number');
+            if(! (bool)$m->is_verified) {
+                $m->is_verified = 0;
+                $m->verification_token = strtolower(str_random(60));
+                $m->verification_expired = Carbon::now()->addDay(self::EXPIRED_VERIFICATION_TOKEN_IN);
+                $mustSendVerificationEmail = true;
+            }
 
             $m->save();
             DB::commit();
+
+            // send email register verification
+            if($mustSendVerificationEmail) {
+                $this->sendVerificationEmail($m);
+            }
 
             return $this->success('Member successfully updated!');
         } catch (Exception $e) {
@@ -179,5 +197,15 @@ class MemberController extends BaseApiController
         }
 
         return null;
+    }
+
+    private function sendVerificationEmail($member)
+    {
+        $message = (new RegisterVerification($member))
+            ->onConnection('sync')
+            ->onQueue(config('common.queue_list.member_register_verification_email'));
+
+        Mail::to($member->email)
+            ->queue($message);
     }
 }

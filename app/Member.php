@@ -11,6 +11,8 @@ class Member extends Authenticable
 
     protected $hidden = ['password'];
 
+    protected $dates = ['verification_expired'];
+
     public function luckyDraws()
     {
         return $this->belongsToMany(luckyDraw::class, 'members_lucky_draws', 'member_id', 'luckydraw_id');
@@ -30,5 +32,10 @@ class Member extends Authenticable
     {
         return $this->hasMany(Snap::class, 'member_id', 'id');
     }
-    
+
+    public function scopeGetByVerificationToken($query, $apiToken)
+    {
+        return $query->where('verification_token', $apiToken);
+    }
+
 }

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "e30a63c617afa6eed80ecc49bde5e871",
+    "content-hash": "eaf1f9578cba6ed263b1638f2c02f637",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -399,6 +399,57 @@
                 "sqs"
             ],
             "time": "2017-01-29T05:44:02+00:00"
+        },
+        {
+            "name": "edujugon/push-notification",
+            "version": "v2.1.6",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Edujugon/PushNotification.git",
+                "reference": "4e3563624980b30d3905db7f8ed5fa760d30e795"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Edujugon/PushNotification/zipball/4e3563624980b30d3905db7f8ed5fa760d30e795",
+                "reference": "4e3563624980b30d3905db7f8ed5fa760d30e795",
+                "shasum": ""
+            },
+            "require": {
+                "guzzlehttp/guzzle": "^6.2",
+                "illuminate/support": "^5.2",
+                "php": ">=5.6.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "4.0.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Edujugon\\PushNotification\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Eduardo Marcos",
+                    "email": "edujugon@gmail.com"
+                }
+            ],
+            "description": "Laravel 5 Package to send push notifications to Android and IOS devices. (GCM,FCM,APN)",
+            "keywords": [
+                "FCM",
+                "apn",
+                "gcm",
+                "high",
+                "laravel",
+                "notification",
+                "priority",
+                "push"
+            ],
+            "time": "2016-10-20T15:58:46+00:00"
         },
         {
             "name": "elibyy/tcpdf-laravel",
@@ -2334,7 +2385,7 @@
             "version": "v1.0.1",
             "source": {
                 "type": "git",
-                "url": "git@bitbucket.org:rebelworksco/rebel-component-rbac.git",
+                "url": "https://pieter-rebel-works@bitbucket.org/rebelworksco/rebel-component-rbac.git",
                 "reference": "69cbe4b0b323b0cbd11354242b7906c07bbbe46c"
             },
             "require": {
@@ -2365,7 +2416,7 @@
             "version": "v1.0.1",
             "source": {
                 "type": "git",
-                "url": "git@bitbucket.org:rebelworksco/rebel-component-setting.git",
+                "url": "https://pieter-rebel-works@bitbucket.org/rebelworksco/rebel-component-setting.git",
                 "reference": "92ad6e8b7614d2a5578e5663c5a4b7d7907af7ba"
             },
             "require": {
@@ -2396,7 +2447,7 @@
             "version": "v1.0.0",
             "source": {
                 "type": "git",
-                "url": "git@bitbucket.org:rebelworksco/rebel-component-utilities.git",
+                "url": "https://pieter-rebel-works@bitbucket.org/rebelworksco/rebel-component-utilities.git",
                 "reference": "03aa2ed3bf4c5562c55da0d55128fddd9b3ff280"
             },
             "require": {
