@@ -35,7 +35,13 @@
                             <label for="name">Name</label>
                             <input type="text" class="form-control" id="name" name="name" placeholder="Enter Name"
                                    value="{{ old('name', $category->name) }}" required autofocus>
-                        </div>                        
+                        </div>
+
+                        <div class="form-group">
+                            <label for="hex_color">Hex Color</label>
+                            <input type="text" class="form-control" id="hex_color" name="hex_color"
+                                   placeholder="Select Color" value="{{ old('hex_color', $category->hex_color) }}" readonly>
+                        </div>
 
                         <div class="form-group">
                             <label for="icon">Icon</label><br>
@@ -71,11 +77,18 @@
 @endsection
 
 @section('footer_scripts')
-<script>
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-colorpicker/2.5.1/css/bootstrap-colorpicker.css">
+    <script type="text/javascript"
+            src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-colorpicker/2.5.1/js/bootstrap-colorpicker.js"></script>
+    <script>
+        function myLoading() {
+            $('#loading').addClass('overlay');
+            document.getElementById("loading").innerHTML = '<i class="fa fa-spinner fa-spin" style="font-size:50px;"></i>';
+        }
 
-    function myLoading() {
-        $('#loading').addClass('overlay');
-        document.getElementById("loading").innerHTML = '<i class="fa fa-spinner fa-spin" style="font-size:50px;"></i>';
-    }
-</script>
+        $(function () {
+            $('#hex_color').colorpicker();
+        });
+    </script>
 @endsection
