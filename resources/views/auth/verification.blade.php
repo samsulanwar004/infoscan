@@ -14,7 +14,7 @@
 <div class="login-box">
     <div class="login-logo">
         <a href="#">
-            <img src="<?php echo env('CDN_URL', ''); ?>/img/lte/logo.png" width="150">
+            <img src="<?php echo env('CDN_URL', ''); ?>img/lte/logo.png" width="150">
         </a>
     </div>
     <div class="login-box-body" style="text-align: center;">
