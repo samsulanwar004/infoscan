@@ -48,6 +48,7 @@ class ProductCategoryController extends AdminController
             'name' => 'required|max:225',
             'icon' => 'mimes:jpg,jpeg,png',
             'background' => 'mimes:jpg,jpeg,png',
+            'hex_color' => 'string|size:7'
         ]);
 
         try {
@@ -98,6 +99,7 @@ class ProductCategoryController extends AdminController
             'name' => 'required|max:225',
             'icon' => 'mimes:jpg,jpeg,png',
             'background' => 'mimes:jpg,jpeg,png',
+            'hex_color' => 'string|size:7'
         ]);
 
         try {

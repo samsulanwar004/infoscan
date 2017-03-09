@@ -13,7 +13,8 @@ class CategoriesTransformer extends TransformerAbstract
             'name'   => $categories->name,         
             'icon' => $categories->icon,
             'background' => $categories->background,
-            'slug' => $categories->slug
+            'slug' => $categories->slug,
+            'hex_color' => $categories->hex_color
         ];
     }
 }
