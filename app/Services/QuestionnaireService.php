@@ -5,6 +5,7 @@ namespace App\Services;
 use App\QuestionnaireTemplate;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use App\QuestionnaireSubmit;
 
 class QuestionnaireService
 {
@@ -47,5 +48,12 @@ class QuestionnaireService
             ->get();
 
         return $questionnaireDetail;
+    }
+
+    public function isMultipleQuestionnaire($memberId, $questId)
+    {
+        return QuestionnaireSubmit::where('member_id', '=', $memberId)
+            ->where('template_id', '=', $questId)
+            ->first();
     }
 }
