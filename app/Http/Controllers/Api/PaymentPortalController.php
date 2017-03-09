@@ -12,7 +12,7 @@ class PaymentPortalController extends BaseApiController
     {
     	try {
     		$payment = (new PaymentService)->getPaymentPortal();
-			
+
 			return $this->success($payment, 200);
     	} catch (\Exception $e) {
     		return $this->error($e, 400, true);
@@ -22,6 +22,10 @@ class PaymentPortalController extends BaseApiController
     public function store(Request $request)
     {
     	try {
+            // check if user has verify email
+
+
+
     		$validation = $this->validRequest($request);
             if ($validation->fails()) {
                 return $this->error($validation->errors(), 400, true);

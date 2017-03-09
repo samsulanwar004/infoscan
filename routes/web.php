@@ -1,7 +1,7 @@
 <?php
 
 $routePrefix = null;
-
+Route::get('/verification/{token}', 'Web\MemberController@verify')->name('member_verification');
 Route::group([
     'middleware' => 'auth',
 ], function () use ($routePrefix) {

@@ -35,6 +35,7 @@ class CategoryService
 		$category = new ProductCategory;
 		$category->name = $request->input('name');
 		$category->slug = str_slug($category->name);
+        $category->hex_color = $request->input('hex_color');
 
 		if ($request->hasFile('icon')) {
             $icon = $request->file('icon');
@@ -101,6 +102,7 @@ class CategoryService
 		$category = $this->getCategoryById($id);
 		$category->name = $request->input('name');
         $category->slug = str_slug($category->name);
+        $category->hex_color = $request->input('hex_color');
 
         if ($request->hasFile('icon')) {
             $icon = $request->file('icon');
