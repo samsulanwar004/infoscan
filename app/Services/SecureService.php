@@ -48,12 +48,12 @@ class SecureService
                 ->setApiToken(str_random(60))
                 ->register($user);
 
-            //debit for new member
-            $transaction = [
-                'member_code' => $user['member_code'],
-                'point' => 1000,
-            ];
-            $this->transactionDebit($transaction);
+            // //debit for new member
+            // $transaction = [
+            //     'member_code' => $user['member_code'],
+            //     'point' => 1000,
+            // ];
+            // $this->transactionDebit($transaction);
         }
 
         return [
@@ -104,12 +104,12 @@ class SecureService
                 ->setApiToken(str_random(60))
                 ->register($request->all());
 
-            //debit for new member
-            $transaction = [
-                'member_code' => $request->input('social_media_id'),
-                'point' => 1000,
-            ];
-            $this->transactionDebit($transaction);
+            // //debit for new member
+            // $transaction = [
+            //     'member_code' => $request->input('social_media_id'),
+            //     'point' => 1000,
+            // ];
+            // $this->transactionDebit($transaction);
 
         }
 

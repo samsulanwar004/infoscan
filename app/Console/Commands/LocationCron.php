@@ -45,7 +45,7 @@ class LocationCron extends Command
 
         foreach ($snaps as $snap) {            
             $location = $snapService->handleMapAddress($snap->latitude, $snap->longitude);
-            if ($location->status == "OK") {
+            if (strtolower($location->status) == "ok") {
                 $address = $location->results[0]->address_components;
                 $length = count($address);
                 $s = $snapService->getSnapByid($snap->id);
