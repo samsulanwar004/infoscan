@@ -42,6 +42,7 @@ class PaymentService
 	        'estimated_point' => $estimated,
 	        'point_unit_count' => $exchange->point_unit_count,
 	        'cash_per_unit' => $exchange->cash_per_unit,
+	        'minimum_point' => $exchange->minimum_point,
        	];
 
 		return $data;
@@ -68,6 +69,11 @@ class PaymentService
 
 		$exchangeCash = $exchange->cash_per_unit;
 		$exchangePoint = $exchange->point_unit_count;
+		$minimumPoint = $exchange->minimum_point;
+
+		if ($minimumPoint  < $point) {
+			throw new \Exception("Credit must be greater than minimum point", 1);
+		}
 
 		if ($exchangePoint > $point) {
 			throw new \Exception("Credit must be greater than exchange rate", 1);

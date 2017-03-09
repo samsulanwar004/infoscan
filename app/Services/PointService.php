@@ -378,7 +378,6 @@ inner join level_points as l on l.id = plp.level_id;');
     {
 
         $type = $this->getTypeId($type);
-        $mode = ($tags <= 0) ? 'nomode' : $mode;
         $mode = $this->getModeId($mode);      
 
         $code = $type.$mode;
@@ -449,19 +448,18 @@ inner join level_points as l on l.id = plp.level_id;');
         $crowdSourceEdit = $tags['crowdsource_edit'];
         $crowdSourceAdd = $tags['crowdsource_add'];
         $totalTag = $memberAdd + $crowdSourceEdit + $crowdSourceAdd;
-        
-        if ($totalTag <= 0) {
-            throw new \Exception("Data product notfound! add product before approve this content!", 1);                
-        }
-
-        $point = $memberAdd / $totalTag * ($calculateTask['point'] + $calculatePromo['point_city'] + $calculatePromo['point_level_city']);
 
         if ($type == 'receipt') {
             $point = $calculateTask['point'] + $calculatePromo['point_city'] + $calculatePromo['point_level_city'];
+        } else if ($mode == 'no_mode') {
+            $point = $calculateTask['point'] + $calculatePromo['point_city'] + $calculatePromo['point_level_city'];
         } else {
-            if ($point <= 0) {
+            
+            if ($totalTag <= 0) {
                 $task = $calculateTask['point'] + $calculatePromo['point_city'] + $calculatePromo['point_level_city'];
                 $point = ($calculateTask['percent'] / 100) * $task;
+            } else {
+                $point = $memberAdd / $totalTag * ($calculateTask['point'] + $calculatePromo['point_city'] + $calculatePromo['point_level_city']);
             }
         }
 

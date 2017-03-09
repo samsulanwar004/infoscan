@@ -68,7 +68,7 @@ return [
                     'max' => 1000000,
                 ]
             ],
-            'user_city' => [
+            'users_city' => [
                 'label' => 'City',
                 'type' => 'multiple'
             ],
@@ -136,8 +136,8 @@ return [
                     'max' => 3000,
                 ]
             ],
-            'purchase_time' => [
-                'label' => 'Purchase Time',
+            'purchase_date' => [
+                'label' => 'Purchase Date',
                 'type' => 'dateRange',
                 'data' => [
                     'min' => -0,
@@ -146,7 +146,7 @@ return [
                 ]
             ],
             'sent_time' => [
-                'label' => 'Purchase Time',
+                'label' => 'Sent Date',
                 'type' => 'dateRange',
                 'data' => [
                     'min' => -0,
@@ -202,7 +202,7 @@ return [
     ],
 
     'latest_educations' => [
-        'sd', 'smp', 'sma', 'diploma', 'sarjana', 'other',
+        'SD', 'SMP', 'SMA', 'Diploma', 'Sarjana', 'Other',
     ],
 
     'banks' => [
@@ -270,5 +270,6 @@ return [
         'point_process' => 'pointProcess',
         'transaction_process' => 'transactionProcess',
         'assign_process' => 'assignProcess',
+        'member_action_log' => 'memberActionLog',
     ],
 ];

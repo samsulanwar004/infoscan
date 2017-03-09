@@ -17,15 +17,38 @@ class SnapController extends AdminController
     {   
         $this->isAllowed('Snaps.List');
         $user = auth('web')->user();
-        if ($user->roles[0]->role_name == self::NAME_ROLE) {
-            $id = $user->id;
-            $snaps = (new SnapService)->getAvailableSnaps();
-            $snaps = $snaps->filter(function($value, $Key) use ($id) {
-                        return $value->user_id == $id;
-                    });
+        $snaps = ( new SnapService);
+        if (request()->has('type')) {
+            $type = request()->input('type');
+            $typeFilter = config("common.snap_type.$type");            
+            if ($user->roles[0]->role_name == self::NAME_ROLE) {
+                $id = $user->id;
+                $snaps = $snaps->getSnapsByType($typeFilter, $id)
+                    ->appends('type', $type);
+            } else {
+                $snaps = $snaps->getSnapsByType($typeFilter)
+                    ->appends('type', $type);
+            }
+        } else if (request()->has('mode')) {
+            $mode = request()->input('mode');
+            $modeFilter = config("common.snap_mode.$mode");            
+            if ($user->roles[0]->role_name == self::NAME_ROLE) {
+                $id = $user->id;
+                $snaps = $snaps->getSnapsByMode($modeFilter, $id)
+                    ->appends('mode', $mode);
+                
+            } else {
+                $snaps = $snaps->getSnapsByMode($modeFilter)
+                    ->appends('mode', $mode);
+            } 
         } else {
-            $snaps = (new SnapService)->getAvailableSnaps();
-        } 
+            if ($user->roles[0]->role_name == self::NAME_ROLE) {
+                $id = $user->id;
+                $snaps = $snaps->getAvailableSnapsByUser($id);
+            } else {
+                $snaps = $snaps->getAvailableSnaps();
+            }
+        }          
 
         $snapCategorys = config("common.snap_category");
         $snapCategoryModes = config("common.snap_category_mode");
@@ -53,63 +76,6 @@ class SnapController extends AdminController
         
     }
 
-    public function filter($type, $mode)
-    {
-        $this->isAllowed('Snaps.List');
-        $user = auth('web')->user();
-        $snaps = ( new SnapService);
-
-        if ($type == 'all' && $mode == 'all') {
-            if ($user->roles[0]->role_name == self::NAME_ROLE) {
-                $id = $user->id;
-                $snaps = (new SnapService)->getAvailableSnaps();
-                $snaps = $snaps->filter(function($value, $Key) use ($id) {
-                            return $value->user_id == $id;
-                        });
-            } else {
-                $snaps = (new SnapService)->getAvailableSnaps();
-            }            
-        } else if($type == 'all') {
-            $mode = config("common.snap_mode.$mode");            
-            if ($user->roles[0]->role_name == self::NAME_ROLE) {
-                $id = $user->id;
-                $snaps = $snaps->getSnapsByMode($mode);
-                $snaps = $snaps->filter(function($value, $Key) use ($id) {
-                            return $value->user_id == $id;
-                        });
-            } else {
-                $snaps = $snaps->getSnapsByMode($mode);
-            } 
-        } else if($mode == 'all') {
-            $type = config("common.snap_type.$type");            
-            if ($user->roles[0]->role_name == self::NAME_ROLE) {
-                $id = $user->id;
-                $snaps = $snaps->getSnapsByType($type);
-                $snaps = $snaps->filter(function($value, $Key) use ($id) {
-                            return $value->user_id == $id;
-                        });
-            } else {
-                $snaps = $snaps->getSnapsByType($type);
-            }
-        } else {
-            $type = config("common.snap_type.$type");
-            $mode = config("common.snap_mode.$mode");
-
-            if ($user->roles[0]->role_name == self::NAME_ROLE) {
-                $id = $user->id;
-                $snaps = $snaps->getSnapsByFilter($type, $mode);
-                $snaps = $snaps->filter(function($value, $Key) use ($id) {
-                            return $value->user_id == $id;
-                        });
-            } else {
-                $snaps = $snaps->getSnapsByFilter($type, $mode);
-            }
-            
-        }
-
-        return view('snaps.table_snaps', compact('snaps'));
-    }
-
     public function edit($id)
     {
         try {
@@ -135,7 +101,8 @@ class SnapController extends AdminController
                 'input' => 'modal_tags',
                 'tags' => 'modal_tags',
                 'audios' => 'modal_audios',
-                'image' => 'modal_snaps'
+                'image' => 'modal_snaps',
+                'no_mode' => 'modal_tags',
             ];
 
             $snapFile = (new SnapService)->getSnapFileById($id);
@@ -145,7 +112,6 @@ class SnapController extends AdminController
 
             return view("snaps.$mode", compact('snapFile'));
         } catch (\Exception $e) {
-            logger($e->getMessage());
             return response()->json([
                 'status' => 'error',
                 'message' => $e->getMessage(),
@@ -185,6 +151,8 @@ class SnapController extends AdminController
             if ($request->input('mode') === 'input') {
                 (new SnapService)->updateSnapModeTags($request, $id);
             } else if ($request->input('mode') === 'tags') {
+                (new SnapService)->updateSnapModeTags($request, $id);
+            } else if ($request->input('mode') === 'no_mode') {
                 (new SnapService)->updateSnapModeTags($request, $id);
             } else if ($request->input('mode') === 'audios') {
                 (new SnapService)->updateSnapModeAudios($request, $id);

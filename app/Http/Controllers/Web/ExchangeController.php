@@ -42,6 +42,7 @@ class ExchangeController extends AdminController
         $this->validate($request, [
             'cash' => 'required|numeric|different:point',
             'point' => 'required|numeric',
+            'minimum_point' => 'required|numeric',
         ]);
 
         try {
@@ -80,6 +81,7 @@ class ExchangeController extends AdminController
         $this->validate($request, [
             'cash' => 'required|numeric|different:point',
             'point' => 'required|numeric',
+            'minimum_point' => 'required|numeric',
         ]);
 
         try {
@@ -117,6 +119,7 @@ class ExchangeController extends AdminController
         $r = is_null($id) ? new Exchange : $this->getRateById($id);
         $r->cash_per_unit = $request->input('cash');
         $r->point_unit_count = $request->input('point');
+        $r->minimum_point = $request->input('minimum_point');
 
         return $r->save();
     }

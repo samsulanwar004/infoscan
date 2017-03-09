@@ -48,13 +48,15 @@
                             </td>
                             <td class="text-right vertical-middle">
                                 <div class="btn-group">
+                                    @cando('PaymentPortal.Confirm')
                                     <a href="{{ admin_route_url('payment-portal.edit', ['id' => $item->id]) }}"
                                       data-toggle="modal"
                                       data-target="#"
                                       modal-size="modal-md"
                                       class="btn btn-success"
                                       title="Edit">
-                                      <i class="fa fa-pencil"> </i></a>                           
+                                      <i class="fa fa-pencil"> </i></a> 
+                                    @endcando                          
                                 </div>
                             </td>
                         </tr>

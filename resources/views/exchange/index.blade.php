@@ -26,6 +26,7 @@
                     <tr>
                         <th width="100">Cash</th>
                         <th width="100">Point</th>
+                        <th width="100">Minimum Point</th>
                         <th width="100">Date</th>
                         <th width="250"></th>
                     </tr>
@@ -38,6 +39,9 @@
                             </td>
                             <td>
                                 {{ number_format($item->point_unit_count) }} Pts
+                            </td>
+                            <td>
+                                {{ number_format($item->minimum_point) }} Pts
                             </td>
                             <td>
                                 {{ date_format(date_create($item->created_at), 'M, d Y') }}

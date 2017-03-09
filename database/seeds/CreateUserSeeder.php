@@ -25,6 +25,7 @@ class CreateUserSeeder extends Seeder
         'Transactions.List',
         'Reports.List',
         'Crowdsource.List',
+        'PaymentPortal.List', 'PaymentPortal.Confirm',
     ];
 
     protected $createPermissionsCrowdsourceAdmin = [
