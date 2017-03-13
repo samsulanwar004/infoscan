@@ -40,7 +40,7 @@
                 </div>
             </div>
             <div class="col-sm-6 invoice-col">
-              <textarea name="comment" id="comment" class="form-control" rows="4" placeholder="Reason"></textarea>
+                <div class="radio" id="wording"></div>
             </div>
           </div>
           <!-- /.row -->
@@ -94,13 +94,13 @@
       });
 
       $('#approve').on('click', function() {
-        $('#comment').removeAttr('required');
         $('.submit-to-server').removeAttr('disabled');
+        $('#wording').html('<label><input name="comment" type="radio" value="Selamat, klaim sebesar {{ $fixedPoint }} poin telah berhasil! Kluk!" required="required">Selamat, klaim sebesar {{ $fixedPoint }} poin telah berhasil! Kluk!</label><label><input name="comment" value="Oops, data belanja kamu belum lengkap. Kamu dapat {{ $fixedPoint }} poin! Kluk!" type="radio" required="required">Oops, data belanja kamu belum lengkap. Kamu dapat {{ $fixedPoint }} poin! Kluk!</label>');
       });
 
       $('#reject').on('click', function() {
-        $('#comment').attr('required', 'required');
         $('.submit-to-server').removeAttr('disabled');
+        $('#wording').html('<label><input name="comment" value="Sayang sekali, transaksi kamu gagal. Ayo coba lagi!" type="radio" required="required">Sayang sekali, transaksi kamu gagal. Ayo coba lagi!</label>');
       });
 
       if ('{{(bool)$snap->approved_by}}' == true) {
