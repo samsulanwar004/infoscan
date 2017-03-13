@@ -9,7 +9,7 @@ use Validator;
 
 class SnapController extends BaseApiController
 {
-    const SNAP_MODE_AUDIO = 'audio';
+    const SNAP_MODE_AUDIO = 'audios';
 
     private $handlerType = [
         'receipt',
@@ -98,7 +98,7 @@ class SnapController extends BaseApiController
         // declare new rules depend on handler type (snap_type)
         $newRules = [];
         if ('generaltrade' === $snapType || 'handwritten' === $snapType) {
-            $modeType = strtotime($request->input('mode_type'));
+            $modeType = strtolower($request->input('mode_type'));
 
             if ($modeType === self::SNAP_MODE_AUDIO) {
                 $newRules = [
