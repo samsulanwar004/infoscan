@@ -174,11 +174,17 @@ class TransactionService
         $snaps = (new SnapService)->getSnapByMemberCode($member->member_code);
         $historys = $this->getHistoryMember($member->id);
 
+        $historys = $historys->filter(function($value, $Key) {
+            return $value->group == 'snap';
+        });
+
         $notif = [];
         foreach ($historys as $history) {
             $notif[] = [
                 'title' => $history->content['title'],
                 'description' => $history->content['description'],
+                'mode_type' => $history->content['type'],
+                'thumbnail' => config('filesystems.s3url').$history->content['image'],
                 'date'  => $history->created_at->toDateTimeString(),
             ];
         }
