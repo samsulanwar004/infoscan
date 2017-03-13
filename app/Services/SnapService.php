@@ -219,12 +219,11 @@ class SnapService
             'type' => $snaps->mode_type,
             'title' => $title,
             'description' => $description,
+            'image' => $snaps->files[0]->file_path,
         ];
 
-        $content = json_encode($content);
-
         $config = config('common.queue_list.member_action_log');
-        $job = (new MemberActionJob($snaps->member_id, 'snap'.$snaps->snap_type, $content))->onQueue($config)->onConnection(env('INFOSCAN_QUEUE'));
+        $job = (new MemberActionJob($snaps->member_id, 'snap', $content))->onQueue($config)->onConnection(env('INFOSCAN_QUEUE'));
         dispatch($job); 
 
         return true;

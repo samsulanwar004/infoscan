@@ -505,19 +505,26 @@ inner join level_points as l on l.id = plp.level_id;');
         return $mode;
     }
 
-    public function getPortalPoint($memberCode)
+    public function getPortalPoint($member)
     {
-        $point = (new TransactionService)->getCreditMember($memberCode);
+        $transaction = (new TransactionService);
+        $point = $transaction->getCreditMember($member->member_code);
 
-        $snaps = (new SnapService)->getSnapByMemberCode($memberCode);
+        $snaps = (new SnapService)->getSnapByMemberCode($member->member_code);
 
-        $notifications = $snaps->filter(function($value, $Key) {
-            return $value->approved_by != null || $value->reject_by != null;
+        $historys = $transaction->getHistoryMember($member->id);
+
+        $historys = $historys->filter(function($value, $Key) {
+            return $value->group == 'luckydraw' || $value->group == 'cashback' || $value->group == 'survey';
         });
 
         $notif = [];
-        foreach ($notifications as $notification) {
-            $notif[] = $this->getWording($notification);
+        foreach ($historys as $history) {
+            $notif[] = [
+                'title' => $history->content['title'],
+                'description' => $history->content['description'],
+                'date'  => $history->created_at->toDateTimeString(),
+            ];
         }
 
         $snaps = $snaps->filter(function($value, $Key) {
@@ -534,63 +541,10 @@ inner join level_points as l on l.id = plp.level_id;');
         $data = [
             'current_point' => $point,
             'estimated_point' => $estimated,
-            'description' => $notif,
+            'history' => $notif,
         ];
 
         return $data;
-    }
-
-    private function getWording($notification)
-    {
-        $snapType = $notification->snap_type;        
-        $dateTime = $notification->created_at->toDateTimeString();
-
-        switch ($snapType) {
-            case 'handWritten':
-                $title = isset($notification->approved_by) ? 'Transaksi Nota tulis berhasil' : 'Transaksi Nota tulis gagal';
-                $description = isset($notification->approved_by) ? 'Transaksi nota tulis kamu telah berhasil! Kluk!' : 'Transaksi nota tulis kamu belum berhasil :(';
-                $status = isset($notification->approved_by) ? 1 : 0;
-
-                $data = [
-                    'title' => $title,
-                    'description' => $description,
-                    'status' => $status,
-                    'date_time' => $dateTime,
-                ];
-
-                return $data;
-                break;
-            case 'generalTrade':
-                $title = isset($notification->approved_by) ? 'Transaksi Warung berhasil' : 'Transaksi Warung gagal';
-                $description = isset($notification->approved_by) ? 'Transaksi warung kamu telah berhasil! Kluk!' : 'Transaksi warung kamu belum berhasil :(';
-                $status = isset($notification->approved_by) ? 1 : 0;
-
-                $data = [
-                    'title' => $title,
-                    'description' => $description,
-                    'status' => $status,
-                    'date_time' => $dateTime,
-                ];
-
-                return $data;
-                break;
-                
-            default:
-                $title = isset($notification->approved_by) ? 'Transaksi Struk berhasil' : 'Transaksi Struk gagal';
-                $description = isset($notification->approved_by) ? 'Transaksi struk belanja kamu telah berhasil! Kluk!' : 'Transaksi struk belanja kamu belum berhasil :(';
-                $status = isset($notification->approved_by) ? 1 : 0;
-
-                $data = [
-                    'title' => $title,
-                    'description' => $description,
-                    'status' => $status,
-                    'date_time' => $dateTime,
-                ];
-
-                return $data;
-                break;
-                
-        }
     }
 
     public function getDetailMe($member)

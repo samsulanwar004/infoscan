@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Exchange;
 use App\RedeemPoint;
+use App\Jobs\MemberActionJob;
 
 class PaymentService 
 {
@@ -71,11 +72,11 @@ class PaymentService
 		$exchangePoint = $exchange->point_unit_count;
 		$minimumPoint = $exchange->minimum_point;
 
-		if ($minimumPoint  < $point) {
+		if ($point < $minimumPoint) {
 			throw new \Exception("Credit must be greater than minimum point", 1);
 		}
 
-		if ($exchangePoint > $point) {
+		if ($point < $exchangePoint) {
 			throw new \Exception("Credit must be greater than exchange rate", 1);
 		}
 
@@ -98,6 +99,17 @@ class PaymentService
 
 		//credit point to member
 		$this->transactionCredit($transaction);
+
+		//build data for member history
+        $content = [
+            'type' => 'cashback',
+            'title' => 'Cashback',
+            'description' => 'Kamu telah menukarkan poin untuk cashback. Kami akan mengirim notifikasi setelah kami verifikasi.',
+        ];
+
+        $config = config('common.queue_list.member_action_log');
+        $job = (new MemberActionJob($this->member->id, 'cashback', $content))->onQueue($config)->onConnection(env('INFOSCAN_QUEUE'));
+        dispatch($job);
 
 		return true;
 

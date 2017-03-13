@@ -13,6 +13,7 @@ use App\MemberLuckyDraw;
 use App\Libraries\ImageFile;
 use Image;
 use Storage;
+use App\Jobs\MemberActionJob;
 
 class LuckyDrawService
 {
@@ -232,6 +233,17 @@ class LuckyDrawService
 		$mld->luckydraw()->associate($lucky);
 
 		$mld->save();
+
+		//build data for member history
+        $content = [
+            'type' => 'luckydraw',
+            'title' => 'Lucky Draw',
+            'description' => 'Kamu telah menukarkan poinmu untuk ikut undian. Semoga beruntung!',
+        ];
+
+        $config = config('common.queue_list.member_action_log');
+        $job = (new MemberActionJob($member->id, 'luckydraw', $content))->onQueue($config)->onConnection(env('INFOSCAN_QUEUE'));
+        dispatch($job); 
 
 		return $randomNumber;		
 	}

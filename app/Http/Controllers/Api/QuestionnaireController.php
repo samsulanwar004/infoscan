@@ -10,6 +10,7 @@ use App\Transformers\QuestionnaireTransformer;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Jobs\MemberActionJob;
 
 class QuestionnaireController extends BaseApiController
 {
@@ -123,6 +124,17 @@ class QuestionnaireController extends BaseApiController
             }
 
             DB::commit();
+
+            //build data for member history
+            $content = [
+                'type' => 'survey',
+                'title' => 'Survey',
+                'description' => 'Kamu telah mendapatkan poin dari mengisi survei. Petok!',
+            ];
+
+            $config = config('common.queue_list.member_action_log');
+            $job = (new MemberActionJob($member->id, 'survey', $content))->onQueue($config)->onConnection(env('INFOSCAN_QUEUE'));
+            dispatch($job); 
 
             return $this->success();
 
