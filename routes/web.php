@@ -194,6 +194,11 @@ Route::group([
     )->name($routePrefix == null ? 'reports' : '.reports');
 
     Route::post(
+        '/reports',
+        'Web\ReportController@index'
+    )->name($routePrefix == null ? 'reports' : '.reports');
+
+    Route::post(
         '/merchants/settingReports',
         'Web\MerchantController@storeSettingReports'
     )->name($routePrefix == null ? 'merchants.settingReports.store' : '.merchants.settingReports.store');

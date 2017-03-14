@@ -18,7 +18,6 @@
                 $table->string('products', 100)->nullable();
                 $table->string('users_city', 100)->nullable();
                 $table->string('age', 10)->nullable();
-                $table->string('outlet_area', 100)->nullable();
                 $table->string('province', 100)->nullable();
                 $table->string('gender', 10)->nullable();
                 $table->string('usership', 100)->nullable();

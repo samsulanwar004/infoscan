@@ -185,6 +185,7 @@ class TransactionService
                 'description' => $history->content['description'],
                 'mode_type' => $history->content['type'],
                 'thumbnail' => config('filesystems.s3url').$history->content['image'],
+                'status' => $history->content['status'],
                 'date'  => $history->created_at->toDateTimeString(),
             ];
         }

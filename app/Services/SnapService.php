@@ -205,21 +205,13 @@ class SnapService
         // event for crowdsource log
         event(new CrowdsourceEvent($userId, self::ACTION_BEHAVIOUR, $data));  
 
-        if ($request->input('confirm') == 'approve') {
-            $point = (new PointService)->calculateApprovePoint($snaps);
-            $title = $this->getType($snaps->snap_type);
-            $description = $this->getWording($request->input('confirm'), $point);                
-        } else {
-            $title = $this->getType($snaps->snap_type);
-            $description = $this->getWording($request->input('confirm')); 
-        }
-
         //build data for member history
         $content = [
             'type' => $snaps->mode_type,
-            'title' => $title,
-            'description' => $description,
+            'title' => $this->getType($snaps->snap_type),
+            'description' => $request->input('comment'),
             'image' => $snaps->files[0]->file_path,
+            'status' => $request->input('confirm'),
         ];
 
         $config = config('common.queue_list.member_action_log');
@@ -521,6 +513,9 @@ class SnapService
         //assign to crowdsource
         $this->assignToCrowdsource();
 
+        //build data for member history
+        $this->memberSnapHistory($snap, $images);
+
         return $dataSnap;
     }
 
@@ -587,6 +582,9 @@ class SnapService
             //assign to crowdsource
             $this->assignToCrowdsource();
 
+            //build data for member history
+            $this->memberSnapHistory($snap, $images);
+
             return $dataSnap;
         }
 
@@ -627,6 +625,9 @@ class SnapService
 
             //assign to crowdsource
             $this->assignToCrowdsource();
+
+            //build data for member history
+            $this->memberSnapHistory($snap, $images);
 
             return $dataSnap;
         }
@@ -680,6 +681,9 @@ class SnapService
 
             //assign to crowdsource
             $this->assignToCrowdsource();
+
+            //build data for member history
+            $this->memberSnapHistory($snap, $images);
 
             return $dataSnap;
         }
@@ -751,6 +755,9 @@ class SnapService
             //assign to crowdsource
             $this->assignToCrowdsource();
 
+            //build data for member history
+            $this->memberSnapHistory($snap, $images);
+
             return $dataSnap;
         }
 
@@ -813,6 +820,9 @@ class SnapService
             //assign to crowdsource
             $this->assignToCrowdsource();
 
+            //build data for member history
+            $this->memberSnapHistory($snap, $images);
+
             return $dataSnap;
         }
 
@@ -865,6 +875,9 @@ class SnapService
 
             //assign to crowdsource
             $this->assignToCrowdsource();
+
+            //build data for member history
+            $this->memberSnapHistory($snap, $images);
 
             return $dataSnap;
         }
@@ -1354,15 +1367,6 @@ class SnapService
         return $member->snap;
     }
 
-    private function getWording($status, $point = null)
-    {
-        if ($status == 'approve') {
-            return 'Selamat, klaim sebesar '.$point.' poin telah berhasil! Kluk!';
-        } else {
-            return 'Sayang sekali, transaksi kamu gagal. Ayo coba lagi!';
-        }
-    }
-
     private function getType($type)
     {
         if ($type == 'handWritten') {
@@ -1372,5 +1376,21 @@ class SnapService
         } else if ($type == 'receipt') {
             return 'Struk';
         }
+    }
+
+    public function memberSnapHistory($snaps, $images)
+    {
+        $point = $this->getEstimatedPoint();
+        $content = [
+            'type' => $snaps->mode_type,
+            'title' => $this->getType($snaps->snap_type),
+            'description' => 'Kami sedang memproses foto transaksimu. Kamu bisa mendapatkan bonus poin sebesar '.$point.' poin!',
+            'image' => $images[0]['filename'],
+            'status' => 'pending',
+        ];
+
+        $config = config('common.queue_list.member_action_log');
+        $job = (new MemberActionJob($snaps->member_id, 'snap', $content))->onQueue($config)->onConnection(env('INFOSCAN_QUEUE'));
+        dispatch($job); 
     }
 }
