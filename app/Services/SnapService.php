@@ -477,8 +477,8 @@ class SnapService
         }
 
         // send dispatcher
-        // $job = $this->getPlainDispatcher($data);
-        // dispatch($job);
+        $job = $this->getPlainDispatcher($data);
+        dispatch($job);
 
         // Auth Member
         $member = auth('api')->user();
