@@ -169,24 +169,19 @@ class TransactionService
 
     public function getHistoryTransaction($member)
     {
-
+        $snapService = (new SnapService);
         $point = $this->getCreditMember($member->member_code);
-        $snaps = (new SnapService)->getSnapByMemberCode($member->member_code);
-        $historys = $this->getHistoryMember($member->id);
-
-        $historys = $historys->filter(function($value, $Key) {
-            return $value->group == 'snap';
-        });
+        $snaps = $snapService->getSnapByMemberId($member->id);
 
         $notif = [];
-        foreach ($historys as $history) {
+        foreach ($snaps as $snap) {
             $notif[] = [
-                'title' => $history->content['title'],
-                'description' => $history->content['description'],
-                'mode_type' => $history->content['type'],
-                'thumbnail' => config('filesystems.s3url').$history->content['image'],
-                'status' => $history->content['status'],
-                'date'  => $history->created_at->toDateTimeString(),
+                'title' => $snapService->getType($snap->snap_type),
+                'description' => $snap->comment,
+                'mode_type' => $snap->mode_type,
+                'thumbnail' => config('filesystems.s3url').$snap->file_path,
+                'status' => $snap->status,
+                'date'  => $snap->updated_at->toDateTimeString(),
             ];
         }
         $snaps = $snaps->filter(function($value, $Key) {
