@@ -239,6 +239,7 @@ class LuckyDrawService
             'type' => 'luckydraw',
             'title' => 'Lucky Draw',
             'description' => 'Kamu telah menukarkan poinmu untuk ikut undian. Semoga beruntung!',
+            'flag' => 1,
         ];
 
         $config = config('common.queue_list.member_action_log');

@@ -523,6 +523,7 @@ inner join level_points as l on l.id = plp.level_id;');
             $notif[] = [
                 'title' => $history->content['title'],
                 'description' => $history->content['description'],
+                'flag' => isset($history->content['flag']) ? $history->content['flag'] : 1,
                 'date'  => $history->created_at->toDateTimeString(),
             ];
         }

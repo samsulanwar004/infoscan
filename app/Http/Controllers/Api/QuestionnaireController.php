@@ -130,6 +130,7 @@ class QuestionnaireController extends BaseApiController
                 'type' => 'survey',
                 'title' => 'Survey',
                 'description' => 'Kamu telah mendapatkan poin dari mengisi survei. Petok!',
+                'flag' => 1,
             ];
 
             $config = config('common.queue_list.member_action_log');
