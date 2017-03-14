@@ -170,6 +170,7 @@ class SnapService
             dispatch($job);
             $snaps->approved_by = $userId;
             $snaps->comment = $request->input('comment');
+            $snaps->status = 'approve';
             $snaps->update();
 
             $tags = $this->getCountOfTags($snaps->files);
@@ -186,6 +187,7 @@ class SnapService
         } elseif ($request->input('confirm') == 'reject') {
             $snaps->reject_by = $userId;
             $snaps->comment = $request->input('comment');
+            $snaps->status = 'reject';
             $snaps->update();
 
             $tags = $this->getCountOfTags($snaps->files);
@@ -514,7 +516,7 @@ class SnapService
         $this->assignToCrowdsource();
 
         //build data for member history
-        $this->memberSnapHistory($snap, $images);
+        $this->memberSnapHistory($snap);
 
         return $dataSnap;
     }
@@ -1035,7 +1037,7 @@ class SnapService
         if ($request->exists('mode_type') || 'receipt' !== strtolower($request->input('snap_type'))) {
             $snap->mode_type = $request->input('mode_type');
         }
-        $snap->status = 'new';
+        $snap->status = 'pending';
         $snap->longitude = $request->input('longitude');
         $snap->latitude = $request->input('latitude');
         $snap->save();
@@ -1367,7 +1369,7 @@ class SnapService
         return $member->snap;
     }
 
-    private function getType($type)
+    public function getType($type)
     {
         if ($type == 'handWritten') {
             return 'Nota Tulis';
@@ -1378,19 +1380,19 @@ class SnapService
         }
     }
 
-    public function memberSnapHistory($snaps, $images)
+    public function memberSnapHistory($snaps)
     {
-        $point = $this->getEstimatedPoint();
-        $content = [
-            'type' => $snaps->mode_type,
-            'title' => $this->getType($snaps->snap_type),
-            'description' => 'Kami sedang memproses foto transaksimu. Kamu bisa mendapatkan bonus poin sebesar '.$point.' poin!',
-            'image' => $images[0]['filename'],
-            'status' => 'pending',
-        ];
 
-        $config = config('common.queue_list.member_action_log');
-        $job = (new MemberActionJob($snaps->member_id, 'snap', $content))->onQueue($config)->onConnection(env('INFOSCAN_QUEUE'));
-        dispatch($job); 
+        $point = $this->getEstimatedPoint();
+        $snaps->comment = 'Kami sedang memproses foto transaksimu. Kamu bisa mendapatkan bonus poin sebesar '.$point.' poin!';
+        $snaps->update();
+    }
+
+    public function getSnapByMemberId($memberId)
+    {
+        return Snap::with('files')
+            ->where('member_id', $memberId)
+            ->orderBy('created_at', 'DESC')
+            ->get();
     }
 }
