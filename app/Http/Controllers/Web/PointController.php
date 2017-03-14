@@ -129,7 +129,15 @@ class PointController extends AdminController
 
     public function destroy($id)
     {
+        try {
+            $task = (new PointService)->getTaskById($id);
+            $task->delete();
+            cache()->forget('point.pivot');
+        } catch (\Exception $e) {
+            return redirect($this->redirectAfterSave)->with('errors', $e->getMessage());
+        }
 
+        return redirect($this->redirectAfterSave)->with('success', 'Task point successfully deleted!');
     }
 
     public function pointManager()
