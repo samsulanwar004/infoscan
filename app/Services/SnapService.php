@@ -1390,7 +1390,8 @@ class SnapService
 
     public function getSnapByMemberId($memberId)
     {
-        return Snap::where('member_id', $memberId)
+        return Snap::with('files')
+            ->where('member_id', $memberId)
             ->orderBy('created_at', 'DESC')
             ->get();
     }

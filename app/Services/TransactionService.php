@@ -179,7 +179,7 @@ class TransactionService
                 'title' => $snapService->getType($snap->snap_type),
                 'description' => $snap->comment,
                 'mode_type' => $snap->mode_type,
-                'thumbnail' => config('filesystems.s3url').$snap->file_path,
+                'thumbnail' => config('filesystems.s3url').$snap->files[0]->file_path,
                 'status' => $snap->status,
                 'date'  => $snap->updated_at->toDateTimeString(),
             ];
