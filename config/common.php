@@ -214,6 +214,11 @@ return [
         ['id' => 'f', 'name' => 'Wanita'],
     ],
 
+    'marital_statuses' => [
+        ['id' => 'single', 'name' => 'Lajang'],
+        ['id' => 'married', 'name' => 'Menikah'],
+    ],
+
 
     //transaction
     'transaction' => [

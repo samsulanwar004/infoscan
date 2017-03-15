@@ -21,6 +21,7 @@ class SettingController extends BaseApiController
 	        $data['banks'] = $commonConfigs['banks'];
 	        $data['latest_educations'] = $commonConfigs['latest_educations'];
             $data['genders'] = $commonConfigs['genders'];
+            $data['marital_statuses'] = $commonConfigs['marital_statuses'];
 
 	        return $this->success($data, 200);
         } catch (\Exception $e) {
