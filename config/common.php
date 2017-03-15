@@ -206,8 +206,20 @@ return [
     ],
 
     'banks' => [
-        'bca', 'mandiri', 'ocbc'
+        'BCA',
     ],
+
+    'genders' => [
+        ['id' => 'male', 'name' => 'Pria'],
+        ['id' => 'female', 'name' => 'Wanita'],
+    ],
+
+    'marital_statuses' => [
+        ['id' => 'single', 'name' => 'Lajang'],
+        ['id' => 'married', 'name' => 'Menikah'],
+    ],
+
+
     //transaction
     'transaction' => [
         'transaction_type' => [

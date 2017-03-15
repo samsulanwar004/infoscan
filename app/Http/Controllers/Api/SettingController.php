@@ -20,6 +20,8 @@ class SettingController extends BaseApiController
 	        $data['toc'] = 'Lorem ipsum dolor sit amet aja dah mah';
 	        $data['banks'] = $commonConfigs['banks'];
 	        $data['latest_educations'] = $commonConfigs['latest_educations'];
+            $data['genders'] = $commonConfigs['genders'];
+            $data['marital_statuses'] = $commonConfigs['marital_statuses'];
 
 	        return $this->success($data, 200);
         } catch (\Exception $e) {
@@ -41,7 +43,7 @@ class SettingController extends BaseApiController
             ->select('range_start as min', 'range_end as max')
             ->get();
         $s = collect($ses)->toArray();
-        
+
         return $s;
     }
 }
