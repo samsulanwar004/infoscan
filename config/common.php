@@ -282,7 +282,7 @@ return [
         'point_process' => 'pointProcess',
         'transaction_process' => 'transactionProcess',
         'assign_process' => 'assignProcess',
-        'member_action_log' => 'memberActionLog',
+        'member_action_log' => 'userBehaviourLog',
         'member_register_verification_email' => 'userBehaviourLog',
     ],
 ];
