@@ -206,8 +206,15 @@ return [
     ],
 
     'banks' => [
-        'bca', 'mandiri', 'ocbc'
+        'BCA',
     ],
+
+    'genders' => [
+        ['id' => 'm', 'name' => 'Pria'],
+        ['id' => 'f', 'name' => 'Wanita'],
+    ],
+
+
     //transaction
     'transaction' => [
         'transaction_type' => [
