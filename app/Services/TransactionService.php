@@ -203,4 +203,25 @@ class TransactionService
 
         return $data;
     }
+
+    public function getNotification($member)
+    {
+        $notifications = $this->getHistoryMember($member->id);
+
+        $notifications = $notifications->filter(function($value, $Key) {
+            return $value->group == 'notification' || $value->group == 'authentication';
+        });
+
+        $notif = [];
+        foreach ($notifications as $notification) {
+            $notif[] = [
+                'type' => $notification->content['type'],
+                'title' => $notification->content['title'],
+                'description' => $notification->content['description'],
+                'date'  => $notification->created_at->toDateTimeString(),
+            ];
+        }
+
+        return $notif;
+    }
 }

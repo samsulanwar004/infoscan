@@ -86,6 +86,10 @@ class MemberService
      * @var string
      */
     private $maritalStatus;
+    /**
+     * @var string
+     */
+    private $memberId;
 
 
     /**
@@ -117,6 +121,8 @@ class MemberService
             DB::rollback();
             throw new MemberServiceException('Can not register member.');
         }
+
+        $this->setMemberId($member->id);
 
         DB::commit();
 
@@ -535,5 +541,17 @@ class MemberService
         ];
 
         return $data;
+    }
+
+    private function setMemberId($value)
+    {
+        $this->memberId = $value;
+
+        return $this;
+    }
+
+    public function getMemberId()
+    {
+        return $this->memberId;
     }
 }

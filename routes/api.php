@@ -38,4 +38,6 @@ Route::group([
     Route::get('/paymentportal', 'Api\PaymentPortalController@index');
     Route::post('/paymentportal', 'Api\PaymentPortalController@store');
     Route::get('/history', 'Api\HistoryController@index');
+    Route::get('/notification', 'Api\NotificationController@index');
+    Route::post('/log', 'Api\LogController@store');
 });

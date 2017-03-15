@@ -515,7 +515,7 @@ inner join level_points as l on l.id = plp.level_id;');
         $historys = $transaction->getHistoryMember($member->id);
 
         $historys = $historys->filter(function($value, $Key) {
-            return $value->group == 'luckydraw' || $value->group == 'cashback' || $value->group == 'survey';
+            return $value->group == 'portalpoint';
         });
 
         $notif = [];
