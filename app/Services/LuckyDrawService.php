@@ -239,10 +239,11 @@ class LuckyDrawService
             'type' => 'luckydraw',
             'title' => 'Lucky Draw',
             'description' => 'Kamu telah menukarkan poinmu untuk ikut undian. Semoga beruntung!',
+            'flag' => 1,
         ];
 
         $config = config('common.queue_list.member_action_log');
-        $job = (new MemberActionJob($member->id, 'luckydraw', $content))->onQueue($config)->onConnection(env('INFOSCAN_QUEUE'));
+        $job = (new MemberActionJob($member->id, 'portalpoint', $content))->onQueue($config)->onConnection(env('INFOSCAN_QUEUE'));
         dispatch($job); 
 
 		return $randomNumber;		

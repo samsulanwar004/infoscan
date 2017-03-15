@@ -4,6 +4,7 @@ namespace App\Services;
 
 use Illuminate\Http\Request;
 use App\Services\TransactionService;
+use App\Jobs\MemberActionJob;
 
 class SecureService
 {
@@ -55,6 +56,18 @@ class SecureService
             // ];
             // $this->transactionDebit($transaction);
         }
+
+        //build data for member history
+        $memberId = (!$member) ? $this->memberService->getMemberId() : $member->id;
+        $content = [
+            'type' => 'login',
+            'title' => 'Masuk',
+            'description' => 'Selamat datang di aplikasi Gojago! Kukuruyuukk!',
+        ];
+
+        $config = config('common.queue_list.member_action_log');
+        $job = (new MemberActionJob($memberId, 'authentication', $content))->onQueue($config)->onConnection(env('INFOSCAN_QUEUE'));
+        dispatch($job);
 
         return [
             'data' => [
@@ -112,6 +125,18 @@ class SecureService
             // $this->transactionDebit($transaction);
 
         }
+
+        //build data for member history
+        $memberId = (!$member) ? $this->memberService->getMemberId() : $member->id;
+        $content = [
+            'type' => 'login',
+            'title' => 'Masuk',
+            'description' => 'Selamat datang di aplikasi Gojago! Kukuruyuukk!',
+        ];
+
+        $config = config('common.queue_list.member_action_log');
+        $job = (new MemberActionJob($memberId, 'authentication', $content))->onQueue($config)->onConnection(env('INFOSCAN_QUEUE'));
+        dispatch($job); 
 
         return [
             'data' => [

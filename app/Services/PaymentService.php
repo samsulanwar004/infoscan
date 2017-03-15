@@ -105,10 +105,11 @@ class PaymentService
             'type' => 'cashback',
             'title' => 'Cashback',
             'description' => 'Kamu telah menukarkan poin untuk cashback. Kami akan mengirim notifikasi setelah kami verifikasi.',
+            'flag' => 1,
         ];
 
         $config = config('common.queue_list.member_action_log');
-        $job = (new MemberActionJob($this->member->id, 'cashback', $content))->onQueue($config)->onConnection(env('INFOSCAN_QUEUE'));
+        $job = (new MemberActionJob($this->member->id, 'portalpoint', $content))->onQueue($config)->onConnection(env('INFOSCAN_QUEUE'));
         dispatch($job);
 
 		return true;

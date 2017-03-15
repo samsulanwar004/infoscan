@@ -130,10 +130,11 @@ class QuestionnaireController extends BaseApiController
                 'type' => 'survey',
                 'title' => 'Survey',
                 'description' => 'Kamu telah mendapatkan poin dari mengisi survei. Petok!',
+                'flag' => 1,
             ];
 
             $config = config('common.queue_list.member_action_log');
-            $job = (new MemberActionJob($member->id, 'survey', $content))->onQueue($config)->onConnection(env('INFOSCAN_QUEUE'));
+            $job = (new MemberActionJob($member->id, 'portalpoint', $content))->onQueue($config)->onConnection(env('INFOSCAN_QUEUE'));
             dispatch($job); 
 
             return $this->success();
