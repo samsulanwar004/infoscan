@@ -210,8 +210,8 @@ return [
     ],
 
     'genders' => [
-        ['id' => 'm', 'name' => 'Pria'],
-        ['id' => 'f', 'name' => 'Wanita'],
+        ['id' => 'male', 'name' => 'Pria'],
+        ['id' => 'female', 'name' => 'Wanita'],
     ],
 
     'marital_statuses' => [
