@@ -20,7 +20,7 @@ class SettingController extends BaseApiController
 	        $data['toc'] = 'Lorem ipsum dolor sit amet aja dah mah';
 	        $data['banks'] = $commonConfigs['banks'];
 	        $data['latest_educations'] = $commonConfigs['latest_educations'];
-            $data['genders'] => $commonConfigs['genders'];
+            $data['genders'] = $commonConfigs['genders'];
 
 	        return $this->success($data, 200);
         } catch (\Exception $e) {
