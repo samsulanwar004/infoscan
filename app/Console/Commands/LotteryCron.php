@@ -6,6 +6,7 @@ use Illuminate\Console\Command;
 use Carbon\Carbon;
 use App\Services\LuckyDrawService;
 use App\LuckyDrawWinner;
+use App\Jobs\MemberActionJob;
 
 class LotteryCron extends Command
 {
@@ -41,13 +42,14 @@ class LotteryCron extends Command
     public function handle()
     {
         $this->info('Lottery:Cron Command Run successfully');
-        $date = Carbon::now();
-        $date = '2017-04-01 06:00:00';
+        $date = Carbon::now('Asia/Jakarta')->toDateTimeString();
+
         $luckys = (new LuckyDrawService)->getEndDateLuckyDraw($date);
 
         foreach ($luckys as $lucky) {
-            if (count($lucky->memberLuckyDraws) > 0) {
-                $win = collect($lucky->memberLuckyDraws)->random();
+            $memberLucky = $lucky->memberLuckyDraws;
+            if (count($memberLucky) > 0) {
+                $win = collect($memberLucky)->random();
                 $lucky->is_active = 0;
                 $lucky->update();
 
@@ -64,6 +66,33 @@ class LotteryCron extends Command
                 $ldw->member()->associate($win->member_id);
                 $ldw->luckydraw()->associate($lucky->id);           
                 $ldw->save();
+                $memberWin = $win->member_id;
+                //build notification for member win
+                $content = [
+                        'type' => 'luckydraw',
+                        'title' => 'Menang',
+                        'description' => 'Selamat! Kamu telah memenangkan undian '.$lucky->title.'. Staf kami akan menghubungimu',
+                    ];
+                    $config = config('common.queue_list.member_action_log');
+                    $job = (new MemberActionJob($memberWin, 'notification', $content))->onQueue($config)->onConnection(env('INFOSCAN_QUEUE'));
+                    dispatch($job);
+
+                $memberLucky = $memberLucky->filter(function($value, $Key) use ($memberWin){
+                    return $value->member_id != $memberWin;
+                });
+
+                foreach ($memberLucky as $member) {
+                    //build notification for member lose
+                    $content = [
+                        'type' => 'luckydraw',
+                        'title' => 'Kalah',
+                        'description' => 'Maaf, kamu belum beruntung. Ayo coba keberuntunganmu di undian lainnya!',
+                    ];
+                    $config = config('common.queue_list.member_action_log');
+                    $job = (new MemberActionJob($member->member_id, 'notification', $content))->onQueue($config)->onConnection(env('INFOSCAN_QUEUE'));
+                    dispatch($job);
+                }
+
             }
         }
         
