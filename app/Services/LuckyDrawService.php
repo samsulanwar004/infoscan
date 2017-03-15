@@ -243,7 +243,7 @@ class LuckyDrawService
         ];
 
         $config = config('common.queue_list.member_action_log');
-        $job = (new MemberActionJob($member->id, 'luckydraw', $content))->onQueue($config)->onConnection(env('INFOSCAN_QUEUE'));
+        $job = (new MemberActionJob($member->id, 'portalpoint', $content))->onQueue($config)->onConnection(env('INFOSCAN_QUEUE'));
         dispatch($job); 
 
 		return $randomNumber;		
