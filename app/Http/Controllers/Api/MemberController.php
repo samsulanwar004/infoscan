@@ -206,7 +206,7 @@ class MemberController extends BaseApiController
             ->onQueue(config('common.queue_list.member_register_verification_email'));
 
         $from = config('mail.from.address');
-        $senderName = config('mail.from.name')
+        $senderName = config('mail.from.name');
         Mail::alwaysFrom($from, $senderName)
                     ->to($member->email)
                     ->queue($message);
