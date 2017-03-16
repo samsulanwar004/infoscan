@@ -201,6 +201,11 @@ class LuckyDrawService
 			throw new \Exception("Lucky Draw Code not found!", 1);			
 		}
 
+		if ($lucky->point != $point)
+		{
+			throw new \Exception("Your Request point not valid!", 1);			
+		}
+
 		if ($lucky->is_multiple == 0)
 		{
 			$checkMultiple = $this->isMultipleLuckyDraw($member->id, $lucky->id);
