@@ -75,6 +75,8 @@
                  <input type="hidden" name="provinces" id="provinces">
                  <input type="hidden" name="lasteducation" id="last-education">
                  <input type="hidden" name="product" id="product">
+                 <input type="hidden" name="userscity" id="users-city">
+                 <input type="hidden" name="genders" id="genders">
                     <div class="row" style="margin-bottom: 20px;">
                         <div class="col-md-6">
                             <div class="form-group">
@@ -500,6 +502,14 @@
 
         $('select[name=products]').on('change', function () {
             $('#product').val($('select[name=products]').val());
+        });
+
+        $('select[name=users_city]').on('change', function () {
+            $('#users-city').val($('select[name=users_city]').val());
+        });
+
+        $('select[name=gender]').on('change', function () {
+            $('#genders').val($('select[name=gender]').val());
         });
 
     });
