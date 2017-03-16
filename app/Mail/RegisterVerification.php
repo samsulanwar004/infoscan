@@ -32,7 +32,10 @@ class RegisterVerification extends Mailable
      */
     public function build()
     {
-        return $this->view('emails.email_verification')
+        $from = config('mail.from.address');
+        $senderName = config('mail.from.name');
+        return $this->from($from, $senderName)
+                    ->view('emails.email_verification')
                     ->with([
                         'member' => $this->member,
                     ]);
