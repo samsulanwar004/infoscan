@@ -23,15 +23,20 @@ class ReportController extends AdminController
 			$valueArray = explode(',', $value);
 			$query->whereIn('user_id',$valueArray);
 		}
+		if ($request->has('userscity')) {
+			$value = $request->input('userscity');
+			$valueArray = explode(',', $value);
+			$query->whereIn('users_city',$valueArray);
+		}	
+		if ($request->has('genders')) {
+			$value = $request->input('genders');
+			$valueArray = explode(',', $value);
+			$query->whereIn('gender',$valueArray);
+		}		
 		if ($request->has('provinces')) {
 			$value = $request->input('provinces');
 			$valueArray = explode(',', $value);
 			$query->whereIn('province',$valueArray);
-		}
-		if ($request->has('gender')) {
-			$value = $request->input('gender');
-			$valueArray = explode(',', $value);
-			$query->whereIn('gender',$valueArray);
 		}
 		if ($request->has('age')) {			
 			$value = $request->input('age');
@@ -140,21 +145,21 @@ class ReportController extends AdminController
 		}
 
 		$results = $query->get();
-		logger($query->toSql());
-		$members = \DB::select('SELECT DISTINCT user_id FROM reports');
-		$gender = \DB::select('SELECT DISTINCT gender FROM reports');
-		$oc = \DB::select('SELECT DISTINCT occupation FROM reports');
-		$le = \DB::select('SELECT DISTINCT last_education FROM reports');
-		$citys = \DB::select('SELECT DISTINCT users_city FROM reports');
-		$provinces = \DB::select('SELECT DISTINCT province FROM reports');
-		$outletType = \DB::select('SELECT DISTINCT outlet_type FROM reports');
-		$outletName = \DB::select('SELECT DISTINCT outlet_name FROM reports');
-		$outletProvince = \DB::select('SELECT DISTINCT outlet_province FROM reports');
-		$outletCity = \DB::select('SELECT DISTINCT outlet_city FROM reports');
-		$products = \DB::select('SELECT DISTINCT products FROM reports');
-		$brands = \DB::select('SELECT DISTINCT brand FROM reports');
-		$sec = \DB::select('SELECT DISTINCT sec FROM reports');
-		$age = \DB::select('SELECT DISTINCT age FROM reports order by age');
+		$distinct = \DB::table('reports')->distinct();
+		$members = $distinct->get(['user_id']);
+		$gender = $distinct->get(['gender']);
+		$oc = $distinct->get(['occupation']);
+		$le = $distinct->get(['last_education']);
+		$citys = $distinct->get(['users_city']);
+		$provinces = $distinct->get(['province']);
+		$outletType = $distinct->get(['outlet_type']);
+		$outletName = $distinct->get(['outlet_name']);
+		$outletProvince = $distinct->get(['outlet_province']);
+		$outletCity = $distinct->get(['outlet_city']);
+		$products = $distinct->get(['products']);
+		$brands = $distinct->get(['brand']);
+		$sec = $distinct->get(['sec']);
+
 		$age = \DB::select('SELECT (SELECT DISTINCT age FROM reports ORDER BY age LIMIT 1) as "first",(SELECT DISTINCT age FROM reports ORDER BY age DESC LIMIT 1) as "last"')[0];
 		$pih = \DB::select('SELECT (SELECT DISTINCT person_in_house FROM reports ORDER BY person_in_house LIMIT 1) as "first",(SELECT DISTINCT person_in_house FROM reports ORDER BY person_in_house DESC LIMIT 1) as "last"')[0];
 		$qty = \DB::select('SELECT (SELECT DISTINCT quantity FROM reports ORDER BY quantity LIMIT 1) as "first",(SELECT DISTINCT quantity FROM reports ORDER BY quantity DESC LIMIT 1) as "last"')[0];
