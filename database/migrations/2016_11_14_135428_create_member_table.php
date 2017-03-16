@@ -45,10 +45,10 @@ class CreateMemberTable extends Migration
             $t->timestamp('verification_expired')->nullable();
             $t->timestamps();
 
-            $t->foreign('province_id', 'FK_province_id_on_members')
+            /*$t->foreign('province_id', 'FK_province_id_on_members')
                 ->references('id')->on('provinces')
                 ->onUpdate('NO ACTION')
-                ->onDelete('NO ACTION');
+                ->onDelete('NO ACTION');*/
         });
     }
 
