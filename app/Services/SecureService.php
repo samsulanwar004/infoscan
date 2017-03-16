@@ -100,10 +100,10 @@ class SecureService
             $hasRegistered = false;
 
             // check if member code exists
-            $memberCode = $this->getMemberByCode($request->input('social_media_id'));
+            /*$memberCode = $this->getMemberByCode($request->input('social_media_id'));
             if ($memberCode) {
                 throw new \Exception('Cannot register this member. The social media id is exists.');
-            }
+            }*/
 
             $this->memberService
                 ->setMemberCode($request->input('social_media_id'))
@@ -136,7 +136,7 @@ class SecureService
 
         $config = config('common.queue_list.member_action_log');
         $job = (new MemberActionJob($memberId, 'authentication', $content))->onQueue($config)->onConnection(env('INFOSCAN_QUEUE'));
-        dispatch($job); 
+        dispatch($job);
 
         return [
             'data' => [
