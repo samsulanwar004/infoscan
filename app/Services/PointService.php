@@ -454,8 +454,8 @@ inner join level_points as l on l.id = plp.level_id;');
         } else if ($mode == 'no_mode') {
             $point = $calculateTask['point'] + $calculatePromo['point_city'] + $calculatePromo['point_level_city'];
         } else {
-            
-            if ($totalTag <= 0) {
+
+            if ($memberAdd <= 0) {
                 $task = $calculateTask['point'] + $calculatePromo['point_city'] + $calculatePromo['point_level_city'];
                 $point = ($calculateTask['percent'] / 100) * $task;
             } else {
@@ -463,7 +463,7 @@ inner join level_points as l on l.id = plp.level_id;');
             }
         }
 
-        $totalPoint = round($point);
+        $totalPoint = round($point) * count($files);
 
         return $totalPoint;
     }    
