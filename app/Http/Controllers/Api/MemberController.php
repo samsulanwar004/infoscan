@@ -205,7 +205,6 @@ class MemberController extends BaseApiController
             ->onConnection(env('INFOSCAN_QUEUE', 'sync'))
             ->onQueue(config('common.queue_list.member_register_verification_email'));
 
-        Mail::to($member->email)
-            ->queue($message);
+        Mail::to($member->email)->queue($message);
     }
 }
