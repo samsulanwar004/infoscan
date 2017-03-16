@@ -13,9 +13,9 @@ class AddIsActiveLuckydrawTable extends Migration
      */
     public function up()
     {
-        Schema::table('lucky_draws', function (Blueprint $t) {
+        /*Schema::table('lucky_draws', function (Blueprint $t) {
             $t->boolean('is_active')->default(1);
-        });
+        });*/
     }
 
     /**
