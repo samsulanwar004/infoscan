@@ -810,9 +810,9 @@ class SnapService
                 'snap_files' => $audios,
             ];
 
-            if (! $snap = $this->presistData($request, $images)) {
+            /*if (! $snap = $this->presistData($request, $images)) {
                 throw new SnapServiceException('Error when saving data in database!');
-            }
+            }*/
 
             // send dispatcher
             $job = $this->getPlainDispatcher($data);
