@@ -12,9 +12,11 @@ class CrowdsourceController extends AdminController
     public function index()
     {
         $this->isAllowed('Crowdsource.List');
-        $crowdsources = (new CrowdsourceService)->getAllCrowdsource();
+        $csService = (new CrowdsourceService);
+        $crowdsources = $csService->getAllCrowdsource();
+        $remainAssign = $csService->getRemainAssignSnap();
 
-    	return view('crowdsource.index', compact('crowdsources'));
+    	return view('crowdsource.index', compact('crowdsources', 'remainAssign'));
     }
 
     public function show($id)

@@ -34,8 +34,12 @@
                                         </h3>
                                         <div class="timeline-body">
                                             @foreach($snap->files as $file)
-                                                @if ($file->mode_type == 'audio')
-                                                    <img src="{{ URL::to('img/snaps/window-player.png') }}" alt="{{ $file->file_code }}" class="margin img-thumbnail img-responsive img-tag"  id="{{$file->id}}">
+                                                @if ($file->mode_type == 'audios')
+                                                    @if ($file->file_mimes == 'image/jpeg')
+                                                        <img src="{{ config('filesystems.s3url') . $file->file_path }}" alt="{{ $file->file_code }}" class="margin img-thumbnail img-responsive img-tag"  
+                                                    @else
+                                                        id="{{$file->id}}">
+                                                    @endif
                                                 @else
                                                     <img src="{{ config('filesystems.s3url') . $file->file_path }}" alt="{{ $file->file_code }}" class="margin img-thumbnail img-responsive img-tag"  id="{{$file->id}}">
                                                 @endif

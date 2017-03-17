@@ -5,6 +5,8 @@ namespace App\Services;
 use App\User;
 use App\CrowdsourceActivity;
 use DB;
+use App\Snap;
+use Rebel\Component\Rbac\Models\Role;
 
 class CrowdsourceService
 {
@@ -20,12 +22,11 @@ class CrowdsourceService
 
 	public function getAllCrowdsource()
 	{
-		return DB::table('users')
-        	->join('users_roles', 'users.id', '=', 'users_roles.user_id')
-        	->join('roles', 'roles.id', '=', 'users_roles.role_id')
-        	->select('users.id', 'users.name', 'users.email', 'users.is_active', 'roles.role_name')
-        	->where('roles.role_name', '=', self::NAME_ROLE)
-        	->get();
+        $crowdsource = Role::with('users')
+            ->where('role_name', '=', self::NAME_ROLE)
+            ->first();
+
+        return $crowdsource->users;
 	}
 
 	public function getCrowdsourceActivityByUserId($id)
@@ -118,6 +119,15 @@ class CrowdsourceService
         return User::with('snaps')
             ->where('id', $id)
             ->first();
+    }
+
+    public function getRemainAssignSnap()
+    {
+        return DB::table('snaps')
+             ->select(DB::raw('count(*) as remain, user_id'))
+             ->where('status', 'pending')
+             ->groupBy('user_id')
+             ->get();
     }
 
 }
