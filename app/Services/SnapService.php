@@ -106,11 +106,11 @@ class SnapService
 
     public function getSnapsByType($type, $userId = null)
     {
-        return ($userId == null) ? 
+        return ($userId == null) ?
             Snap::with('member')
                 ->with('files')
                 ->where('snap_type', '=', $type)
-                ->paginate(50) : 
+                ->paginate(50) :
             Snap::with('member')
                 ->with('files')
                 ->where('snap_type', '=', $type)
@@ -162,7 +162,7 @@ class SnapService
     {
         $snaps = $this->getSnapByid($id);
         $userId = auth()->user()->id;
-        
+
         if ($request->input('confirm') == 'approve') {
             //queue for calculate point
             $config = config('common.queue_list.point_process');
@@ -202,10 +202,10 @@ class SnapService
             ];
 
         }
-        
+
         $data = json_encode($data);
         // event for crowdsource log
-        event(new CrowdsourceEvent($userId, self::ACTION_BEHAVIOUR, $data));  
+        event(new CrowdsourceEvent($userId, self::ACTION_BEHAVIOUR, $data));
 
         //build data for member history
         $content = [
@@ -218,7 +218,7 @@ class SnapService
 
         $config = config('common.queue_list.member_action_log');
         $job = (new MemberActionJob($snaps->member_id, 'snap', $content))->onQueue($config)->onConnection(env('INFOSCAN_QUEUE'));
-        dispatch($job); 
+        dispatch($job);
 
         return true;
     }
@@ -242,7 +242,7 @@ class SnapService
         $snaps->latitude = !$request->has('latitude') ? 0.00 : $request->input('latitude');
 
         $snaps->update();
-        
+
     }
 
     public function updateSnapModeInput(Request $request, $id)
@@ -494,7 +494,7 @@ class SnapService
             'files' => count($images),
             'tags' => count($tags),
         ];
-        
+
         // Save estimated point calculate
         $this->saveEstimatedPoint($dataSnap);
 
@@ -592,6 +592,18 @@ class SnapService
 
         if ($this->isAudioMode($request)) {
             $mode = self::AUDIO_TYPE_NAME;
+
+            DB::beginTransaction();
+            try {
+                $snap = $this->createSnap($request);
+                $this->createFiles($request, $images, $snap);
+
+                DB::commit();
+            } catch (Exception $e) {
+                DB::rollback();
+
+                throw new SnapServiceException($e->getMessage());
+            }
 
             // Auth Member
             $member = auth('api')->user();
@@ -1261,8 +1273,8 @@ class SnapService
         //         if ($tags <= 0) {
         //             $total = ($point['percent'] / 100) * $point['point'] * $files;
         //         }
-        //     }            
-        // }       
+        //     }
+        // }
 
         $snap = (new SnapService)->getSnapByCode($requestCode);
         $snap->estimated_point = $total;
@@ -1310,7 +1322,7 @@ class SnapService
             $crowdSourceEdit[] = isset($count['crowdsource_edit']) ? $count['crowdsource_edit'] : 0;
             $crowdSourceAdd[] = isset($count['crowdsource_add']) ? $count['crowdsource_add'] : 0;
 
-        }        
+        }
 
         $memberAdd = collect($memberAdd)->sum();
         $crowdSourceEdit = collect($crowdSourceEdit)->sum();
