@@ -592,11 +592,17 @@ class SnapService
 
         if ($this->isAudioMode($request)) {
             $mode = self::AUDIO_TYPE_NAME;
+            $audios = $this->audiosProcess($request);
+
+            if (empty($audios)) {
+                throw new SnapServiceException('There is no audios was processed. Something wrong with the system!');
+            }
 
             DB::beginTransaction();
             try {
                 $snap = $this->createSnap($request);
                 $this->createFiles($request, $images, $snap);
+                $this->createFiles($request, $audios, $snap);
 
                 DB::commit();
             } catch (Exception $e) {
@@ -781,6 +787,19 @@ class SnapService
 
             if (empty($audios)) {
                 throw new SnapServiceException('There is no audios was processed. Something wrong with the system!');
+            }
+
+            DB::beginTransaction();
+            try {
+                $snap = $this->createSnap($request);
+                $this->createFiles($request, $images, $snap);
+                $this->createFiles($request, $audios, $snap);
+
+                DB::commit();
+            } catch (Exception $e) {
+                DB::rollback();
+
+                throw new SnapServiceException($e->getMessage());
             }
 
             // build data
