@@ -22,7 +22,8 @@
                     <tr>
                         <th width="50">#</th>
                         <th>Username & Email</th>
-                        <th width="250"></th>
+                        <th class="text-right">Currently Assigned</th>
+                        <th width="100"></th>
                     </tr>
                     </thead>
                     <tbody>
@@ -36,6 +37,13 @@
                                 <small>{{ $crowdsource->email }}</small>
                             </td>
                             <td class="text-right vertical-middle">
+                                @foreach($remainAssign as $remain)
+                                    @if ($remain->user_id == $crowdsource->id)
+                                        {{ $remain->remain }}
+                                    @endif
+                                @endforeach
+                            </td>
+                            <td class="text-right vertical-middle">
                                 <div class="btn-group">
                                     <a href="{{ admin_route_url('crowdsource.show', ['id' => $crowdsource->id]) }}" class="btn btn-primary">
                                         <i class="fa fa-eye"> </i>
@@ -44,7 +52,7 @@
                             </td>
                         </tr>
                     @empty
-                        <td colspan="4"> There is no record for crowdsource data!</td>
+                        <td colspan="6"> There is no record for crowdsource data!</td>
                     @endforelse
                     </tbody>
                 </table>
