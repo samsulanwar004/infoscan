@@ -25,7 +25,8 @@ class NotificationService
 		if(! $this->message) {
 			return false;
 		}
-
+		logger($to);
+		logger($this->message);
 		return \OneSignal::sendNotificationToUser($this->message, $to);
 	}
 
