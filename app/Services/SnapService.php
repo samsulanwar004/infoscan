@@ -137,6 +137,14 @@ class SnapService
         return SnapFile::with(['tag'])->where('id', '=', $id)->first();
     }
 
+    public function getSnapFileByPosition($snapId, $position)
+    {
+        return SnapFile::where('snap_id', $snapId)
+            ->where('position', $position)
+            ->orderBy('id', 'DESC')
+            ->first();
+    }
+
     public function getSnapByid($id)
     {
         return Snap::with(['files'])->where('id', $id)->first();
@@ -518,9 +526,6 @@ class SnapService
         //build data for member history
         $this->memberSnapHistory($snap);
 
-        //send notification
-        $this->sendSnapNotification('pending', $this->estimatedPoint);
-
         return $dataSnap;
     }
 
@@ -590,9 +595,6 @@ class SnapService
             //build data for member history
             $this->memberSnapHistory($snap, $images);
 
-            //send notification
-            $this->sendSnapNotification('pending', $this->estimatedPoint);
-
             return $dataSnap;
         }
 
@@ -655,9 +657,6 @@ class SnapService
             //build data for member history
             $this->memberSnapHistory($snap, $images);
 
-            //send notification
-            $this->sendSnapNotification('pending', $this->estimatedPoint);
-
             return $dataSnap;
         }
 
@@ -713,9 +712,6 @@ class SnapService
 
             //build data for member history
             $this->memberSnapHistory($snap, $images);
-
-            //send notification
-            $this->sendSnapNotification('pending', $this->estimatedPoint);
 
             return $dataSnap;
         }
@@ -789,9 +785,6 @@ class SnapService
 
             //build data for member history
             $this->memberSnapHistory($snap, $images);
-
-            //send notification
-            $this->sendSnapNotification('pending', $this->estimatedPoint);
 
             return $dataSnap;
         }
@@ -871,9 +864,6 @@ class SnapService
             //build data for member history
             $this->memberSnapHistory($snap, $images);
 
-            //send notification
-            $this->sendSnapNotification('pending', $this->estimatedPoint);
-
             return $dataSnap;
         }
 
@@ -929,9 +919,6 @@ class SnapService
 
             //build data for member history
             $this->memberSnapHistory($snap, $images);
-
-            //send notification
-            $this->sendSnapNotification('pending', $this->estimatedPoint);
 
             return $dataSnap;
         }
@@ -1018,6 +1005,7 @@ class SnapService
                 $fileList[$i]['file_link'] = $this->completeImageLink($filename);
                 $fileList[$i]['file_size'] = $file->getSize();
                 $fileList[$i]['file_mime'] = (null === $mimes) ? $file->getMimeType() : $mimes;
+                $fileList[$i]['position'] = $i;
 
                 ++$i;
             }
@@ -1135,6 +1123,7 @@ class SnapService
         $f->file_path = $data['filename'];
         $f->file_code = $data['file_code'];
         $f->file_mimes = $data['file_mime'];
+        $f->position = $data['position'];
         $f->file_dimension = null;
         $f->process_status = 'new';
         if ($this->hasMode($request)) {
@@ -1455,4 +1444,5 @@ class SnapService
 
         (new NotificationService($sendMessage))->send();
     }
+
 }
