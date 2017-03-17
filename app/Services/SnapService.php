@@ -1450,9 +1450,8 @@ class SnapService
 
     public function sendSnapNotification($type, $point = '')
     {
-        //$message = config('common.notification_messages.register.verification');
-        $message = config('common.notification_messages.snaps');
-        $sendMessage = sprintf($message[$type], (string)$point)
+        $message = config('common.notification_messages.snaps'.$type);
+        $sendMessage = sprintf("$message", (string)$point)
 
         (new NotificationService($sendMessage))->send();
     }
