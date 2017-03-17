@@ -56,5 +56,6 @@ class Kernel extends HttpKernel
         'acceptHeader' => \App\Http\Middleware\VerifyAcceptHeader::class,
         'verifySignature' => \App\Http\Middleware\VerifySignature::class,
         'payloads.request' => \App\Http\Middleware\RecordPayload::class,
+        'deviceTokenCatcher' => \App\Http\Middleware\DeviceTokenCatcher::class,
     ];
 }

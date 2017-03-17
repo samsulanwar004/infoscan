@@ -66,7 +66,7 @@ class RouteServiceProvider extends ServiceProvider
     protected function mapApiRoutes()
     {
         Route::group([
-            'middleware' => ['payloads.request'],
+            'middleware' => ['payloads.request', 'deviceTokenCatcher'],
             'namespace' => $this->namespace,
             'prefix' => 'api',
         ], function ($router) {
