@@ -599,10 +599,6 @@ class SnapService
         if ($this->isAudioMode($request)) {
             $mode = self::AUDIO_TYPE_NAME;
             $audios = $this->audiosProcess($request);
-            $merges = [];
-            foreach ($images as $key => $image) {
-               $merges[] = [$image, $audios[$key]];
-            }
 
             if (empty($audios)) {
                 throw new SnapServiceException('There is no audios was processed. Something wrong with the system!');
@@ -611,12 +607,8 @@ class SnapService
             DB::beginTransaction();
             try {
                 $snap = $this->createSnap($request);
-                // $this->createFiles($request, $images, $snap);
-                // $this->createFiles($request, $audios, $snap);
-
-                foreach ($merges as $merge) {
-                    $this->createFiles($request, $merge, $snap);
-                }
+                $this->createFiles($request, $images, $snap);
+                $this->createFiles($request, $audios, $snap);
 
                 DB::commit();
             } catch (Exception $e) {
@@ -1459,7 +1451,7 @@ class SnapService
     public function sendSnapNotification($type, $point = '')
     {
         $message = config('common.notification_messages.snaps'.$type);
-        $sendMessage = sprintf("$message", (string)$point)
+        $sendMessage = sprintf("$message", (string)$point);
 
         (new NotificationService($sendMessage))->send();
     }
