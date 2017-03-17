@@ -15,11 +15,13 @@ class NotificationService
 
 	public function send()
 	{
-		if(! $to = $this->getLastUserDeviceToken()) {
+		$to = $this->getLastUserDeviceToken();
+		if(false === $to) {
 			logger('There is member device token!');
 
 			return false;
 		}
+
 		if(! $this->message) {
 			return false;
 		}
