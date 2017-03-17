@@ -137,6 +137,14 @@ class SnapService
         return SnapFile::with(['tag'])->where('id', '=', $id)->first();
     }
 
+    public function getSnapFileByPosition($snapId, $position)
+    {
+        return SnapFile::where('snap_id', $snapId)
+            ->where('position', $position)
+            ->orderBy('id', 'DESC')
+            ->first();
+    }
+
     public function getSnapByid($id)
     {
         return Snap::with(['files'])->where('id', $id)->first();
@@ -518,9 +526,6 @@ class SnapService
         //build data for member history
         $this->memberSnapHistory($snap);
 
-        //send notification
-        $this->sendSnapNotification('pending', $this->estimatedPoint);
-
         return $dataSnap;
     }
 
@@ -590,18 +595,15 @@ class SnapService
             //build data for member history
             $this->memberSnapHistory($snap, $images);
 
-            //send notification
-            $this->sendSnapNotification('pending', $this->estimatedPoint);
-
             return $dataSnap;
         }
 
         if ($this->isAudioMode($request)) {
             $mode = self::AUDIO_TYPE_NAME;
             $audios = $this->audiosProcess($request);
-            $merges = [];
+            $merge = [];
             foreach ($images as $key => $image) {
-               $merges[] = [$image, $audios[$key]];
+               $merge[] = [$image, $audios[$key]];
             }
 
             if (empty($audios)) {
@@ -611,12 +613,8 @@ class SnapService
             DB::beginTransaction();
             try {
                 $snap = $this->createSnap($request);
-                // $this->createFiles($request, $images, $snap);
-                // $this->createFiles($request, $audios, $snap);
-
-                foreach ($merges as $merge) {
-                    $this->createFiles($request, $merge, $snap);
-                }
+                $this->createFiles($request, $images, $snap);
+                $this->createFiles($request, $audios, $snap);
 
                 DB::commit();
             } catch (Exception $e) {
@@ -662,9 +660,6 @@ class SnapService
 
             //build data for member history
             $this->memberSnapHistory($snap, $images);
-
-            //send notification
-            $this->sendSnapNotification('pending', $this->estimatedPoint);
 
             return $dataSnap;
         }
@@ -721,9 +716,6 @@ class SnapService
 
             //build data for member history
             $this->memberSnapHistory($snap, $images);
-
-            //send notification
-            $this->sendSnapNotification('pending', $this->estimatedPoint);
 
             return $dataSnap;
         }
@@ -797,9 +789,6 @@ class SnapService
 
             //build data for member history
             $this->memberSnapHistory($snap, $images);
-
-            //send notification
-            $this->sendSnapNotification('pending', $this->estimatedPoint);
 
             return $dataSnap;
         }
@@ -879,9 +868,6 @@ class SnapService
             //build data for member history
             $this->memberSnapHistory($snap, $images);
 
-            //send notification
-            $this->sendSnapNotification('pending', $this->estimatedPoint);
-
             return $dataSnap;
         }
 
@@ -937,9 +923,6 @@ class SnapService
 
             //build data for member history
             $this->memberSnapHistory($snap, $images);
-
-            //send notification
-            $this->sendSnapNotification('pending', $this->estimatedPoint);
 
             return $dataSnap;
         }
@@ -1026,6 +1009,7 @@ class SnapService
                 $fileList[$i]['file_link'] = $this->completeImageLink($filename);
                 $fileList[$i]['file_size'] = $file->getSize();
                 $fileList[$i]['file_mime'] = (null === $mimes) ? $file->getMimeType() : $mimes;
+                $fileList[$i]['position'] = $i;
 
                 ++$i;
             }
@@ -1143,6 +1127,7 @@ class SnapService
         $f->file_path = $data['filename'];
         $f->file_code = $data['file_code'];
         $f->file_mimes = $data['file_mime'];
+        $f->position = $data['position'];
         $f->file_dimension = null;
         $f->process_status = 'new';
         if ($this->hasMode($request)) {
@@ -1454,14 +1439,5 @@ class SnapService
             ->where('member_id', $memberId)
             ->orderBy('created_at', 'DESC')
             ->get();
-    }
-
-    public function sendSnapNotification($type, $point = '')
-    {
-        //$message = config('common.notification_messages.register.verification');
-        $message = config('common.notification_messages.snaps');
-        $sendMessage = sprintf($message[$type], (string)$point)
-
-        (new NotificationService($sendMessage))->send();
     }
 }

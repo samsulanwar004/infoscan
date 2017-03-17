@@ -110,7 +110,17 @@ class SnapController extends AdminController
             $view = null === $snapFile->mode_type ? 'image' : $snapFile->mode_type;
             $mode = $modeView[$snapFile->mode_type];
 
-            return view("snaps.$mode", compact('snapFile'));
+            $audioFile = null;
+            if ($snapFile->mode_type == 'audios')
+            {
+                $snapId = $snapFile->snap_id;
+                $position = $snapFile->position;
+
+                $audioFile = (new SnapService)->getSnapFileByPosition($snapId, $position);
+
+            }
+
+            return view("snaps.$mode", compact('snapFile', 'audioFile'));
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',
