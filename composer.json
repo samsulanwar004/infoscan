@@ -25,7 +25,8 @@
         "socialiteproviders/linkedin": "^2.0",
         "intervention/image": "^2.3",
         "sentry/sentry-laravel": "^0.6.1",
-        "edujugon/push-notification": "^2.1"
+        "edujugon/push-notification": "^2.1",
+        "berkayk/onesignal-laravel": "^0.9.7"
     },
     "require-dev": {
         "fzaninotto/faker": "^1.6",

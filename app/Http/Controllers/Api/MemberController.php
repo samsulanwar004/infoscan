@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Mail\RegisterVerification;
 use App\Services\MemberService;
+use App\Services\NotificationService;
 use App\Transformers\MemberTransformer;
 use Carbon\Carbon;
 use DB;
@@ -84,6 +85,7 @@ class MemberController extends BaseApiController
             // send email register verification
             if($mustSendVerificationEmail) {
                 $this->sendVerificationEmail($m);
+                $this->pushNotification();
             }
 
             return $this->success('Member successfully updated!');
@@ -207,5 +209,11 @@ class MemberController extends BaseApiController
             ->onQueue(config('common.queue_list.member_register_verification_email'));
 
         Mail::to($member->email)->queue($message);
+    }
+
+    private function pushNotification($resend = false)
+    {
+        $message = config('common.notification_messages.register.verification');
+        (new NotificationService($message))->send();
     }
 }

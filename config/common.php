@@ -275,6 +275,7 @@ return [
             ],
         ],
     ],
+
     //queue list
     'queue_list' => [
         'crowdsource_log' => 'userBehaviourLog',
@@ -284,5 +285,28 @@ return [
         'assign_process' => 'assignProcess',
         'member_action_log' => 'userBehaviourLog',
         'member_register_verification_email' => 'userBehaviourLog',
+    ],
+
+    'notification_messages' => [
+        'snaps' => [
+            'success' => 'Selamat, klaim sebesar %s poin telah berhasil! Kluk!',
+            'pending' => 'Fotomu sudah kami terima. Kamu bisa mendapatkan bonus sebesar %s poin!',
+            'failed' => 'Transaksi kamu belum berhasil. Ayo coba lagi!',
+        ],
+
+        'lottery' => [
+            'success' => 'Kamu adalah PEMENANG! - Selamat! Kamu telah memenangkan undian %s.',
+            'failed' => 'Maaf, kamu belum beruntung - Ayo coba keberuntunganmu di undian lainnya!',
+        ],
+
+        'cashback' => [
+            'success' => 'Cashback Berhasil - Selamat, cashback telah berhasil! Kluk!',
+            'failed' => 'Cashback Gagal - Maaf, cashback kamu gagal :(',
+        ],
+
+        'register' => [
+            'verification' => 'Verifikasi Email - Verifikasi akun GoJaGomu sekarang!',
+            'resend' => 'Akun Belum Terverifikasi - Kami sudah mengirim ulang email verifikasi ke emailmu. Verifikasi akunmu untuk bisa cashback!'
+        ],
     ],
 ];

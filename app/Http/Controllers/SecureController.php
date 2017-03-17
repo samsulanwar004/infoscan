@@ -75,6 +75,7 @@ class SecureController extends BaseApiController
             'password' => $request->input('password'),
         ])
         ) {
+            $this->sendAuthenticationNotif(true, '');
             return $this->success(['token' => $member->api_token]);
         }
 

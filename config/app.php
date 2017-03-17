@@ -178,7 +178,8 @@ return [
         Barryvdh\Debugbar\ServiceProvider::class,
         Elibyy\TCPDF\ServiceProvider::class,
         Sentry\SentryLaravel\SentryLaravelServiceProvider::class,
-        //
+        Berkayk\OneSignal\OneSignalServiceProvider::class,
+
 
         /*
          * Application Service Providers...
@@ -242,6 +243,7 @@ return [
         'Socialize' => Laravel\Socialite\Facades\Socialite::class,
         'Image' => Intervention\Image\Facades\Image::class,
         'Sentry' => Sentry\SentryLaravel\SentryFacade::class,
+        'OneSignal' => Berkayk\OneSignal\OneSignalFacade::class,
     ],
 
 ];

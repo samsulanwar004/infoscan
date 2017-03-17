@@ -518,6 +518,9 @@ class SnapService
         //build data for member history
         $this->memberSnapHistory($snap);
 
+        //send notification
+        $this->sendSnapNotification('pending', $this->estimatedPoint);
+
         return $dataSnap;
     }
 
@@ -586,6 +589,9 @@ class SnapService
 
             //build data for member history
             $this->memberSnapHistory($snap, $images);
+
+            //send notification
+            $this->sendSnapNotification('pending', $this->estimatedPoint);
 
             return $dataSnap;
         }
@@ -657,6 +663,9 @@ class SnapService
             //build data for member history
             $this->memberSnapHistory($snap, $images);
 
+            //send notification
+            $this->sendSnapNotification('pending', $this->estimatedPoint);
+
             return $dataSnap;
         }
 
@@ -712,6 +721,9 @@ class SnapService
 
             //build data for member history
             $this->memberSnapHistory($snap, $images);
+
+            //send notification
+            $this->sendSnapNotification('pending', $this->estimatedPoint);
 
             return $dataSnap;
         }
@@ -785,6 +797,9 @@ class SnapService
 
             //build data for member history
             $this->memberSnapHistory($snap, $images);
+
+            //send notification
+            $this->sendSnapNotification('pending', $this->estimatedPoint);
 
             return $dataSnap;
         }
@@ -864,6 +879,9 @@ class SnapService
             //build data for member history
             $this->memberSnapHistory($snap, $images);
 
+            //send notification
+            $this->sendSnapNotification('pending', $this->estimatedPoint);
+
             return $dataSnap;
         }
 
@@ -919,6 +937,9 @@ class SnapService
 
             //build data for member history
             $this->memberSnapHistory($snap, $images);
+
+            //send notification
+            $this->sendSnapNotification('pending', $this->estimatedPoint);
 
             return $dataSnap;
         }
@@ -1433,5 +1454,14 @@ class SnapService
             ->where('member_id', $memberId)
             ->orderBy('created_at', 'DESC')
             ->get();
+    }
+
+    public function sendSnapNotification($type, $point = '')
+    {
+        //$message = config('common.notification_messages.register.verification');
+        $message = config('common.notification_messages.snaps');
+        $sendMessage = sprintf($message[$type], (string)$point)
+
+        (new NotificationService($sendMessage))->send();
     }
 }
