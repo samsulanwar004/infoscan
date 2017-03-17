@@ -15,15 +15,19 @@ class NotificationService
 
 	public function send()
 	{
-		if(! $to = $this->getLastUserDeviceToken()) {
+		$to = $this->getLastUserDeviceToken();
+		if(false === $to) {
 			logger('There is member device token!');
 
 			return false;
 		}
+
 		if(! $this->message) {
+			logger('no message setted');
 			return false;
 		}
-
+		logger($to);
+		logger($this->message);
 		return \OneSignal::sendNotificationToUser($this->message, $to);
 	}
 
