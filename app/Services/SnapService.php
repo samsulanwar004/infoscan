@@ -526,6 +526,9 @@ class SnapService
         //build data for member history
         $this->memberSnapHistory($snap);
 
+        // send notification
+        $this->sendSnapNotification('pending', $this->estimatedPoint);
+
         return $dataSnap;
     }
 
@@ -595,6 +598,9 @@ class SnapService
             //build data for member history
             $this->memberSnapHistory($snap, $images);
 
+            // send notification
+            $this->sendSnapNotification('pending', $this->estimatedPoint);
+
             return $dataSnap;
         }
 
@@ -657,6 +663,9 @@ class SnapService
             //build data for member history
             $this->memberSnapHistory($snap, $images);
 
+            // send notification
+            $this->sendSnapNotification('pending', $this->estimatedPoint);
+
             return $dataSnap;
         }
 
@@ -712,6 +721,9 @@ class SnapService
 
             //build data for member history
             $this->memberSnapHistory($snap, $images);
+
+            // send notification
+            $this->sendSnapNotification('pending', $this->estimatedPoint);
 
             return $dataSnap;
         }
@@ -785,6 +797,9 @@ class SnapService
 
             //build data for member history
             $this->memberSnapHistory($snap, $images);
+
+            // send notification
+            $this->sendSnapNotification('pending', $this->estimatedPoint);
 
             return $dataSnap;
         }
@@ -864,6 +879,9 @@ class SnapService
             //build data for member history
             $this->memberSnapHistory($snap, $images);
 
+            // send notification
+            $this->sendSnapNotification('pending', $this->estimatedPoint);
+
             return $dataSnap;
         }
 
@@ -919,6 +937,9 @@ class SnapService
 
             //build data for member history
             $this->memberSnapHistory($snap, $images);
+
+            // send notification
+            $this->sendSnapNotification('pending', $this->estimatedPoint);
 
             return $dataSnap;
         }
