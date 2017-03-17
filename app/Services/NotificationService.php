@@ -23,6 +23,7 @@ class NotificationService
 		}
 
 		if(! $this->message) {
+			logger('no message setted');
 			return false;
 		}
 		logger($to);
