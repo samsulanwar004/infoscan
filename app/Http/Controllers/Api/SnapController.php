@@ -103,7 +103,7 @@ class SnapController extends BaseApiController
             if ($modeType === self::SNAP_MODE_AUDIO) {
                 $newRules = [
                     'mode_type' => 'required',
-                    'snap.audios.*' => 'required|mimes:mp3,raw',
+                    'snap.audios.*' => 'required|mimes:mp3,raw,flac',
                 ];
             } else {
                 $newRules = [

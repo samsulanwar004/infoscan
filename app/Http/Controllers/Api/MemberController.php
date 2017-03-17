@@ -80,6 +80,7 @@ class MemberController extends BaseApiController
             $m->save();
             DB::commit();
 
+
             // send email register verification
             if($mustSendVerificationEmail) {
                 $this->sendVerificationEmail($m);
