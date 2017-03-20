@@ -18,6 +18,10 @@ class LogController extends BaseApiController
     public function store(Request $request)
     {
     	try {
+            if(! $this->member) {
+                return $this->error('Member not found', 400, true);
+            }
+
     		//build data for member history
 	        $memberId = $this->member->id;
 	        $content = [
@@ -28,7 +32,7 @@ class LogController extends BaseApiController
 
 	        $config = config('common.queue_list.member_action_log');
 	        $job = (new MemberActionJob($memberId, $request->input('group'), $content))->onQueue($config)->onConnection(env('INFOSCAN_QUEUE'));
-	        dispatch($job); 
+	        dispatch($job);
 
 	        return $this->success();
     	} catch (\Exception $e) {
