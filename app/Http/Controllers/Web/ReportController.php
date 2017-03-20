@@ -13,7 +13,7 @@ class ReportController extends AdminController
 		$results = [];
 		$query = \DB::table('reports');
 
-		if ($request->has('date_create')) {
+		if ($request->has('date_create')) {			
 			$value = $request->input('date_create');
 			$valueArray = explode(' - ', $value);
 			$query->whereBetween('created_at',$valueArray);
@@ -166,6 +166,12 @@ class ReportController extends AdminController
 		$total = \DB::select('SELECT (SELECT DISTINCT total_price_quantity FROM reports ORDER BY total_price_quantity LIMIT 1) as "first",(SELECT DISTINCT total_price_quantity FROM reports ORDER BY total_price_quantity DESC LIMIT 1) as "last"')[0];
 		$grandTotal = \DB::select('SELECT (SELECT DISTINCT grand_total_price FROM reports ORDER BY grand_total_price LIMIT 1) as "first",(SELECT DISTINCT grand_total_price FROM reports ORDER BY grand_total_price DESC LIMIT 1) as "last"')[0];
 
+		$configs = null;
+		if ($request->has('config')) {
+			$configs = $request->input('config');
+			$configs = array_keys($configs);
+		}
+
 		$data = [
 			'results',
 			'members',
@@ -188,6 +194,7 @@ class ReportController extends AdminController
 			'qty',
 			'total',
 			'grandTotal',
+			'configs',
 		];
 		return view('reports.index', compact($data));
 	}
