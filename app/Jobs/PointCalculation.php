@@ -34,28 +34,31 @@ class PointCalculation implements ShouldQueue
     public function handle()
     {
         $point = (new PointService)->calculateApprovePoint($this->data);
-        $kasir = config('common.transaction.member.cashier');
-        $member = config('common.transaction.member.user');
-        $data = [
+        $cashier = config('common.transaction.member.cashier');
+        //$member = config('common.transaction.member.user');
+
+        $member = $this->data->member->member_code;
+        $transactionData = [
             'snap_id' => $this->data->id,
             'detail_transaction' => [
                 '0' => [
-                    'member_code_from' => $kasir,
+                    'member_code_from' => $cashier,
                     'member_code_to' => $member,
                     'amount' => $point,
                     'detail_type' => 'db'
                 ],
                 '1' => [
-                    'member_code_from' => $member,
-                    'member_code_to' => $kasir,
+                    'member_code_from' => $cashier,
+                    'member_code_to' => $member,
                     'amount' => $point,
                     'detail_type' => 'cr'
                 ],
             ],
         ];
-        (new TransactionService($data))->savePoint();
 
-        //$this->sendNotification($point);
+        (new TransactionService($transactionData))->savePoint();
+
+        $this->sendNotification($point);
     }
 
     private function sendNotification($point)
@@ -63,8 +66,9 @@ class PointCalculation implements ShouldQueue
         $message = config('common.notification_messages.snaps.success');
         $sendMessage = sprintf("$message", (string)$point);
 
-        (new NotificationService($sendMessage))->setData([
-            'action' => 'history',
-        ])->send();
+        (new NotificationService($sendMessage))->setUser($this->data->member->member_id)
+                                               ->setData([
+                                                    'action' => 'history',
+                                                ])->send();
     }
 }
