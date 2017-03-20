@@ -13,7 +13,7 @@ class PortalPointController extends BaseApiController
     	try {
     		$member = auth('api')->user();
     		$point = (new PointService)->getPortalPoint($member);
-    		
+
     		return $this->success($point, 200);
     	} catch (Exception $e) {
     		return $this->error($e, 400, true);

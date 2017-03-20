@@ -518,6 +518,14 @@ inner join level_points as l on l.id = plp.level_id;');
             return $value->group == 'portalpoint';
         });
 
+        $end = $this->date->format('Y-m-d');
+        $start = $this->date->subWeek()->format('Y-m-d');
+
+        $historys = $historys->filter(function($value, $Key) use ($start, $end) {
+            return $value->created_at->format('Y-m-d') >= $start &&
+                    $value->created_at->format('Y-m-d') <= $end;
+        });
+
         $notif = [];
         foreach ($historys as $history) {
             $notif[] = [
