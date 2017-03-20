@@ -210,6 +210,7 @@ class SnapService
             ];
 
         }
+        $originalData = $data;
 
         $data = json_encode($data);
         // event for crowdsource log
@@ -228,7 +229,14 @@ class SnapService
         $job = (new MemberActionJob($snaps->member_id, 'snap', $content))->onQueue($config)->onConnection(env('INFOSCAN_QUEUE'));
         dispatch($job);
 
-        $this->sendSnapNotification('failed');
+
+        if('reject' === $originalData['action']) {
+            $message = config('common.notification_messages.snaps.failed');
+            (new NotificationService($message))->setUser($snaps->member_id)
+                                                   ->setData([
+                                                        'action' => 'history',
+                                                    ])->send();
+        }
 
         return true;
     }
