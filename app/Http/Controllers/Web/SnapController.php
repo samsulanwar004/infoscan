@@ -179,12 +179,12 @@ class SnapController extends AdminController
         } catch (Exception $e) {
             return response()->json([
                 'status' => 'error',
-                'message' => $e->getMessage(),
+                'message' => $e->getMessage() . ' ' . $e->getFile() . ' ' . $e->getLine(),
             ], 500);
         } catch (PDOException $e) {
             return response()->json([
                 'status' => 'error',
-                'message' => $e->getMessage(),
+                'message' => $e->getMessage() . ' ' . $e->getFile() . ' ' . $e->getLine(),
             ], 500);
         }
 

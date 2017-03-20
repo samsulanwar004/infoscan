@@ -55,7 +55,7 @@ class PointCalculation implements ShouldQueue
                 ],
             ],
         ];
-
+        logger($transactionData);
         (new TransactionService($transactionData))->savePoint();
 
         $this->sendNotification($point);
