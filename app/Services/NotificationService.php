@@ -47,7 +47,7 @@ class NotificationService
 
 	public function getLastUserDeviceToken()
 	{
-		$user = ! $this->user ? $this->user : auth('api')->user()->id;
+		$user = null !== $this->user ? $this->user : auth('api')->user()->id;
 		//$activeUser = auth('api')->user()->id;
 		$member = DB::select('select token from `member_push_tokens` where `member_id`= :memberId order by id desc limit 1', ['memberId' => $user]);
 
