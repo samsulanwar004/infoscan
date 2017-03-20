@@ -35,13 +35,20 @@
                     <table class="table reportTable" id="reportTable">
                         <thead>
                             <tr>
+                            @if ($configs == null)
                                 @foreach($configurations as $field => $label)
-                                <td style="min-width: 100px;" class="{{ $field }}">{{ $label['label'] }}</td>
+                                        <td style="min-width: 100px;" class="{{ $field }}">{{ $label['label'] }}</td>
                                 @endforeach
+                            @else
+                                @foreach($configurations as $field => $label)
+                                        <td style="min-width: 100px;@if(!in_array($loop->index, $configs))display: none;@endif" class="{{ $field }}">{{ $label['label'] }}</td>
+                                @endforeach
+                            @endif
                             </tr>
                         </thead>
 
                         <tbody>
+                        @if ($configs == null)
                             @foreach($results as $result)
                             <tr>
                                 @foreach($configurations as $field => $label)
@@ -49,6 +56,15 @@
                                 @endforeach
                             </tr>
                             @endforeach
+                        @else
+                            @foreach($results as $result)
+                            <tr>
+                                @foreach($configurations as $field => $label)
+                                <td @if(!in_array($loop->index, $configs))style="display: none;"@endif>{{ $result->{$field} }}</td>
+                                @endforeach
+                            </tr>
+                            @endforeach
+                        @endif
                         </tbody>
                     </table>
                 </div>                
@@ -94,20 +110,32 @@
                                 <button id="submit-button" type="submit" class="btn btn-block btn-info"><i class="fa fa-btn fa-filter"></i> Get Filter Data</button>
                             </div>
                         </div>
-                    </div>
+                    </div>                    
                     <!-- <hr> -->
                     <!-- <div style="overflow-y: scroll; max-height: 350px;"> -->
                     <div class="checkbox-list">
-                        @foreach($configurations as $field => $label)                        
+                        @foreach($configurations as $field => $label)  
+                        @if ($configs == null)                 
                         <div class="row bg-soft">
                             <div class="col-md-6 d4-border-top" style="min-height: 45px; padding-top: 15px;">
                                 <div class="checkbox">
-                                    <label><input checked type="checkbox" class="column-list" checkboxIndex="{{ $loop->index }}">{{ $label['label'] }}</label>
+                                    <label><input name="config[{{ $loop->index }}]" checked type="checkbox" class="column-list" checkboxIndex="{{ $loop->index }}">{{ $label['label'] }}</label>
                                 </div>
                             </div>
 
                             <div class="col-md-6 d4-border-top" style="padding-top: 15px;">
                                 <div class="form-group checkbox-input-{{ $loop->index }}">
+                        @else
+                        <div class="row @if(in_array($loop->index, $configs)) bg-soft @endif">
+                            <div class="col-md-6 d4-border-top" style="min-height: 45px; padding-top: 15px;">
+                                <div class="checkbox">
+                                    <label><input name="config[{{ $loop->index }}]" @if(in_array($loop->index, $configs)) checked @endif type="checkbox" class="column-list" checkboxIndex="{{ $loop->index }}">{{ $label['label'] }}</label>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 d4-border-top" style="padding-top: 15px;">
+                                <div class="form-group checkbox-input-{{ $loop->index }}" @if(!in_array($loop->index, $configs))style="display: none;"@endif>
+                        @endif
                                     @php
                                         $elementType = $label['type'];
                                         $options = [

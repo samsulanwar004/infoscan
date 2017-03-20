@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Transaction;
 use App\TransactionDetail;
 use App\MemberActionLog;
+use Carbon\Carbon;
 
 class TransactionService
 {
@@ -14,6 +15,8 @@ class TransactionService
      */
     private $data;
 
+    private $date;
+
     /**
      *
      * @param array $data
@@ -21,6 +24,8 @@ class TransactionService
 
     public function __construct($data = null)
     {
+        $this->date = Carbon::now('Asia/Jakarta');
+
     	$this->transaction_code = isset($data['transaction_code']) ? $data['transaction_code'] : '';
     	$this->member_code = isset($data['member_code']) ? $data['member_code'] : '';
     	$this->transaction_type = isset($data['transaction_type']) ? $data['transaction_type'] : '';
@@ -43,20 +48,14 @@ class TransactionService
 
     public function getCreditMember($member_code)
 	{
-        //config transaction
-        $member = config('common.transaction.member.user');
 
-		$cr = \DB::table('transactions')
-            ->join('transaction_detail', 'transactions.id', '=', 'transaction_detail.transaction_id')
-            ->where('member_code', '=', $member_code)
-            ->where('member_code_from', '=', $member)
+		$cr = \DB::table('transaction_detail')
+            ->where('member_code_to', '=', $member_code)
             ->where('detail_type', '=', 'cr')
             ->sum('amount');
 
-        $db = \DB::table('transactions')
-            ->join('transaction_detail', 'transactions.id', '=', 'transaction_detail.transaction_id')
-            ->where('member_code', '=', $member_code)
-            ->where('member_code_from', '=', $member)
+        $db = \DB::table('transaction_detail')
+            ->where('member_code_from', '=', $member_code)
             ->where('detail_type', '=', 'db')
             ->sum('amount');
 
@@ -173,6 +172,14 @@ class TransactionService
         $point = $this->getCreditMember($member->member_code);
         $snaps = $snapService->getSnapByMemberId($member->id);
 
+        $end = $this->date->format('Y-m-d');
+        $start = $this->date->subWeek()->format('Y-m-d');
+
+        $snaps = $snaps->filter(function($value, $Key) use ($start, $end) {
+            return $value->updated_at->format('Y-m-d') >= $start &&
+                    $value->updated_at->format('Y-m-d') <= $end;
+        }); 
+
         $notif = [];
         foreach ($snaps as $snap) {
             $notif[] = [
@@ -211,6 +218,14 @@ class TransactionService
         $notifications = $notifications->filter(function($value, $Key) {
             return $value->group == 'notification' || $value->group == 'authentication';
         });
+
+        $end = $this->date->format('Y-m-d');
+        $start = $this->date->subWeek()->format('Y-m-d');
+
+        $notifications = $notifications->filter(function($value, $Key) use ($start, $end) {
+            return $value->created_at->format('Y-m-d') >= $start &&
+                    $value->created_at->format('Y-m-d') <= $end;
+        });               
 
         $notif = [];
         foreach ($notifications as $notification) {

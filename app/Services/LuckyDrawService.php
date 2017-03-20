@@ -262,21 +262,21 @@ class LuckyDrawService
 
 	public function transactionCredit($transaction)
 	{
-		$kasir = config('common.transaction.member.cashier');
-        $member = config('common.transaction.member.user');
+		$cashier = config('common.transaction.member.cashier');
+        //$member = config('common.transaction.member.user');
         $data = [
             'detail_transaction' => [
                 '0' => [
-                    'member_code_from' => $kasir,
-                    'member_code_to' => $member,
-                    'amount' => $transaction['point'],
-                    'detail_type' => 'cr'
-                ],
-                '1' => [
-                    'member_code_from' => $member,
-                    'member_code_to' => $kasir,
+                    'member_code_from' => $transaction['member_code'],
+                    'member_code_to' => $cashier,
                     'amount' => $transaction['point'],
                     'detail_type' => 'db'
+                ],
+                '1' => [
+                    'member_code_from' => $transaction['member_code'],
+                    'member_code_to' => $cashier,
+                    'amount' => $transaction['point'],
+                    'detail_type' => 'cr'
                 ],
             ],
         ];

@@ -30,7 +30,7 @@
                     @endcando
                 </div>
             </div>
-            <a href="#"  style="display: none;" 
+            <a href="#" style="display: none;" 
                 data-toggle="modal"
                 data-target="#"
                 modal-size="modal-lg" 
