@@ -291,7 +291,7 @@ return [
         'snaps' => [
             'success' => 'Selamat, klaim sebesar %s poin telah berhasil! Kluk!',
             'pending' => 'Fotomu sudah kami terima. Kamu bisa mendapatkan bonus sebesar %s poin!',
-            'failed' => 'Transaksi kamu belum berhasil. Ayo coba lagi!',
+            'failed' => 'Maaf, Transaksi kamu belum berhasil. Ayo coba lagi!',
         ],
 
         'lottery' => [

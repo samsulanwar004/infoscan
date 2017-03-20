@@ -8,6 +8,10 @@ class NotificationService
 {
 	private $message;
 
+	private $data = [];
+
+	private $user = null;
+
 	public function __construct($message = null)
 	{
 		$this->message = $message;
@@ -26,9 +30,8 @@ class NotificationService
 			logger('no message setted');
 			return false;
 		}
-		logger($to);
-		logger($this->message);
-		return \OneSignal::sendNotificationToUser($this->message, $to);
+
+		return \OneSignal::sendNotificationToUser($this->message, $to, null, $this->data);
 	}
 
 	public function updateMemberDeviceToken($token)
@@ -44,8 +47,9 @@ class NotificationService
 
 	public function getLastUserDeviceToken()
 	{
-		$activeUser = auth('api')->user()->id;
-		$member = DB::select('select token from `member_push_tokens` where `member_id`= :memberId order by id desc limit 1', ['memberId' => $activeUser]);
+		$user = ! $this->user ? $this->user : auth('api')->user()->id;
+		//$activeUser = auth('api')->user()->id;
+		$member = DB::select('select token from `member_push_tokens` where `member_id`= :memberId order by id desc limit 1', ['memberId' => $user]);
 
 		if($member) {
 			return $member[0]->token;
@@ -54,12 +58,23 @@ class NotificationService
 		return false;
 	}
 
-	public function stMessage($message)
+	public function setUser($userId)
+	{
+		$this->user = $userId;
+
+		return $this;
+	}
+
+	public function setMessage($message)
 	{
 		$this->message = $message;
 
 		return $this;
 	}
 
-
+	public function setData($data = [])
+	{
+		$this->data = $data;
+		return $this;
+	}
 }
