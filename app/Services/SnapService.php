@@ -1463,7 +1463,9 @@ class SnapService
         $message = config('common.notification_messages.snaps.'.$type);
         $sendMessage = sprintf("$message", (string)$point);
 
-        (new NotificationService($sendMessage))->send();
+        (new NotificationService($sendMessage))->setData([
+            'action' => 'history',
+        ])->send();
     }
 
 }

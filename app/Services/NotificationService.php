@@ -8,6 +8,8 @@ class NotificationService
 {
 	private $message;
 
+	private $data = [];
+
 	public function __construct($message = null)
 	{
 		$this->message = $message;
@@ -28,7 +30,7 @@ class NotificationService
 		}
 		logger($to);
 		logger($this->message);
-		return \OneSignal::sendNotificationToUser($this->message, $to);
+		return \OneSignal::sendNotificationToUser($this->message, $to, null, $this->data);
 	}
 
 	public function updateMemberDeviceToken($token)
@@ -61,5 +63,9 @@ class NotificationService
 		return $this;
 	}
 
-
+	public function setData($data = [])
+	{
+		$this->data = $data;
+		return $this;
+	}
 }

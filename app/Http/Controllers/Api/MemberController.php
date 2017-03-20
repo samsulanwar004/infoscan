@@ -214,6 +214,8 @@ class MemberController extends BaseApiController
     private function pushNotification($resend = false)
     {
         $message = config('common.notification_messages.register.verification');
-        (new NotificationService($message))->send();
+        (new NotificationService($message))->setData([
+            'action' => 'notification',
+        ])->send();
     }
 }
