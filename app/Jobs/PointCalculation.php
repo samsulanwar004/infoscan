@@ -2,12 +2,13 @@
 
 namespace App\Jobs;
 
-use Illuminate\Bus\Queueable;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
+use App\Services\NotificationService;
 use App\Services\PointService;
 use App\Services\TransactionService;
+use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
 
 class PointCalculation implements ShouldQueue
 {
@@ -54,5 +55,16 @@ class PointCalculation implements ShouldQueue
         ];
         (new TransactionService($data))->savePoint();
 
+        $this->sendNotification($point);
+    }
+
+    private function sendNotification($point)
+    {
+        $message = config('common.notification_messages.snaps.success');
+        $sendMessage = sprintf("$message", (string)$point);
+
+        (new NotificationService($sendMessage))->setData([
+            'action' => 'history',
+        ])->send();
     }
 }

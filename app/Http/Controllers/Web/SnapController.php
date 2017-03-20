@@ -14,33 +14,33 @@ class SnapController extends AdminController
     const NAME_ROLE = 'Crowdsource Account';
 
     public function index()
-    {   
+    {
         $this->isAllowed('Snaps.List');
         $user = auth('web')->user();
         $snaps = ( new SnapService);
         if (request()->has('type')) {
             $type = request()->input('type');
-            $typeFilter = config("common.snap_type.$type");            
+            $typeFilter = config("common.snap_type.$type");
             if ($user->roles[0]->role_name == self::NAME_ROLE) {
                 $id = $user->id;
                 $snaps = $snaps->getSnapsByType($typeFilter, $id)
-                    ->appends('type', $type);
+                               ->appends('type', $type);
             } else {
                 $snaps = $snaps->getSnapsByType($typeFilter)
-                    ->appends('type', $type);
+                               ->appends('type', $type);
             }
         } else if (request()->has('mode')) {
             $mode = request()->input('mode');
-            $modeFilter = config("common.snap_mode.$mode");            
+            $modeFilter = config("common.snap_mode.$mode");
             if ($user->roles[0]->role_name == self::NAME_ROLE) {
                 $id = $user->id;
                 $snaps = $snaps->getSnapsByMode($modeFilter, $id)
-                    ->appends('mode', $mode);
-                
+                               ->appends('mode', $mode);
+
             } else {
                 $snaps = $snaps->getSnapsByMode($modeFilter)
                     ->appends('mode', $mode);
-            } 
+            }
         } else {
             if ($user->roles[0]->role_name == self::NAME_ROLE) {
                 $id = $user->id;
@@ -48,7 +48,7 @@ class SnapController extends AdminController
             } else {
                 $snaps = $snaps->getAvailableSnaps();
             }
-        }          
+        }
 
         $snapCategorys = config("common.snap_category");
         $snapCategoryModes = config("common.snap_category_mode");
@@ -61,7 +61,7 @@ class SnapController extends AdminController
         $this->isAllowed('Snaps.Show');
 
         try {
-            $snap = (new SnapService)->getSnapById($id);         
+            $snap = (new SnapService)->getSnapById($id);
             if(null === $snap) {
                 throw new Exception('Id Snap not valid!');
             }
@@ -72,8 +72,8 @@ class SnapController extends AdminController
         } catch (Exception $e) {
             logger($e->getMessage());
             return view('errors.404');
-        }           
-        
+        }
+
     }
 
     public function edit($id)
@@ -90,8 +90,8 @@ class SnapController extends AdminController
                 'status' => 'error',
                 'message' => $e->getMessage(),
             ], 404);
-        } 
-        
+        }
+
     }
 
     public function editSnapFile($id)
@@ -183,7 +183,7 @@ class SnapController extends AdminController
             ], 500);
         } catch (PDOException $e) {
             return response()->json([
-                'status' => 'error',                
+                'status' => 'error',
                 'message' => $e->getMessage(),
             ], 500);
         }

@@ -228,6 +228,8 @@ class SnapService
         $job = (new MemberActionJob($snaps->member_id, 'snap', $content))->onQueue($config)->onConnection(env('INFOSCAN_QUEUE'));
         dispatch($job);
 
+        $this->sendSnapNotification('failed');
+
         return true;
     }
 
