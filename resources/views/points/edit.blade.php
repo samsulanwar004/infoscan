@@ -67,14 +67,7 @@
     </div>
     <div class="modal-footer">
         <div class="button-container pull-left">
-            <a class="btn btn-danger" 
-                href="{{ route('points.destroy', ['id' => $task->id]) }}"
-                data-toggle="modal"
-                data-target="#"
-                title="Delete this data"
-                for-delete="true"
-                data-message="Are you sure you want to delete this task point ?">Delete Task
-            </a>
+            <a class="btn btn-danger" id="delete-task">Delete Task</a>
         </div>
         <div class="button-container">
             <a class="btn btn-link btn-modal-close" data-dismiss="modal">Close</a>
@@ -95,7 +88,10 @@
         </div>
     </div>
 </form>
-<script src="{{ elixirCDN('js/admin.js') }}"></script>
+<form action="{{ route('points.destroy', ['id' => $task->id]) }}" method="POST" id="submit-delete">
+    {{ csrf_field() }}
+    {{ method_field('DELETE') }}
+</form>
 <script type="text/javascript">
 
     $("modalForm").ready(function () {
@@ -181,5 +177,14 @@
                 $('#percentage').attr('disabled', 'disabled');
             }
         });
+
+        $('#delete-task').on('click', function () {
+            if (confirm('Are you sure you want to delete this task point ?')) {
+                $('#submit-delete').submit();
+            } else {
+                return false;
+            }
+        });
     });
 </script>
+
