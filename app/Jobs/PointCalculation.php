@@ -55,18 +55,19 @@ class PointCalculation implements ShouldQueue
                 ],
             ],
         ];
-        logger($transactionData);
+
         (new TransactionService($transactionData))->savePoint();
 
-        $this->sendNotification($point);
+        $memberId = $this->data->member->id;
+        $this->sendNotification($point, $memberId);
     }
 
-    private function sendNotification($point)
+    private function sendNotification($point, $memberId)
     {
         $message = config('common.notification_messages.snaps.success');
         $sendMessage = sprintf("$message", (string)$point);
 
-        (new NotificationService($sendMessage))->setUser($this->data->member->member_id)
+        (new NotificationService($sendMessage))->setUser($memberId)
                                                ->setData([
                                                     'action' => 'history',
                                                 ])->send();
