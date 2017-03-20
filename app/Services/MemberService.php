@@ -470,13 +470,9 @@ class MemberService
     {
         $member = $this->getMemberById($id);
         $memberCode = $member->member_code;
-        //config transaction
-        $memberConfig = config('common.transaction.member.user');
 
-        $latestPoint = \DB::table('transactions')
-                          ->join('transaction_detail', 'transactions.id', '=', 'transaction_detail.transaction_id')
-                          ->where('member_code', '=', $memberCode)
-                          ->where('member_code_from', '=', $memberConfig)
+        $latestPoint = \DB::table('transaction_detail')
+                          ->where('member_code_to', '=', $memberCode)
                           ->where('detail_type', '=', 'cr')
                           ->sum('amount');
 

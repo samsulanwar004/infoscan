@@ -48,20 +48,14 @@ class TransactionService
 
     public function getCreditMember($member_code)
 	{
-        //config transaction
-        $member = config('common.transaction.member.user');
 
-		$cr = \DB::table('transactions')
-            ->join('transaction_detail', 'transactions.id', '=', 'transaction_detail.transaction_id')
-            ->where('member_code', '=', $member_code)
-            ->where('member_code_from', '=', $member)
+		$cr = \DB::table('transaction_detail')
+            ->where('member_code_to', '=', $member_code)
             ->where('detail_type', '=', 'cr')
             ->sum('amount');
 
-        $db = \DB::table('transactions')
-            ->join('transaction_detail', 'transactions.id', '=', 'transaction_detail.transaction_id')
-            ->where('member_code', '=', $member_code)
-            ->where('member_code_from', '=', $member)
+        $db = \DB::table('transaction_detail')
+            ->where('member_code_from', '=', $member_code)
             ->where('detail_type', '=', 'db')
             ->sum('amount');
 
