@@ -10,6 +10,8 @@ class NotificationService
 
 	private $data = [];
 
+	private $user = null;
+
 	public function __construct($message = null)
 	{
 		$this->message = $message;
@@ -46,8 +48,12 @@ class NotificationService
 
 	public function getLastUserDeviceToken()
 	{
-		$activeUser = auth('api')->user()->id;
-		$member = DB::select('select token from `member_push_tokens` where `member_id`= :memberId order by id desc limit 1', ['memberId' => $activeUser]);
+		if(! $this->user) {
+			$activeUser = auth('api')->user()->id;
+			$member = DB::select('select token from `member_push_tokens` where `member_id`= :memberId order by id desc limit 1', ['memberId' => $activeUser]);
+		} else {
+
+		}
 
 		if($member) {
 			return $member[0]->token;
