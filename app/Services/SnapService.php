@@ -1179,7 +1179,13 @@ class SnapService
         }
 
         $tags = $request->input(self::TAGS_FIELD_NAME);
-        $this->setTags($tags);
+
+        if ($request->input('mode_type') == self::INPUT_TYPE_NAME) {
+            $position = $file->position;
+            $tags = isset($tags[$position]) ? $tags[$position] : null;
+        }
+
+        $this->setTags($tags);        
         $total = [];
         if ($tags != null) {
             foreach ($tags as $t) {
@@ -1196,6 +1202,7 @@ class SnapService
                 $total[] = $t['price'];
             }
         }
+
         // add total value
         $this->totalValue($total, [], $file->id);
         return $tags;
