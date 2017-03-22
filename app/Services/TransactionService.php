@@ -48,14 +48,17 @@ class TransactionService
 
     public function getCreditMember($member_code)
 	{
+        $cashier = config('common.transaction.member.cashier');
 
 		$cr = \DB::table('transaction_detail')
             ->where('member_code_to', '=', $member_code)
+            ->where('member_code_from', '=', $cashier)
             ->where('detail_type', '=', 'cr')
             ->sum('amount');
 
         $db = \DB::table('transaction_detail')
             ->where('member_code_from', '=', $member_code)
+            ->where('member_code_to', '=', $cashier)
             ->where('detail_type', '=', 'db')
             ->sum('amount');
 
@@ -102,7 +105,7 @@ class TransactionService
         $t = new Transaction;
         $t->transaction_code = strtolower(str_random(10));
         $t->member_code = $transaction['member_code'];
-        $t->transaction_type = config('common.transaction.transaction_type.redeem');
+        $t->transaction_type = config('common.transaction.transaction_type.lottery');
 
         $t->save();
 

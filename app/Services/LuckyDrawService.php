@@ -263,7 +263,6 @@ class LuckyDrawService
 	public function transactionCredit($transaction)
 	{
 		$cashier = config('common.transaction.member.cashier');
-        //$member = config('common.transaction.member.user');
         $data = [
             'detail_transaction' => [
                 '0' => [

@@ -470,9 +470,10 @@ class MemberService
     {
         $member = $this->getMemberById($id);
         $memberCode = $member->member_code;
-
+        $cashier = config('common.transaction.member.cashier');
         $latestPoint = \DB::table('transaction_detail')
                           ->where('member_code_to', '=', $memberCode)
+                          ->where('member_code_from', '=', $cashier)
                           ->where('detail_type', '=', 'cr')
                           ->sum('amount');
 

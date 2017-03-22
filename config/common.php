@@ -225,11 +225,12 @@ return [
         'transaction_type' => [
             'snaps' => '1',
             'redeem' => '2',
-            'register' => '3',
+            'survey' => '3',
+            'lottery' => '4',
         ],
         'member' => [
             'cashier' => '101',
-            'user' => '102',
+            'cashier_money' => '102',
         ],
     ],
     //chart
