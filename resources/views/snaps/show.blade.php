@@ -36,7 +36,13 @@
                                             @foreach($snap->files as $file)
                                                 @if ($file->mode_type == 'audios')
                                                     @if ($file->file_mimes == 'image/jpeg')
-                                                        <img src="{{ config('filesystems.s3url') . $file->file_path }}" alt="{{ $file->file_code }}" class="margin img-thumbnail img-responsive img-tag" id="{{$file->id}}">
+                                                    <div class="img-thumbnail" style="padding-right: 10px;">
+                                                        <img src="{{ config('filesystems.s3url') . $file->file_path }}" alt="{{ $file->file_code }}" class="margin img-responsive img-tag" id="{{$file->id}}">
+                                                        <audio controls class="img-responsive" style="padding-top: 30px;">
+                                                          <source src="{{ config('filesystems.s3url') . $audios[$loop->index]->file_path }}" type="audio/mpeg">
+                                                            Your browser does not support the audio element.
+                                                        </audio>
+                                                    </div>
                                                     @endif
                                                 @else
                                                     <img src="{{ config('filesystems.s3url') . $file->file_path }}" alt="{{ $file->file_code }}" class="margin img-thumbnail img-responsive img-tag"  id="{{$file->id}}">
