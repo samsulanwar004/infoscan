@@ -233,6 +233,10 @@ Route::group([
         'Web\CrowdsourceController@dateFilter'
     )->name('crowdsource.date-filter');
 
+    Route::get(
+        '/lucky/winner',
+        'Web\LuckyDrawController@winner'
+    )->name('lucky.winner');
 });
 
 Auth::routes();

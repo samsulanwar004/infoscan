@@ -56,13 +56,6 @@
 
                         <div class="checkbox">
                             <label>
-                                <input name="is_multiple" {{ 'on' == old('is_active') ? 'checked' : '' }} type="checkbox">
-                                Is Multiple ?
-                            </label>
-                        </div>
-
-                        <div class="checkbox">
-                            <label>
                                 <input name="is_active" checked="checked" type="checkbox">
                                 Is Active ?
                             </label>

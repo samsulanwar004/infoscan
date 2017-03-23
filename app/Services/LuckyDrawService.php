@@ -14,6 +14,7 @@ use App\Libraries\ImageFile;
 use Image;
 use Storage;
 use App\Jobs\MemberActionJob;
+use App\LuckyDrawWinner;
 
 class LuckyDrawService
 {
@@ -55,7 +56,6 @@ class LuckyDrawService
 		$l->description = $request->input('description');
 		$l->point = $request->input('point');
 		$l->created_by = Auth::user()->id;
-		$l->is_multiple = $request->has('is_multiple') ? 1 : 0;
 		$l->is_active = $request->has('is_active') ? 1 : 0;
 
         if ($request->hasFile('image')) {
@@ -106,7 +106,6 @@ class LuckyDrawService
 		$l->end_at = $dateArray[1];
 		$l->description = $request->input('description');
 		$l->point = $request->input('point');
-		$l->is_multiple = $request->has('is_multiple') ? 1 : 0;
 		$l->is_active = $request->has('is_active') ? 1 : 0;
 
 		if ($request->hasFile('image') != null && $l->image == true) {
@@ -305,6 +304,14 @@ class LuckyDrawService
     		->where('end_at', '<=', $date)
     		->where('is_active', '=', 1)
     		->get();
+    }
+
+    public function getLuckyDrawWinner()
+    {
+    	return LuckyDrawWinner::with('member')
+    		->with('luckydraw')
+    		->orderBy('id', 'DESC')
+    		->paginate(50);
     }
 
 }

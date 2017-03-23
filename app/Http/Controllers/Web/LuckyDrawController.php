@@ -127,4 +127,11 @@ class LuckyDrawController extends AdminController
 
         return redirect($this->redirectAfterSave)->with('success', 'Lucky Draw successfully deleted!');
     }
+
+    public function winner()
+    {
+        $winners = (new LuckyDrawService)->getLuckyDrawWinner();
+
+        return view('lucky.winner', compact('winners'));
+    }
 }

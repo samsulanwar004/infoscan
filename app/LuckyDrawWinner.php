@@ -8,6 +8,10 @@ class LuckyDrawWinner extends Model
 {
     protected $table = 'luckydraw_winners';
 
+    protected $casts = [
+    	'description' => 'array'
+    ];
+
     public function member()
     {
     	return $this->belongsTo(Member::class, 'member_id');

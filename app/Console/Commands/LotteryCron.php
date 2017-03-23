@@ -63,7 +63,7 @@ class LotteryCron extends Command
                 ];
 
                 $ldw = new LuckyDrawWinner;
-                $ldw->description = json_encode($data);
+                $ldw->description = $data;
                 $ldw->member()->associate($win->member_id);
                 $ldw->luckydraw()->associate($lucky->id);           
                 $ldw->save();
