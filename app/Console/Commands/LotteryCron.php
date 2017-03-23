@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use App\Services\LuckyDrawService;
 use App\LuckyDrawWinner;
 use App\Jobs\MemberActionJob;
+use App\Services\NotificationService;
 
 class LotteryCron extends Command
 {
@@ -77,6 +78,9 @@ class LotteryCron extends Command
                     $job = (new MemberActionJob($memberWin, 'notification', $content))->onQueue($config)->onConnection(env('INFOSCAN_QUEUE'));
                     dispatch($job);
 
+                // push notification for member win
+                $this->sendNotification('success', $memberWin, $lucky->title);
+
                 $memberLucky = $memberLucky->filter(function($value, $Key) use ($memberWin){
                     return $value->member_id != $memberWin;
                 });
@@ -91,10 +95,25 @@ class LotteryCron extends Command
                     $config = config('common.queue_list.member_action_log');
                     $job = (new MemberActionJob($member->member_id, 'notification', $content))->onQueue($config)->onConnection(env('INFOSCAN_QUEUE'));
                     dispatch($job);
+
+                    // push notification for member lose
+                    $this->sendNotification('failed', $member->member_id, '');
                 }
 
             }
         }
         
+    }
+
+    private function sendNotification($type, $memberId, $title = '')
+    {
+        $message = config('common.notification_messages.lottery.'.$type);
+        $sendMessage = sprintf("$message", (string)$title);
+
+        (new NotificationService($sendMessage))
+            ->setUser($memberId)
+            ->setData([
+                'action' => 'notification',
+            ])->send();
     }
 }

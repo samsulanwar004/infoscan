@@ -32,7 +32,7 @@ class Kernel extends ConsoleKernel
             ->everyMinute();
 
         $schedule->command('lottery:cron')
-            ->hourly()
+            ->everyMinute()
             ->between('7:00', '22:00');
     }
 
