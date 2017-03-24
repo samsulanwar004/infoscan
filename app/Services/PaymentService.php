@@ -85,6 +85,7 @@ class PaymentService
 		$transaction = [
 			'member_code' => $this->member->member_code,
 			'point' => $point,
+			'cashout' => $cashout,
 		];	
 
 		$data = [
@@ -118,21 +119,33 @@ class PaymentService
 
 	public function transactionCredit($transaction)
 	{
-		$kasir = config('common.transaction.member.cashier');
-        $member = config('common.transaction.member.user');
+		$cashier = config('common.transaction.member.cashier');
+        $cashierMoney = config('common.transaction.member.cashier_money');
         $data = [
             'detail_transaction' => [
                 '0' => [
-                    'member_code_from' => $kasir,
-                    'member_code_to' => $member,
+                    'member_code_from' => $transaction['member_code'],
+                    'member_code_to' => $cashier,
+                    'amount' => $transaction['point'],
+                    'detail_type' => 'db'
+                ],
+                '1' => [
+                    'member_code_from' => $transaction['member_code'],
+                    'member_code_to' => $cashier,
                     'amount' => $transaction['point'],
                     'detail_type' => 'cr'
                 ],
-                '1' => [
-                    'member_code_from' => $member,
-                    'member_code_to' => $kasir,
-                    'amount' => $transaction['point'],
+                '2' => [
+                    'member_code_from' => $cashierMoney,
+                    'member_code_to' => $transaction['member_code'],
+                    'amount' => $transaction['cashout'],
                     'detail_type' => 'db'
+                ],
+                '3' => [
+                    'member_code_from' => $cashierMoney,
+                    'member_code_to' => $transaction['member_code'],
+                    'amount' => $transaction['cashout'],
+                    'detail_type' => 'cr'
                 ],
             ],
         ];

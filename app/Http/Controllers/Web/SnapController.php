@@ -65,10 +65,20 @@ class SnapController extends AdminController
             if(null === $snap) {
                 throw new Exception('Id Snap not valid!');
             }
+            $files = $snap->files;
+
+            $audioFiles = $files->filter(function($value, $Key) {
+                return $value->file_mimes == 'audio/x-flac';
+            });
+
+            $audios = [];
+            foreach ($audioFiles as $audio) {
+                $audios[] = $audio;
+            }
 
             $paymentMethods = config("common.payment_methods");
 
-            return view('snaps.show', compact('snap', 'paymentMethods'));
+            return view('snaps.show', compact('snap', 'paymentMethods', 'audios'));
         } catch (Exception $e) {
             logger($e->getMessage());
             return view('errors.404');

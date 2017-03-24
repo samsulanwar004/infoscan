@@ -11,7 +11,6 @@
     )
 <?php 
   $type = config('common.transaction.transaction_type');
-  $memberCode = config('common.transaction.member');
 ?>
     <!-- Main content -->
     <section class="content">
@@ -63,8 +62,8 @@
                         <tbody>
                         @foreach($transaction->transactionDetail as $detail)
                         <tr>
-                          <td>{{ array_search($detail->member_code_from, $memberCode) }}</td>
-                          <td>{{ array_search($detail->member_code_to, $memberCode) }}</td>
+                          <td>{{ $detail->member_code_from }}</td>
+                          <td>{{ $detail->member_code_to }}</td>
                           <td>{{ $detail->amount }}</td>
                           <td>{{ $detail->detail_type }}</td>
                         </tr>   

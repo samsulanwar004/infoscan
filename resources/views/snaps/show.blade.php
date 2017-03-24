@@ -36,8 +36,18 @@
                                             @foreach($snap->files as $file)
                                                 @if ($file->mode_type == 'audios')
                                                     @if ($file->file_mimes == 'image/jpeg')
-                                                        <img src="{{ config('filesystems.s3url') . $file->file_path }}" alt="{{ $file->file_code }}" class="margin img-thumbnail img-responsive img-tag" id="{{$file->id}}">
+                                                        <div class="img-thumbnail" style="padding-right: 10px;">
+                                                            <img src="{{ config('filesystems.s3url') . $file->file_path }}" alt="{{ $file->file_code }}" class="margin img-responsive" id="{{$file->id}}">
+                                                            <audio controls class="img-responsive" style="padding-top: 30px;">
+                                                              <source src="{{ config('filesystems.s3url') . $audios[$loop->index]->file_path }}" type="audio/mpeg">
+                                                                Your browser does not support the audio element.
+                                                            </audio>
+                                                        </div>
                                                     @endif
+                                                @elseif ($file->mode_type == 'image')
+                                                    <div class="img-thumbnail" style="padding-right: 10px;">
+                                                        <img src="{{ config('filesystems.s3url') . $file->file_path }}" alt="{{ $file->file_code }}" class="margin img-responsive img-zoom" id="{{$file->id}}">
+                                                    </div>
                                                 @else
                                                     <img src="{{ config('filesystems.s3url') . $file->file_path }}" alt="{{ $file->file_code }}" class="margin img-thumbnail img-responsive img-tag"  id="{{$file->id}}">
                                                 @endif
@@ -234,6 +244,16 @@
         background-size: 100% 100%;
     }
 
+    .zoomContainer
+    { 
+        z-index: 9999;
+    }
+
+    .zoomWindow
+    { 
+        z-index: 9999;
+    }
+
 </style>
 <link rel="stylesheet" href="{{ elixirCDN('css/datetimepicker.css') }}" />
 <script src="{{ elixirCDN('js/datetimepicker.js') }}"></script>
@@ -340,6 +360,21 @@
 
         $('#receipt_id').blur(function(e) {
             this.removeAttribute('tabIndex');
+        });
+
+        $(".img-zoom").elevateZoom({
+            zoomType: "inner",
+            cursor: "crosshair",
+            easing: true,
+        });
+
+        $(window).resize(function() {
+            $(".zoomContainer").remove();
+            $(".img-zoom").elevateZoom({
+                zoomType: "inner",
+                cursor: "crosshair",
+                easing: true,
+            });
         });
 
     });

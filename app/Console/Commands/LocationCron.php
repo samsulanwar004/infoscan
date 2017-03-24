@@ -49,15 +49,29 @@ class LocationCron extends Command
                 $location = $snapService->handleMapAddress($snap->latitude, $snap->longitude);
                 if (strtolower($location->status) == "ok") {
                     $address = $location->results[0]->address_components;
-                    $length = count($address);
                     $s = $snapService->getSnapByid($snap->id);
                     $s->location = $location->results[0]->formatted_address;
-                    $s->outlet_city = in_array("administrative_area_level_2", $address[$length-4]->types) ? $address[$length-4]->long_name : null;
-                    $s->outlet_province = in_array("administrative_area_level_1", $address[$length-3]->types) ? $address[$length-3]->long_name : null;
-                    $s->outlet_zip_code = in_array("postal_code", $address[$length-1]->types) ? $address[$length-1]->long_name : null;
+
+                    foreach ($address as $add) {
+
+                        if (in_array("administrative_area_level_2", $add->types) == true) {
+                            $city = $add->long_name;
+                        }
+
+                        if (in_array("administrative_area_level_1", $add->types) == true) {
+                            $province = $add->long_name;
+                        }
+
+                        if (in_array("postal_code", $add->types) == true) {
+                            $zipcode = $add->long_name;
+                        }
+                    }
+
+                    $s->outlet_city = $city;
+                    $s->outlet_province = $province;
+                    $s->outlet_zip_code = $zipcode;
                     $s->update();
                 }
-
             }
             
         }

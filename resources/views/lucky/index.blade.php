@@ -12,6 +12,10 @@
                 <h3 class="box-title">
                 </h3>
 
+                <a href="{{ admin_route_url('lucky.winner') }}" class="btn btn-box-tool">
+                    <i class="fa fa-star"></i> Lucky Draw Winners
+                </a>
+
                 <div class="box-tools pull-right">
                     @cando('LuckyDraw.Create')
                     <a href="{{ route('lucky.create') }}" class="btn btn-box-tool" data-toggle="tooltip"
@@ -28,7 +32,6 @@
                         <th>Lucky Draw Code</th>
                         <th>Title of Lucky Draw</th>
                         <th>Point</th>
-                        <th>Multiple</th>
                         <th>Start Date</th>
                         <th>End Date</th>
                         <th width="250"></th>
@@ -45,9 +48,6 @@
                                 {{ $lucky->title }} <br>
                             </td>
                             <td class="vertical-middle">{{ $lucky->point }}
-                            <td class="vertical-middle">
-                                <i class="fa fa-check-circle {{ $lucky->is_multiple == 1 ? 'text-green' : 'text-default' }}"></i>
-                            </td>
                             <td class="vertical-middle">{{ date_format(date_create($lucky->start_at), 'M, d Y') }}</td>
                             <td class="vertical-middle">{{ date_format(date_create($lucky->end_at), 'M, d Y') }}</td>
                             <td class="text-right vertical-middle">
