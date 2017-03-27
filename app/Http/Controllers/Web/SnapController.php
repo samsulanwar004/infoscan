@@ -142,8 +142,9 @@ class SnapController extends AdminController
     public function snapDetail($id)
     {
         $snap = (new SnapService)->getSnapById($id);
+        $js = 'ok';
 
-        return view('snaps.show_detail', compact('snap'));
+        return view('snaps.show_detail', compact('snap', 'js'));
     }
 
     public function update(Request $request, $id)

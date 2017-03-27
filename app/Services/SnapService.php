@@ -245,8 +245,15 @@ class SnapService
     {
         $snaps = $this->getSnapByid($id);
         $firstFileId = $snaps->files->first()->id;
+        $tags = $request->input('tag');   
+
+        //delete tag
+        if ($snaps->mode_type == 'tags' || $snaps->mode_type == 'input') {
+            $this->deleteTagsOrInput($request, $id);
+        }
         //update and new tag
         $this->updateSnapModeInput($request, $firstFileId);
+
         $snaps->receipt_id = $request->input('receipt_id');
         $snaps->location = $request->input('location');
         $snaps->purchase_time = $request->input('purchase_time');
@@ -296,7 +303,8 @@ class SnapService
             $t->variants = $newTags['variants'][$i];
             $t->quantity = $newTags['qty'][$i];
             $t->total_price = $newTags['total'][$i];
-            $t->file()->associate($newTags['fileId'][$i]);
+            //$t->file()->associate($newTags['fileId'][$i]);
+            $t->file()->associate($id);
 
             $t->save();
         }
@@ -339,7 +347,8 @@ class SnapService
             $t->total_price = $newTags['total'][$i];
             $t->img_x = $newTags['x'][$i];
             $t->img_y = $newTags['y'][$i];
-            $t->file()->associate($newTags['fileId'][$i]);
+            //$t->file()->associate($newTags['fileId'][$i]);
+            $t->file()->associate($id);
 
             $t->save();
         }
@@ -380,7 +389,8 @@ class SnapService
             $t->variants = $newTags['variants'][$i];
             $t->quantity = $newTags['qty'][$i];
             $t->total_price = $newTags['total'][$i];
-            $t->file()->associate($newTags['fileId'][$i]);
+            //$t->file()->associate($newTags['fileId'][$i]);
+            $t->file()->associate($id);
 
             $t->save();
         }
@@ -421,7 +431,8 @@ class SnapService
             $t->variants = $newTags['variants'][$i];
             $t->quantity = $newTags['qty'][$i];
             $t->total_price = $newTags['total'][$i];
-            $t->file()->associate($newTags['fileId'][$i]);
+            //$t->file()->associate($newTags['fileId'][$i]);
+            $t->file()->associate($id);
 
             $t->save();
         }
@@ -1483,6 +1494,28 @@ class SnapService
         (new NotificationService($sendMessage))->setData([
             'action' => 'history',
         ])->send();
+    }
+
+    public function deleteTagsOrInput($request, $id)
+    {
+        $tags = $request->input('tag');
+        $ids = $tags['id'];
+        $ids = is_null($ids) ? [0] : $ids;
+
+        $t = \DB::table('snaps')
+            ->join('snap_files', 'snaps.id', '=', 'snap_files.snap_id')
+            ->join('snap_tags', 'snap_files.id', '=', 'snap_tags.snap_file_id')
+            ->where('snaps.id', $id)
+            ->select('snap_tags.id')
+            ->whereNotIn('snap_tags.id', $ids)
+            ->get();
+
+        $delete = [];
+        foreach ($t as $tag) {
+            $delete[] = $tag->id;
+        }
+
+        SnapTag::whereIn('id', $delete)->delete(); 
     }
 
 }
