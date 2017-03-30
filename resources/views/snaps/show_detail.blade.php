@@ -55,4 +55,13 @@
     @endif
 </div>
 
-
+@if (isset($js))
+<script type="text/javascript">
+	$('a#remove-show').on('click', function(e) {
+        e.preventDefault();
+        if(confirm('Are you sure want to delete this item ?')) {
+            $(e.target).closest('#input-show').remove();
+        }
+    });
+</script>
+@endif

@@ -111,17 +111,25 @@ inner join level_points as l on l.id = plp.level_id;');
 
     public function addCityPromo($request)
     {
+
+        $name = $request['name'];
         $date = $request['start_at'];
         $dateArray = explode(' - ', $date);
-        $promo = new PromoPoint;
-        $promo->city_name = $request['name'];
-        $promo->point_city = $request['point_city'];
-        $promo->start_at = $dateArray[0];
-        $promo->end_at = $dateArray[1];
 
-        $promo->save();
+        $promos = [];
+        for ($i=0; $i < count($name); $i++) { 
+            $promo = new PromoPoint;
+            $promo->city_name = $request['name'][$i];
+            $promo->point_city = $request['point_city'];
+            $promo->start_at = $dateArray[0];
+            $promo->end_at = $dateArray[1];
 
-        return $promo;
+            $promo->save();
+
+            $promos[] = $promo->id;
+        }
+
+        return $promos;
     }
 
     public function updateTask($request, $id)
@@ -137,18 +145,36 @@ inner join level_points as l on l.id = plp.level_id;');
 
     public function updatePromoPoint($request, $id)
     {
+        $name = $request->input('name');
         $date = $request->input('start_at');
-        $dateArray = explode(' - ', $date);
-        $promo = $this->getPromoPointById($id);
-        $promo->city_name = $request->input('name');
-        $promo->point_city = $request->input('point_city');
-        $promo->start_at = $dateArray[0];
-        $promo->end_at = $dateArray[1];
-        $promo->is_active = $request->has('is_active') ? 1 : 0;
+        $dateArray = explode(' - ', $date);        
 
-        $promo->update();
+        $promos = [];
+        for ($i=0; $i < count($name); $i++) {             
+            $promo = $this->getPromoPointById($id);
 
-        return $promo;
+            if ($promo->city_name == $name[$i]) {
+                $promo->city_name = $name[$i];
+                $promo->point_city = $request->input('point_city');
+                $promo->start_at = $dateArray[0];
+                $promo->end_at = $dateArray[1];
+                $promo->is_active = $request->has('is_active') ? 1 : 0;
+
+                $promo->update();
+            } else {
+                $promo = new PromoPoint;
+                $promo->city_name = $name[$i];
+                $promo->point_city = $request->input('point_city');
+                $promo->start_at = $dateArray[0];
+                $promo->end_at = $dateArray[1];
+                $promo->is_active = $request->has('is_active') ? 1 : 0;
+
+                $promo->save();
+            }
+            $promos[] = $promo->id;
+        }
+        
+        return $promos;
     }
 
     public function addTaskLevelPoint($request)
@@ -287,13 +313,15 @@ inner join level_points as l on l.id = plp.level_id;');
         $promo = $this->addCityPromo($request->all());
 
         if ($promo) {
-            foreach ($request->input('levels') as $levelName => $point) {
-                $promoLevelPoint = new PromoLevelPoint;
-                $promoLevelPoint->point = $point;
-                $level = $this->findLevel($levelName);
-                $promoLevelPoint->levelPoint()->associate($level);
-                $promoLevelPoint->promoPoint()->associate($promo);
-                $promoLevelPoint->save();
+            for ($i=0; $i < count($promo); $i++) { 
+                foreach ($request->input('levels') as $levelName => $point) {
+                    $promoLevelPoint = new PromoLevelPoint;
+                    $promoLevelPoint->point = $point;
+                    $level = $this->findLevel($levelName);
+                    $promoLevelPoint->levelPoint()->associate($level);
+                    $promoLevelPoint->promoPoint()->associate($promo[$i]);
+                    $promoLevelPoint->save();
+                }
             }
 
             $this->removeCache();
@@ -315,28 +343,30 @@ inner join level_points as l on l.id = plp.level_id;');
         $promo = $this->updatePromoPoint($request, $id);
 
         if ($promo) {
-            $levelId = [];
-            foreach ($request->input('levels') as $levelName => $point) {
-                $level = $this->findLevel($levelName);
-                $levelId[] = $level->id;
-                $promoLevelPoint = $this->getPromoLevelPoints($promo->id, $level->id);   
+            for ($i=0; $i < count($promo); $i++) { 
+                $levelId = [];
+                foreach ($request->input('levels') as $levelName => $point) {
+                    $level = $this->findLevel($levelName);
+                    $levelId[] = $level->id;
+                    $promoLevelPoint = $this->getPromoLevelPoints($promo[$i], $level->id);   
 
-                if ($promoLevelPoint == false)
-                {
-                    $newPromoLevelPoint = new PromoLevelPoint;
-                    $newPromoLevelPoint->point = $point;
-                    $newPromoLevelPoint->levelPoint()->associate($level);
-                    $newPromoLevelPoint->promoPoint()->associate($promo);
-                    $newPromoLevelPoint->save();
-                } else {
-                    $promoLevelPoint->point = $point;
-                    $promoLevelPoint->update();
+                    if ($promoLevelPoint == false)
+                    {
+                        $newPromoLevelPoint = new PromoLevelPoint;
+                        $newPromoLevelPoint->point = $point;
+                        $newPromoLevelPoint->levelPoint()->associate($level);
+                        $newPromoLevelPoint->promoPoint()->associate($promo[$i]);
+                        $newPromoLevelPoint->save();
+                    } else {
+                        $promoLevelPoint->point = $point;
+                        $promoLevelPoint->update();
+                    }
+
                 }
-
+                // delete unnesesary level
+                PromoLevelPoint::where('promo_point_id', '=', $id)
+                        ->whereNotIn('level_id', $levelId)->delete();
             }
-            // delete unnesesary level
-            PromoLevelPoint::where('promo_point_id', '=', $id)
-                    ->whereNotIn('level_id', $levelId)->delete();
 
             $this->removeCache();
 

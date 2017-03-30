@@ -162,47 +162,47 @@
             }, true);
         });
 
-    $('.tag-name').on('click', function(e) {
-        var image = document.getElementById('tag-image');
-        var idArray = e.toElement.id.split('|');
-        var id = idArray[0];
-        var img_x = idArray[1];
-        var img_y = idArray[2];
-        $("#"+id+"popup").css({
-            'display' : 'none',
+        $('.tag-name').on('click', function(e) {
+            var image = document.getElementById('tag-image');
+            var idArray = e.toElement.id.split('|');
+            var id = idArray[0];
+            var img_x = idArray[1];
+            var img_y = idArray[2];
+            $("#"+id+"popup").css({
+                'display' : 'none',
+            });
+            var options = {};
+            if (img_x != '' || img_y != '') {
+                var data = [
+                    Taggd.Tag.createFromObject({
+                        position: { x: img_x, y: img_y },
+                        text: this.value,
+                        popupAttributes: {
+                            id: id+"popup",
+                        },
+                    }),
+                ];
+            }
+
+            var taggd = new Taggd(image, options, data);
+
+            $("#"+id+"popup").css({
+                'display' : '',
+            });
+
+            $('.'+id+'old').on('keyup', function() {
+                $("#"+id+"popup").html($("."+id+'old').val());
+            });
         });
-        var options = {};
-        if (img_x != '' || img_y != '') {
-            var data = [
-                Taggd.Tag.createFromObject({
-                    position: { x: img_x, y: img_y },
-                    text: this.value,
-                    popupAttributes: {
-                        id: id+"popup",
-                    },
-                }),
-            ];
-        }
 
-        var taggd = new Taggd(image, options, data);
-
-        $("#"+id+"popup").css({
-            'display' : '',
+        $('form').on('focus', 'input[type=number]', function(e) {
+          $(this).on('mousewheel.disableScroll', function(e) {
+            e.preventDefault()
+          })
         });
-
-        $('.'+id+'old').on('keyup', function() {
-            $("#"+id+"popup").html($("."+id+'old').val());
+        $('form').on('blur', 'input[type=number]', function(e) {
+          $(this).off('mousewheel.disableScroll')
         });
-    });
-
-    $('form').on('focus', 'input[type=number]', function(e) {
-      $(this).on('mousewheel.disableScroll', function(e) {
-        e.preventDefault()
-      })
-    });
-    $('form').on('blur', 'input[type=number]', function(e) {
-      $(this).off('mousewheel.disableScroll')
-    });
 
         var counter = 0;
         var mouseX = 0;
@@ -272,9 +272,10 @@
 
             var className = countOfTextbox+'-new-tag';
             viewtagsave(name, mouseX, mouseY, className);
-            $('tbody#inputs').append('<tr class="tag-input" time=' + time + ' id="input'+countOfTextbox+'"><td><a class="btn btn-box-tool" onclick="deleteTag('+countOfTextbox+')"><i class="fa fa-remove"></i></a></td><td width="300"><input type="text" name="newtag[name][]" class="form-control input-sm tag-name '+countOfTextbox+'new" id="'+countOfTextbox+'|'+mouseX+'|'+mouseY+'" onclick="editTag(this)" onkeyup="editNewTag(this)" value="'+name+'"></td><td width="300"><input type="text" name="newtag[brands][]" class="form-control input-sm" placeholder="Brands"></td><td width="300"><input type="text" list="variants" name="newtag[variants][]" class="form-control input-sm" placeholder="Variants"></td><td width="100"><input type="number" name="newtag[qty][]" class="form-control input-sm" value="'+qty+'"></td><td width="200"><input type="number" name="newtag[total][]" class="form-control input-sm" value="'+total+'"><input type="hidden" name="newtag[x][]" value="'+mouseX+'"><input type="hidden" name="newtag[y][]" value="'+mouseY+'"><input type="hidden" name="newtag[fileId][]" value="{{ $snapFile->id }}"></td></tr>');
+            $('tbody#inputs').append('<tr class="tag-input" time=' + time + ' id="input'+countOfTextbox+'"><td><a class="btn btn-box-tool" onclick="deleteTag('+countOfTextbox+')"><i class="fa fa-remove"></i></a></td><td width="300"><input type="text" name="newtag[name][]" class="form-control input-sm tag-name '+countOfTextbox+'new" id="'+countOfTextbox+'|'+mouseX+'|'+mouseY+'" onclick="editTag(this)" onkeyup="editNewTag(this)" value="'+name+'"></td><td width="300"><input type="text" name="newtag[brands][]" class="form-control input-sm" placeholder="Brands"></td><td width="300"><input type="text" list="variants" name="newtag[variants][]" class="form-control input-sm" placeholder="Variants"></td><td width="100"><input type="number" name="newtag[qty][]" class="form-control input-sm" value="'+qty+'"></td><td width="200"><input type="number" name="newtag[total][]" class="form-control input-sm" value="'+total+'"><input type="hidden" name="newtag[x][]" value="'+mouseX+'"><input type="hidden" name="newtag[y][]" value="'+mouseY+'"></td></tr>');
 
             $('#tagit').fadeOut();
+
         });
 
         // Cancel the tag box.
@@ -301,7 +302,8 @@
             var data =[];
             var options = {};
             var taggd;
-            $.getJSON( id+"/tagging" , function( datas ) {
+            var datas = {!! json_encode($snapFile->tag) !!};
+            //$.getJSON( id+"/tagging" , function( datas ) {
                 $.each( datas, function( key, value ) {
                     if (value.img_x != null || value.img_y != null) {
                         data.push(
@@ -316,7 +318,7 @@
                     }
                 });
                 taggd = new Taggd(image, options, data);
-            }, "json");
+            //}, "json");
         }
 
         function viewtagsave(name, mouseX, mouseY, className)

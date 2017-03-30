@@ -68,7 +68,7 @@ class SnapController extends AdminController
             $files = $snap->files;
 
             $audioFiles = $files->filter(function($value, $Key) {
-                return $value->file_mimes == 'audio/x-flac';
+                return starts_with($value->file_mimes, 'audio');
             });
 
             $audios = [];
@@ -142,8 +142,9 @@ class SnapController extends AdminController
     public function snapDetail($id)
     {
         $snap = (new SnapService)->getSnapById($id);
+        $js = 'ok';
 
-        return view('snaps.show_detail', compact('snap'));
+        return view('snaps.show_detail', compact('snap', 'js'));
     }
 
     public function update(Request $request, $id)

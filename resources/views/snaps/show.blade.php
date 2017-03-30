@@ -35,7 +35,7 @@
                                         <div class="timeline-body">
                                             @foreach($snap->files as $file)
                                                 @if ($file->mode_type == 'audios')
-                                                    @if ($file->file_mimes == 'image/jpeg')
+                                                    @if (starts_with($file->file_mimes, 'image'))
                                                         <div class="img-thumbnail" style="padding-right: 10px;">
                                                             <img src="{{ config('filesystems.s3url') . $file->file_path }}" alt="{{ $file->file_code }}" class="margin img-responsive" id="{{$file->id}}">
                                                             <audio controls class="img-responsive" style="padding-top: 30px;">

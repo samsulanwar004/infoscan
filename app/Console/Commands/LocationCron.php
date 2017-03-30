@@ -51,7 +51,10 @@ class LocationCron extends Command
                     $address = $location->results[0]->address_components;
                     $s = $snapService->getSnapByid($snap->id);
                     $s->location = $location->results[0]->formatted_address;
-
+                    
+                    $city = null;
+                    $province = null;
+                    $zipcode = null;
                     foreach ($address as $add) {
 
                         if (in_array("administrative_area_level_2", $add->types) == true) {

@@ -10,12 +10,12 @@
             <div class="col-md-8">
                 <div class="form-group name">
                     <label for="name">City Name</label>
-                    <select class="form-control" name="name" id="select-city" multiple="multiple">
+                    <select class="form-control" name="name[]" id="select-city" multiple="multiple">
                     <option value="{{ $promo->city_name }}" selected="selected">{{ $promo->city_name }}</option>
                         @foreach($provincies as $province)
                             <optgroup label="{{ $province->name }}">
                                 @foreach($province->regencies as $regency)
-                                    <option value="{{ $regency->name }}">{{ $regency->name }}</option>
+                                    <option>{{ $regency->name }}</option>
                                 @endforeach
                             </optgroup>
                         @endforeach
@@ -154,7 +154,7 @@
 
         $("#select-city").select2({
             placeholder: "Select a City",
-            maximumSelectionLength: 1,
+            //maximumSelectionLength: 1,
         });
 
     });
