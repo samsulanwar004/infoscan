@@ -68,7 +68,7 @@ class SnapController extends AdminController
             $files = $snap->files;
 
             $audioFiles = $files->filter(function($value, $Key) {
-                return $value->file_mimes == 'audio/x-flac';
+                return starts_with($value->file_mimes, 'audio');
             });
 
             $audios = [];
