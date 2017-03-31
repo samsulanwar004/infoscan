@@ -45,8 +45,16 @@
                                                         </div>
                                                     @endif
                                                 @elseif ($file->mode_type == 'image')
-                                                    <div class="img-thumbnail" style="padding-right: 10px;">
-                                                        <img src="{{ config('filesystems.s3url') . $file->file_path }}" alt="{{ $file->file_code }}" class="margin img-responsive img-zoom" id="{{$file->id}}">
+                                                    <div id="window" class="magnify img-thumbnail" data-magnified-zone=".mg_zone" data-scale="1.5" style="padding-right: 10px;">
+                                                        <div class="magnify_glass">
+                                                            <div class="mg_ring"></div>
+                                                           <!--  <div class="pm_btn plus"><h2>+</h2></div>
+                                                            <div class="pm_btn minus"><h2>-</h2></div> -->
+                                                            <div class="mg_zone"></div>
+                                                        </div>
+                                                        <div class = "element_to_magnify">
+                                                            <img src="{{ config('filesystems.s3url') . $file->file_path }}" alt="{{ $file->file_code }}" class="margin img-responsive img-zoom" id="{{$file->id}}">
+                                                        </div>
                                                     </div>
                                                 @else
                                                     <img src="{{ config('filesystems.s3url') . $file->file_path }}" alt="{{ $file->file_code }}" class="margin img-thumbnail img-responsive img-tag"  id="{{$file->id}}">
@@ -84,7 +92,24 @@
                                   </div>
                                 </li>
                             </ul>
+                            @if ($snap->mode_type == 'image')
+                            <ul class="timeline timeline-inverse">
+                                <li class="no-margin-right">
+                                    <i class="fa fa-list bg-blue"></i>
+                                    <div class="timeline-item no-margin-right">
+                                        <span class="time"><i class="fa fa-clock-o"></i> {{ $snap->created_at->diffForHumans() }}</span>
 
+                                        <h3 class="timeline-header">Google OCR</h3>
+
+                                        <textarea class="form-control" style="resize:none;width: 100%;height: 500px;margin-top: 10px;" cols="50" readonly="readonly">
+                                            @foreach($snap->files as $file)
+                                                {{ $file->recognition_text }}
+                                            @endforeach
+                                        </textarea>
+                                    </div>
+                                </li>
+                            </ul>
+                            @endif
                         </div>
 
                     </div>
@@ -190,11 +215,12 @@
         title="Edit">
         Edit Select Image</a>
     </section>
-    <!-- /.content -->
+    <!-- /.content -->    
 @endsection
 
 @section('footer_scripts')
 <link rel="stylesheet" href="{{ elixirCDN('css/taggd.css') }}">
+<link rel="stylesheet" href="{{ elixirCDN('css/zoom.css') }}">
 <style type="text/css">
     img.img-tag {
         cursor: pointer;
@@ -279,6 +305,7 @@
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDL2kUSI8aZRZY2M1x3ios-LmwOoVYZ_9o&callback=initMap" async defer></script> -->
 <script src="{{ elixirCDN('js/taggd.js') }}"></script>
 <script src="{{ elixirCDN('js/elevate.js') }}"></script>
+<script src="{{ elixirCDN('js/zoom.js') }}"></script>
 <script type="text/javascript">
 
     $(document).ready(function() {
@@ -362,20 +389,22 @@
             this.removeAttribute('tabIndex');
         });
 
-        $(".img-zoom").elevateZoom({
-            zoomType: "inner",
-            cursor: "crosshair",
-            easing: true,
-        });
+        // $(".img-zoom").elevateZoom({
+        //     zoomType: "inner",
+        //     cursor: "crosshair",
+        //     easing: true,
+        // });
 
-        $(window).resize(function() {
-            $(".zoomContainer").remove();
-            $(".img-zoom").elevateZoom({
-                zoomType: "inner",
-                cursor: "crosshair",
-                easing: true,
-            });
-        });
+        // $(window).resize(function() {
+        //     $(".zoomContainer").remove();
+        //     $(".img-zoom").elevateZoom({
+        //         zoomType: "inner",
+        //         cursor: "crosshair",
+        //         easing: true,
+        //     });
+        // });
+
+        $(".magnify").jfMagnify();
 
     });
 
