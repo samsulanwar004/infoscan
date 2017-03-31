@@ -414,13 +414,12 @@ inner join level_points as l on l.id = plp.level_id;');
 
         $levelId = (new MemberService)->getLevelIdByMemberId($memberId);
 
-        $point = \DB::table('tasks')
-            ->join('tasks_level_points', 'tasks.id', '=', 'tasks_level_points.task_id')
-            ->join('level_points', 'level_points.id', '=', 'tasks_level_points.level_id')
-            ->select('tasks.percentage as percent', 'tasks_level_points.point as point')
-            ->where('tasks.code', $code)
-            ->where('tasks_level_points.level_id', $levelId)
-            ->first();
+        $point = $this->getPointByCode($code, $levelId);
+
+        if ($point == null)
+        {
+            $point = $this->getPointByCode($code, $levelId-1);
+        }
 
         $data = [
             'percent' => isset($point) ? $point->percent : 0,
@@ -596,8 +595,8 @@ inner join level_points as l on l.id = plp.level_id;');
         $levelArray = explode(' ', $level->name);
         $levelId = $levelId + 1;
         $nextLevel = $this->getLevel($levelId);
-
-        $pointNextLevel = $nextLevel->point - $latestPoint;
+        $nextPoint = ($nextLevel == null) ? $latestPoint : $nextLevel->point;
+        $pointNextLevel = $nextPoint - $latestPoint;
 
         $data = [
             'current_point' => $point,
@@ -611,6 +610,17 @@ inner join level_points as l on l.id = plp.level_id;');
     private function getLevel($levelId)
     {
         return \App\TaskLevelPoint::where('id', $levelId)->first();
+    }
+
+    private function getPointByCode($code, $levelId)
+    {
+        return \DB::table('tasks')
+            ->join('tasks_level_points', 'tasks.id', '=', 'tasks_level_points.task_id')
+            ->join('level_points', 'level_points.id', '=', 'tasks_level_points.level_id')
+            ->select('tasks.percentage as percent', 'tasks_level_points.point as point')
+            ->where('tasks.code', $code)
+            ->where('tasks_level_points.level_id', $levelId)
+            ->first();
     }
 
 }

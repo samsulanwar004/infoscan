@@ -41,6 +41,7 @@
             </div>
             <div class="col-sm-6 invoice-col">
                 <div class="radio" id="wording"></div>
+                <div class="radio" id="reason"></div>
             </div>
           </div>
           <!-- /.row -->
@@ -96,11 +97,13 @@
       $('#approve').on('click', function() {
         $('.submit-to-server').removeAttr('disabled');
         $('#wording').html('<label><input name="comment" type="radio" value="Selamat, klaim sebesar {{ $fixedPoint }} poin telah berhasil! Kluk!" required="required">Selamat, klaim sebesar {{ $fixedPoint }} poin telah berhasil! Kluk!</label><label><input name="comment" value="Oops, data belanja kamu belum lengkap. Kamu dapat {{ $fixedPoint }} poin! Kluk!" type="radio" required="required">Oops, data belanja kamu belum lengkap. Kamu dapat {{ $fixedPoint }} poin! Kluk!</label>');
+        $('#reason').html('<select class="form-control" name="reason"><option value="">Pilih Alasan</option><option>Rekaman suara tidak jelas</option><option>Tidak menyebutkan nama produk</option><option>Tidak menyebutkan harga produk</option><option>Tidak menyebutkan jumlah (kuantitas) produk</option><option>Nota tidak jelas</option><option>Nota tidak lengkap</option><option>Nota sudah kadaluarsa</option><option>Tidak semua produk di Tag</option><option>Tidak merekam suara untuk semua produk</option><option>Tidak men Tag atau merekam suara</option></select>');
       });
 
       $('#reject').on('click', function() {
         $('.submit-to-server').removeAttr('disabled');
         $('#wording').html('<label><input name="comment" value="Sayang sekali, transaksi kamu gagal. Ayo coba lagi!" type="radio" required="required">Sayang sekali, transaksi kamu gagal. Ayo coba lagi!</label>');
+        $('#reason').html('<select class="form-control" name="reason"><option value="">Pilih Alasan</option><option>Rekaman suara tidak jelas</option><option>Tidak menyebutkan nama produk</option><option>Tidak menyebutkan harga produk</option><option>Tidak menyebutkan jumlah (kuantitas) produk</option><option>Nota tidak jelas</option><option>Nota tidak lengkap</option><option>Nota sudah kadaluarsa</option><option>Tidak semua produk di Tag</option><option>Tidak merekam suara untuk semua produk</option><option>Tidak men Tag atau merekam suara</option></select>');
       });
 
       if ('{{(bool)$snap->approved_by}}' == true) {
