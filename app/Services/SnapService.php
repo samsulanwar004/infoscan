@@ -170,6 +170,11 @@ class SnapService
     {
         $snaps = $this->getSnapByid($id);
         $userId = auth()->user()->id;
+        $comment = $request->input('comment');
+
+        if (!empty($request->input('reason'))) {
+            $comment = nl2br($comment.'\n Alasan :'.$request->input('reason'));
+        }
 
         if ($request->input('confirm') == 'approve') {
             //queue for calculate point
@@ -177,7 +182,7 @@ class SnapService
             $job = (new PointCalculation($snaps))->onQueue($config)->onConnection(env('INFOSCAN_QUEUE'));
             dispatch($job);
             $snaps->approved_by = $userId;
-            $snaps->comment = $request->input('comment');
+            $snaps->comment = $comment;
             $snaps->status = 'approve';
             $snaps->update();
 
@@ -194,7 +199,7 @@ class SnapService
 
         } elseif ($request->input('confirm') == 'reject') {
             $snaps->reject_by = $userId;
-            $snaps->comment = $request->input('comment');
+            $snaps->comment = $comment;
             $snaps->status = 'reject';
             $snaps->update();
 
