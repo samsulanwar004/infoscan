@@ -37,6 +37,10 @@ elixir(mix => {
         ltePath + 'plugins/datetimepicker/bootstrap-datetimepicker.min.css'
     ], 'public/css/datetimepicker.css');
 
+    mix.styles([
+        ltePath + 'css/zoom.css'
+    ], 'public/css/zoom.css');
+
     /*mix.webpack('app.js');*/
 
     mix.scripts([
@@ -66,6 +70,15 @@ elixir(mix => {
     mix.scripts([
         ltePath + 'plugins/elevate/jquery.elevatezoom.js'
     ], 'public/js/elevate.js');
+
+    mix.scripts([
+        ltePath + 'plugins/zoom/jquery-ui.js',
+        ltePath + 'plugins/zoom/jfmagnify.min.js'
+    ], 'public/js/zoom.js');
+
+    mix.scripts([
+        ltePath + 'plugins/slider/jquery.flexslider.js'
+    ], 'public/js/flexslider.js');
 
     mix.scripts([
         ltePath + 'plugins/datetimepicker/bootstrap-datetimepicker.min.js',
@@ -104,6 +117,7 @@ elixir(mix => {
     mix.version([
         'css/app.css',
         'css/taggd.css',
+        'css/zoom.css',
         'js/vendor.js',
         'js/admin.js',
         'js/ie-support.js',
@@ -115,5 +129,7 @@ elixir(mix => {
         'css/datetimepicker.css',
         'js/datetimepicker.js',
         'js/Chart.bundle.min.js',
+        'js/zoom.js',
+        'js/flexslider.js',
     ]);
 });
