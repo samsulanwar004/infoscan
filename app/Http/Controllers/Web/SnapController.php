@@ -24,10 +24,10 @@ class SnapController extends AdminController
             if ($user->roles[0]->role_name == self::NAME_ROLE) {
                 $id = $user->id;
                 $snaps = $snaps->getSnapsByType($typeFilter, $id)
-                               ->appends('type', $type);
+                    ->appends('type', $type);
             } else {
                 $snaps = $snaps->getSnapsByType($typeFilter)
-                               ->appends('type', $type);
+                    ->appends('type', $type);
             }
         } else if (request()->has('mode')) {
             $mode = request()->input('mode');
@@ -35,7 +35,7 @@ class SnapController extends AdminController
             if ($user->roles[0]->role_name == self::NAME_ROLE) {
                 $id = $user->id;
                 $snaps = $snaps->getSnapsByMode($modeFilter, $id)
-                               ->appends('mode', $mode);
+                    ->appends('mode', $mode);
 
             } else {
                 $snaps = $snaps->getSnapsByMode($modeFilter)
@@ -46,11 +46,24 @@ class SnapController extends AdminController
             if ($user->roles[0]->role_name == self::NAME_ROLE) {
                 $id = $user->id;
                 $snaps = $snaps->getSnapsByStatus($status, $id)
-                               ->appends('status', $status);
-
+                    ->appends('status', $status);
             } else {
                 $snaps = $snaps->getSnapsByStatus($status)
                     ->appends('status', $status);
+            }
+        } else if (request()->has('date_start') && request()->has('date_end')) {
+            $dateStart = request()->input('date_start');
+            $dateEnd = request()->input('date_end');
+
+            if ($user->roles[0]->role_name == self::NAME_ROLE) {
+                $id = $user->id;
+                $snaps = $snaps->getSnapsByDate($dateStart, $dateEnd, $id)
+                    ->appends('date_start', $dateStart)
+                    ->appends('date_end', $dateEnd);
+            } else {
+                $snaps = $snaps->getSnapsByDate($dateStart, $dateEnd)
+                    ->appends('date_start', $dateStart)
+                    ->appends('date_end', $dateEnd);
             }
         } else {
             if ($user->roles[0]->role_name == self::NAME_ROLE) {
