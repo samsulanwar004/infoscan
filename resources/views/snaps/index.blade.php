@@ -15,6 +15,14 @@
             <div class="box-header with-border form-inline" style="overflow: hidden; height: 45px;">
 
                 <div class="box-tools pull-right ">
+                    Filter Status:
+                    <select class="form-control filter-status">
+                        <option value="all">All</option>
+                        <option value="approve">Approve</option>
+                        <option value="reject">Reject</option>
+                        <option value="pending">Pending</option>
+                    </select>
+
                     Filter Snap type:
                     <select class="form-control snap-type">
                         <option value="all">All</option>
@@ -44,6 +52,11 @@
 
 @section('footer_scripts')
 <script>
+    $(".filter-status").on("change", function() {
+        var status = $(this).val();
+        console.log(status)
+        window.location.href = '/snaps?status='+status;
+    });
 
     $(".snap-type").on("change", function() {
 

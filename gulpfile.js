@@ -77,13 +77,13 @@ elixir(mix => {
     ], 'public/js/zoom.js');
 
     mix.scripts([
-        ltePath + 'plugins/slider/jquery.flexslider.js'
-    ], 'public/js/flexslider.js');
-
-    mix.scripts([
         ltePath + 'plugins/datetimepicker/bootstrap-datetimepicker.min.js',
         ltePath + 'plugins/datetimepicker/id.js',
     ], 'public/js/datetimepicker.js');
+
+    mix.scripts([
+       ltePath + 'plugins/slider/jquery.flexslider.js'
+    ], 'public/js/flexslider.js');
 
     mix.scripts([
         ltePath + 'plugins/chartjs/Chart.bundle.min.js',

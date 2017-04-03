@@ -132,6 +132,20 @@ class SnapService
             ->paginate(50);
     }
 
+    public function getSnapsByStatus($status, $userId = null)
+    {
+        return ($userId == null) ?
+            Snap::with('member')
+            ->with('files')
+            ->where('status', '=', $status)
+            ->paginate(50) :
+            Snap::with('member')
+            ->with('files')
+            ->where('status', '=', $status)
+            ->where('user_id', '=', $userId)
+            ->paginate(50);
+    }
+
     public function getSnapFileById($id)
     {
         return SnapFile::with(['tag'])->where('id', '=', $id)->first();

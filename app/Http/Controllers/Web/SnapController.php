@@ -41,6 +41,17 @@ class SnapController extends AdminController
                 $snaps = $snaps->getSnapsByMode($modeFilter)
                     ->appends('mode', $mode);
             }
+        } else if (request()->has('status')) {
+            $status = request()->input('status');
+            if ($user->roles[0]->role_name == self::NAME_ROLE) {
+                $id = $user->id;
+                $snaps = $snaps->getSnapsByStatus($status, $id)
+                               ->appends('status', $status);
+
+            } else {
+                $snaps = $snaps->getSnapsByStatus($status)
+                    ->appends('status', $status);
+            }
         } else {
             if ($user->roles[0]->role_name == self::NAME_ROLE) {
                 $id = $user->id;
