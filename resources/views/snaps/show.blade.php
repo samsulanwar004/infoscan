@@ -404,7 +404,9 @@
         //     });
         // });
 
-        $(".magnify").jfMagnify();
+        $(".magnify").on('click', function() {
+            $(".magnify").jfMagnify();
+        });
 
     });
 
