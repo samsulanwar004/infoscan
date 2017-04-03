@@ -146,6 +146,22 @@ class SnapService
             ->paginate(50);
     }
 
+    public function getSnapsByDate($dateStart, $dateEnd, $userId = null)
+    {
+        return ($userId == null) ?
+            Snap::with('member')
+            ->with('files')
+            ->where('created_at', '>=', $dateStart)
+            ->where('created_at', '<=', $dateEnd)
+            ->paginate(50) :
+            Snap::with('member')
+            ->with('files')
+            ->where('created_at', '>=', $dateStart)
+            ->where('created_at', '<=', $dateEnd)
+            ->where('user_id', '=', $userId)
+            ->paginate(50);
+    }
+
     public function getSnapFileById($id)
     {
         return SnapFile::with(['tag'])->where('id', '=', $id)->first();
