@@ -151,13 +151,13 @@ class SnapService
         return ($userId == null) ?
             Snap::with('member')
             ->with('files')
-            ->where('created_at', '>=', $dateStart)
-            ->where('created_at', '<=', $dateEnd)
+            ->whereDate('created_at', '>=', $dateStart)
+            ->whereDate('created_at', '<=', $dateEnd)
             ->paginate(50) :
             Snap::with('member')
             ->with('files')
-            ->where('created_at', '>=', $dateStart)
-            ->where('created_at', '<=', $dateEnd)
+            ->whereDate('created_at', '>=', $dateStart)
+            ->whereDate('created_at', '<=', $dateEnd)
             ->where('user_id', '=', $userId)
             ->paginate(50);
     }
