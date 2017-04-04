@@ -479,20 +479,28 @@ inner join level_points as l on l.id = plp.level_id;');
         $totalTag = $memberAdd + $crowdSourceEdit + $crowdSourceAdd;
 
         if ($type == 'receipt') {
-            $point = $calculateTask['point'] + $calculatePromo['point_city'] + $calculatePromo['point_level_city'];
-        } else if ($mode == 'no_mode') {
-            $point = $calculateTask['point'] + $calculatePromo['point_city'] + $calculatePromo['point_level_city'];
+            $point = $calculateTask['point'] * count($files);
+            $point = $point + $calculatePromo['point_city'] + $calculatePromo['point_level_city'];
+        } else if ($mode == 'no_mode' || $mode == 'audios') {
+            $files = $files->filter(function($value, $Key) {
+                return starts_with($value->file_mimes, 'image');
+            });
+
+            $point = $calculateTask['point'] * count($files);
+            $point = $point + $calculatePromo['point_city'] + $calculatePromo['point_level_city'];
         } else {
 
             if ($memberAdd <= 0) {
-                $task = $calculateTask['point'] + $calculatePromo['point_city'] + $calculatePromo['point_level_city'];
+                $task = $calculateTask['point'];
                 $point = ($calculateTask['percent'] / 100) * $task;
+                $point = $point + $calculatePromo['point_city'] + $calculatePromo['point_level_city'];
             } else {
-                $point = $memberAdd / $totalTag * ($calculateTask['point'] + $calculatePromo['point_city'] + $calculatePromo['point_level_city']);
+                $point = $memberAdd / $totalTag * $calculateTask['point'];
+                $point = $point + $calculatePromo['point_city'] + $calculatePromo['point_level_city'];
             }
         }
 
-        $totalPoint = round($point) * count($files);
+        $totalPoint = round($point);
 
         return $totalPoint;
     }    
