@@ -151,13 +151,31 @@ class SnapService
         return ($userId == null) ?
             Snap::with('member')
             ->with('files')
-            ->where('created_at', '>=', $dateStart)
-            ->where('created_at', '<=', $dateEnd)
+            ->whereDate('created_at', '>=', $dateStart)
+            ->whereDate('created_at', '<=', $dateEnd)
             ->paginate(50) :
             Snap::with('member')
             ->with('files')
-            ->where('created_at', '>=', $dateStart)
-            ->where('created_at', '<=', $dateEnd)
+            ->whereDate('created_at', '>=', $dateStart)
+            ->whereDate('created_at', '<=', $dateEnd)
+            ->where('user_id', '=', $userId)
+            ->paginate(50);
+    }
+
+    public function getSnapsBySearch($search, $userId = null)
+    {
+        return ($userId == null) ?
+            Snap::whereHas('member', function ($query) use ($search) {
+                $query->where('name', 'like', '%'.$search.'%')
+                ->orWhere('email','like','%'.$search.'%');
+            })
+            ->with('files')
+            ->paginate(50) :
+            Snap::whereHas('member', function ($query) use ($search) {
+                $query->where('name', 'like', '%'.$search.'%')
+                ->orWhere('email','like','%'.$search.'%');
+            })
+            ->with('files')
             ->where('user_id', '=', $userId)
             ->paginate(50);
     }

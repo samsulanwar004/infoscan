@@ -65,6 +65,17 @@ class SnapController extends AdminController
                     ->appends('date_start', $dateStart)
                     ->appends('date_end', $dateEnd);
             }
+        } else if (request()->has('search')) {
+            $search = request()->input('search');
+
+            if ($user->roles[0]->role_name == self::NAME_ROLE) {
+                $id = $user->id;
+                $snaps = $snaps->getSnapsBySearch($search, $id)
+                    ->appends('search', $search);
+            } else {
+                $snaps = $snaps->getSnapsBySearch($search)
+                    ->appends('search', $search);
+            }
         } else {
             if ($user->roles[0]->role_name == self::NAME_ROLE) {
                 $id = $user->id;
