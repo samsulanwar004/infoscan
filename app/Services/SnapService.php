@@ -162,6 +162,24 @@ class SnapService
             ->paginate(50);
     }
 
+    public function getSnapsBySearch($search, $userId = null)
+    {
+        return ($userId == null) ?
+            Snap::whereHas('member', function ($query) use ($search) {
+                $query->where('name', 'like', '%'.$search.'%')
+                ->orWhere('email','like','%'.$search.'%');
+            })
+            ->with('files')
+            ->paginate(50) :
+            Snap::whereHas('member', function ($query) use ($search) {
+                $query->where('name', 'like', '%'.$search.'%')
+                ->orWhere('email','like','%'.$search.'%');
+            })
+            ->with('files')
+            ->where('user_id', '=', $userId)
+            ->paginate(50);
+    }
+
     public function getSnapFileById($id)
     {
         return SnapFile::with(['tag'])->where('id', '=', $id)->first();

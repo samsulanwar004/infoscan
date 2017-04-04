@@ -94,7 +94,8 @@ $(document).ready(function () {
 
     $("#search-btn").on('click', function() {
         var search = $('#search-box').val();
-        console.log(search);
+
+        window.location.href = '/snaps?search='+search;
     });
 
     var start = moment().subtract(29, 'days');
