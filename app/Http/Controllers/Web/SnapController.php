@@ -18,52 +18,50 @@ class SnapController extends AdminController
         $this->isAllowed('Snaps.List');
         $user = auth('web')->user();
         $snaps = ( new SnapService);
-        if (request()->has('type')) {
-            $type = request()->input('type');
-            $typeFilter = config("common.snap_type.$type");
-            if ($user->roles[0]->role_name == self::NAME_ROLE) {
-                $id = $user->id;
-                $snaps = $snaps->getSnapsByType($typeFilter, $id)
-                    ->appends('type', $type);
-            } else {
-                $snaps = $snaps->getSnapsByType($typeFilter)
-                    ->appends('type', $type);
-            }
-        } else if (request()->has('mode')) {
-            $mode = request()->input('mode');
-            $modeFilter = config("common.snap_mode.$mode");
-            if ($user->roles[0]->role_name == self::NAME_ROLE) {
-                $id = $user->id;
-                $snaps = $snaps->getSnapsByMode($modeFilter, $id)
-                    ->appends('mode', $mode);
 
-            } else {
-                $snaps = $snaps->getSnapsByMode($modeFilter)
-                    ->appends('mode', $mode);
-            }
-        } else if (request()->has('status')) {
-            $status = request()->input('status');
-            if ($user->roles[0]->role_name == self::NAME_ROLE) {
-                $id = $user->id;
-                $snaps = $snaps->getSnapsByStatus($status, $id)
-                    ->appends('status', $status);
-            } else {
-                $snaps = $snaps->getSnapsByStatus($status)
-                    ->appends('status', $status);
-            }
-        } else if (request()->has('date_start') && request()->has('date_end')) {
+        $date = false;
+        $status = false;
+        $type = false;
+        $mode = false;
+
+        if (request()->has('date_start') && request()->has('date_end')) {
             $dateStart = request()->input('date_start');
             $dateEnd = request()->input('date_end');
+            $type = request()->input('type');
+            $typeFilter = config("common.snap_type.$type");
+            $mode = request()->input('mode');
+            $modeFilter = config("common.snap_mode.$mode");
+            $status = request()->input('status');
+
+            $data = [
+                'start_date' => $dateStart,
+                'end_date' => $dateEnd,
+                'snap_type' => $typeFilter,
+                'mode_type' => $modeFilter,
+                'status' => $status,
+            ];
+            
+            $dateStartArr = explode('-', $dateStart);
+            $dateEndArr = explode('-', $dateEnd);
+            $date = $dateStartArr[1].'/'.$dateStartArr[2].'/'.$dateStartArr[0].' - '.$dateEndArr[1].'/'.$dateEndArr[2].'/'.$dateEndArr[0];
+
+            $status = $status;
 
             if ($user->roles[0]->role_name == self::NAME_ROLE) {
                 $id = $user->id;
-                $snaps = $snaps->getSnapsByDate($dateStart, $dateEnd, $id)
+                $snaps = $snaps->getSnapsByFilter($data, $id)
                     ->appends('date_start', $dateStart)
-                    ->appends('date_end', $dateEnd);
+                    ->appends('date_end', $dateEnd)
+                    ->appends('status', $status)
+                    ->appends('type', $type)
+                    ->appends('mode', $mode);
             } else {
-                $snaps = $snaps->getSnapsByDate($dateStart, $dateEnd)
+                $snaps = $snaps->getSnapsByFilter($data)
                     ->appends('date_start', $dateStart)
-                    ->appends('date_end', $dateEnd);
+                    ->appends('date_end', $dateEnd)
+                    ->appends('status', $status)
+                    ->appends('type', $type)
+                    ->appends('mode', $mode);
             }
         } else if (request()->has('search')) {
             $search = request()->input('search');
@@ -88,7 +86,7 @@ class SnapController extends AdminController
         $snapCategorys = config("common.snap_category");
         $snapCategoryModes = config("common.snap_category_mode");
 
-        return view('snaps.index', compact('snaps', 'snapCategorys', 'snapCategoryModes'));
+        return view('snaps.index', compact('snaps', 'snapCategorys', 'snapCategoryModes', 'date', 'status', 'type', 'mode'));
     }
 
     public function show(Request $request, $id)
@@ -248,6 +246,56 @@ class SnapController extends AdminController
         $rs = (new SnapService)->getSnapFileById($id);
 
         return response()->json($rs->tag);
+    }
+
+    public function export(Request $request)
+    {
+
+        try {
+            if ($request->all() == false) {
+                return view('errors.404');
+            } else if ($download = $request->input('download')) {
+                $get = storage_path('csv/'.$download);
+                return response()->download($get)->deleteFileAfterSend(true);;
+            }
+
+            $dateStart = $request->input('date_start');
+            $dateEnd = $request->input('date_end');
+            $type = $request->input('type');
+            $typeFilter = config("common.snap_type.$type");
+            $mode = $request->input('mode');
+            $modeFilter = config("common.snap_mode.$mode");
+            $status = $request->input('status');
+            $typeRequest = $request->input('type_request');
+            $filename = $request->input('filename');
+            $page = $request->input('page');
+            $no = $request->input('no');
+
+            $data = [
+                'start_date' => $dateStart,
+                'end_date' => $dateEnd,
+                'snap_type' => $typeFilter,
+                'mode_type' => $modeFilter,
+                'status' => $status,
+                'type' => $typeRequest,
+                'filename' => $filename,
+                'page' => $page,
+                'no' => $no,
+            ];
+
+            $snaps = (new SnapService)->getExportSnapToCsv($data);
+
+            return response()->json([
+                'status' => 'ok',
+                'message' => $snaps,
+            ], 200);
+
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage().' '.$e->getLine(),
+            ], 500);
+        }
     }
 
 }

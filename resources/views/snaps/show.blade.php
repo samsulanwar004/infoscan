@@ -8,12 +8,20 @@
     ])
 
     <!-- Main content -->
-    <section class="content">
-
+    <section class="content">        
         <!-- Default box -->
         <div class="box">
             <div class="box-header with-border form-inline" style="overflow: hidden; height: 0px; padding: 0px; margin-bottom: 0px;">
                 <!-- <i class="fa fa-camera fa-btn"></i> Snap Code: {-- strtoupper($snap->request_code) --} -->
+            </div>
+            <div class="box-header with-border">
+                <h3 class="box-title">
+                </h3>
+
+                <div class="box-tools pull-right">
+                    <a href="javascript: history.go(-1)" class="btn btn-box-tool"><i
+                            class="fa fa-times"></i></a>
+                </div>
             </div>
             <div class="box-body">
                 <div class="row">

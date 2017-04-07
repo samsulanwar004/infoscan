@@ -62,6 +62,11 @@ return [
             'bucket' => env('S3_BUCKET'),
         ],
 
+        'csv' => [
+            'driver' => 'local',
+            'root'   => storage_path().'/csv',
+        ],
+
     ],
 
     's3url' => env('S3_URL'),

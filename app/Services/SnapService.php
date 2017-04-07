@@ -95,71 +95,110 @@ class SnapService
             ->paginate(50);
     }
 
-    public function getSnapsByFilter($type, $mode)
+    public function getSnapsByFilter($data, $userId = null)
     {
-        return Snap::with('member')
+        $query = Snap::with('member')
             ->with('files')
-            ->where('snap_type', '=', $type)
-            ->where('mode_type', '=', $mode)
-            ->paginate(50);
+            ->whereDate('created_at', '>=', $data['start_date'])
+            ->whereDate('created_at', '<=', $data['end_date']);
+
+        if ($data['status'] != 'all') {
+            $query->where('status', '=', $data['status']);
+        }
+
+        if ($data['mode_type']) {
+            $query->where('mode_type', '=', $data['mode_type']);
+        }
+
+        if ($data['snap_type']) {
+            $query->where('snap_type', '=', $data['snap_type']);
+        }
+
+        if ($userId != null) {
+            $query->where('user_id', '=', $userId);
+        }
+
+
+        return $query->paginate(50);
     }
 
-    public function getSnapsByType($type, $userId = null)
+    public function getExportSnapToCsv($data, $userId = null)
     {
-        return ($userId == null) ?
-            Snap::with('member')
-                ->with('files')
-                ->where('snap_type', '=', $type)
-                ->paginate(50) :
-            Snap::with('member')
-                ->with('files')
-                ->where('snap_type', '=', $type)
-                ->where('user_id', '=', $userId)
-                ->paginate(50);
-    }
+        $query = Snap::with('member')
+            ->with('files')
+            ->with('approve')
+            ->with('reject')
+            ->whereDate('created_at', '>=', $data['start_date'])
+            ->whereDate('created_at', '<=', $data['end_date']);
 
-    public function getSnapsByMode($mode, $userId = null)
-    {
-        return ($userId == null) ?
-            Snap::with('member')
-            ->with('files')
-            ->where('mode_type', '=', $mode)
-            ->paginate(50) :
-            Snap::with('member')
-            ->with('files')
-            ->where('mode_type', '=', $mode)
-            ->where('user_id', '=', $userId)
-            ->paginate(50);
-    }
+        if ($data['status'] != 'all') {
+            $query->where('status', '=', $data['status']);
+        }
 
-    public function getSnapsByStatus($status, $userId = null)
-    {
-        return ($userId == null) ?
-            Snap::with('member')
-            ->with('files')
-            ->where('status', '=', $status)
-            ->paginate(50) :
-            Snap::with('member')
-            ->with('files')
-            ->where('status', '=', $status)
-            ->where('user_id', '=', $userId)
-            ->paginate(50);
-    }
+        if ($data['mode_type']) {
+            $query->where('mode_type', '=', $data['mode_type']);
+        }
 
-    public function getSnapsByDate($dateStart, $dateEnd, $userId = null)
-    {
-        return ($userId == null) ?
-            Snap::with('member')
-            ->with('files')
-            ->whereDate('created_at', '>=', $dateStart)
-            ->whereDate('created_at', '<=', $dateEnd)
-            ->paginate(50) :
-            Snap::with('member')
-            ->with('files')
-            ->whereDate('created_at', '>=', $dateStart)
-            ->whereDate('created_at', '<=', $dateEnd)
-            ->where('user_id', '=', $userId)
-            ->paginate(50);
+        if ($data['snap_type']) {
+            $query->where('snap_type', '=', $data['snap_type']);
+        }
+
+        if ($userId != null) {
+            $query->where('user_id', '=', $userId);
+        }
+
+        $snaps = $query->paginate(100);
+
+        $datas = [];
+        foreach ($snaps as $snap) {
+            $approve = isset($snap->approve) ? $snap->approve->name : null;
+            $reject = isset($snap->reject) ? $snap->reject->name : null;
+            $type = ($snap->snap_type == 'receipt') ? strtoupper($snap->snap_type) : strtoupper($snap->snap_type).' Snap with '.strtoupper($snap->mode_type).' mode';
+            $comment = explode('\n', $snap->comment);
+            $datas[] = [
+                'snap_code' => $snap->request_code,
+                'type' => $type,
+                'of_images' => ($snap->snap_type == 'audios') ? $snap->files->count() / 2 : $snap->files->count(),
+                'email' => $snap->member->email,
+                'name' => $snap->member->name,
+                'status' => $snap->status,
+                'reason' => isset($comment[1]) ? $comment[1] : '',
+                'snapped' => $snap->created_at->toDateTimeString(),
+                'approve_or_reject_date' => $snap->updated_at->toDateTimeString(),
+                'approve_or_reject_by' => isset($approve) ? $approve : $reject,
+            ];
+        }
+
+        if ($data['type'] == 'new') {
+            $filename = strtolower(str_random(10)).'.csv';
+            $title = 'No,Snap Code,Type,# of images,User Details,Name,Aproved / Rejected,Rejection Reason,Receipt Snapped,Approved / Rejected Date,Approved / Rejected By';       
+            \Storage::disk('csv')->put($filename, $title);
+            $no = 1;
+            foreach($datas as $row) {
+                $baris = $no.','.$row['snap_code'].','.$row['type'].','.$row['of_images'].','.$row['email'].','.$row['name'].','.$row['status'].','.$row['reason'].','.$row['snapped'].','.$row['approve_or_reject_date'].','.$row['approve_or_reject_by'];
+                \Storage::disk('csv')->append($filename, $baris);
+                $no++;
+            }
+
+        } else if ($data['type'] == 'next') {
+            $filename = $data['filename'];
+            $no = $data['no'];
+            foreach($datas as $row) {
+                $baris = $no.','.$row['snap_code'].','.$row['type'].','.$row['of_images'].','.$row['email'].','.$row['name'].','.$row['status'].','.$row['reason'].','.$row['snapped'].','.$row['approve_or_reject_date'].','.$row['approve_or_reject_by'];
+                  \Storage::disk('csv')->append($filename, $baris);
+                $no++;
+            }
+        }
+        $lastPage = $snaps->lastPage();
+        $params = [
+            'type_request' => ($lastPage == $data['page'] || count($snaps) == 0) ? 'download' : 'next',
+            'filename' => $filename,
+            'page' => $data['page'] + 1,
+            'no' => $no,
+            'last' => $lastPage,
+        ];     
+
+        return $params;
     }
 
     public function getSnapsBySearch($search, $userId = null)

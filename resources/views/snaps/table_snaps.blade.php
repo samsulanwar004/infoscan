@@ -11,9 +11,9 @@
         @forelse($snaps as $snap)
             <tr>
                 <td class="vertical-middle">
-                    @if ($snap->approved_by == true)
+                    @if ($snap->status == 'approve')
                         <i class="fa fa-check-circle text-green"></i>
-                    @elseif ($snap->reject_by == true)
+                    @elseif ($snap->status == 'reject')
                         <i class="fa fa-times-circle text-red"></i>
                     @else
                         <i class="fa fa-check-circle text-default"></i>
@@ -49,4 +49,3 @@
     </tbody>
 </table>
 
-{{ $snaps->links() }}
