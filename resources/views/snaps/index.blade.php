@@ -9,54 +9,70 @@
 
     <!-- Main content -->
     <section class="content">
-
+        <div class="progress" style="display: none">
+          <div class="progress-bar progress-bar-striped active" role="progressbar"
+            aria-valuenow="10" aria-valuemin="0" aria-valuemax="100" style="width:0%">
+            <span id="persent"></span>
+          </div>
+        </div>
         <!-- Default box -->
         <div class="box">
+            <div class="box-header with-border form-inline" style="overflow: hidden; height: 45px;">
+                <div class="box-tools-new"> 
+                    {{ $snaps->links() }}  
+                </div>                
+                <div class="box-tools pull-right">   
+                        <div class="input-group">
+                          <input type="text" id="search-box" class="form-control" placeholder="Search...">
+                              <span class="input-group-btn">
+                                <button type="submit" name="search" id="search-btn" class="btn btn-primary"><i class="fa fa-search"></i>
+                                </button>
+                              </span>
+                        </div>        
+                    </div>
+                </div>
             <div class="box-header with-border form-inline" style="overflow: hidden; height: 45px;">
                 <div class="box-tools-new">
                     <div class="input-group date">
                         <div class="input-group-addon">
                             <i class="fa fa-calendar"></i>
                         </div>
-                        <input type="text" class="form-control datepicker" name="filter_date" id="filter-date">                  
+                        <input type="text" class="form-control datepicker" name="filter_date" id="filter-date"
+                            @if(isset($date)) value="{{$date}}" @endif
+                        >                  
                     </div>
-                </div>
+                </div>            
                 <div class="box-tools pull-right">                 
 
                     <select class="form-control filter-status">
-                        <option value="all">Pilih Status</option>
-                        <option value="approve">Approve</option>
-                        <option value="reject">Reject</option>
-                        <option value="pending">Pending</option>
+                        <option value="all" @if($status == 'all') selected @endif>Pilih Status</option>
+                        <option value="approve" @if($status == 'approve') selected @endif>Approve</option>
+                        <option value="reject" @if($status == 'reject') selected @endif>Reject</option>
+                        <option value="pending" @if($status == 'pending') selected @endif>Pending</option>
                     </select>
 
                     <select class="form-control snap-type">
                         <option value="all">Pilih Snap type</option>
                         @foreach($snapCategorys as $id => $name)
-                            <option value="{{$id}}" id="{{$id}}">{{$name}}</option>
+                            <option value="{{$id}}" id="{{$id}}" @if($type == $id) selected @endif>{{$name}}</option>
                         @endforeach
                     </select>
 
                     <select class="form-control snap-mode">
                         <option value="all">Pilih Mode type</option>
                         @foreach($snapCategoryModes as $id => $name)
-                            <option value="{{$id}}" id="{{$id}}">{{$name}}</option>
+                            <option value="{{$id}}" id="{{$id}}" @if($mode == $id) selected @endif>{{$name}}</option>
                         @endforeach
                     </select>
 
-                    <div class="input-group">
-                      <input type="text" id="search-box" class="form-control" placeholder="Search...">
-                          <span class="input-group-btn">
-                            <button type="submit" name="search" id="search-btn" class="btn btn-flat"><i class="fa fa-search"></i>
-                            </button>
-                          </span>
-                    </div>
+                    <button class="btn btn-primary" id="show">Show</button>
+                    <button class="btn btn-primary" id="download">Download</button>                    
 
                 </div>
             </div>
             <div class="box-body">
                 @include('snaps.table_snaps')
-            </div>
+            </div>            
         </div>
         <!-- /.box -->
 
@@ -70,27 +86,13 @@
         position: absolute;
         top: 5px;
     }
+
+    .pagination {
+        margin-top: 0px;
+    }
 </style>
 <script type="text/javascript">
 $(document).ready(function () {
-    $(".filter-status").on("change", function() {
-        var status = $(this).val();
-        window.location.href = '/snaps?status='+status;
-    });
-
-    $(".snap-type").on("change", function() {
-
-        var type = $(this).val();
-        var mode = $(".snap-mode").val();
-        window.location.href = '/snaps?type='+type;
-    });
-
-    $(".snap-mode").on("change", function() {
-
-        var mode = $(this).val();
-        var type = $(".snap-type").val();
-        window.location.href = '/snaps?mode='+mode;
-    });
 
     $("#search-btn").on('click', function() {
         var search = $('#search-box').val();
@@ -98,19 +100,7 @@ $(document).ready(function () {
         window.location.href = '/snaps?search='+search;
     });
 
-    var start = moment().subtract(29, 'days');
-    var end = moment();
-
-    function submit(start, end) {
-        var start_at = start.format('YYYY-MM-DD');
-        var end_at = end.format('YYYY-MM-DD');
-
-        window.location.href = '/snaps?date_start='+start_at+'&date_end='+end_at;
-    }
-
     $('.datepicker').daterangepicker({
-        startDate: start,
-        endDate: end,
         ranges: {
            'Today': [moment(), moment()],
            'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
@@ -119,7 +109,80 @@ $(document).ready(function () {
            'This Month': [moment().startOf('month'), moment().endOf('month')],
            'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
         }
-    }, submit);
+    });
+
+    $('#show').on('click', function() {
+        var mode = $(".snap-mode").val();
+        var type = $(".snap-type").val();
+        var status = $(".filter-status").val();
+        var date = $(".datepicker").val();
+        var dateArr = date.split(' - ');
+        var startArr = dateArr[0].split("/");
+        var endArr = dateArr[1].split("/");
+
+        var start_at = startArr[2]+"-"+startArr[0]+"-"+startArr[1];
+        var end_at = endArr[2]+"-"+endArr[0]+"-"+endArr[1];
+
+        window.location.href = '/snaps?date_start='+start_at+'&date_end='+end_at+'&status='+status+'&type='+type+'&mode='+mode;
+    });
+
+    $('#download').on('click', function() {
+        var mode = $(".snap-mode").val();
+        var type = $(".snap-type").val();
+        var status = $(".filter-status").val();
+        var date = $(".datepicker").val();
+        var dateArr = date.split(' - ');
+        var startArr = dateArr[0].split("/");
+        var endArr = dateArr[1].split("/");
+
+        var start_at = startArr[2]+"-"+startArr[0]+"-"+startArr[1];
+        var end_at = endArr[2]+"-"+endArr[0]+"-"+endArr[1];
+        var type_request = 'new';
+        var page = 1;
+        var filename = null;
+
+        requestCsv(start_at, end_at, status, type, mode, type_request, page, filename);
+
+        $('.progress').show();
+
+    });
+
+    function requestCsv(start_at, end_at, status, type, mode, type_request, page, filename, no = null) {
+        $.get( "{{ admin_route_url('snaps.export') }}", { 
+            date_start : start_at,
+            date_end : end_at,
+            status : status,
+            type : type,
+            mode : mode,
+            type_request : type_request,
+            filename : filename,
+            page : page,
+            no : no,
+        })
+            .success(function( data ) {
+                var type_request = data.message.type_request;
+                if (type_request == 'next') {
+                    var type_request = data.message.type_request;
+                    var filename = data.message.filename;
+                    var page = data.message.page;
+                    var no = data.message.no;
+                    var last = data.message.last;
+                    requestCsv(start_at, end_at, status, type, mode, type_request, page, filename, no);
+                    var progress = page/last*100;
+                    $('.progress-bar').css("width", function(){
+                        return progress+'%';
+                    });
+                    $('#persent').text(progress+'%');
+                } else {
+                    $('.progress').hide();
+                    $('.progress-bar').css("width", function(){
+                        return 10+'%';
+                    });
+                    window.location.href = 'download/snaps/?download='+data.message.filename;
+                }
+        });
+    }       
+
 
 });
 

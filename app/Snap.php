@@ -18,4 +18,14 @@ class Snap extends Model
    	{
    		return $this->belongsTo(\App\Member::class, 'member_id');
    	}
+
+   	public function approve()
+   	{
+   		return $this->belongsTo(\App\User::class, 'approved_by');
+   	}
+
+   	public function reject()
+   	{
+   		return $this->belongsTo(\App\User::class, 'rejected_by');
+   	}
 }

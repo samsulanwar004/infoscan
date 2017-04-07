@@ -137,9 +137,9 @@ Route::group([
     )->name('snaps.snapDetail');
 
     Route::get(
-        '/snaps/{type}/{mode}/filter',
-        'Web\SnapController@filter'
-    )->name('snaps.filter');
+        '/download/snaps',
+        'Web\SnapController@export'
+    )->name('snaps.export');
 
     Route::get(
         '/snaps/{id}/tagging',
