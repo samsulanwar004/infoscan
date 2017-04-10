@@ -147,37 +147,95 @@ class SnapService
             $query->where('user_id', '=', $userId);
         }
 
-        $snaps = $query->paginate(500);
+        $r = $query->paginate(100);
 
-        $datas = [];
+        $files = [];
+        $snapFileIds = [];
+        foreach ($r  as  $value) {
+            $snaps[$value->id]['main'] = $value;
+           
+            foreach ($value->files as $file) {
+                $snapFileIds[] = $file->id;
+                $files[$file->id] = $value->id;
+            }
+        }
+
+        $snapTags = SnapTag::whereIn('snap_file_id', $snapFileIds)
+            ->get();
+
+        foreach ($snapTags as $tag) {
+             $snaps[$files[$tag->snap_file_id]]['tags'][] = $tag;
+        }
+        
+        $results = [];
         foreach ($snaps as $snap) {
-            $approve = isset($snap->approve) ? $snap->approve->name : null;
-            $reject = isset($snap->reject) ? $snap->reject->name : null;
-            $type = ($snap->snap_type == 'receipt') ? strtoupper($snap->snap_type) : strtoupper($snap->snap_type).' Snap with '.strtoupper($snap->mode_type).' mode';
-            $comment = explode('\n', $snap->comment);
-            $datas[] = [
-                'snap_code' => $snap->request_code,
-                'type' => $type,
-                'of_images' => ($snap->snap_type == 'audios') ? $snap->files->count() / 2 : $snap->files->count(),
-                'email' => $snap->member->email,
-                'name' => $snap->member->name,
-                'current_point' => $snap->member->temporary_point,
-                'current_level' => $snap->member->temporary_level,
-                'status' => $snap->status,
-                'reason' => isset($comment[1]) ? $comment[1] : '',
-                'snapped' => $snap->created_at->toDateTimeString(),
-                'approve_or_reject_date' => $snap->updated_at->toDateTimeString(),
-                'approve_or_reject_by' => isset($approve) ? $approve : $reject,
-            ];
+            $ocr = [];
+            foreach ($snap['main']->files as $file) {
+                $ocr[] = $file->recognition_text;
+            }
+
+            $ocr = implode(' ', $ocr);
+            $approve = isset($snap['main']->approve) ? $snap['main']->approve->name : null;
+            $reject = isset($snap['main']->reject) ? $snap['main']->reject->name : null;
+            $type = ($snap['main']->snap_type == 'receipt') ? strtoupper($snap['main']->snap_type) : strtoupper($snap['main']->snap_type).' Snap with '.strtoupper($snap['main']->mode_type).' mode';
+            $comment = explode('\n', $snap['main']->comment);
+
+            if (isset($snap['tags'])) {
+                foreach ($snap['tags'] as $tag) {
+                    
+                    $results[] = [
+                        'snap_code' => $snap['main']->request_code,
+                        'type' => $type,
+                        'status' => $snap['main']->status,
+                        'reason' => isset($comment[1]) ? $comment[1] : '',
+                        'of_images' => ($snap['main']->snap_type == 'audios') ? $snap['main']->files->count() / 2 : $snap['main']->files->count(),
+                        'email' => $snap['main']->member->email,
+                        'name' => $snap['main']->member->name,
+                        'current_point' => $snap['main']->member->point,
+                        'current_level' => $snap['main']->member->level,
+                        'snapped' => $snap['main']->created_at->toDateTimeString(),
+                        'approve_or_reject_date' => $snap['main']->updated_at->toDateTimeString(),
+                        'approve_or_reject_by' => isset($approve) ? $approve : $reject,
+                        'ocr' => trim(str_replace(array("\n","\r",","), ' ', $ocr)),
+                        'product_name' => trim(str_replace(array("\n","\r",","), ' ',$tag->name)),                
+                        'brands' => trim(str_replace(array("\n","\r",","), ' ',$tag->brands)),
+                        'variants' => trim(str_replace(array("\n","\r",","), ' ',$tag->variants)),
+                        'quantity' => trim(str_replace(array("\n","\r",","), ' ',$tag->quantity)),
+                        'total_price' => trim(str_replace(array("\n","\r",","), ' ',$tag->total_price)),
+                    ];
+                }
+            } else {
+                $results[] = [
+                    'snap_code' => $snap['main']->request_code,
+                    'type' => $type,
+                    'status' => $snap['main']->status,
+                    'reason' => isset($comment[1]) ? $comment[1] : '',
+                    'of_images' => ($snap['main']->snap_type == 'audios') ? $snap['main']->files->count() / 2 : $snap['main']->files->count(),
+                    'email' => $snap['main']->member->email,
+                    'name' => $snap['main']->member->name,
+                    'current_point' => $snap['main']->member->point,
+                    'current_level' => $snap['main']->member->level,
+                    'snapped' => $snap['main']->created_at->toDateTimeString(),
+                    'approve_or_reject_date' => $snap['main']->updated_at->toDateTimeString(),
+                    'approve_or_reject_by' => isset($approve) ? $approve : $reject,
+                    'ocr' => trim(str_replace(array("\n","\r",","), ' ', $ocr)),
+                    'product_name' => '',
+                    'brands' => '',
+                    'variants' => '',
+                    'quantity' => '',
+                    'total_price' => '',
+                ];
+            }
+
         }
 
         if ($data['type'] == 'new') {
             $filename = strtolower(str_random(10)).'.csv';
-            $title = 'No,Snap Code,Type,# of images,User Details,Name,Current Point,Current Level,Aproved / Rejected,Rejection Reason,Receipt Snapped,Approved / Rejected Date,Approved / Rejected By';       
+            $title = 'No,Snap Code,Type,# of images,User Details,Name,Current Point,Current Level,Aproved / Rejected,Rejection Reason,Receipt Snapped,Approved / Rejected Date,Approved / Rejected By,Product Name,Brands,Variants,Quantity,Total Price,OCR';       
             \Storage::disk('csv')->put($filename, $title);
             $no = 1;
-            foreach($datas as $row) {
-                $baris = $no.','.$row['snap_code'].','.$row['type'].','.$row['of_images'].','.$row['email'].','.$row['name'].','.$row['current_point'].','.$row['current_level'].','.$row['status'].','.$row['reason'].','.$row['snapped'].','.$row['approve_or_reject_date'].','.$row['approve_or_reject_by'];
+            foreach($results as $row) {
+                $baris = $no.','.$row['snap_code'].','.$row['type'].','.$row['of_images'].','.$row['email'].','.$row['name'].','.$row['current_point'].','.$row['current_level'].','.$row['status'].','.$row['reason'].','.$row['snapped'].','.$row['approve_or_reject_date'].','.$row['approve_or_reject_by'].','.$row['product_name'].','.$row['brands'].','.$row['variants'].','.$row['quantity'].','.$row['total_price'].','.$row['ocr'];
                 \Storage::disk('csv')->append($filename, $baris);
                 $no++;
             }
@@ -185,13 +243,14 @@ class SnapService
         } else if ($data['type'] == 'next') {
             $filename = $data['filename'];
             $no = $data['no'];
-            foreach($datas as $row) {
-                $baris = $no.','.$row['snap_code'].','.$row['type'].','.$row['of_images'].','.$row['email'].','.$row['name'].','.$row['current_point'].','.$row['current_level'].','.$row['status'].','.$row['reason'].','.$row['snapped'].','.$row['approve_or_reject_date'].','.$row['approve_or_reject_by'];
+            foreach($results as $row) {
+                $baris = $no.','.$row['snap_code'].','.$row['type'].','.$row['of_images'].','.$row['email'].','.$row['name'].','.$row['current_point'].','.$row['current_level'].','.$row['status'].','.$row['reason'].','.$row['snapped'].','.$row['approve_or_reject_date'].','.$row['approve_or_reject_by'].','.$row['product_name'].','.$row['brands'].','.$row['variants'].','.$row['quantity'].','.$row['total_price'].','.$row['ocr'];
                   \Storage::disk('csv')->append($filename, $baris);
                 $no++;
             }
         }
-        $lastPage = $snaps->lastPage();
+
+        $lastPage = $r->lastPage();
         $params = [
             'type_request' => ($lastPage == $data['page'] || count($snaps) == 0) ? 'download' : 'next',
             'filename' => $filename,
