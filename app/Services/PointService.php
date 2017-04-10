@@ -606,6 +606,13 @@ inner join level_points as l on l.id = plp.level_id;');
         $nextPoint = ($nextLevel == null) ? $latestPoint : $nextLevel->point;
         $pointNextLevel = $nextPoint - $latestPoint;
 
+        if ($member->temporary_point != $point || $member->temporary_level != $levelArray[1]) {
+            $member->temporary_point = $point;
+            $member->temporary_level = $levelArray[1];
+
+            $member->update();
+        }
+
         $data = [
             'current_point' => $point,
             'current_level' => $levelArray[1],

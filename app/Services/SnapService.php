@@ -147,7 +147,7 @@ class SnapService
             $query->where('user_id', '=', $userId);
         }
 
-        $snaps = $query->paginate(100);
+        $snaps = $query->paginate(500);
 
         $datas = [];
         foreach ($snaps as $snap) {
@@ -161,6 +161,8 @@ class SnapService
                 'of_images' => ($snap->snap_type == 'audios') ? $snap->files->count() / 2 : $snap->files->count(),
                 'email' => $snap->member->email,
                 'name' => $snap->member->name,
+                'current_point' => $snap->member->temporary_point,
+                'current_level' => $snap->member->temporary_level,
                 'status' => $snap->status,
                 'reason' => isset($comment[1]) ? $comment[1] : '',
                 'snapped' => $snap->created_at->toDateTimeString(),
@@ -171,11 +173,11 @@ class SnapService
 
         if ($data['type'] == 'new') {
             $filename = strtolower(str_random(10)).'.csv';
-            $title = 'No,Snap Code,Type,# of images,User Details,Name,Aproved / Rejected,Rejection Reason,Receipt Snapped,Approved / Rejected Date,Approved / Rejected By';       
+            $title = 'No,Snap Code,Type,# of images,User Details,Name,Current Point,Current Level,Aproved / Rejected,Rejection Reason,Receipt Snapped,Approved / Rejected Date,Approved / Rejected By';       
             \Storage::disk('csv')->put($filename, $title);
             $no = 1;
             foreach($datas as $row) {
-                $baris = $no.','.$row['snap_code'].','.$row['type'].','.$row['of_images'].','.$row['email'].','.$row['name'].','.$row['status'].','.$row['reason'].','.$row['snapped'].','.$row['approve_or_reject_date'].','.$row['approve_or_reject_by'];
+                $baris = $no.','.$row['snap_code'].','.$row['type'].','.$row['of_images'].','.$row['email'].','.$row['name'].','.$row['current_point'].','.$row['current_level'].','.$row['status'].','.$row['reason'].','.$row['snapped'].','.$row['approve_or_reject_date'].','.$row['approve_or_reject_by'];
                 \Storage::disk('csv')->append($filename, $baris);
                 $no++;
             }
@@ -184,7 +186,7 @@ class SnapService
             $filename = $data['filename'];
             $no = $data['no'];
             foreach($datas as $row) {
-                $baris = $no.','.$row['snap_code'].','.$row['type'].','.$row['of_images'].','.$row['email'].','.$row['name'].','.$row['status'].','.$row['reason'].','.$row['snapped'].','.$row['approve_or_reject_date'].','.$row['approve_or_reject_by'];
+                $baris = $no.','.$row['snap_code'].','.$row['type'].','.$row['of_images'].','.$row['email'].','.$row['name'].','.$row['current_point'].','.$row['current_level'].','.$row['status'].','.$row['reason'].','.$row['snapped'].','.$row['approve_or_reject_date'].','.$row['approve_or_reject_by'];
                   \Storage::disk('csv')->append($filename, $baris);
                 $no++;
             }
