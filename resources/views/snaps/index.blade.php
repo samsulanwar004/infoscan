@@ -19,7 +19,9 @@
         <div class="box">
             <div class="box-header with-border form-inline" style="overflow: hidden; height: 45px;">
                 <div class="box-tools-new"> 
-                    {{ $snaps->links() }}  
+                    <div class="new-pagination">
+                        {{ $snaps->links() }}
+                    </div>                      
                 </div>                
                 <div class="box-tools pull-right">   
                         <div class="input-group">
@@ -87,8 +89,8 @@
         top: 5px;
     }
 
-    .pagination {
-        margin-top: 0px;
+    .new-pagination {
+        margin-top: -20px;
     }
 </style>
 <script type="text/javascript">
@@ -168,16 +170,19 @@ $(document).ready(function () {
                     var no = data.message.no;
                     var last = data.message.last;
                     requestCsv(start_at, end_at, status, type, mode, type_request, page, filename, no);
-                    var progress = page/last*100;
+                    var progress = Math.round(page/last*100);
                     $('.progress-bar').css("width", function(){
                         return progress+'%';
                     });
-                    $('#persent').text(progress+'%');
+                    $('#persent').text(progress+'% Please wait...');
                 } else {
-                    $('.progress').hide();
                     $('.progress-bar').css("width", function(){
-                        return 10+'%';
+                        return 100+'%';
                     });
+                    $('#persent').text('100% Please wait...');
+                    setTimeout(function(){ 
+                        $('.progress').hide(); 
+                    }, 3000);
                     window.location.href = 'download/snaps/?download='+data.message.filename;
                 }
         });
