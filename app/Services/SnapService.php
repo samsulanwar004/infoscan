@@ -147,7 +147,7 @@ class SnapService
             $query->where('user_id', '=', $userId);
         }
 
-        $r = $query->paginate(100);
+        $r = $query->paginate(500);
 
         $files = [];
         $snapFileIds = [];
