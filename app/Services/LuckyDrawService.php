@@ -229,7 +229,7 @@ class LuckyDrawService
 		//credit point to member
 		$this->transactionCredit($transaction);
 
-		$randomNumber = pseudo_random_text('numeric', 7);
+		$randomNumber = pseudo_random_text('numeric', 8);
 
 		$mld = new MemberLuckyDraw;
 		$mld->random_number = $randomNumber;
