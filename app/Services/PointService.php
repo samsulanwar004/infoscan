@@ -416,9 +416,9 @@ inner join level_points as l on l.id = plp.level_id;');
 
         $point = $this->getPointByCode($code, $levelId);
 
-        if ($point == null)
+        if ($point == null && $levelId > 1)
         {
-            $point = $this->getPointByCode($code, $levelId-1);
+            $point = $this->getPointMaxLevelByCode($code);
         }
 
         $data = [
@@ -635,6 +635,17 @@ inner join level_points as l on l.id = plp.level_id;');
             ->select('tasks.percentage as percent', 'tasks_level_points.point as point')
             ->where('tasks.code', $code)
             ->where('tasks_level_points.level_id', $levelId)
+            ->first();
+    }
+
+    private function getPointMaxLevelByCode($code)
+    {
+        return \DB::table('tasks')
+            ->join('tasks_level_points', 'tasks.id', '=', 'tasks_level_points.task_id')
+            ->join('level_points', 'level_points.id', '=', 'tasks_level_points.level_id')
+            ->select('tasks.percentage as percent', 'tasks_level_points.point as point')
+            ->where('tasks.code', $code)
+            ->orderBy('tasks_level_points.point', 'DESC')
             ->first();
     }
 
