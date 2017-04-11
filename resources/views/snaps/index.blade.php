@@ -25,7 +25,7 @@
                 </div>                
                 <div class="box-tools pull-right">   
                         <div class="input-group">
-                          <input type="text" id="search-box" class="form-control" placeholder="Search...">
+                          <input type="text" id="search-box" class="form-control" placeholder="Search..." value="{{ $search }}">
                               <span class="input-group-btn">
                                 <button type="submit" name="search" id="search-btn" class="btn btn-primary"><i class="fa fa-search"></i>
                                 </button>
@@ -121,11 +121,12 @@ $(document).ready(function () {
         var dateArr = date.split(' - ');
         var startArr = dateArr[0].split("/");
         var endArr = dateArr[1].split("/");
+        var search = $('#search-box').val();
 
         var start_at = startArr[2]+"-"+startArr[0]+"-"+startArr[1];
         var end_at = endArr[2]+"-"+endArr[0]+"-"+endArr[1];
 
-        window.location.href = '/snaps?date_start='+start_at+'&date_end='+end_at+'&status='+status+'&type='+type+'&mode='+mode;
+        window.location.href = '/snaps?date_start='+start_at+'&date_end='+end_at+'&status='+status+'&type='+type+'&mode='+mode+'&search='+search;
     });
 
     $('#download').on('click', function() {
@@ -136,6 +137,7 @@ $(document).ready(function () {
         var dateArr = date.split(' - ');
         var startArr = dateArr[0].split("/");
         var endArr = dateArr[1].split("/");
+        var search = $('#search-box').val();
 
         var start_at = startArr[2]+"-"+startArr[0]+"-"+startArr[1];
         var end_at = endArr[2]+"-"+endArr[0]+"-"+endArr[1];
@@ -143,17 +145,18 @@ $(document).ready(function () {
         var page = 1;
         var filename = null;
 
-        requestCsv(start_at, end_at, status, type, mode, type_request, page, filename);
+        requestCsv(start_at, end_at, status, type, mode, type_request, page, filename, search);
 
         $('.progress').show();
 
     });
 
-    function requestCsv(start_at, end_at, status, type, mode, type_request, page, filename, no = null) {
+    function requestCsv(start_at, end_at, status, type, mode, type_request, page, filename, search, no = null) {
         $.get( "{{ admin_route_url('snaps.export') }}", { 
             date_start : start_at,
             date_end : end_at,
             status : status,
+            search : search,
             type : type,
             mode : mode,
             type_request : type_request,
@@ -169,7 +172,7 @@ $(document).ready(function () {
                     var page = data.message.page;
                     var no = data.message.no;
                     var last = data.message.last;
-                    requestCsv(start_at, end_at, status, type, mode, type_request, page, filename, no);
+                    requestCsv(start_at, end_at, status, type, mode, type_request, page, filename, search, no);
                     var progress = Math.round(page/last*100);
                     $('.progress-bar').css("width", function(){
                         return progress+'%';

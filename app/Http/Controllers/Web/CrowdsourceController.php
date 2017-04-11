@@ -23,7 +23,7 @@ class CrowdsourceController extends AdminController
     {
         $this->isAllowed('Crowdsource.List');
         $crowdsource = (new CrowdsourceService);
-    	$activities = $crowdsource->getCrowdsourceActivityByUserId($id);
+    	$activities = $crowdsource->getCrowdsourceActivityByUserId($id)->take(50);
         $data = $crowdsource->getCalculateCrowdsource($activities);
 
         $user = $crowdsource->getSnapByUserId($id);
@@ -48,7 +48,7 @@ class CrowdsourceController extends AdminController
     {        
         $id = $request->input('id');
         $crowdsource = (new CrowdsourceService);
-        $activities = $crowdsource->getCrowdsourceActivityByFilter($request);
+        $activities = $crowdsource->getCrowdsourceActivityByFilter($request)->take(50);
 
         $data = $crowdsource->getCalculateCrowdsource($activities);
 

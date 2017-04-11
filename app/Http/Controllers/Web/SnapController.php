@@ -23,6 +23,7 @@ class SnapController extends AdminController
         $status = false;
         $type = false;
         $mode = false;
+        $search = false;
 
         if (request()->has('date_start') && request()->has('date_end')) {
             $dateStart = request()->input('date_start');
@@ -32,6 +33,7 @@ class SnapController extends AdminController
             $mode = request()->input('mode');
             $modeFilter = config("common.snap_mode.$mode");
             $status = request()->input('status');
+            $search = request()->input('search');
 
             $data = [
                 'start_date' => $dateStart,
@@ -39,6 +41,7 @@ class SnapController extends AdminController
                 'snap_type' => $typeFilter,
                 'mode_type' => $modeFilter,
                 'status' => $status,
+                'search' => $search,
             ];
             
             $dateStartArr = explode('-', $dateStart);
@@ -54,14 +57,16 @@ class SnapController extends AdminController
                     ->appends('date_end', $dateEnd)
                     ->appends('status', $status)
                     ->appends('type', $type)
-                    ->appends('mode', $mode);
+                    ->appends('mode', $mode)
+                    ->appends('search', $search);
             } else {
                 $snaps = $snaps->getSnapsByFilter($data)
                     ->appends('date_start', $dateStart)
                     ->appends('date_end', $dateEnd)
                     ->appends('status', $status)
                     ->appends('type', $type)
-                    ->appends('mode', $mode);
+                    ->appends('mode', $mode)
+                    ->appends('search', $search);
             }
         } else if (request()->has('search')) {
             $search = request()->input('search');
@@ -86,7 +91,7 @@ class SnapController extends AdminController
         $snapCategorys = config("common.snap_category");
         $snapCategoryModes = config("common.snap_category_mode");
 
-        return view('snaps.index', compact('snaps', 'snapCategorys', 'snapCategoryModes', 'date', 'status', 'type', 'mode'));
+        return view('snaps.index', compact('snaps', 'snapCategorys', 'snapCategoryModes', 'date', 'status', 'type', 'mode', 'search'));
     }
 
     public function show(Request $request, $id)
@@ -266,6 +271,7 @@ class SnapController extends AdminController
             $mode = $request->input('mode');
             $modeFilter = config("common.snap_mode.$mode");
             $status = $request->input('status');
+            $search = $request->input('search');
             $typeRequest = $request->input('type_request');
             $filename = $request->input('filename');
             $page = $request->input('page');
@@ -277,6 +283,7 @@ class SnapController extends AdminController
                 'snap_type' => $typeFilter,
                 'mode_type' => $modeFilter,
                 'status' => $status,
+                'search' => $search,
                 'type' => $typeRequest,
                 'filename' => $filename,
                 'page' => $page,
