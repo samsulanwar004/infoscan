@@ -311,7 +311,9 @@ class SnapService
     public function getSnapByLocation()
     {
         return Snap::where('location', null)
-            ->orWhere('location', '')->get();
+            ->orWhere('location', '')
+            ->take(20)
+            ->get();
     }
 
     public function confirmSnap(Request $request, $id)
