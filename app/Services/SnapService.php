@@ -97,10 +97,19 @@ class SnapService
 
     public function getSnapsByFilter($data, $userId = null)
     {
-        $query = Snap::with('member')
-            ->with('files')
+        $query = Snap::with('files')
             ->whereDate('created_at', '>=', $data['start_date'])
             ->whereDate('created_at', '<=', $data['end_date']);
+
+        if ($data['search'] == true) {
+            $search = $data['search'];
+            $query->whereHas('member', function ($query) use ($search) {
+                $query->where('name', 'like', '%'.$search.'%')
+                ->orWhere('email','like','%'.$search.'%');
+            });
+        } else {
+            $query->with('member');
+        }        
 
         if ($data['status'] != 'all') {
             $query->where('status', '=', $data['status']);
@@ -124,12 +133,21 @@ class SnapService
 
     public function getExportSnapToCsv($data, $userId = null)
     {
-        $query = Snap::with('member')
-            ->with('files')
+        $query = Snap::with('files')
             ->with('approve')
             ->with('reject')
             ->whereDate('created_at', '>=', $data['start_date'])
             ->whereDate('created_at', '<=', $data['end_date']);
+
+        if ($data['search'] == true) {
+            $search = $data['search'];
+            $query->whereHas('member', function ($query) use ($search) {
+                $query->where('name', 'like', '%'.$search.'%')
+                ->orWhere('email','like','%'.$search.'%');
+            });
+        } else {
+            $query->with('member');
+        } 
 
         if ($data['status'] != 'all') {
             $query->where('status', '=', $data['status']);
@@ -191,8 +209,8 @@ class SnapService
                         'of_images' => ($snap['main']->mode_type == 'audios') ? $snap['main']->files->count() / 2 : $snap['main']->files->count(),
                         'email' => $snap['main']->member->email,
                         'name' => $snap['main']->member->name,
-                        'current_point' => $snap['main']->member->point,
-                        'current_level' => $snap['main']->member->level,
+                        'current_point' => $snap['main']->member->temporary_point,
+                        'current_level' => $snap['main']->member->temporary_level,
                         'snapped' => $snap['main']->created_at->toDateTimeString(),
                         'approve_or_reject_date' => $snap['main']->updated_at->toDateTimeString(),
                         'approve_or_reject_by' => isset($approve) ? $approve : $reject,
@@ -213,8 +231,8 @@ class SnapService
                     'of_images' => ($snap['main']->mode_type == 'audios') ? $snap['main']->files->count() / 2 : $snap['main']->files->count(),
                     'email' => $snap['main']->member->email,
                     'name' => $snap['main']->member->name,
-                    'current_point' => $snap['main']->member->point,
-                    'current_level' => $snap['main']->member->level,
+                    'current_point' => $snap['main']->member->temporary_point,
+                        'current_level' => $snap['main']->member->temporary_level,
                     'snapped' => $snap['main']->created_at->toDateTimeString(),
                     'approve_or_reject_date' => $snap['main']->updated_at->toDateTimeString(),
                     'approve_or_reject_by' => isset($approve) ? $approve : $reject,

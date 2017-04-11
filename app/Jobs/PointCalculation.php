@@ -5,6 +5,7 @@ namespace App\Jobs;
 use App\Services\NotificationService;
 use App\Services\PointService;
 use App\Services\TransactionService;
+use App\Services\MemberService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
@@ -57,6 +58,21 @@ class PointCalculation implements ShouldQueue
         ];
 
         (new TransactionService($transactionData))->savePoint();
+
+        $memberService = (new MemberService);
+        $member = $memberService->getMemberByCode($member);
+        $point = (new TransactionService)->getCreditMember($member->member_code);
+        $memberService = $memberService->getLevelByMemberId($member->id);
+        $levelId = $memberService['level_id'];
+        $level = (new PointService)->getLevel($levelId);
+        $levelArray = explode(' ', $level->name);
+
+        if ($member->temporary_point != $point || $member->temporary_level != $levelArray[1]) {
+            $member->temporary_point = $point;
+            $member->temporary_level = $levelArray[1];
+
+            $member->update();
+        }
 
         $memberId = $this->data->member->id;
         $this->sendNotification($point, $memberId);

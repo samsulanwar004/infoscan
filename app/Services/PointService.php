@@ -604,14 +604,14 @@ inner join level_points as l on l.id = plp.level_id;');
         $levelId = $levelId + 1;
         $nextLevel = $this->getLevel($levelId);
         $nextPoint = ($nextLevel == null) ? $latestPoint : $nextLevel->point;
-        $pointNextLevel = $nextPoint - $latestPoint;
+        $pointNextLevel = $nextPoint - $latestPoint;   
 
         if ($member->temporary_point != $point || $member->temporary_level != $levelArray[1]) {
             $member->temporary_point = $point;
             $member->temporary_level = $levelArray[1];
 
             $member->update();
-        }
+        }     
 
         $data = [
             'current_point' => $point,
@@ -622,7 +622,7 @@ inner join level_points as l on l.id = plp.level_id;');
         return $data;
     }
 
-    private function getLevel($levelId)
+    public function getLevel($levelId)
     {
         return \App\TaskLevelPoint::where('id', $levelId)->first();
     }
