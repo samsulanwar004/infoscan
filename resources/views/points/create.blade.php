@@ -30,7 +30,7 @@
                 </div>
 
                 <div class="form-group percentage">
-                    <label for="name">Percentage</label>
+                    <label for="name"><span id="percent">Percentage</span></label>
                     <div class="input-group">
                         <span class="input-group-addon">
                           <input type="checkbox" id="check-percent">
@@ -164,6 +164,19 @@
         $('#task-mode').on('change', function() {
             var type = $('#task-type').find(':selected').attr('nameValue');
             var mode = $(this).find(':selected').attr('nameValue');
+
+            if (mode == 'With Input' || mode == 'With Tag') {
+                $('#percent').html('Fixed Point');
+                $('#percentage').attr("placeholder", "Fixed Point");
+            } else {
+                $('#percent').html('Percentage');
+                $('#percentage').attr("placeholder", "Percentage Point");
+            }
+
+            if (mode == 'No Mode') {
+                var mode = '';
+            }
+
             $("#name").val(type+' '+mode);
         });
 

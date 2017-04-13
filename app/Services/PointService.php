@@ -519,14 +519,13 @@ inner join level_points as l on l.id = plp.level_id;');
             $point = $calculateTask['point'] * count($files);
             $point = $point + $calculatePromo['point_city'] + $calculatePromo['point_level_city'];
         } else {
-
+            //new logic for snap member snap * task point
             if ($memberAdd <= 0) {
-                $task = $calculateTask['point'];
-                $point = ($calculateTask['percent'] / 100) * $task;
-                $point = $point + $calculatePromo['point_city'] + $calculatePromo['point_level_city'];
-            } else {
-                $point = $memberAdd / $totalTag * $calculateTask['point'];
-                $point = $point + $calculatePromo['point_city'] + $calculatePromo['point_level_city'];
+                $fixedPoint = $calculateTask['percent'];
+                $point = $fixedPoint + $calculatePromo['point_city'] + $calculatePromo['point_level_city'];
+            } else {                
+                $fixedPoint = $memberAdd * $calculateTask['point'];
+                $point = $fixedPoint + $calculatePromo['point_city'] + $calculatePromo['point_level_city'];
             }
         }
 
