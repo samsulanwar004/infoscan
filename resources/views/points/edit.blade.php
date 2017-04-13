@@ -17,26 +17,26 @@
                     $mode = substr($task->code, 1);
                     $types = config('common.tasks.types.'.$type);
                     $modes = config('common.tasks.select_mode.'.$type.'.'.$mode.'.label');
+                    $modeType = strtolower($modes);
                 ?>
                 <div class="form-group task_type">
                     <label for="name">Task Type</label>
                     <select name="task_type" class="form-control" id="task-type">
-                        <option value="{{ $type }}">{{ $types }}</option>
                         @foreach(config('common.tasks.types') as $key => $type)
-                        <option value="{{ $key }}" nameValue="{{ $type }}">{{ $type }}</option>
+                        <option value="{{ $key }}" nameValue="{{ $type }}" @if($types == $type) selected @endif>{{ $type }}</option>
                         @endforeach
                     </select>
                 </div>
 
-                <div class="form-group task_type">
+                <div class="form-group task_mode">
                     <label for="name">Task Mode</label>
                     <select name="task_mode" class="form-control" id="task-mode" readonly>
                         <option value="{{ $mode }}">{{ $modes }}</option>
                     </select>
                 </div>
-
+                
                 <div class="form-group percentage">
-                    <label for="name">Percentage</label>
+                    <label for="name"><span id="percent">@if($modeType == 'with tag' || $modeType == 'with input') Fixed Point @else Percentage @endif</span></label>
                     <div class="input-group">
                         <span class="input-group-addon">
                           <input type="checkbox" id="check-percent" @if($task->percentage == true) checked="checked" @endif>
@@ -44,6 +44,7 @@
                         <input type="number" class="form-control input-sm" name="percentage" id="percentage" placeholder="Percentage Point" max=100 value="{{ $task->percentage }}" @if($task->percentage == null) disabled="disabled" @endif>
                     </div>
                 </div>
+
                 <div class="row">
                     <div class="form-group col-sm-2" style="margin-right: 0px;">
                         <label for="daily">Daily</label>
@@ -179,6 +180,19 @@
         $('#task-mode').on('change', function() {
             var type = $('#task-type').find(':selected').attr('nameValue');
             var mode = $(this).find(':selected').attr('nameValue');
+
+            if (mode == 'With Input' || mode == 'With Tag') {
+                $('#percent').html('Fixed Point');
+                $('#percentage').attr("placeholder", "Fixed Point");
+            } else {
+                $('#percent').html('Percentage');
+                $('#percentage').attr("placeholder", "Percentage Point");
+            }
+
+            if (mode == 'No Mode') {
+                var mode = '';
+            }
+
             $("#name").val(type+' '+mode);
         });
 

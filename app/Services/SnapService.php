@@ -1517,15 +1517,15 @@ class SnapService
 
         $point = (new PointService)->calculateEstimatedPoint($memberId, $type, $mode, $tags);
 
-        $total = $point['point'] * $files;
-
-        // if ($type != 'receipt') {
-        //     if ($mode != 'no_mode') {
-        //         if ($tags <= 0) {
-        //             $total = ($point['percent'] / 100) * $point['point'] * $files;
-        //         }
-        //     }
-        // }
+        if ($mode == 'tags' || $mode == 'input') {
+            if ($tags == 0) {
+                $total = $point['percent'] * $tags;
+            } else {
+                $total = $point['point'] * $tags;
+            }
+        } else {
+            $total = $point['point'] * $files;
+        }        
 
         $snap = (new SnapService)->getSnapByCode($requestCode);
         $snap->estimated_point = $total;
