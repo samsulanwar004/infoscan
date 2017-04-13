@@ -24,15 +24,15 @@
                     </div>                      
                 </div>                
                 <div class="box-tools pull-right">   
-                        <div class="input-group">
-                          <input type="text" id="search-box" class="form-control" placeholder="Search..." value="{{ $search }}">
-                              <span class="input-group-btn">
-                                <button type="submit" name="search" id="search-btn" class="btn btn-primary"><i class="fa fa-search"></i>
-                                </button>
-                              </span>
-                        </div>        
-                    </div>
+                    <div class="input-group">
+                      <input type="text" id="search-box" class="form-control" placeholder="Search..." value="{{ $search }}">
+                          <span class="input-group-btn">
+                            <button type="submit" name="search" id="search-btn" class="btn btn-primary"><i class="fa fa-search"></i>
+                            </button>
+                          </span>
+                    </div>        
                 </div>
+            </div>
             <div class="box-header with-border form-inline" style="overflow: hidden; height: 45px;">
                 <div class="box-tools-new">
                     <div class="input-group date">

@@ -46,10 +46,12 @@
                                                     @if (starts_with($file->file_mimes, 'image'))
                                                         <div class="img-thumbnail" style="padding-right: 10px;">
                                                             <img src="{{ config('filesystems.s3url') . $file->file_path }}" alt="{{ $file->file_code }}" class="margin img-responsive" id="{{$file->id}}">
-                                                            <audio controls class="img-responsive" style="padding-top: 30px;">
-                                                              <source src="{{ config('filesystems.s3url') . $audios[$loop->index]->file_path }}" type="audio/mpeg">
-                                                                Your browser does not support the audio element.
-                                                            </audio>
+                                                            @if (isset($audios[$loop->index]))
+                                                                <audio controls class="img-responsive" style="padding-top: 30px;">
+                                                                  <source src="{{ config('filesystems.s3url') . $audios[$loop->index]->file_path }}" type="audio/mpeg">
+                                                                    Your browser does not support the audio element.
+                                                                </audio>
+                                                            @endif
                                                         </div>
                                                     @endif
                                                 @elseif ($file->mode_type == 'image')

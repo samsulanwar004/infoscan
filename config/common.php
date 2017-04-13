@@ -27,7 +27,7 @@ return [
         'credit_card' => 'Credit Card',
     ],
     'reports' => [
-        'fields' => [
+        'fields' => [            
             'user_id' => [
                 'label' => 'User ID',
                 'type' => 'multiple'
@@ -90,7 +90,7 @@ return [
             ],
             'outlet_name' => [
                 'label' => 'Outlet Name',
-                'type' => 'single'
+                'type' => 'multiple'
             ],
             'outlet_province' => [
                 'label' => 'Outlet Province',
@@ -308,6 +308,11 @@ return [
         'register' => [
             'verification' => 'Verifikasi Email - Verifikasi akun GoJaGomu sekarang!',
             'resend' => 'Akun Belum Terverifikasi - Kami sudah mengirim ulang email verifikasi ke emailmu. Verifikasi akunmu untuk bisa cashback!'
+        ],
+
+        'limit' => [
+            'daily' => 'Snap Anda sudah mencapai batas harian!',
+            'weekly' => 'Snap Anda sudah mencapai batas mingguan!',
         ],
     ],
 ];

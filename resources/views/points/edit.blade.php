@@ -44,6 +44,18 @@
                         <input type="number" class="form-control input-sm" name="percentage" id="percentage" placeholder="Percentage Point" max=100 value="{{ $task->percentage }}" @if($task->percentage == null) disabled="disabled" @endif>
                     </div>
                 </div>
+                <div class="row">
+                    <div class="form-group col-sm-2" style="margin-right: 0px;">
+                        <label for="daily">Daily</label>
+                        <input type="text" class="form-control input-sm" name="limit[daily]" value="@if(isset($lim['daily'])) {{$lim['daily']}} @endif" placeholder="Limit ">
+                    </div>
+
+                    <div class="form-group col-sm-2">
+                        <label for="weekly">Weekly</label>
+                        <input type="text" class="form-control input-sm" name="limit[weekly]" value="@if(isset($lim['weekly'])) {{$lim['weekly']}} @endif" placeholder="Limit">
+                    </div>
+                </div>
+                
 
             </div>
             <div class="col-md-4" style="overflow-y:scroll;max-height: 250px;">
@@ -102,9 +114,10 @@
                 REBEL.removeAllMessageAlert();
                 if (responseData.status == "ok") {
                     REBEL.smallNotifTemplate(responseData.message, '.modal-content', 'success');
-                    $.get( '/points/get-task-table' , function(view){ 
-                        $(".box-body").html(view);
-                    });
+                    
+                    setTimeout(function(){
+                        window.location.href = 'points';
+                    },3000);
                 }
             }, true);
         });

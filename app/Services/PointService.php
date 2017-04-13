@@ -8,6 +8,7 @@ use App\TaskLevelPoints;
 use App\PromoPoint;
 use App\PromoLevelPoint;
 use App\SnapTag;
+use App\LimitPoint;
 use DB;
 use Carbon\Carbon;
 use App\Transformers\PortalPointTransformer;
@@ -17,6 +18,7 @@ class PointService
 
     const CACHE_NAME = 'point.pivot';
     const CACHE_PROMO_NAME = 'promo.point.pivot';
+    const CACHE_TASK_LIMIT = 'point.limit';
 
     public function __construct()
     {
@@ -36,7 +38,7 @@ class PointService
 
         $points = DB::select('select t.id, t.name as task_name, l.name as level_name, tlp.point from tasks_level_points as tlp
 inner join tasks as t on t.id = tlp.task_id
-inner join level_points as l on l.id = tlp.level_id;');
+inner join level_points as l on l.id = tlp.level_id order by t.id;');
         $result = [];
         foreach ($points as $pivot) {
             $result[] = [
@@ -85,6 +87,8 @@ inner join level_points as l on l.id = plp.level_id;');
         cache()->forget(self::CACHE_NAME);
 
         cache()->forget(self::CACHE_PROMO_NAME);
+
+        cache()->forget(self::CACHE_TASK_LIMIT);
 
         return;
     }
@@ -231,6 +235,24 @@ inner join level_points as l on l.id = plp.level_id;');
                 }
 
             }
+
+            foreach ($request->input('limit') as $limitName => $limit) {
+                $taskLimitPoint = $this->getTaskLimitPoints($task->id, $limitName);   
+
+                if ($taskLimitPoint == false)
+                {
+                    $newtaskLimitPoint = new LimitPoint;
+                    $newtaskLimitPoint->name = $limitName;
+                    $newtaskLimitPoint->limit = $limit;
+                    $newtaskLimitPoint->task()->associate($task);
+                    $newtaskLimitPoint->save();
+                } else {
+                    $taskLimitPoint->name = $limitName;
+                    $taskLimitPoint->limit = $limit;
+                    $taskLimitPoint->update();
+                }
+
+            }
             // delete unnesesary level
             TaskLevelPoints::where('task_id', '=', $id)
                     ->whereNotIn('level_id', $levelId)->delete();
@@ -254,6 +276,13 @@ inner join level_points as l on l.id = plp.level_id;');
             ->first();
 
         return $tlp;
+    }
+
+    public function getTaskLimitPoints($taskid, $name)
+    {
+        return LimitPoint::where('task_id', $taskid)
+            ->where('name', $name)
+            ->first();
     }
 
     public function getPromoLevelPoints($promoPointid, $levelid)
@@ -291,6 +320,7 @@ inner join level_points as l on l.id = plp.level_id;');
     public function getTaskById($id)
     {
         $t = Task::with('levels')
+            ->with('limit')
             ->where('id', '=', $id)
             ->first();
 
@@ -647,6 +677,42 @@ inner join level_points as l on l.id = plp.level_id;');
             ->where('tasks.code', $code)
             ->orderBy('tasks_level_points.point', 'DESC')
             ->first();
+    }
+
+    public function getTaskPivotLimit()
+    {
+        if($pivots = cache(self::CACHE_TASK_LIMIT)) {
+            return $pivots;
+        }
+
+        $points = DB::select('select t.id, t.name as task_name, l.name as limit_name, l.limit from limit_points as l
+inner join tasks as t on t.id = l.task_id order by t.id;');
+        $result = [];
+        foreach ($points as $pivot) {
+            $result[] = [
+                'Task' => $pivot->id.' '.$pivot->task_name,
+                'limit_name' => ucfirst($pivot->limit_name),
+                'Limit' => $pivot->limit,
+            ];
+        }
+
+        cache()->put(self::CACHE_TASK_LIMIT, $result, 1440);
+
+        return $result;
+    }
+
+    public function getLimitTaskPoint($type, $mode)
+    {
+        $type = $this->getTypeId($type);
+        $mode = $this->getModeId($mode);      
+
+        $code = $type.$mode;
+
+        return DB::table('tasks')
+            ->join('limit_points', 'limit_points.task_id', '=', 'tasks.id')
+            ->where('tasks.code', '=', $code)
+            ->select('limit_points.name', 'limit_points.limit')
+            ->get();
     }
 
 }

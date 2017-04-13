@@ -99,9 +99,10 @@
                 REBEL.removeAllMessageAlert();
                 if (responseData.status == "ok") {
                     REBEL.smallNotifTemplate(responseData.message, '.modal-content', 'success');
-                    $.get( '/points/get-task-table' , function(view){
-                        $(".box-body").html(view);
-                    });
+
+                    setTimeout(function(){
+                        window.location.href = 'points';
+                    },3000);
                 }
             }, true);
         });
