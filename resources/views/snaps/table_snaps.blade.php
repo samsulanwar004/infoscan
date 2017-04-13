@@ -28,7 +28,7 @@
                     </span>
                     <br>
                     <span class="small">
-                        Total image: @if ($snap->mode_type == 'audios'){{ $snap->files->count()/2 }} @else {{ $snap->files->count() }} @endif
+                        Total image: @if ($snap->mode_type == 'audios'){{ round($snap->files->count()/2) }} @else {{ $snap->files->count() }} @endif
                     </span>
 
                     <span class="small ml10">Uploaded by: <a href="{{ admin_route_url('members.show', ['id' => $snap->member->id]) }}">{{ $snap->member->email }}</a></span><span class="small ml10">Point : {{ $snap->member->temporary_point }}</span><span class="small ml10">Level : {{ $snap->member->temporary_level }}</span>

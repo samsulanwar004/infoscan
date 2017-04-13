@@ -206,7 +206,7 @@ class SnapService
                         'type' => $type,
                         'status' => $snap['main']->status,
                         'reason' => isset($comment[1]) ? $comment[1] : '',
-                        'of_images' => ($snap['main']->mode_type == 'audios') ? $snap['main']->files->count() / 2 : $snap['main']->files->count(),
+                        'of_images' => ($snap['main']->mode_type == 'audios') ? round($snap['main']->files->count() / 2) : $snap['main']->files->count(),
                         'email' => $snap['main']->member->email,
                         'name' => $snap['main']->member->name,
                         'current_point' => $snap['main']->member->temporary_point,
@@ -228,7 +228,7 @@ class SnapService
                     'type' => $type,
                     'status' => $snap['main']->status,
                     'reason' => isset($comment[1]) ? $comment[1] : '',
-                    'of_images' => ($snap['main']->mode_type == 'audios') ? $snap['main']->files->count() / 2 : $snap['main']->files->count(),
+                    'of_images' => ($snap['main']->mode_type == 'audios') ? round($snap['main']->files->count() / 2) : $snap['main']->files->count(),
                     'email' => $snap['main']->member->email,
                     'name' => $snap['main']->member->name,
                     'current_point' => $snap['main']->member->temporary_point,
@@ -1669,6 +1669,16 @@ class SnapService
         ])->send();
     }
 
+    public function sendSnapLimitNotification($type, $mode = '')
+    {
+        $message = config('common.notification_messages.limit.'.$type);
+        $sendMessage = sprintf("$message", (string)$mode);
+
+        (new NotificationService($sendMessage))->setData([
+            'action' => 'notification',
+        ])->send();
+    }
+
     public function deleteTagsOrInput($request, $id)
     {
         $tags = $request->input('tag');
@@ -1689,6 +1699,20 @@ class SnapService
         }
 
         SnapTag::whereIn('id', $delete)->delete(); 
+    }
+
+    public function countMemberSnap($type, $mode, $date, $nextDay = null)
+    {
+        return ($nextDay == null) ?
+            Snap::where('snap_type', $type)
+            ->where('mode_type', $mode)
+            ->whereDate('created_at', $date)
+            ->count() :
+            Snap::where('snap_type', $type)
+            ->where('mode_type', $mode)
+            ->whereDate('created_at', '>=', $date)
+            ->whereDate('created_at', '<=', $nextDay)
+            ->count();
     }
 
 }
