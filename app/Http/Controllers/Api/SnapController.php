@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Api;
 
 use App\Services\SnapService;
+use App\Services\PointService;
 use Illuminate\Http\Request;
 use Exception;
 use Validator;
+use Carbon\Carbon;
 
 class SnapController extends BaseApiController
 {
@@ -16,6 +18,13 @@ class SnapController extends BaseApiController
         'generalTrade',
         'handWritten',
     ];
+
+    private $date;
+
+    public function __construct()
+    {
+        $this->date = Carbon::now('Asia/Jakarta');
+    }
 
     /**
      * Check snap status.
@@ -47,14 +56,47 @@ class SnapController extends BaseApiController
             if($request->has('request_code')) {
                 return $this->error('There is no need [request_code] field anymore. Please remove [request_code] from request payloads.', 400, true);
             }
-
+            
             $validation = $this->validRequest($request);
             if ($validation->fails()) {
                 return $this->error($validation->errors(), 400, true);
             }
 
             $type = $request->input('snap_type');
+            $mode = $request->input('mode_type');
             $method = strtolower($type) . 'Handler';
+
+            //create new date
+            $date = $this->date->toDateString();
+            $dateArr = explode('-', $date);
+            $newDate = Carbon::create($dateArr[0], $dateArr[1], $dateArr[2]);
+            $monday = $newDate->startOfWeek()->toDateString();
+            $nextMonday = $newDate->startOfWeek()->addWeek()->toDateString();
+            $snapService = (new SnapService);
+
+            //get sanp count by daily and weekly
+            $countDaily = $snapService->countMemberSnap($type, $mode, $date);
+            $countWeekly = $snapService->countMemberSnap($type, $mode, $monday, $nextMonday);
+
+            //get limit by task point
+            $limits = (new PointService)->getLimitTaskPoint($type, $mode);
+
+            $limit = [];
+            foreach ($limits as $lim) {
+                $limit[$lim->name] = $lim->limit;
+            }
+
+            //limit for daily
+            if (isset($limit['daily']) && $countDaily >= $limit['daily'])
+            {
+                return $this->error('Snap Anda sudah mencapai batas harian', 400, true);
+            }
+
+            //limit for weekly
+            if (isset($limit['weekly']) && $countWeekly >= $limit['weekly'])
+            {
+                return $this->error('Snap Anda sudah mencapai batas mingguan', 400, true);
+            }
 
             // add request code on the fly
             // TODO: need to refactor!!!!!
@@ -64,6 +106,23 @@ class SnapController extends BaseApiController
             ]);
             $snap = (new SnapService);
             $process = $snap->{$method}($request);
+
+            if ($process) {
+                $nextCountDaily = $countDaily + 1;
+                $nextCountWeekly = $countWeekly + 1;
+                //push notif limit for daily 
+                if (isset($limit['daily']) && $nextCountDaily >= $limit['daily'])
+                {
+                    $snap->sendSnapLimitNotification('daily', $mode = '');
+                }
+
+                //push notif limit for weekly
+                if (isset($limit['weekly']) && $nextCountWeekly >= $limit['weekly'])
+                {
+                    $snap->sendSnapLimitNotification('weekly', $mode = '');
+                }
+                
+            }
 
             return $this->success([
                 'data' => [

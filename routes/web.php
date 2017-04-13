@@ -152,6 +152,11 @@ Route::group([
     )->name('points.task');
 
     Route::get(
+        '/points/get-task-limit',
+        'Web\PointController@getTaskLimit'
+    )->name('points.limit');
+
+    Route::get(
         '/points/point-manager',
         'Web\PointController@pointManager'
     )->name('points.manager');

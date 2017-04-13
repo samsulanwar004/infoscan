@@ -12,23 +12,25 @@ class PointController extends AdminController
      */
     protected $redirectAfterSave = 'points';
 
-    public function index(Request $request)
+    public function index()
     {
         $this->isAllowed('Points.List');
-        if ($request->wantsJson()) {
-            return (new PointService)->getPivotGrid();
-        }
 
         return view('points.index');
     }
 
     public function getTaskTable(Request $request)
     {
-        $this->isAllowed('Points.List');
         if ($request->wantsJson()) {
             return (new PointService)->getPivotGrid();
         }
-        return view('points.table_task_level_points');
+    }
+
+    public function getTaskLimit(Request $request)
+    {
+        if ($request->wantsJson()) {
+            return (new PointService)->getTaskPivotLimit();
+        }
     }
 
     public function show($id)
@@ -91,8 +93,14 @@ class PointController extends AdminController
         $this->isAllowed('Points.Update');
         $task = (new PointService)->getTaskById($id);
         $levels = $task->levels;
+        $limits = $task->limit;
 
-        return view('points.edit', compact('task', 'levels'));
+        $lim = [];
+        foreach ($limits as $limit) {
+            $lim[$limit->name] = $limit->limit;
+        }
+
+        return view('points.edit', compact('task', 'levels', 'lim'));
     }
 
     public function update(Request $request, $id)
