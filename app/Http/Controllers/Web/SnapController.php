@@ -24,6 +24,7 @@ class SnapController extends AdminController
         $type = false;
         $mode = false;
         $search = false;
+        $admin = $this->isSuperAdministrator();
 
         if (request()->has('date_start') && request()->has('date_end')) {
             $dateStart = request()->input('date_start');
@@ -91,7 +92,7 @@ class SnapController extends AdminController
         $snapCategorys = config("common.snap_category");
         $snapCategoryModes = config("common.snap_category_mode");
 
-        return view('snaps.index', compact('snaps', 'snapCategorys', 'snapCategoryModes', 'date', 'status', 'type', 'mode', 'search'));
+        return view('snaps.index', compact('snaps', 'snapCategorys', 'snapCategoryModes', 'date', 'status', 'type', 'mode', 'search', 'admin'));
     }
 
     public function show(Request $request, $id)

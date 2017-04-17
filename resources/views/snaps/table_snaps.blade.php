@@ -36,7 +36,7 @@
                 <td class="text-right vertical-middle">
                     <div class="btn-group">
                         @cando('Snaps.Show')
-                        <a href="{{ admin_route_url('snaps.show', ['id' => $snap->id]) }}" class="btn btn-primary">
+                        <a href="{{ admin_route_url('snaps.show', ['id' => $snap->id]) }}" class="btn btn-primary" @if($admin) target="_blank" @endif>
                             <i class="fa fa-search"> </i>
                         </a>
                         @endcando

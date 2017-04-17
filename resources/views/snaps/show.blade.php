@@ -19,7 +19,10 @@
                 </h3>
 
                 <div class="box-tools pull-right">
-                    <a href="javascript: history.go(-1)" class="btn btn-box-tool"><i
+                    <?php
+                      $back = htmlspecialchars($_SERVER['HTTP_REFERER']);
+                    ?>
+                    <a href="{{ $back }}" class="btn btn-box-tool"><i
                             class="fa fa-times"></i></a>
                 </div>
             </div>
