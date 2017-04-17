@@ -72,7 +72,9 @@ class SnapService
     public function getAvailableSnaps()
     {
         return Snap::with('member')
-            ->with('files')
+            ->with(array('files' => function($query) {
+                $query->where('file_mimes', 'like', 'image%');
+            }))
             ->orderBy('created_at', 'DESC')
             ->paginate(50);
     }
@@ -80,7 +82,9 @@ class SnapService
     public function getAvailableSnapsByUser($id)
     {
         return Snap::with('member')
-            ->with('files')
+            ->with(array('files' => function($query) {
+                $query->where('file_mimes', 'like', 'image%');
+            }))
             ->where('user_id', $id)
             ->orderBy('created_at', 'DESC')
             ->paginate(50);
@@ -89,7 +93,9 @@ class SnapService
     public function getAvailableSnapByUserId($id)
     {
         return Snap::with('member')
-            ->with('files')
+            ->with(array('files' => function($query) {
+                $query->where('file_mimes', 'like', 'image%');
+            }))
             ->where('user_id', $id)
             ->orderBy('created_at', 'DESC')
             ->paginate(50);
@@ -97,7 +103,9 @@ class SnapService
 
     public function getSnapsByFilter($data, $userId = null)
     {
-        $query = Snap::with('files')
+        $query = Snap::with(array('files' => function($query) {
+                $query->where('file_mimes', 'like', 'image%');
+            }))
             ->whereDate('created_at', '>=', $data['start_date'])
             ->whereDate('created_at', '<=', $data['end_date']);
 
@@ -133,7 +141,9 @@ class SnapService
 
     public function getExportSnapToCsv($data, $userId = null)
     {
-        $query = Snap::with('files')
+        $query = Snap::with(array('files' => function($query) {
+                $query->where('file_mimes', 'like', 'image%');
+            }))
             ->with('approve')
             ->with('reject')
             ->whereDate('created_at', '>=', $data['start_date'])
@@ -206,7 +216,7 @@ class SnapService
                         'type' => $type,
                         'status' => $snap['main']->status,
                         'reason' => isset($comment[1]) ? $comment[1] : '',
-                        'of_images' => ($snap['main']->mode_type == 'audios') ? round($snap['main']->files->count() / 2) : $snap['main']->files->count(),
+                        'of_images' => $snap['main']->files->count(),
                         'email' => $snap['main']->member->email,
                         'name' => $snap['main']->member->name,
                         'current_point' => $snap['main']->member->temporary_point,
@@ -228,7 +238,7 @@ class SnapService
                     'type' => $type,
                     'status' => $snap['main']->status,
                     'reason' => isset($comment[1]) ? $comment[1] : '',
-                    'of_images' => ($snap['main']->mode_type == 'audios') ? round($snap['main']->files->count() / 2) : $snap['main']->files->count(),
+                    'of_images' => $snap['main']->files->count(),
                     'email' => $snap['main']->member->email,
                     'name' => $snap['main']->member->name,
                     'current_point' => $snap['main']->member->temporary_point,
@@ -287,13 +297,17 @@ class SnapService
                 $query->where('name', 'like', '%'.$search.'%')
                 ->orWhere('email','like','%'.$search.'%');
             })
-            ->with('files')
+            ->with(array('files' => function($query) {
+                $query->where('file_mimes', 'like', 'image%');
+            }))
             ->paginate(50) :
             Snap::whereHas('member', function ($query) use ($search) {
                 $query->where('name', 'like', '%'.$search.'%')
                 ->orWhere('email','like','%'.$search.'%');
             })
-            ->with('files')
+            ->with(array('files' => function($query) {
+                $query->where('file_mimes', 'like', 'image%');
+            }))
             ->where('user_id', '=', $userId)
             ->paginate(50);
     }
