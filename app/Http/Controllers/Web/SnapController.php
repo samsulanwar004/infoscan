@@ -190,9 +190,11 @@ class SnapController extends AdminController
     {
         $this->validate($request, [
             'tag.name.*' => 'required|max:255',
+            'tag.weight.*' => 'required|max:255',
             'tag.qty.*' => 'required|max:11',
             'tag.total.*' => 'required|max:15',
             'newtag.name.*' => 'required|max:255',
+            'newtag.weight.*' => 'required|max:255',
             'newtag.qty.*' => 'required|max:11',
             'newtag.total.*' => 'required|max:15',
             'comment' => 'max:100',
@@ -203,6 +205,7 @@ class SnapController extends AdminController
             'outlet_city' => 'max:100',
             'outlet_province' => 'max:100',
             'outlet_zip_code' => 'max:100',
+            'outlet_rt_rw' => 'max:100',
             'longitude' => 'max:100',
             'latitude' => 'max:100',
         ]);

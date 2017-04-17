@@ -448,6 +448,7 @@ class SnapService
         $snaps->outlet_type = $request->input('outlet_type');
         $snaps->outlet_city = $request->input('outlet_city');
         $snaps->outlet_province = $request->input('outlet_province');
+        $snaps->outlet_rt_rw = $request->input('outlet_rt_rw');
         $snaps->outlet_zip_code = $request->input('outlet_zip_code');
         $snaps->payment_method = $request->input('payment_method');
         $snaps->longitude = !$request->has('longitude') ? 0.00 : $request->input('longitude');
@@ -475,9 +476,10 @@ class SnapService
             $t->name = $tags['name'][$i];
             $t->brands = $tags['brands'][$i];
             $t->variants = $tags['variants'][$i];
+            $t->weight = $tags['weight'][$i];
             $t->quantity = $tags['qty'][$i];
             $t->total_price = $tags['total'][$i];
-            $t->edited_signature = $this->generateSignature($tags['name'][$i], $tags['qty'][$i], $tags['total'][$i]);
+            $t->edited_signature = $this->generateSignature($tags['name'][$i], $tags['weight'][$i], $tags['qty'][$i], $tags['total'][$i]);
 
             $t->update();
         }
@@ -488,6 +490,7 @@ class SnapService
             $t->name = $newTags['name'][$i];
             $t->brands = $newTags['brands'][$i];
             $t->variants = $newTags['variants'][$i];
+            $t->weight = $newTags['weight'][$i];
             $t->quantity = $newTags['qty'][$i];
             $t->total_price = $newTags['total'][$i];
             //$t->file()->associate($newTags['fileId'][$i]);
@@ -517,9 +520,10 @@ class SnapService
             $t->name = $tags['name'][$i];
             $t->brands = $tags['brands'][$i];
             $t->variants = $tags['variants'][$i];
+            $t->weight = $tags['weight'][$i];
             $t->quantity = $tags['qty'][$i];
             $t->total_price = $tags['total'][$i];
-            $t->edited_signature = $this->generateSignature($tags['name'][$i], $tags['qty'][$i], $tags['total'][$i]);
+            $t->edited_signature = $this->generateSignature($tags['name'][$i], $tags['weight'][$i], $tags['qty'][$i], $tags['total'][$i]);
 
             $t->update();
         }
@@ -530,6 +534,7 @@ class SnapService
             $t->name = $newTags['name'][$i];
             $t->brands = $newTags['brands'][$i];
             $t->variants = $newTags['variants'][$i];
+            $t->weight = $newTags['weight'][$i];
             $t->quantity = $newTags['qty'][$i];
             $t->total_price = $newTags['total'][$i];
             $t->img_x = $newTags['x'][$i];
@@ -561,9 +566,10 @@ class SnapService
             $t->name = $tags['name'][$i];
             $t->brands = $tags['brands'][$i];
             $t->variants = $tags['variants'][$i];
+            $t->weight = $tags['weight'][$i];
             $t->quantity = $tags['qty'][$i];
             $t->total_price = $tags['total'][$i];
-            $t->edited_signature = $this->generateSignature($tags['name'][$i], $tags['qty'][$i], $tags['total'][$i]);
+            $t->edited_signature = $this->generateSignature($tags['name'][$i], $tags['weight'][$i], $tags['qty'][$i], $tags['total'][$i]);
 
             $t->update();
         }
@@ -574,6 +580,7 @@ class SnapService
             $t->name = $newTags['name'][$i];
             $t->brands = $newTags['brands'][$i];
             $t->variants = $newTags['variants'][$i];
+            $t->weight = $newTags['weight'][$i];
             $t->quantity = $newTags['qty'][$i];
             $t->total_price = $newTags['total'][$i];
             //$t->file()->associate($newTags['fileId'][$i]);
@@ -603,9 +610,10 @@ class SnapService
             $t->name = $tags['name'][$i];
             $t->brands = $tags['brands'][$i];
             $t->variants = $tags['variants'][$i];
+            $t->weight = $tags['weight'][$i];
             $t->quantity = $tags['qty'][$i];
             $t->total_price = $tags['total'][$i];
-            $t->edited_signature = $this->generateSignature($tags['name'][$i], $tags['qty'][$i], $tags['total'][$i]);
+            $t->edited_signature = $this->generateSignature($tags['name'][$i], $tags['weight'][$i], $tags['qty'][$i], $tags['total'][$i]);
 
             $t->update();
         }
@@ -616,6 +624,7 @@ class SnapService
             $t->name = $newTags['name'][$i];
             $t->brands = $newTags['brands'][$i];
             $t->variants = $newTags['variants'][$i];
+            $t->weight = $newTags['weight'][$i];
             $t->quantity = $newTags['qty'][$i];
             $t->total_price = $newTags['total'][$i];
             //$t->file()->associate($newTags['fileId'][$i]);
@@ -627,9 +636,9 @@ class SnapService
         $this->totalValue($tags['total'], $newTags['total'], $id);
     }
 
-    public function generateSignature($name, $qty, $total)
+    public function generateSignature($name, $weight, $qty, $total)
     {
-        return str_replace(' ', '', $name.'|'.$qty.'|'.clean_numeric($total, '%', false, '.'));
+        return str_replace(' ', '', $name.'|'.$weight.'|'.$qty.'|'.clean_numeric($total, '%', false, '.'));
     }
 
     public function deleteSnapTags($ids, $snapFileId)
@@ -974,13 +983,18 @@ class SnapService
             $snapId = $snap->id;
             $tags = $this->getTags();
 
+            $countTags = [];
+            foreach ($tags as $tag) {
+                $countTags[] = count($tag);
+            }
+
             $dataSnap = [
                 'request_code' => $request->input('request_code'),
                 'member_id' => $member->id,
                 'type' => $request->input('snap_type'),
                 'mode' => $mode,
                 'files' => count($images),
-                'tags' => count($tags),
+                'tags' => array_sum($countTags),
             ];
 
             // Save estimated point calculate
@@ -1323,12 +1337,23 @@ class SnapService
     private function createFiles($request, array $files, \App\Snap $snap)
     {
         if ($this->isMultidimensiArray($files)) {
-            foreach ($files as $file) {
-                $snapFile = $this->persistFile($request, $file, $snap);
+            if($request->input('mode_type') == self::INPUT_TYPE_NAME) {
+                $tags = [];
+                foreach ($files as $file) {
+                    $snapFile = $this->persistFile($request, $file, $snap);
 
-                $this->createTag($request, $snapFile);
+                    $this->createTag($request, $snapFile);
+                    $tags[] = $this->getTags();
+                }
+
+                $this->setTags($tags);
+            } else {
+                foreach ($files as $file) {
+                    $snapFile = $this->persistFile($request, $file, $snap);
+
+                    $this->createTag($request, $snapFile);
+                }
             }
-
             return true;
         }
 
@@ -1390,10 +1415,11 @@ class SnapService
                 $tag = new \App\SnapTag();
                 $tag->name = $t['name'];
                 $tag->total_price = $t['price'];
+                $tag->weight = $t['weight'];
                 $tag->quantity = $t['quantity'];
                 $tag->img_x = isset($t['tag_x']) ? $t['tag_x'] : '';
                 $tag->img_y = isset($t['tag_y']) ? $t['tag_y'] : '';
-                $tag->current_signature = $this->generateSignature($t['name'], $t['quantity'], $t['price']);
+                $tag->current_signature = $this->generateSignature($t['name'], $t['weight'], $t['quantity'], $t['price']);
                 $tag->file()->associate($file);
 
                 $tag->save();

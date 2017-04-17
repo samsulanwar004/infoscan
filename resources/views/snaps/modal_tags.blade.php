@@ -21,8 +21,9 @@
                         <tr>
                             <th width="50"></th>
                             <th width="300">Product Item</th>
-                            <th width="300">Brands</th>
+                            <th width="200">Brands</th>
                             <th width="300">Variants</th>
+                            <th width="200">Weight</th>
                             <th width="50">Qty</th>
                             <th width="200">Total Price</th>
                         </tr>
@@ -36,8 +37,9 @@
                                     </a>
                                 </td>
                                 <td width="300"><input type="text" name="tag[name][]" id="{{ $tag->id }}|{{ $tag->img_x }}|{{ $tag->img_y }}" class="form-control input-sm tag-name {{ $tag->id }}old" value="{{ $tag->name }}" placeholder="Product Name" required="required"></td>
-                                <td width="300"><input type="text" name="tag[brands][]" class="form-control input-sm" value="{{ $tag->brands }}" placeholder="Brands"></td>
+                                <td width="200"><input type="text" name="tag[brands][]" class="form-control input-sm" value="{{ $tag->brands }}" placeholder="Brands"></td>
                                 <td width="300"><input type="text" list="variants" name="tag[variants][]" class="form-control input-sm" value="{{ $tag->variants }}" placeholder="Variants"></td>
+                                <td width="200"><input type="text" name="tag[weight][]" class="form-control input-sm" value="{{ $tag->weight }}" placeholder="Weight"></td>
                                 <td width="100"><input type="number" name="tag[qty][]" class="form-control input-sm" value="{{ $tag->quantity }}" placeholder="QTY" required="required"></td>
                                 <td width="200"><input type="number" name="tag[total][]" class="form-control input-sm" value="{{ clean_numeric($tag->total_price,'%',false,'.') }}" placeholder="Total Price" required="required"></td>
                                 <input type="hidden" name="tag[id][]" value="{{ $tag->id }}">
@@ -214,7 +216,7 @@
             mouseY = (e.pageY - offset.top);
 
             $('#tagit').remove(); // remove any tagit div first           
-            $('div#imgtag').append('<div id="tagit"><input type="text" name="name" class="form-control input-sm" placeholder="Product Name" id="name"><input type="number" name="qty" class="form-control input-sm" placeholder="QTY" id="qty"><input type="number" class="form-control input-sm" placeholder="Total Price" id="total" name="total"><input type="hidden" name="x" id="x" value="'+mouseX+'"><input type="hidden" id="y" name="y" value="'+mouseY+'"><input type="button" name="btnsave" value="Save" id="btnsave"/><input type="button" name="btncancel" value="Cancel" id="btncancel" /></div>');
+            $('div#imgtag').append('<div id="tagit"><input type="text" name="name" class="form-control input-sm" placeholder="Product Name" id="name"><input type="text" name="weight" class="form-control input-sm" placeholder="Weight" id="weight"><input type="number" name="qty" class="form-control input-sm" placeholder="QTY" id="qty"><input type="number" class="form-control input-sm" placeholder="Total Price" id="total" name="total"><input type="hidden" name="x" id="x" value="'+mouseX+'"><input type="hidden" id="y" name="y" value="'+mouseY+'"><input type="button" name="btnsave" value="Save" id="btnsave"/><input type="button" name="btncancel" value="Cancel" id="btncancel" /></div>');
             var imgtag = document.getElementById('imgtag');
             var tagit = document.getElementById('tagit');
             var tengah = imgtag.clientHeight/2;
@@ -251,12 +253,13 @@
             }
 
             var name = $('#name').val();
+            var weight = $('#weight').val();
             var qty = $('#qty').val();
             var total = $('#total').val();
             mouseX = $('#x').val();
             mouseY = $('#y').val();
 
-            if (name == false || qty == false || total == false)
+            if (name == false || weight == false || qty == false || total == false)
             {
                 REBEL.smallNotifTemplate('Not null', '.modal-content', 'error');
                 REBEL.scrollToTop('#modalContent');
@@ -272,7 +275,7 @@
 
             var className = countOfTextbox+'-new-tag';
             viewtagsave(name, mouseX, mouseY, className);
-            $('tbody#inputs').append('<tr class="tag-input" time=' + time + ' id="input'+countOfTextbox+'"><td><a class="btn btn-box-tool" onclick="deleteTag('+countOfTextbox+')"><i class="fa fa-remove"></i></a></td><td width="300"><input type="text" name="newtag[name][]" class="form-control input-sm tag-name '+countOfTextbox+'new" id="'+countOfTextbox+'|'+mouseX+'|'+mouseY+'" onclick="editTag(this)" onkeyup="editNewTag(this)" value="'+name+'"></td><td width="300"><input type="text" name="newtag[brands][]" class="form-control input-sm" placeholder="Brands"></td><td width="300"><input type="text" list="variants" name="newtag[variants][]" class="form-control input-sm" placeholder="Variants"></td><td width="100"><input type="number" name="newtag[qty][]" class="form-control input-sm" value="'+qty+'"></td><td width="200"><input type="number" name="newtag[total][]" class="form-control input-sm" value="'+total+'"><input type="hidden" name="newtag[x][]" value="'+mouseX+'"><input type="hidden" name="newtag[y][]" value="'+mouseY+'"></td></tr>');
+            $('tbody#inputs').append('<tr class="tag-input" time=' + time + ' id="input'+countOfTextbox+'"><td><a class="btn btn-box-tool" onclick="deleteTag('+countOfTextbox+')"><i class="fa fa-remove"></i></a></td><td width="300"><input type="text" name="newtag[name][]" class="form-control input-sm tag-name '+countOfTextbox+'new" id="'+countOfTextbox+'|'+mouseX+'|'+mouseY+'" onclick="editTag(this)" onkeyup="editNewTag(this)" value="'+name+'"></td><td width="200"><input type="text" name="newtag[brands][]" class="form-control input-sm" placeholder="Brands"></td><td width="300"><input type="text" list="variants" name="newtag[variants][]" class="form-control input-sm" placeholder="Variants"></td><td width="200"><input type="text" name="newtag[weight][]" class="form-control input-sm" value="'+weight+'" placeholder="Weight"></td><td width="100"><input type="number" name="newtag[qty][]" class="form-control input-sm" value="'+qty+'"></td><td width="200"><input type="number" name="newtag[total][]" class="form-control input-sm" value="'+total+'"><input type="hidden" name="newtag[x][]" value="'+mouseX+'"><input type="hidden" name="newtag[y][]" value="'+mouseY+'"></td></tr>');
 
             $('#tagit').fadeOut();
 

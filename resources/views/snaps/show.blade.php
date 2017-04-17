@@ -170,6 +170,10 @@
                                     <label for="outlet_zip_code">Outlet Zipcode</label>
                                     <input type="number" class="form-control input-sm tab-side" id="outlet_zip_code" name="outlet_zip_code" placeholder="Enter outlet zipcode" value="{{ $snap->outlet_zip_code }}" tabIndex="8">
                                 </div>
+                                <div class="form-group outlet_rt_rw">
+                                    <label for="outlet_rt_rw">Outlet RT/RW</label>
+                                    <input type="number" class="form-control input-sm tab-side" id="outlet_rt_rw" name="outlet_rt_rw" placeholder="Enter rt00/rw00" value="{{ $snap->outlet_rt_rw }}" tabIndex="8">
+                                </div>
                                 <div class="form-group total_value">
                                     <label for="total_value">Total Value</label>
                                     <input type="number" class="form-control input-sm tab-side" id="total_value" placeholder="Enter Total Value" value="{{ clean_numeric($snap->total_value,'%',false,'.') }}" readonly="readonly" tabIndex="9">
