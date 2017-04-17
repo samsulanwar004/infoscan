@@ -48,12 +48,12 @@
                 <div class="row">
                     <div class="form-group col-sm-2" style="margin-right: 0px;">
                         <label for="daily">Daily</label>
-                        <input type="text" class="form-control input-sm" name="limit[daily]" value="@if(isset($lim['daily'])) {{$lim['daily']}} @endif" placeholder="Limit ">
+                        <input type="text" class="form-control input-sm" name="limit[daily]" value="@if(isset($lim['daily'])) {{$lim['daily']}} @endif" placeholder="Limit" required="required">
                     </div>
 
                     <div class="form-group col-sm-2">
                         <label for="weekly">Weekly</label>
-                        <input type="text" class="form-control input-sm" name="limit[weekly]" value="@if(isset($lim['weekly'])) {{$lim['weekly']}} @endif" placeholder="Limit">
+                        <input type="text" class="form-control input-sm" name="limit[weekly]" value="@if(isset($lim['weekly'])) {{$lim['weekly']}} @endif" placeholder="Limit" required="required">
                     </div>
                 </div>
                 
