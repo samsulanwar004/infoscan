@@ -627,7 +627,10 @@
         // load the tags for the image when page loads.
         var img = $('#imgtag').find('img');
         var id = $(img).attr('alt');
-        viewtag(id);
+        var type = '{!! $snap->mode_type !!}';
+        if (type == 'input' || type == 'tags') {
+            viewtag(id);
+        }        
         function viewtag(id)
         {
           // get the tag list with action remove and tag boxes and place it on the image.
