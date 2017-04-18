@@ -4,6 +4,7 @@
             <th width="25">#</th>
             <th width="100">Code</th>
             <th>Snap Details</th>
+            <th>Upload Date</th>
             <th width="250"></th>
         </tr>
     </thead>
@@ -32,6 +33,9 @@
                     </span>
 
                     <span class="small ml10">Uploaded by: <a href="{{ admin_route_url('members.show', ['id' => $snap->member->id]) }}">{{ $snap->member->email }}</a></span><span class="small ml10">Point : {{ $snap->member->temporary_point }}</span><span class="small ml10">Level : {{ $snap->member->temporary_level }}</span>
+                </td>
+                <td class="vertical-middle">
+                    {{ $snap->created_at->format('d M y H:i A') }} <br>
                 </td>
                 <td class="text-right vertical-middle">
                     <div class="btn-group">

@@ -47,21 +47,21 @@
                 <div class="box-tools pull-right">                 
 
                     <select class="form-control filter-status">
-                        <option value="all" @if($status == 'all') selected @endif>Pilih Status</option>
+                        <option value="all" @if($status == 'all') selected @endif>Select Status</option>
                         <option value="approve" @if($status == 'approve') selected @endif>Approve</option>
                         <option value="reject" @if($status == 'reject') selected @endif>Reject</option>
                         <option value="pending" @if($status == 'pending') selected @endif>Pending</option>
                     </select>
 
                     <select class="form-control snap-type">
-                        <option value="all">Pilih Snap type</option>
+                        <option value="all">Select Snap type</option>
                         @foreach($snapCategorys as $id => $name)
                             <option value="{{$id}}" id="{{$id}}" @if($type == $id) selected @endif>{{$name}}</option>
                         @endforeach
                     </select>
 
                     <select class="form-control snap-mode">
-                        <option value="all">Pilih Mode type</option>
+                        <option value="all">Select Mode type</option>
                         @foreach($snapCategoryModes as $id => $name)
                             <option value="{{$id}}" id="{{$id}}" @if($mode == $id) selected @endif>{{$name}}</option>
                         @endforeach
