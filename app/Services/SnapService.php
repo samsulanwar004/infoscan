@@ -1415,11 +1415,11 @@ class SnapService
                 $tag = new \App\SnapTag();
                 $tag->name = $t['name'];
                 $tag->total_price = $t['price'];
-                $tag->weight = $t['weight'];
+                $tag->weight = isset($t['weight']) ? $t['weight'] : null;
                 $tag->quantity = $t['quantity'];
                 $tag->img_x = isset($t['tag_x']) ? $t['tag_x'] : '';
                 $tag->img_y = isset($t['tag_y']) ? $t['tag_y'] : '';
-                $tag->current_signature = $this->generateSignature($t['name'], $t['weight'], $t['quantity'], $t['price']);
+                $tag->current_signature = $this->generateSignature($tag->name, $tag->weight, $tag->quantity, $tag->total_price);
                 $tag->file()->associate($file);
 
                 $tag->save();
