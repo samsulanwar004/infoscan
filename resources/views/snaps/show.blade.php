@@ -199,15 +199,15 @@
                                 </div>
                                 <div class="form-group outlet_rt_rw">
                                     <label for="outlet_rt_rw">Outlet RT/RW</label>
-                                    <input type="number" class="form-control input-sm tab-side" id="outlet_rt_rw" name="outlet_rt_rw" placeholder="Enter rt00/rw00" value="{{ $snap->outlet_rt_rw }}" tabIndex="8">
+                                    <input type="text" class="form-control input-sm tab-side" id="outlet_rt_rw" name="outlet_rt_rw" placeholder="Enter rt00/rw00" value="{{ $snap->outlet_rt_rw }}" tabIndex="9">
                                 </div>
                                 <div class="form-group total_value">
                                     <label for="total_value">Total Value</label>
-                                    <input type="number" class="form-control input-sm tab-side" id="total_value" placeholder="Enter Total Value" value="{{ clean_numeric($snap->total_value,'%',false,'.') }}" readonly="readonly" tabIndex="9">
+                                    <input type="number" class="form-control input-sm tab-side" id="total_value" placeholder="Enter Total Value" value="{{ clean_numeric($snap->total_value,'%',false,'.') }}" readonly="readonly" tabIndex="10">
                                 </div>                                    
                                 <div class="form-group payment_method">
                                     <label for="payment_method">Payment Method</label>
-                                    <input type="text" class="form-control input-sm tab-side" list="payment-method" id="payment_method" name="payment_method" placeholder="Enter Payment Method" value="{{ $snap->payment_method }}" tabIndex="10">
+                                    <input type="text" class="form-control input-sm tab-side" list="payment-method" id="payment_method" name="payment_method" placeholder="Enter Payment Method" value="{{ $snap->payment_method }}" tabIndex="11">
                                 </div>
 <!--                                     <div class="form-group longitude latitude" style="display: none;">
                                     <label for="geography_location">Geographic Coordinates</label>
