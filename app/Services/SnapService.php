@@ -355,7 +355,7 @@ class SnapService
         $comment = $request->input('comment');
 
         if (!empty($request->input('reason'))) {
-            $comment = nl2br($comment.'\n Alasan :'.$request->input('reason'));
+            $comment = nl2br($comment.' \n Alasan :'.$request->input('reason'));
         }
 
         if ($request->input('confirm') == 'approve') {

@@ -115,9 +115,11 @@ class SnapController extends AdminController
                 $audios[] = $audio;
             }
 
+            $files = $snap->files()->paginate(1);
+
             $paymentMethods = config("common.payment_methods");
 
-            return view('snaps.show', compact('snap', 'paymentMethods', 'audios'));
+            return view('snaps.show', compact('snap', 'paymentMethods', 'audios', 'files'));
         } catch (Exception $e) {
             logger($e->getMessage());
             return view('errors.404');
@@ -305,6 +307,32 @@ class SnapController extends AdminController
             return response()->json([
                 'status' => 'error',
                 'message' => $e->getMessage().' '.$e->getLine(),
+            ], 500);
+        }
+    }
+
+    public function taggingSave(Request $request)
+    {
+        try {
+            $t = new \App\SnapTag;
+            $t->name = $request->input('name');
+            $t->weight = $request->input('weight');
+            $t->quantity = $request->input('quantity');
+            $t->total_price = $request->input('total_price');
+            $t->img_x = $request->input('img_x');
+            $t->img_y = $request->input('img_y');
+            $t->file()->associate($request->input('file_id'));
+
+            $t->save();
+
+            return response()->json([
+                'status' => 'ok',
+                'message' => 'successfully',
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
             ], 500);
         }
     }
