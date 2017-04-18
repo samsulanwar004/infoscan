@@ -28,7 +28,7 @@
                     </span>
                     <br>
                     <span class="small">
-                        Total image: @if ($snap->mode_type == 'audios'){{ round($snap->files->count()/2) }} @else {{ $snap->files->count() }} @endif
+                        Total image: {{ $snap->files->count() }}
                     </span>
 
                     <span class="small ml10">Uploaded by: <a href="{{ admin_route_url('members.show', ['id' => $snap->member->id]) }}">{{ $snap->member->email }}</a></span><span class="small ml10">Point : {{ $snap->member->temporary_point }}</span><span class="small ml10">Level : {{ $snap->member->temporary_level }}</span>
@@ -36,7 +36,7 @@
                 <td class="text-right vertical-middle">
                     <div class="btn-group">
                         @cando('Snaps.Show')
-                        <a href="{{ admin_route_url('snaps.show', ['id' => $snap->id]) }}" class="btn btn-primary">
+                        <a href="{{ admin_route_url('snaps.show', ['id' => $snap->id]) }}" class="btn btn-primary" @if($admin) target="_blank" @endif>
                             <i class="fa fa-search"> </i>
                         </a>
                         @endcando

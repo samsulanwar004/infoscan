@@ -24,6 +24,7 @@ class SnapController extends AdminController
         $type = false;
         $mode = false;
         $search = false;
+        $admin = $this->isSuperAdministrator();
 
         if (request()->has('date_start') && request()->has('date_end')) {
             $dateStart = request()->input('date_start');
@@ -91,7 +92,7 @@ class SnapController extends AdminController
         $snapCategorys = config("common.snap_category");
         $snapCategoryModes = config("common.snap_category_mode");
 
-        return view('snaps.index', compact('snaps', 'snapCategorys', 'snapCategoryModes', 'date', 'status', 'type', 'mode', 'search'));
+        return view('snaps.index', compact('snaps', 'snapCategorys', 'snapCategoryModes', 'date', 'status', 'type', 'mode', 'search', 'admin'));
     }
 
     public function show(Request $request, $id)
@@ -114,9 +115,11 @@ class SnapController extends AdminController
                 $audios[] = $audio;
             }
 
+            $files = $snap->files()->paginate(1);
+
             $paymentMethods = config("common.payment_methods");
 
-            return view('snaps.show', compact('snap', 'paymentMethods', 'audios'));
+            return view('snaps.show', compact('snap', 'paymentMethods', 'audios', 'files'));
         } catch (Exception $e) {
             logger($e->getMessage());
             return view('errors.404');
@@ -189,9 +192,11 @@ class SnapController extends AdminController
     {
         $this->validate($request, [
             'tag.name.*' => 'required|max:255',
+            'tag.weight.*' => 'required|max:255',
             'tag.qty.*' => 'required|max:11',
             'tag.total.*' => 'required|max:15',
             'newtag.name.*' => 'required|max:255',
+            'newtag.weight.*' => 'required|max:255',
             'newtag.qty.*' => 'required|max:11',
             'newtag.total.*' => 'required|max:15',
             'comment' => 'max:100',
@@ -202,6 +207,7 @@ class SnapController extends AdminController
             'outlet_city' => 'max:100',
             'outlet_province' => 'max:100',
             'outlet_zip_code' => 'max:100',
+            'outlet_rt_rw' => 'max:100',
             'longitude' => 'max:100',
             'latitude' => 'max:100',
         ]);
@@ -301,6 +307,32 @@ class SnapController extends AdminController
             return response()->json([
                 'status' => 'error',
                 'message' => $e->getMessage().' '.$e->getLine(),
+            ], 500);
+        }
+    }
+
+    public function taggingSave(Request $request)
+    {
+        try {
+            $t = new \App\SnapTag;
+            $t->name = $request->input('name');
+            $t->weight = $request->input('weight');
+            $t->quantity = $request->input('quantity');
+            $t->total_price = $request->input('total_price');
+            $t->img_x = $request->input('img_x');
+            $t->img_y = $request->input('img_y');
+            $t->file()->associate($request->input('file_id'));
+
+            $t->save();
+
+            return response()->json([
+                'status' => 'ok',
+                'message' => 'successfully',
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
             ], 500);
         }
     }

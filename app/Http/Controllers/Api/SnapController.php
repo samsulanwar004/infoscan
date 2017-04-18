@@ -56,7 +56,7 @@ class SnapController extends BaseApiController
             if($request->has('request_code')) {
                 return $this->error('There is no need [request_code] field anymore. Please remove [request_code] from request payloads.', 400, true);
             }
-            
+
             $validation = $this->validRequest($request);
             if ($validation->fails()) {
                 return $this->error($validation->errors(), 400, true);
@@ -168,6 +168,7 @@ class SnapController extends BaseApiController
                 $newRules = [
                     'mode_type' => 'required',
                     'snap.tags.*.name' => 'required',
+                    'snap.tags.*.weight' => 'required',
                     'snap.tags.*.quantity' => 'present|numeric',
                     'snap.tags.*.total_price' => 'present|numeric',
                 ];

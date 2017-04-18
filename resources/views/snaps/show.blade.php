@@ -19,7 +19,10 @@
                 </h3>
 
                 <div class="box-tools pull-right">
-                    <a href="javascript: history.go(-1)" class="btn btn-box-tool"><i
+                    <?php
+                      $back = htmlspecialchars($_SERVER['HTTP_REFERER']);
+                    ?>
+                    <a href="{{ $back }}" class="btn btn-box-tool"><i
                             class="fa fa-times"></i></a>
                 </div>
             </div>
@@ -66,10 +69,37 @@
                                                             <img src="{{ config('filesystems.s3url') . $file->file_path }}" alt="{{ $file->file_code }}" class="margin img-responsive img-zoom" id="{{$file->id}}">
                                                         </div>
                                                     </div>
-                                                @else
-                                                    <img src="{{ config('filesystems.s3url') . $file->file_path }}" alt="{{ $file->file_code }}" class="margin img-thumbnail img-responsive img-tag"  id="{{$file->id}}">
                                                 @endif
-                                            @endforeach
+                                            @endforeach  
+                                            @if($snap->mode_type == 'input' || $snap->mode_type == 'tags') 
+                                                @if($files->lastPage() > 1)  
+                                                    <div class="new-pagination">
+                                                        {{ $files->links() }}
+                                                    </div>                                                   
+                                                @endif
+                                                <div class="new-mode">
+                                                    <button id="mode-tag" class="btn btn-primary btn-sm"><i class="fa fa-tag" aria-hidden="true"></i></button>
+                                                    <button id="mode-zoom" class="btn btn-primary btn-sm"><i class="fa fa-search" aria-hidden="true"></i></button>
+                                                </div>
+                                                <div id="imgtag" class="show-tag">
+                                                    <img src="{{ config('filesystems.s3url') . $files->first()->file_path }}" alt="{{ $files->first()->file_code }}" class="margin img-thumbnail img-responsive img-zoom"  id="tag-image">
+                                                    <div id="tagbox">
+                                                    </div>                    
+                                                </div>
+                                                <div class="show-zoom" style="display: none;">
+                                                    <div id="window" class="magnify img-thumbnail" data-magnified-zone=".mg_zone" data-scale="1.5">
+                                                        <div class="magnify_glass">
+                                                            <div class="mg_ring"></div>
+                                                           <!--  <div class="pm_btn plus"><h2>+</h2></div>
+                                                            <div class="pm_btn minus"><h2>-</h2></div> -->
+                                                            <div class="mg_zone"></div>
+                                                        </div>
+                                                        <div class="element_to_magnify">
+                                                            <img src="{{ config('filesystems.s3url') . $file->file_path }}" alt="{{ $file->file_code }}" class="img-responsive img-zoom" id="{{$file->id}}">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            @endif                                                                      
                                         </div>
                                     </div>
                                 </li>
@@ -167,13 +197,17 @@
                                     <label for="outlet_zip_code">Outlet Zipcode</label>
                                     <input type="number" class="form-control input-sm tab-side" id="outlet_zip_code" name="outlet_zip_code" placeholder="Enter outlet zipcode" value="{{ $snap->outlet_zip_code }}" tabIndex="8">
                                 </div>
+                                <div class="form-group outlet_rt_rw">
+                                    <label for="outlet_rt_rw">Outlet RT/RW</label>
+                                    <input type="text" class="form-control input-sm tab-side" id="outlet_rt_rw" name="outlet_rt_rw" placeholder="Enter rt00/rw00" value="{{ $snap->outlet_rt_rw }}" tabIndex="9">
+                                </div>
                                 <div class="form-group total_value">
                                     <label for="total_value">Total Value</label>
-                                    <input type="number" class="form-control input-sm tab-side" id="total_value" placeholder="Enter Total Value" value="{{ clean_numeric($snap->total_value,'%',false,'.') }}" readonly="readonly" tabIndex="9">
+                                    <input type="number" class="form-control input-sm tab-side" id="total_value" placeholder="Enter Total Value" value="{{ clean_numeric($snap->total_value,'%',false,'.') }}" readonly="readonly" tabIndex="10">
                                 </div>                                    
                                 <div class="form-group payment_method">
                                     <label for="payment_method">Payment Method</label>
-                                    <input type="text" class="form-control input-sm tab-side" list="payment-method" id="payment_method" name="payment_method" placeholder="Enter Payment Method" value="{{ $snap->payment_method }}" tabIndex="10">
+                                    <input type="text" class="form-control input-sm tab-side" list="payment-method" id="payment_method" name="payment_method" placeholder="Enter Payment Method" value="{{ $snap->payment_method }}" tabIndex="11">
                                 </div>
 <!--                                     <div class="form-group longitude latitude" style="display: none;">
                                     <label for="geography_location">Geographic Coordinates</label>
@@ -242,6 +276,16 @@
         height: 160px;
     }*/
 
+    .new-pagination {
+        margin-bottom: -20px;
+        margin-top: -25px;
+        margin-left: 10px;
+    }
+
+    .new-mode {
+        margin-left: 10px;
+    }
+
     div.table-custom table {
         border-collapse: separate;
         border-spacing: 0 5px;
@@ -288,6 +332,78 @@
     .zoomWindow
     { 
         z-index: 9999;
+    }
+
+    #imgtag
+    {
+        position: relative;
+        min-width: 300px;
+        min-height: 300px;
+        float: none;
+/*        border: 3px solid #FFF;*/
+        cursor: crosshair;
+        text-align: center;
+    }
+    .tagview
+    {
+        border: 1px solid #F10303;
+        width: 100px;
+        height: 80px;
+        position: absolute;
+    /*display:none;*/
+        opacity: 0;
+        color: #FFFFFF;
+        text-align: center;
+    }
+    .square
+    {
+        display: block;
+        height: 79px;
+    }
+    .person
+    {
+        height: 80px;
+        background-color: rgba(0, 0, 0, 0.6);
+        border-top: 1px solid #F10303;
+    }
+    #tagit
+    {
+        position: absolute;
+        z-index: 1;
+        top: 0;
+        left: 0;
+        width: 200px;
+        border: 1px solid #D7C7C7;
+        background-color: rgba(0, 0, 0, 0.6);
+        padding: 7px;
+    }
+    #tagit div.text
+    {
+        margin-bottom: 5px;
+    }
+    #tagit input
+    {
+        margin-bottom: 5px;
+    }
+    #tagit input[type=button]
+    {
+        margin-right: 5px;
+    }
+
+    a.taggd__button
+    {
+        cursor: pointer;
+    }
+
+    #tag-image {
+        margin-left: 10px;
+        margin-bottom: 10px;
+    }
+
+    .img-zoom {
+        margin-left: 10px;
+        margin-bottom: 10px;
+        margin-top: 10px;
     }
 
 </style>
@@ -418,6 +534,204 @@
             $(".magnify").jfMagnify();
         });
 
+        var counter = 0;
+        var mouseX = 0;
+        var mouseY = 0;
+        var fileId = {!! $files->first()->id !!};
+
+        $("#imgtag img").click(function(e) { // make sure the image is click
+            var offset = $(this).offset(); // get the div to append the tagging list
+            mouseX = (e.pageX - offset.left); // x and y axis
+            mouseY = (e.pageY - offset.top);
+
+            $('#tagit').remove(); // remove any tagit div first           
+            $('div#imgtag').append('<div id="tagit"><input type="text" name="name" class="form-control input-sm" placeholder="Product Name" id="name"><input type="text" name="weight" class="form-control input-sm" placeholder="Weight" id="weight"><input type="number" name="qty" class="form-control input-sm" placeholder="QTY" id="qty"><input type="number" class="form-control input-sm" placeholder="Total Price" id="total" name="total"><input type="hidden" name="x" id="x" value="'+mouseX+'"><input type="hidden" id="y" name="y" value="'+mouseY+'"><input type="button" name="btnsave" value="Save" id="btnsave"/><input type="button" name="btncancel" value="Cancel" id="btncancel" /></div>');
+            var imgtag = document.getElementById('imgtag');
+            var tagit = document.getElementById('tagit');
+            var tengah = imgtag.clientHeight/2;
+
+            if (mouseY > tengah) {                
+                $('#tagit').css({ top:mouseY-tagit.clientHeight, left:mouseX });          
+            } else {
+                $('#tagit').css({ top:mouseY, left:mouseX });
+            }
+            $('#name').focus();
+
+        });
+
+        $(document).on('click', '#tagit #btnsave', function(e) {
+            e.stopPropagation();
+
+            var time = Math.round(Date.now() / 100);
+
+            if ($('.tag-input[time=' + time + ']').length > 0) {
+                return false;
+            }
+            
+            e.preventDefault();
+            var countOfTextbox = $('.tag-name').length;
+
+            if(countOfTextbox >= 20) {
+                REBEL.smallNotifTemplate('Form is full', '.modal-content', 'error');
+                REBEL.scrollToTop('#modalContent');
+                setTimeout(function(){
+                    REBEL.removeAllMessageAlert();
+                }, 3000);
+                return false;
+            }
+
+            var name = $('#name').val();
+            var weight = $('#weight').val();
+            var qty = $('#qty').val();
+            var total = $('#total').val();
+            mouseX = $('#x').val();
+            mouseY = $('#y').val();
+
+            if (name == false || weight == false || qty == false || total == false)
+            {
+                REBEL.smallNotifTemplate('Not null', '.body', 'error');
+                REBEL.scrollToTop('#modalContent');
+                setTimeout(function(){
+                    REBEL.removeAllMessageAlert();
+                }, 3000);
+                return false;
+            }
+
+            var image = document.getElementById('tag-image');
+            mouseX = mouseX / image.clientWidth;
+            mouseY = mouseY / image.clientHeight;
+
+            taggingSave(name, weight, qty, total, mouseX, mouseY, fileId);
+
+            var className = countOfTextbox+'-new-tag';
+            viewtagsave(name, mouseX, mouseY, className);
+            $('tbody#inputs-show').append('<tr class="tag-input" time=' + time + ' id="input'+countOfTextbox+'"><td><a class="btn btn-box-tool" onclick="deleteTag('+countOfTextbox+')"><i class="fa fa-remove"></i></a></td><td width="300"><input type="text" name="newtag[name][]" class="form-control input-sm tag-name '+countOfTextbox+'new" id="'+countOfTextbox+'|'+mouseX+'|'+mouseY+'" onclick="editTag(this)" onkeyup="editNewTag(this)" value="'+name+'"></td><td width="200"><input type="text" name="newtag[brands][]" class="form-control input-sm" placeholder="Brands"></td><td width="300"><input type="text" list="variants" name="newtag[variants][]" class="form-control input-sm" placeholder="Variants"></td><td width="200"><input type="text" name="newtag[weight][]" class="form-control input-sm" value="'+weight+'" placeholder="Weight"></td><td width="100"><input type="number" name="newtag[qty][]" class="form-control input-sm" value="'+qty+'"></td><td width="200"><input type="number" name="newtag[total][]" class="form-control input-sm" value="'+total+'"><input type="hidden" name="newtag[x][]" value="'+mouseX+'"><input type="hidden" name="newtag[y][]" value="'+mouseY+'"></td></tr>');
+
+            $('#tagit').fadeOut();
+
+        });
+
+        // Cancel the tag box.
+        $(document).on('click', '#tagit #btncancel', function() {
+          $('#tagit').fadeOut();
+        });
+
+        // mouseover the tagboxes that is already there but opacity is 0.
+        $('#tagbox').on('mouseover', '.tagview', function() {
+            var pos = $( this ).position();
+            $(this).css({ opacity: 1.0 }); // div appears when opacity is set to 1.
+        }).on('mouseout', '.tagview', function() {
+            $(this).css({ opacity: 0.0 }); // hide the div by setting opacity to 0.
+        });
+
+        // load the tags for the image when page loads.
+        var img = $('#imgtag').find('img');
+        var id = $(img).attr('alt');
+        viewtag(id);
+        function viewtag(id)
+        {
+          // get the tag list with action remove and tag boxes and place it on the image.
+            var image = document.getElementById('tag-image');
+            var data =[];
+            var options = {};
+            var taggd;
+            var datas = {!! json_encode($files->first()->tag) !!};
+            //$.getJSON( id+"/tagging" , function( datas ) {
+                $.each( datas, function( key, value ) {
+                    if (value.img_x != null || value.img_y != null) {
+                        data.push(
+                            Taggd.Tag.createFromObject({
+                                position: { x: value.img_x, y: value.img_y },
+                                text: value.name,
+                                buttonAttributes: {
+                                    id: value.id+"-tag",
+                                },
+                            })
+                        );
+                    }
+                });
+                taggd = new Taggd(image, options, data);
+            //}, "json");
+        }
+
+        function viewtagsave(name, mouseX, mouseY, className)
+        {
+            var image = document.getElementById('tag-image');
+            var data =[];
+            var options = {};
+            var taggd;
+
+            var data = [
+                Taggd.Tag.createFromObject({
+                    position: { x: mouseX, y: mouseY },
+                    text: name,
+                    buttonAttributes: {
+                        id: className,
+                    },
+                }),
+            ];
+
+            taggd = new Taggd(image, options, data);
+        }
+
+        $('.tag-name').on('click', function(e) {
+            var image = document.getElementById('tag-image');
+            var idArray = e.toElement.id.split('|');
+            var id = idArray[0];
+            var img_x = idArray[1];
+            var img_y = idArray[2];
+            $("#"+id+"popup").css({
+                'display' : 'none',
+            });
+            var options = {};
+            if (img_x != '' || img_y != '') {
+                var data = [
+                    Taggd.Tag.createFromObject({
+                        position: { x: img_x, y: img_y },
+                        text: this.value,
+                        popupAttributes: {
+                            id: id+"popup",
+                        },
+                    }),
+                ];
+            }
+
+            var taggd = new Taggd(image, options, data);
+
+            $("#"+id+"popup").css({
+                'display' : '',
+            });
+
+            $('.'+id+'old').on('keyup', function() {
+                $("#"+id+"popup").html($("."+id+'old').val());
+            });
+        });
+
+        function taggingSave(name, weight, qty, price, x, y, fileId) {
+            $.get( "{{ admin_route_url('tagging.save') }}", { 
+                name : name,
+                weight : weight,
+                quantity : qty,
+                total_price : price,                
+                img_x : x,                
+                img_y : y, 
+                file_id : fileId,               
+            })
+                .success(function( data ) {
+            });
+        } 
+
+        $('#mode-zoom').on('click', function() {
+            $('.show-tag').hide();
+            $('.show-zoom').show();
+            $('.magnify').click();
+        });
+
+        $('#mode-tag').on('click', function() {
+            $('.show-tag').show();
+            $('.show-zoom').hide();
+        });
+
     });
 
     function deleteTagShow(e)
@@ -467,6 +781,50 @@
             return false;
         }
     });
+
+    function deleteTag(e)
+    {
+        if(confirm('Are you sure want to delete this item ?')) {
+            $('#input'+e).remove();
+            $("#"+e+"-new-tag").remove();
+        }
+    }
+
+    function editTag(e)
+    {
+        var image = document.getElementById('tag-image');
+        var idArray = e.id.split('|');
+        var id = idArray[0];
+        var img_x = idArray[1];
+        var img_y = idArray[2];
+        $("#"+id+"newpopup").css({
+            'display' : 'none',
+        });
+        var options = {};
+        var data = [
+            Taggd.Tag.createFromObject({
+                position: { x: img_x, y: img_y },
+                text: e.value,
+                popupAttributes: {
+                    id: id+"newpopup",
+                },
+            }),
+        ];
+
+        var taggd = new Taggd(image, options, data);
+
+        $("#"+id+"newpopup").css({
+            'display' : '',
+        });
+    }
+
+    function editNewTag(e)
+    {
+        var idArray = e.id.split('|');
+        var id = idArray[0];
+        $("#"+id+"newpopup").html($("."+id+'new').val());
+    }
+
 
 </script>
 @stop

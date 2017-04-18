@@ -242,6 +242,11 @@ Route::group([
         '/lucky/winner',
         'Web\LuckyDrawController@winner'
     )->name('lucky.winner');
+
+    Route::get(
+        '/tagging/save',
+        'Web\SnapController@taggingSave'
+    )->name('tagging.save');
 });
 
 Auth::routes();
