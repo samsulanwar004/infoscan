@@ -168,7 +168,7 @@ class SnapController extends BaseApiController
                 $newRules = [
                     'mode_type' => 'required',
                     'snap.tags.*.name' => 'required',
-                    'snap.tags.*.weight' => 'required',
+                    // 'snap.tags.*.weight' => 'required',
                     'snap.tags.*.quantity' => 'present|numeric',
                     'snap.tags.*.total_price' => 'present|numeric',
                 ];
