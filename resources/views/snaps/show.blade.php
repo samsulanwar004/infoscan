@@ -641,7 +641,7 @@
             var datas = {!! json_encode($files->first()->tag) !!};
             //$.getJSON( id+"/tagging" , function( datas ) {
                 $.each( datas, function( key, value ) {
-                    if (value.img_x != null || value.img_y != null) {
+                    if (value.img_x != '' || value.img_y != '') {
                         data.push(
                             Taggd.Tag.createFromObject({
                                 position: { x: value.img_x, y: value.img_y },
