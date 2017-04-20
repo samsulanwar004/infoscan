@@ -82,10 +82,6 @@ elixir(mix => {
     ], 'public/js/datetimepicker.js');
 
     mix.scripts([
-       ltePath + 'plugins/slider/jquery.flexslider.js'
-    ], 'public/js/flexslider.js');
-
-    mix.scripts([
         ltePath + 'plugins/chartjs/Chart.bundle.min.js',
     ], 'public/js/Chart.bundle.min.js');
 
@@ -130,6 +126,5 @@ elixir(mix => {
         'js/datetimepicker.js',
         'js/Chart.bundle.min.js',
         'js/zoom.js',
-        'js/flexslider.js',
     ]);
 });

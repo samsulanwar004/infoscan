@@ -87,18 +87,19 @@
                                                     </div>                    
                                                 </div>
                                                 <div class="show-zoom" style="display: none;">
-                                                    <div id="window" class="magnify img-thumbnail" data-magnified-zone=".mg_zone" data-scale="1.5">
+                                                    <div id="window" class="magnify img-thumbnail" data-magnified-zone=".mg_zone">
                                                         <div class="magnify_glass">
                                                             <div class="mg_ring"></div>
-                                                           <!--  <div class="pm_btn plus"><h2>+</h2></div>
-                                                            <div class="pm_btn minus"><h2>-</h2></div> -->
+                                                            <div class="pm_btn plus"><h3>+</h3></div>
+                                                            <div class="pm_btn minus"><h3>-</h3></div>
                                                             <div class="mg_zone"></div>
                                                         </div>
                                                         <div class="element_to_magnify">
-                                                            <img src="{{ config('filesystems.s3url') . $file->file_path }}" alt="{{ $file->file_code }}" class="img-responsive img-zoom" id="{{$file->id}}">
+                                                            <img src="{{ config('filesystems.s3url') . $files->first()->file_path }}" alt="{{ $files->first()->file_code }}" class="img-responsive img-zoom" id="{{$files->first()->id}}">
                                                         </div>
                                                     </div>
                                                 </div>
+                                                <button id="click-zoom" style="display: none;"></button>
                                             @endif                                                                      
                                         </div>
                                     </div>
@@ -493,7 +494,7 @@
                 return;
             }
 
-            $('tbody#inputs-show').append('<tr id="input-show'+countOfTextbox+'"><td><a class="btn btn-box-tool" onclick="deleteTagShow('+countOfTextbox+')"><i class="fa fa-remove"></i></a></td><td width="300"><input type="text" name="newtag[name][]" class="form-control input-sm tag-name-show" placeholder="Product Name" required="required"></td><td width="300"><input type="text" name="newtag[brands][]" class="form-control input-sm" placeholder="Brands"></td><td width="300"><input type="text" list="variants" name="newtag[variants][]" class="form-control input-sm" placeholder="Variants"></td><td width="100"><input type="number" name="newtag[qty][]" class="form-control input-sm" placeholder="QTY" required="required"></td><td width="200" class="text-right"><input type="number" name="newtag[total][]" class="form-control input-sm" placeholder="Total Price" required="required"><input type="hidden" name="newtag[fileId][]" value="{{ $file->id }}"></td></tr>');
+            $('tbody#inputs-show').append('<tr id="input-show'+countOfTextbox+'"><td><a class="btn btn-box-tool" onclick="deleteTagShow('+countOfTextbox+')"><i class="fa fa-remove"></i></a></td><td width="300"><input type="text" name="newtag[name][]" class="form-control input-sm tag-name-show" placeholder="Product Name" required="required"></td><td width="300"><input type="text" name="newtag[brands][]" class="form-control input-sm" placeholder="Brands"></td><td width="300"><input type="text" list="variants" name="newtag[variants][]" class="form-control input-sm" placeholder="Variants"></td><td width="200"><input type="text" name="newtag[weight][]" class="form-control input-sm" placeholder="Weight"></td><td width="100"><input type="number" name="newtag[qty][]" class="form-control input-sm" placeholder="QTY" required="required"></td><td width="200" class="text-right"><input type="number" name="newtag[total][]" class="form-control input-sm" placeholder="Total Price" required="required"><input type="hidden" name="newtag[fileId][]" value="{{ $file->id }}"></td></tr>');
         });
 
         $('a#remove-show').on('click', function(e) {
@@ -532,6 +533,25 @@
 
         $(".magnify").on('click', function() {
             $(".magnify").jfMagnify();
+        });
+
+        $('#click-zoom').on('click', function() {
+            var scaleNum = 1.5;
+            $(".magnify").jfMagnify();
+            $('.plus').click(function(){
+                scaleNum += .5;
+                if (scaleNum >=3) {
+                    scaleNum = 3;
+                };
+                $(".magnify").data("jfMagnify").scaleMe(scaleNum);
+            });
+            $('.minus').click(function(){
+                scaleNum -= .5;
+                if (scaleNum <=1.5) {
+                    scaleNum = 1.5;
+                };
+                $(".magnify").data("jfMagnify").scaleMe(scaleNum);
+            });
         });
 
         var counter = 0;
@@ -727,7 +747,7 @@
         $('#mode-zoom').on('click', function() {
             $('.show-tag').hide();
             $('.show-zoom').show();
-            $('.magnify').click();
+            $('#click-zoom').click();
         });
 
         $('#mode-tag').on('click', function() {

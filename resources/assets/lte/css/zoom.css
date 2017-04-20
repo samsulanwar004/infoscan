@@ -70,20 +70,21 @@
 	height: 40px;
 	background-color: #fff;
 	border-radius: 50%;
-	
+	cursor: pointer;
 }
-.pm_btn h2{
+.pm_btn h3{
 	text-align: center;
 	user-select: none;
 	cursor: pointer;
-}
-.minus {
-	right:-24px;
-	bottom:30px;
+	margin-top: 3px;
 }
 .plus {
 	right:0px;
-	bottom:-5px;
+    bottom:39px;
+}
+.minus {
+	right:0px;
+	bottom:0px;
 }
 
 .button {
@@ -97,4 +98,3 @@
 	text-indent: -999em;
 	border:solid black 1px;
 }
-
