@@ -80,6 +80,8 @@
                                                 <div class="new-mode">
                                                     <button id="mode-tag" class="btn btn-primary btn-sm"><i class="fa fa-tag" aria-hidden="true"></i></button>
                                                     <button id="mode-zoom" class="btn btn-primary btn-sm"><i class="fa fa-search" aria-hidden="true"></i></button>
+                                                    <button id="mode-crop" class="btn btn-primary btn-sm"><i class="fa fa-crop" aria-hidden="true"></i></button>
+                                                    <button id="crop-button" class="btn btn-primary btn-sm show-crop" style="display: none;"><i class="fa fa-scissors" aria-hidden="true"></i></button>
                                                 </div>
                                                 <div id="imgtag" class="show-tag">
                                                     <img src="{{ config('filesystems.s3url') . $files->first()->file_path }}" alt="{{ $files->first()->file_code }}" class="margin img-thumbnail img-responsive img-zoom"  id="tag-image">
@@ -99,6 +101,9 @@
                                                         </div>
                                                     </div>
                                                 </div>
+                                                <div class="show-crop img-thumbnail margin" style="display: none;">
+                                                    <img src="{{ config('filesystems.s3url') . $files->first()->file_path }}" alt="{{ $files->first()->file_code }}" class="  img-responsive img-crop" id="{{$files->first()->id}}">
+                                                </div>
                                                 <button id="click-zoom" style="display: none;"></button>
                                             @endif                                                                      
                                         </div>
@@ -114,6 +119,7 @@
                         <p class="no-shadow">
 
                         </p>
+                        <div id="result"></div>
                         <form id="snapUpdate" action="{{ admin_route_url('snaps.update', ['id' => $snap->id]) }}"  method="POST">
                         {{ csrf_field() }}
                         {{ method_field('PUT') }}
@@ -151,8 +157,8 @@
                                 </li>
                             </ul>
                             @endif
-                        </div>
-
+                        </div>                       
+                        
                     </div>
 
                     <div class="col-md-2">
@@ -409,6 +415,7 @@
 
 </style>
 <link rel="stylesheet" href="{{ elixirCDN('css/datetimepicker.css') }}" />
+<link rel="stylesheet" href="{{ elixirCDN('css/crop.css') }}" />
 <script src="{{ elixirCDN('js/datetimepicker.js') }}"></script>
 <!-- <script>
   function initMap() {
@@ -433,6 +440,7 @@
 <script src="{{ elixirCDN('js/taggd.js') }}"></script>
 <script src="{{ elixirCDN('js/elevate.js') }}"></script>
 <script src="{{ elixirCDN('js/zoom.js') }}"></script>
+<script src="{{ elixirCDN('js/crop.js') }}" crossorigin="anonymous"></script>
 <script type="text/javascript">
 
     $(document).ready(function() {
@@ -746,6 +754,7 @@
 
         $('#mode-zoom').on('click', function() {
             $('.show-tag').hide();
+            $('.show-crop').hide();
             $('.show-zoom').show();
             $('#click-zoom').click();
         });
@@ -753,9 +762,62 @@
         $('#mode-tag').on('click', function() {
             $('.show-tag').show();
             $('.show-zoom').hide();
+            $('.show-crop').hide();
+        });
+
+        $('#mode-crop').on('click', function() {
+            $('.show-tag').hide();
+            $('.show-zoom').hide();
+            $('.show-crop').show();
+        });
+
+        // start cropping image
+        var $image = $('.img-crop');
+        var $button = $('#crop-button');
+        var $result = $('#result');
+        var croppable = false;
+
+        $image.cropper({
+            movable: false,
+            zoomable: false,
+            viewMode: 1,
+            ready: function () {
+              croppable = true;
+            }
+        });
+
+        $button.on('click', function () {
+            var croppedCanvas;
+            var roundedCanvas;
+
+            if (!croppable) {
+              return;
+            }
+
+            // Crop
+            croppedCanvas = $image.cropper('getCroppedCanvas');
+
+            // Round
+            roundedCanvas = getRoundedCanvas(croppedCanvas);
+
+            // Show
+            // $result.html('<img src="' + roundedCanvas.toDataURL() + '" style="max-width: 100px">');
         });
 
     });
+
+    function getRoundedCanvas(sourceCanvas) {
+      var canvas = document.createElement('canvas');
+      var context = canvas.getContext('2d');
+      var width = sourceCanvas.width;
+      var height = sourceCanvas.height;
+
+      canvas.width = width;
+      canvas.height = height;
+      context.drawImage(sourceCanvas, 0, 0, width, height);
+
+      return canvas;
+    }
 
     function deleteTagShow(e)
     {
