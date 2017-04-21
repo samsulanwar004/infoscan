@@ -21,9 +21,11 @@
                 <h3 class="box-title">
                 </h3>
                 <div class="box-tools pull-right">
-                    <a href="{{ admin_route_url('transaction.index') }}" class="btn btn-box-tool"
-                       data-toggle="tooltip" title="Back">
-                        <i class="fa fa-times"></i></a>
+                    <?php
+                      $back = htmlspecialchars($_SERVER['HTTP_REFERER']);
+                    ?>
+                    <a href="{{ $back }}" class="btn btn-box-tool"><i
+                            class="fa fa-times"></i></a>
                 </div>
             </div>
             <div class="box-body">

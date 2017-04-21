@@ -11,6 +11,11 @@
             <div class="box-header with-border">
                 <h3 class="box-title">
                 </h3>
+                <div class="box-tools-new"> 
+                    <div class="new-pagination">
+                        {{ $transactions->links() }}
+                    </div>                      
+                </div>                 
             </div>
             <div class="box-body">
                 <table class="table table-striped">
@@ -56,6 +61,8 @@
                     @endforelse
                     </tbody>
                 </table>
+
+                {{ $transactions->links() }}
             </div>
         </div>
         <!-- /.box -->
@@ -63,3 +70,18 @@
     </section>
     <!-- /.content -->
 @endsection
+
+@section('footer_scripts')
+
+<style type="text/css">
+    .box-tools-new {
+        position: absolute;
+        top: 5px;
+    }
+
+    .new-pagination {
+        margin-top: -20px;
+    }
+</style>
+
+@stop
