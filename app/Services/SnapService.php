@@ -379,7 +379,9 @@ class SnapService
                 'action' => 'approve',
                 'data' => [
                     'snap_id' => $snaps->id,
+                    'snap_code' => $snaps->request_code,
                     'comment' => $snaps->comment,
+                    'point' => $request->input('point'),
                     'add_tag' => $tags['crowdsource_add'],
                     'edit_tag' => $tags['crowdsource_edit'],
                 ],
@@ -396,7 +398,9 @@ class SnapService
                 'action' => 'reject',
                 'data' => [
                     'snap_id' => $snaps->id,
+                    'snap_code' => $snaps->request_code,
                     'comment' => $snaps->comment,
+                    'point' => $request->input('point'),
                     'add_tag' => $tags['crowdsource_add'],
                     'edit_tag' => $tags['crowdsource_edit'],
                 ],
