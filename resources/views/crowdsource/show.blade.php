@@ -19,7 +19,7 @@
                             <i class="fa fa-calendar"></i>
                         </div>
                         <meta name="csrf-token" content="{{ csrf_token() }}">
-                        <input type="text" class="form-control datepicker" name="filter_date" id="filter-date">                  
+                        <input type="text" class="form-control datepicker" name="filter_date" id="filter-date" @if(isset($date)) value="{{$date}}" @endif>                  
                     </div>
                     <span id="total">Total Action : {{ $data['totalApprove'] + $data['totalReject']}} Total Add : {{ $data['totalAddTag'] }} Total Edit : {{ $data['totalEditTag'] }}</span>
                 </div>
@@ -51,26 +51,16 @@
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         })
-        var start = moment().subtract(29, 'days');
-        var end = moment();
 
         function submit(start, end) {
             var id = '{{ $id }}';
             var start_at = start.format('YYYY-MM-DD');
             var end_at = end.format('YYYY-MM-DD');
 
-            $.post( "/crowdsource/date-filter", { 
-                id : id,
-                start_at: start_at, 
-                end_at: end_at, 
-            }).done(function( data ) {
-                $('.table-activity').html(data);
-            });
+            window.location.href = id+'?start_at='+start_at+'&end_at='+end_at;
         }
 
         $('.datepicker').daterangepicker({
-            startDate: start,
-            endDate: end,
             ranges: {
                'Today': [moment(), moment()],
                'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],

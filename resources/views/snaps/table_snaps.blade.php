@@ -48,7 +48,7 @@
                 </td>
             </tr>
         @empty
-            <td colspan="4"> There is no record for snaps data!</td>
+            <td colspan="6"> There is no record for snaps data!</td>
         @endforelse
     </tbody>
 </table>

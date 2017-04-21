@@ -135,6 +135,8 @@ class SnapService
             $query->where('user_id', '=', $userId);
         }
 
+        $query->orderBy('created_at', 'DESC');
+
 
         return $query->paginate(50);
     }
@@ -174,6 +176,8 @@ class SnapService
         if ($userId != null) {
             $query->where('user_id', '=', $userId);
         }
+
+        $query->orderBy('created_at', 'DESC');
 
         $r = $query->paginate(200);
 
@@ -300,6 +304,7 @@ class SnapService
             ->with(array('files' => function($query) {
                 $query->where('file_mimes', 'like', 'image%');
             }))
+            ->orderBy('created_at', 'DESC')
             ->paginate(50) :
             Snap::whereHas('member', function ($query) use ($search) {
                 $query->where('name', 'like', '%'.$search.'%')
@@ -309,6 +314,7 @@ class SnapService
                 $query->where('file_mimes', 'like', 'image%');
             }))
             ->where('user_id', '=', $userId)
+            ->orderBy('created_at', 'DESC')
             ->paginate(50);
     }
 
@@ -373,7 +379,9 @@ class SnapService
                 'action' => 'approve',
                 'data' => [
                     'snap_id' => $snaps->id,
+                    'snap_code' => $snaps->request_code,
                     'comment' => $snaps->comment,
+                    'point' => $request->input('point'),
                     'add_tag' => $tags['crowdsource_add'],
                     'edit_tag' => $tags['crowdsource_edit'],
                 ],
@@ -390,7 +398,9 @@ class SnapService
                 'action' => 'reject',
                 'data' => [
                     'snap_id' => $snaps->id,
+                    'snap_code' => $snaps->request_code,
                     'comment' => $snaps->comment,
+                    'point' => $request->input('point'),
                     'add_tag' => $tags['crowdsource_add'],
                     'edit_tag' => $tags['crowdsource_edit'],
                 ],

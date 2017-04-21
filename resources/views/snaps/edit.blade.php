@@ -2,6 +2,7 @@
     {{ csrf_field() }}
     {{ method_field('PUT') }}
     <input type="hidden" name="mode" value="confirm">
+    <input type="hidden" name="point" id="point">
     <div class="modal-header">
         <a class="close btn-modal-close" data-dismiss="modal">&times;</a>
         <h4><i class="fa fa-file-o fa-btn"></i> <span class="action-title">Snap </span> Confirmation</h4>
@@ -58,7 +59,7 @@
               <tbody>
                   <tr>
                     <td>{{ $snap->estimated_point }}</td>
-                    <td>{{ $fixedPoint }}</td>
+                    <td><span id="fixed-point">{{ $fixedPoint }}</span></td>
                   </tr>
               </tbody>
             </table>
@@ -113,6 +114,9 @@
         $('#approve').attr('disabled', 'disabled');
         $('#reject').attr('disabled', 'disabled');
       }
+
+      var fixed = $('#fixed-point').html();
+      $('#point').val(fixed);
   });
 
 </script>
