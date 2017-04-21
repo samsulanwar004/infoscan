@@ -415,7 +415,7 @@
 
 </style>
 <link rel="stylesheet" href="{{ elixirCDN('css/datetimepicker.css') }}" />
-<link rel="stylesheet" href="{{ elixirCDN('css/crop.css') }}" />
+<!-- <link rel="stylesheet" href="{{ elixirCDN('css/crop.css') }}" /> -->
 <script src="{{ elixirCDN('js/datetimepicker.js') }}"></script>
 <!-- <script>
   function initMap() {
@@ -440,7 +440,7 @@
 <script src="{{ elixirCDN('js/taggd.js') }}"></script>
 <script src="{{ elixirCDN('js/elevate.js') }}"></script>
 <script src="{{ elixirCDN('js/zoom.js') }}"></script>
-<script src="{{ elixirCDN('js/crop.js') }}" crossorigin="anonymous"></script>
+<!-- <script src="{{ elixirCDN('js/crop.js') }}" crossorigin="anonymous"></script> -->
 <script type="text/javascript">
 
     $(document).ready(function() {
