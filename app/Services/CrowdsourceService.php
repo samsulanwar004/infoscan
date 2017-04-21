@@ -33,7 +33,7 @@ class CrowdsourceService
 	{
 		$crowdsource = $this->getCrowdsourceById($id);
 
-		return $crowdsource->crowdsourceActivities;
+		return $crowdsource->crowdsourceActivities()->paginate(50);
 	}
 
 	public function getCrowdsourceActivityById($id)
@@ -41,20 +41,17 @@ class CrowdsourceService
 		return CrowdsourceActivity::where('id', $id)->first();
 	}
 
-    public function getCrowdsourceActivityByFilter($request)
+    public function getCrowdsourceActivityByFilter($request, $id)
     {
-        $id = $request->input('id');
-        $start = $request->input('start_at');
-        $end = $request->input('end_at');
+        $crowdsource = $this->getCrowdsourceById($id);
 
-        $activities = $this->getCrowdsourceActivityByUserId($id);
+        $startAt = $request->input('start_at');
+        $endAt = $request->input('end_at');
 
-        $activities = $activities->filter(function($value, $Key) use ($start, $end) {
-            return $value->created_at->format('Y-m-d') >= $start &&
-                    $value->created_at->format('Y-m-d') <= $end;
-        });
-
-        return $activities;
+        return $crowdsource->crowdsourceActivities()
+            ->whereDate('created_at', '>=', $startAt)
+            ->whereDate('created_at', '<=', $endAt)
+            ->paginate(50);
     }
 
     public function getCalculateCrowdsource($activities)

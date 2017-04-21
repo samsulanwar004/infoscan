@@ -2,7 +2,9 @@
     <thead>
     <tr>
         <th width="100">Id Snap</th>
+        <th>Snap Code</th>
         <th>Action</th>
+        <th>Point</th>
         <th>Comment</th>
         <th>Add Tag</th>
         <th>Edit Tag</th>
@@ -21,7 +23,13 @@
                 {{ $extract->data->snap_id }}
             </td>
             <td>
+                {{ isset($extract->snap_code) ? $extract->snap_code : '' }}
+            </td>
+            <td>
                 {{ $extract->action }}
+            </td>
+            <td>
+                {{ isset($extract->point) ? $extract->point : '' }}
             </td>
             <td>
                 {{ $extract->data->comment }}
@@ -49,12 +57,5 @@
     @endforelse
     </tbody>
 </table>
-<script type="text/javascript">
-    loadTotal();
-    function loadTotal()
-    {
-       document.getElementById('total').innerHTML = "Total Action : {{ $data['totalApprove'] + $data['totalReject']}} Total Add : {{ $data['totalAddTag'] }} Total Edit : {{ $data['totalEditTag'] }}";
 
-       document.getElementById('total-assign').innerHTML = "Total Assign : {{ $assign }}";
-    }
-</script>
+{{ $activities->links() }}
