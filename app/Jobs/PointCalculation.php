@@ -61,14 +61,14 @@ class PointCalculation implements ShouldQueue
 
         $memberService = (new MemberService);
         $member = $memberService->getMemberByCode($member);
-        $point = (new TransactionService)->getCreditMember($member->member_code);
+        $pointMember = (new TransactionService)->getCreditMember($member->member_code);
         $memberService = $memberService->getLevelByMemberId($member->id);
         $levelId = $memberService['level_id'];
         $level = (new PointService)->getLevel($levelId);
         $levelArray = explode(' ', $level->name);
 
-        if ($member->temporary_point != $point || $member->temporary_level != $levelArray[1]) {
-            $member->temporary_point = $point;
+        if ($member->temporary_point != $pointMember || $member->temporary_level != $levelArray[1]) {
+            $member->temporary_point = $pointMember;
             $member->temporary_level = $levelArray[1];
 
             $member->update();
