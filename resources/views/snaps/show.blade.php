@@ -21,7 +21,7 @@
 
                 <div class="box-tools pull-right">
                     <?php
-                      $back = htmlspecialchars($_SERVER['HTTP_REFERER']);
+                      $back = isset($_SERVER['HTTP_REFERER']) ? htmlspecialchars($_SERVER['HTTP_REFERER']) : '/snaps';
                     ?>
                     <meta name="csrf-token" content="{{ csrf_token() }}">
                     <a href="{{ $back }}" class="btn btn-box-tool"><i
