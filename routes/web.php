@@ -247,6 +247,11 @@ Route::group([
         '/tagging/save',
         'Web\SnapController@taggingSave'
     )->name('tagging.save');
+
+    Route::post(
+        '/crop/upload',
+        'Web\SnapController@cropUpload'
+    )->name('crop.upload');
 });
 
 Auth::routes();
