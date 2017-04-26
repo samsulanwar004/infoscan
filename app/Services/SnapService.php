@@ -733,7 +733,11 @@ class SnapService
         ];
 
         // Save estimated point calculate
-        $this->saveEstimatedPoint($dataSnap);
+        $estimatedPoint = $this->saveEstimatedPoint($dataSnap);
+
+        $dataPoint = [
+            'estimated_point' => $estimatedPoint,
+        ];
 
         // Save transaction
         event(new TransactionEvent($member->member_code, $transactionType, $snapId));
@@ -741,7 +745,7 @@ class SnapService
         //build data to save member log
         $data = [
             'action' => $request->input('snap_type'),
-            'data' => $dataSnap,
+            'data' => array_merge($dataSnap, $dataPoint),
         ];
 
         $data = json_encode($data);
@@ -805,7 +809,11 @@ class SnapService
             ];
 
             // Save estimated point calculate
-            $this->saveEstimatedPoint($dataSnap);
+            $estimatedPoint = $this->saveEstimatedPoint($dataSnap);
+
+            $dataPoint = [
+                'estimated_point' => $estimatedPoint,
+            ];
 
             // Save transaction
             event(new TransactionEvent($member->member_code, $transactionType, $snapId));
@@ -813,7 +821,7 @@ class SnapService
             //build data to save member log
             $data = [
                 'action' => $request->input('snap_type'),
-                'data' => $dataSnap,
+                'data' => array_merge($dataSnap, $dataPoint),
             ];
 
             $data = json_encode($data);
@@ -870,7 +878,11 @@ class SnapService
             ];
 
             // Save estimated point calculate
-            $this->saveEstimatedPoint($dataSnap);
+            $estimatedPoint = $this->saveEstimatedPoint($dataSnap);
+
+            $dataPoint = [
+                'estimated_point' => $estimatedPoint,
+            ];
 
             // Save transaction
             event(new TransactionEvent($member->member_code, $transactionType, $snapId));
@@ -878,7 +890,7 @@ class SnapService
             //build data to save member log
             $data = [
                 'action' => $request->input('snap_type'),
-                'data' => $dataSnap,
+                'data' => array_merge($dataSnap, $dataPoint),
             ];
 
             $data = json_encode($data);
@@ -929,7 +941,11 @@ class SnapService
             ];
 
             // Save estimated point calculate
-            $this->saveEstimatedPoint($dataSnap);
+            $estimatedPoint = $this->saveEstimatedPoint($dataSnap);
+
+            $dataPoint = [
+                'estimated_point' => $estimatedPoint,
+            ];
 
             // Save transaction
             event(new TransactionEvent($member->member_code, $transactionType, $snapId));
@@ -937,7 +953,7 @@ class SnapService
             //build data to save member log
             $data = [
                 'action' => $request->input('snap_type'),
-                'data' => $dataSnap,
+                'data' => array_merge($dataSnap, $dataPoint),
             ];
 
             $data = json_encode($data);
@@ -1010,7 +1026,11 @@ class SnapService
             ];
 
             // Save estimated point calculate
-            $this->saveEstimatedPoint($dataSnap);
+            $estimatedPoint = $this->saveEstimatedPoint($dataSnap);
+
+            $dataPoint = [
+                'estimated_point' => $estimatedPoint,
+            ];
 
             // Save transaction
             event(new TransactionEvent($member->member_code, $transactionType, $snapId));
@@ -1018,7 +1038,7 @@ class SnapService
             //build data to save member log
             $data = [
                 'action' => $request->input('snap_type'),
-                'data' => $dataSnap,
+                'data' => array_merge($dataSnap, $dataPoint),
             ];
 
             $data = json_encode($data);
@@ -1091,7 +1111,11 @@ class SnapService
             ];
 
             // Save estimated point calculate
-            $this->saveEstimatedPoint($dataSnap);
+            $estimatedPoint = $this->saveEstimatedPoint($dataSnap);
+
+            $dataPoint = [
+                'estimated_point' => $estimatedPoint,
+            ];
 
             // Save transaction
             event(new TransactionEvent($member->member_code, $transactionType, $snapId));
@@ -1099,7 +1123,7 @@ class SnapService
             //build data to save member log
             $data = [
                 'action' => $request->input('snap_type'),
-                'data' => $dataSnap,
+                'data' => array_merge($dataSnap, $dataPoint),
             ];
 
             $data = json_encode($data);
@@ -1150,7 +1174,11 @@ class SnapService
             ];
 
             // Save estimated point calculate
-            $this->saveEstimatedPoint($dataSnap);
+            $estimatedPoint = $this->saveEstimatedPoint($dataSnap);
+
+            $dataPoint = [
+                'estimated_point' => $estimatedPoint,
+            ];
 
             // Save transaction
             event(new TransactionEvent($member->member_code, $transactionType, $snapId));
@@ -1158,7 +1186,7 @@ class SnapService
             //build data to save member log
             $data = [
                 'action' => $request->input('snap_type'),
-                'data' => $dataSnap,
+                'data' => array_merge($dataSnap, $dataPoint),
             ];
 
             $data = json_encode($data);
@@ -1571,7 +1599,7 @@ class SnapService
 
         if ($mode == 'tags' || $mode == 'input') {
             if ($tags == 0) {
-                $total = $point['percent'] * $tags;
+                $total = $point['percent'];
             } else {
                 $total = $point['point'] * $tags;
             }
@@ -1585,7 +1613,7 @@ class SnapService
 
         $this->setEstimatedPoint($total);
 
-        return true;
+        return $total;
     }
 
     private function setTags($value)

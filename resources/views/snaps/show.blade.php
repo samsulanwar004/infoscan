@@ -8,7 +8,8 @@
     ])
 
     <!-- Main content -->
-    <section class="content">        
+    <section class="content">   
+    
         <!-- Default box -->
         <div class="box">
             <div class="box-header with-border form-inline" style="overflow: hidden; height: 0px; padding: 0px; margin-bottom: 0px;">
@@ -20,15 +21,20 @@
 
                 <div class="box-tools pull-right">
                     <?php
-                      $back = htmlspecialchars($_SERVER['HTTP_REFERER']);
+                      $back = isset($_SERVER['HTTP_REFERER']) ? htmlspecialchars($_SERVER['HTTP_REFERER']) : '/snaps';
                     ?>
+                    <meta name="csrf-token" content="{{ csrf_token() }}">
                     <a href="{{ $back }}" class="btn btn-box-tool"><i
                             class="fa fa-times"></i></a>
                 </div>
             </div>
             <div class="box-body">
                 <div class="row">
-
+                    <div id="loading" style="display: none;">
+                      <button type="button" class="btn btn-default btn-lrg">
+                        <i class="fa fa-spin fa-refresh"></i>&nbsp; Please wait...
+                      </button>
+                    </div>
                     <div class="col-md-4">
                         <p class="no-shadow">
 
@@ -118,8 +124,26 @@
                     <div class="col-md-6">
                         <p class="no-shadow">
 
-                        </p>
-                        <div id="result"></div>
+                        </p>                        
+                        <div class="timeline-item ">
+                            <ul class="timeline timeline-inverse">
+                                <li class="no-margin-right">
+                                  <i class="fa fa-files-o bg-blue"></i>
+
+                                  <div class="timeline-item no-margin-right">
+
+                                    <h3 class="timeline-header">Image Crop</h3>
+
+                                    <div class="timeline-body">
+                                        <!-- <div id="result"></div> -->
+                                        @foreach($files->first()->crops as $crop)
+                                            <img src="{{ $crop->file_crop_path }}" style="max-width: 100px">
+                                        @endforeach
+                                    </div>
+                                  </div>
+                                </li>
+                            </ul>
+                        </div>
                         <form id="snapUpdate" action="{{ admin_route_url('snaps.update', ['id' => $snap->id]) }}"  method="POST">
                         {{ csrf_field() }}
                         {{ method_field('PUT') }}
@@ -131,7 +155,7 @@
                                   <div class="timeline-item no-margin-right">
                                     <span class="time"><i class="fa fa-clock-o"></i> {{ $snap->created_at->diffForHumans() }}</span>
 
-                                    <h3 class="timeline-header"><a href="{{ admin_route_url('members.show', ['id' => $snap->member->id]) }}">{{ $snap->member->name }}</a> detail product</h3>
+                                    <h3 class="timeline-header">Detail product</h3>
 
                                     <div class="timeline-body snaps-detail">
                                       @include('snaps.show_detail', ['snap' => $snap])
@@ -413,6 +437,15 @@
         margin-top: 10px;
     }
 
+    #loading {
+        top: 50%;
+        left: 50%;
+        border: 1px solid #ccc;
+        background-color: #f3f3f3;
+        position:fixed;
+        z-index: 1;
+    }
+
 </style>
 <link rel="stylesheet" href="{{ elixirCDN('css/datetimepicker.css') }}" />
 <link rel="stylesheet" href="{{ elixirCDN('css/crop.css') }}" />
@@ -444,6 +477,11 @@
 <script type="text/javascript">
 
     $(document).ready(function() {
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
 
         $('#snapUpdate').on('submit', function (e) {
             e.preventDefault();
@@ -625,7 +663,7 @@
                 return false;
             }
 
-            var image = document.getElementById('tag-image');
+            var image = document.getElementById('tag-image');            
             mouseX = mouseX / image.clientWidth;
             mouseY = mouseY / image.clientHeight;
 
@@ -669,7 +707,7 @@
             var datas = {!! json_encode($files->first()->tag) !!};
             //$.getJSON( id+"/tagging" , function( datas ) {
                 $.each( datas, function( key, value ) {
-                    if (value.img_x != '' || value.img_y != '') {
+                    if (value.img_x != '' && value.img_y != '') {
                         data.push(
                             Taggd.Tag.createFromObject({
                                 position: { x: value.img_x, y: value.img_y },
@@ -800,8 +838,22 @@
             // Round
             roundedCanvas = getRoundedCanvas(croppedCanvas);
 
-            // Show
-            // $result.html('<img src="' + roundedCanvas.toDataURL() + '" style="max-width: 100px">');
+            var blob = dataURItoBlob(roundedCanvas.toDataURL());
+            var fd = new FormData();
+            fd.append('image', blob);
+            fd.append('file_id', fileId);
+            $('#loading').show();
+            $.ajax({
+                type: 'POST',
+                url: "{{ admin_route_url('crop.upload') }}",
+                data: fd,
+                processData: false,
+                contentType: false
+            }).success(function(data) {
+                $result.html('<img src="' + data.message + '" style="max-width: 100px">');
+            }).complete(function(data) {
+                $('#loading').hide();
+            });
         });
 
     });
@@ -817,6 +869,15 @@
       context.drawImage(sourceCanvas, 0, 0, width, height);
 
       return canvas;
+    }
+
+    function dataURItoBlob(dataURI) {
+        var binary = atob(dataURI.split(',')[1]);
+        var array = [];
+        for(var i = 0; i < binary.length; i++) {
+            array.push(binary.charCodeAt(i));
+        }
+        return new Blob([new Uint8Array(array)], {type: 'image/jpeg'});
     }
 
     function deleteTagShow(e)
