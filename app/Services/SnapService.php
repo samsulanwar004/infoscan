@@ -114,7 +114,7 @@ class SnapService
             $query->whereHas('member', function ($query) use ($search) {
                 $query->where('name', 'like', '%'.$search.'%')
                 ->orWhere('email','like','%'.$search.'%');
-            });
+            });            
         } else {
             $query->with('member');
         }        
@@ -304,6 +304,7 @@ class SnapService
             ->with(array('files' => function($query) {
                 $query->where('file_mimes', 'like', 'image%');
             }))
+            ->orWhere('request_code', $search)
             ->orderBy('created_at', 'DESC')
             ->paginate(50) :
             Snap::whereHas('member', function ($query) use ($search) {
@@ -314,6 +315,7 @@ class SnapService
                 $query->where('file_mimes', 'like', 'image%');
             }))
             ->where('user_id', '=', $userId)
+            ->orWhere('request_code', $search)
             ->orderBy('created_at', 'DESC')
             ->paginate(50);
     }
@@ -1763,6 +1765,34 @@ class SnapService
             ->whereDate('created_at', '>=', $date)
             ->whereDate('created_at', '<=', $nextDay)
             ->count();
+    }
+
+    public function saveImageCrop($request)
+    {
+        $randomName = strtolower(str_random(10));
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+            $filename = sprintf(
+                "%s-%s.%s",
+                $randomName,
+                date('Ymdhis'),
+                $file->getClientOriginalExtension()
+            );
+
+            $s3 = \Storage::disk('s3');
+            $filePath = 'crops/' . $filename;
+            $s3->put($filePath, file_get_contents($file), 'public');
+
+            $link = $this->completeImageLink('crops/' . $filename);
+
+            $crop = new \App\SnapCrop;
+            $crop->file_crop_path = $link;
+            $crop->file()->associate($request->input('file_id'));
+            $crop->save();
+
+            return $link;
+
+        }
     }
 
 }
