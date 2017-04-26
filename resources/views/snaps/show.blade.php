@@ -136,9 +136,6 @@
 
                                     <div class="timeline-body">
                                         <!-- <div id="result"></div> -->
-                                        <!-- @foreach($files->first()->crops as $crop)
-                                            <img src="{{ $crop->file_crop_path }}" style="max-width: 100px">
-                                        @endforeach -->
                                     </div>
                                   </div>
                                 </li>
