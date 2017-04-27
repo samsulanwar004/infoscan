@@ -35,7 +35,7 @@
                         <i class="fa fa-spin fa-refresh"></i>&nbsp; Please wait...
                       </button>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-4" id="side-left">
                         <p class="no-shadow">
 
                         </p>
@@ -64,7 +64,7 @@
                                                         </div>
                                                     @endif
                                                 @elseif ($file->mode_type == 'image')
-                                                    <div id="window" class="magnify img-thumbnail" data-magnified-zone=".mg_zone" data-scale="1.5" style="padding-right: 10px;">
+                                                    <div id="window" class="magnify img-thumbnail" data-magnified-zone=".mg_zone" data-scale="2" style="padding-right: 10px;">
                                                         <div class="magnify_glass">
                                                             <div class="mg_ring"></div>
                                                            <!--  <div class="pm_btn plus"><h2>+</h2></div>
@@ -87,7 +87,7 @@
                                                     <button id="mode-tag" class="btn btn-primary btn-sm"><i class="fa fa-tag" aria-hidden="true"></i></button>
                                                     <button id="mode-zoom" class="btn btn-primary btn-sm"><i class="fa fa-search" aria-hidden="true"></i></button>
                                                     <button id="mode-crop" class="btn btn-primary btn-sm"><i class="fa fa-crop" aria-hidden="true"></i></button>
-                                                    <button id="crop-button" class="btn btn-primary btn-sm show-crop" style="display: none;"><i class="fa fa-scissors" aria-hidden="true"></i></button>
+                                                    <!-- <button id="crop-button" class="btn btn-primary btn-sm show-crop" style="display: none;"><i class="fa fa-scissors" aria-hidden="true"></i></button> -->
                                                 </div>
                                                 <div id="imgtag" class="show-tag">
                                                     <img src="{{ config('filesystems.s3url') . $files->first()->file_path }}" alt="{{ $files->first()->file_code }}" class="margin img-thumbnail img-responsive img-zoom"  id="tag-image">
@@ -124,23 +124,8 @@
                     <div class="col-md-6">
                         <p class="no-shadow">
 
-                        </p>                        
-                        <div class="timeline-item ">
-                            <ul class="timeline timeline-inverse">
-                                <li class="no-margin-right">
-                                  <i class="fa fa-files-o bg-blue"></i>
-
-                                  <div class="timeline-item no-margin-right">
-
-                                    <h3 class="timeline-header">Image Crop</h3>
-
-                                    <div class="timeline-body">
-                                        <!-- <div id="result"></div> -->
-                                    </div>
-                                  </div>
-                                </li>
-                            </ul>
-                        </div>
+                        </p>                       
+                        
                         <form id="snapUpdate" action="{{ admin_route_url('snaps.update', ['id' => $snap->id]) }}"  method="POST">
                         {{ csrf_field() }}
                         {{ method_field('PUT') }}
@@ -443,6 +428,32 @@
         z-index: 1;
     }
 
+    #crop-result {
+        border: 5px solid #ccc;
+        padding: 5px;
+        height: 124px;
+        width: 100%;
+    }
+
+    #crop-img {
+        height: 100px;
+        width: 100px;
+        margin: 2px;
+        cursor: move;
+    }
+
+    #side-left {
+        margin-right: -35px;
+    }
+
+    #kotak-drop {
+        float: left;
+        width: 30px;
+        height: 30px;
+        background-color: white;
+        margin-right: -35px;
+    }
+
 </style>
 <link rel="stylesheet" href="{{ elixirCDN('css/datetimepicker.css') }}" />
 <link rel="stylesheet" href="{{ elixirCDN('css/crop.css') }}" />
@@ -668,7 +679,7 @@
 
             var className = countOfTextbox+'-new-tag';
             viewtagsave(name, mouseX, mouseY, className);
-            $('tbody#inputs-show').append('<tr class="tag-input" time=' + time + ' id="input'+countOfTextbox+'"><td><a class="btn btn-box-tool" onclick="deleteTag('+countOfTextbox+')"><i class="fa fa-remove"></i></a></td><td width="300"><input type="text" name="newtag[name][]" class="form-control input-sm tag-name '+countOfTextbox+'new" id="'+countOfTextbox+'|'+mouseX+'|'+mouseY+'" onclick="editTag(this)" onkeyup="editNewTag(this)" value="'+name+'"></td><td width="200"><input type="text" name="newtag[brands][]" class="form-control input-sm" placeholder="Brands"></td><td width="300"><input type="text" list="variants" name="newtag[variants][]" class="form-control input-sm" placeholder="Variants"></td><td width="200"><input type="text" name="newtag[weight][]" class="form-control input-sm" value="'+weight+'" placeholder="Weight"></td><td width="100"><input type="number" name="newtag[qty][]" class="form-control input-sm" value="'+qty+'"></td><td width="200"><input type="number" name="newtag[total][]" class="form-control input-sm" value="'+total+'"><input type="hidden" name="newtag[x][]" value="'+mouseX+'"><input type="hidden" name="newtag[y][]" value="'+mouseY+'"></td></tr>');
+            $('tbody#inputs-show').append('<tr class="tag-input" time=' + time + ' id="input'+countOfTextbox+'"><td><a class="btn btn-box-tool" onclick="deleteTag('+countOfTextbox+')"><i class="fa fa-remove"></i></a></td><td><div id="kotak-drop" ondrop="drop(event)" ondragover="allowDrop(event)"></div></td><td width="300"><input type="text" name="newtag[name][]" class="form-control input-sm tag-name '+countOfTextbox+'new" id="'+countOfTextbox+'|'+mouseX+'|'+mouseY+'" onclick="editTag(this)" onkeyup="editNewTag(this)" value="'+name+'"></td><td width="200"><input type="text" name="newtag[brands][]" class="form-control input-sm" placeholder="Brands"></td><td width="300"><input type="text" list="variants" name="newtag[variants][]" class="form-control input-sm" placeholder="Variants"></td><td width="200"><input type="text" name="newtag[weight][]" class="form-control input-sm" value="'+weight+'" placeholder="Weight"></td><td width="100"><input type="number" name="newtag[qty][]" class="form-control input-sm" value="'+qty+'"></td><td width="200"><input type="number" name="newtag[total][]" class="form-control input-sm" value="'+total+'"><input type="hidden" name="newtag[x][]" value="'+mouseX+'"><input type="hidden" name="newtag[y][]" value="'+mouseY+'"></td></tr>');
 
             $('#tagit').fadeOut();
 
@@ -809,51 +820,128 @@
         // start cropping image
         var $image = $('.img-crop');
         var $button = $('#crop-button');
-        var $result = $('#result');
+        var $result = $('#crop-result');
         var croppable = false;
 
         $image.cropper({
             movable: false,
             zoomable: false,
             viewMode: 1,
+            autoCrop: false,
             ready: function () {
               croppable = true;
+            },
+            cropstart: function() {
+                $('#btn-drag').remove();
+            },
+            cropend: function() {
+                var croppedCanvas;
+                var roundedCanvas;
+
+                if (!croppable) {
+                  return;
+                }
+
+                // Crop
+                croppedCanvas = $image.cropper('getCroppedCanvas');
+
+                // Round
+                roundedCanvas = getRoundedCanvas(croppedCanvas);
+
+                //Show
+                //$result.append('<img id="crop-img" src="' + roundedCanvas.toDataURL() + '">');
+                /*$result.append('<img id="crop-img" src="' + roundedCanvas.toDataURL() + '" draggable="true" ondragstart="drag(event)" id="drag1">');*/
+                //var _btn = '<button id="btn-drag" data-img="'+roundedCanvas.toDataURL()+'" draggable="true" ondragstart="drag(event)" id="drag1"><i class"fa fa-cut"></i>Move</button>'; 
+                
+                var _img = '<img id="crop-img" class="img-dragging" src="' + roundedCanvas.toDataURL() + '" draggable="true" ondragstart="drag(event)">';
+                if($('.img-dragging').length > 0) {
+                    $('.img-dragging').attr('src', roundedCanvas.toDataURL());
+                } else {
+                    $('.cropper-crop-box').append(_img);
+                }
+                
             }
         });
 
-        $button.on('click', function () {
-            var croppedCanvas;
-            var roundedCanvas;
+        // $button.on('click', function () {
+        //     var croppedCanvas;
+        //     var roundedCanvas;
 
-            if (!croppable) {
-              return;
-            }
+        //     if (!croppable) {
+        //       return;
+        //     }
 
-            // Crop
-            croppedCanvas = $image.cropper('getCroppedCanvas');
+        //     // Crop
+        //     croppedCanvas = $image.cropper('getCroppedCanvas');
 
-            // Round
-            roundedCanvas = getRoundedCanvas(croppedCanvas);
+        //     // Round
+        //     roundedCanvas = getRoundedCanvas(croppedCanvas);
 
-            var blob = dataURItoBlob(roundedCanvas.toDataURL());
-            var fd = new FormData();
-            fd.append('image', blob);
-            fd.append('file_id', fileId);
-            $('#loading').show();
-            $.ajax({
-                type: 'POST',
-                url: "{{ admin_route_url('crop.upload') }}",
-                data: fd,
-                processData: false,
-                contentType: false
-            }).success(function(data) {
-                $result.html('<img src="' + data.message + '" style="max-width: 100px">');
-            }).complete(function(data) {
-                $('#loading').hide();
-            });
-        });
+        //     //Show
+        //     //$result.append('<img id="crop-img" src="' + roundedCanvas.toDataURL() + '">');
+        //     $result.append('<img id="crop-img" src="' + roundedCanvas.toDataURL() + '" draggable="true" ondragstart="drag(event)" id="drag1">');
+
+        //     // var blob = dataURItoBlob(roundedCanvas.toDataURL());
+        //     // var fd = new FormData();
+        //     // fd.append('image', blob);
+        //     // fd.append('file_id', fileId);
+        //     // $('#loading').show();
+        //     // $.ajax({
+        //     //     type: 'POST',
+        //     //     url: "{{ admin_route_url('crop.upload') }}",
+        //     //     data: fd,
+        //     //     processData: false,
+        //     //     contentType: false
+        //     // }).success(function(data) {
+        //     //     $result.html('<img src="' + data.message + '" style="max-width: 100px">');
+        //     // }).complete(function(data) {
+        //     //     $('#loading').hide();
+        //     // });
+        // });
 
     });
+
+    function allowDrop(ev) {
+        ev.preventDefault();
+    }
+
+    var dragElement = null;
+    function drag(ev) {
+        dragElement = this;
+        //ev.originalEvent.dataTransfer.effectAllowed = 'move';
+        ev.dataTransfer.setData("text", ev.target.id);
+    }
+
+    function drop(ev) { 
+
+        ev.preventDefault();
+        var data = ev.dataTransfer.getData("text");
+        var img = ev.target.appendChild(document.getElementById(data));
+        ev.target.ondrop = '';
+        ev.target.ondragover = '';
+        img.style.width += "25px";
+        img.style.height += "25px";
+
+        $('.img-dragging').removeClass('img-dragging').addClass('img-dropped');
+
+        /*var image = $('#'+data).attr('data-img');
+        this.innerHTML = '<img src="'+image+'">';*/
+        
+        var blob = dataURItoBlob(img.src);
+        var fd = new FormData();
+        fd.append('image', blob);
+        $('#loading').show();
+        $.ajax({
+            type: 'POST',
+            url: "{{ admin_route_url('crop.upload') }}",
+            data: fd,
+            processData: false,
+            contentType: false
+        }).success(function(data) {
+            $('#crop-'+ev.target.className).val(data.message);
+            $('#loading').hide();
+        });
+    }
 
     function getRoundedCanvas(sourceCanvas) {
       var canvas = document.createElement('canvas');

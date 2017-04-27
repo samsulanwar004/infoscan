@@ -42,7 +42,16 @@
             </div>
             <div class="col-sm-6 invoice-col">
                 <div class="radio" id="wording"></div>
-                <div class="radio" id="reason"></div>
+                <select class="form-control" name="reason" id="reason" style="display: none;">
+                  <option value="">Pilih Alasan</option>
+                  @foreach($reasons as $reason)
+                    <option value="{{ $reason->id }}">{{ $reason->setting_value }}</option>
+                  @endforeach   
+                  @if($admin)           
+                    <option value="other">Lain-lain...</option>
+                  @endif
+                </select>
+                <div id="other"></div>
             </div>
           </div>
           <!-- /.row -->
@@ -82,7 +91,11 @@
         </div>
     </div>
 </form>
-
+<style type="text/css">
+  #other {
+    margin-top: 10px;
+  }
+</style>
 <script type="text/javascript">
   $(document).ready(function() {
       $('#modalForm').on('submit', function (e) {
@@ -98,13 +111,15 @@
       $('#approve').on('click', function() {
         $('.submit-to-server').removeAttr('disabled');
         $('#wording').html('<label><input name="comment" type="radio" value="Selamat, klaim sebesar {{ $fixedPoint }} poin telah berhasil! Kluk!" required="required">Selamat, klaim sebesar {{ $fixedPoint }} poin telah berhasil! Kluk!</label><label><input name="comment" value="Oops, data belanja kamu belum lengkap. Kamu dapat {{ $fixedPoint }} poin! Kluk!" type="radio" required="required">Oops, data belanja kamu belum lengkap. Kamu dapat {{ $fixedPoint }} poin! Kluk!</label>');
-        $('#reason').html('<select class="form-control" name="reason"><option value="">Pilih Alasan</option><option>Rekaman suara tidak jelas</option><option>Tidak menyebutkan nama produk</option><option>Tidak menyebutkan harga produk</option><option>Tidak menyebutkan jumlah (kuantitas) produk</option><option>Nota tidak jelas</option><option>Nota tidak lengkap</option><option>Nota sudah kadaluarsa</option><option>Tidak semua produk di Tag</option><option>Tidak merekam suara untuk semua produk</option><option>Tidak men Tag atau merekam suara</option></select>');
+        $('#reason').hide();
+        $('#other').html('');
       });
 
       $('#reject').on('click', function() {
         $('.submit-to-server').removeAttr('disabled');
         $('#wording').html('<label><input name="comment" value="Sayang sekali, transaksi kamu gagal. Ayo coba lagi!" type="radio" required="required">Sayang sekali, transaksi kamu gagal. Ayo coba lagi!</label>');
-        $('#reason').html('<select class="form-control" name="reason"><option value="">Pilih Alasan</option><option>Rekaman suara tidak jelas</option><option>Tidak menyebutkan nama produk</option><option>Tidak menyebutkan harga produk</option><option>Tidak menyebutkan jumlah (kuantitas) produk</option><option>Nota tidak jelas</option><option>Nota tidak lengkap</option><option>Nota sudah kadaluarsa</option><option>Tidak semua produk di Tag</option><option>Tidak merekam suara untuk semua produk</option><option>Tidak men Tag atau merekam suara</option></select>');
+        $('#reason').show();
+        $('#reason').prop('selectedIndex', 0);
       });
 
       if ('{{(bool)$snap->approved_by}}' == true) {
@@ -114,7 +129,11 @@
         $('#approve').attr('disabled', 'disabled');
         $('#reject').attr('disabled', 'disabled');
       }
-
+      $('#reason').on('change', function() {
+        if($(this).val() == 'other') {
+          $('#other').html('<input type="text" name="other" class="form-control" placeholder="Masukan Alasan Lainya" required>');
+        }
+      });
       var fixed = $('#fixed-point').html();
       $('#point').val(fixed);
   });

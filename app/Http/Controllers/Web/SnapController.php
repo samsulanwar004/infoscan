@@ -7,6 +7,7 @@ use App\Services\PointService;
 use Illuminate\Http\Request;
 use Exception;
 use PDOException;
+use App\Setting;
 
 class SnapController extends AdminController
 {
@@ -134,7 +135,12 @@ class SnapController extends AdminController
 
             $fixedPoint = (new PointService)->calculateApprovePoint($snap);
 
-            return view('snaps.edit', compact('snap', 'fixedPoint'));
+            $reasons = Setting::where('setting_group', 'snap_reason')
+                ->get();
+
+            $admin = $this->isSuperAdministrator();
+
+            return view('snaps.edit', compact('snap', 'fixedPoint', 'reasons', 'admin'));
         } catch (\Exception $e) {
             logger($e->getMessage());
             return response()->json([
@@ -334,6 +340,23 @@ class SnapController extends AdminController
                 'status' => 'error',
                 'message' => $e->getMessage(),
             ], 500);
+        }
+    }
+
+    public function cropUpload(Request $request)
+    {
+        try {
+            $image = (new SnapService)->saveImageCrop($request);
+
+            return response()->json([
+                'status' => 'ok',
+                'message' => $image,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ]);
         }
     }
 

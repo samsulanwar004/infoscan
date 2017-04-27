@@ -13,7 +13,11 @@
                 </h3>
 
                 <div class="box-tools pull-right">
-
+                    @cando('Settings.Create')
+                    <a href="{{ route('settings.create') }}" class="btn btn-box-tool" data-toggle="tooltip"
+                       title="Create New">
+                        <i class="fa fa-plus-circle fa-btn"></i> Create New</a>
+                    @endcando
                 </div>
             </div>
             <div class="box-body">

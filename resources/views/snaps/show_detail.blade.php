@@ -6,10 +6,11 @@
 		<thead>
 			<tr>
 				<th width="50"></th>
+				<th width="100"></th>
 				<th width="300">Product Item</th>
                 <th width="200">Brands</th>
-                <th width="300">Variants</th>
-                <th width="200">Weight</th>
+                <th width="200">Variants</th>
+                <th width="100">Weight</th>
                 <th width="100">Qty</th>
                 <th width="200">Total Price</th>
 			</tr>
@@ -25,6 +26,14 @@
                                 <a class="btn btn-box-tool" id="remove-show">
                                     <i class="fa fa-remove"></i>
                                 </a>
+                            </td>
+                            <td>
+	                            <div id="kotak-drop" class="{{ $tag->id }}" ondrop="drop(event)" ondragover="allowDrop(event)">
+	                            	@if($tag->crop_file_path)
+	                            	<img src="{{ config('filesystems.s3url') . $tag->crop_file_path }}">
+	                            	@endif
+	                            	<input type="hidden" name="tag[crop_path][]" id="crop-{{ $tag->id }}" value="{{$tag->crop_file_path}}">
+	                            </div>
                             </td>
 							<td><input type="text" name="tag[name][]" class="form-control input-sm tag-name-show" value="{{ $tag->name }}" placeholder="Product Name" required="required"></td>
 							<td><input type="text" name="tag[brands][]" class="form-control input-sm" value="{{ $tag->brands }}" placeholder="Brands"></td>

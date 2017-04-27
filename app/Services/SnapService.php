@@ -363,7 +363,26 @@ class SnapService
         $comment = $request->input('comment');
 
         if (!empty($request->input('reason'))) {
-            $comment = nl2br($comment.' \n Alasan :'.$request->input('reason'));
+            if ($request->has('other')) {
+                $settingName = 'Snap Reason';
+                $reason = $request->input('other');
+                $setting = new \App\Setting;
+                $setting->setting_group = strtolower(str_replace(' ', '_', $settingName));
+                $setting->setting_name = strtolower($settingName);
+                $setting->setting_display_name = $settingName;
+                $setting->setting_value = trim($reason);
+                $setting->setting_type = 'toggle';
+                $setting->is_visible = 1;
+                $setting->created_by = $userId;
+                $setting->save();
+            } else {
+                $reason = $request->input('reason');
+                $setting = \App\Setting::where('id', $reason)
+                    ->first();
+                $reason = $setting->setting_value;
+            }
+
+            $comment = nl2br($comment.' \n Alasan :'.$reason);
         }
 
         if ($request->input('confirm') == 'approve') {
@@ -491,6 +510,7 @@ class SnapService
             $t->weight = $tags['weight'][$i];
             $t->quantity = $tags['qty'][$i];
             $t->total_price = $tags['total'][$i];
+            $t->crop_file_path = $tags['crop_path'][$i];
             $t->edited_signature = $this->generateSignature($tags['name'][$i], $tags['weight'][$i], $tags['qty'][$i], $tags['total'][$i]);
 
             $t->update();
@@ -505,6 +525,7 @@ class SnapService
             $t->weight = $newTags['weight'][$i];
             $t->quantity = $newTags['qty'][$i];
             $t->total_price = $newTags['total'][$i];
+            $t->crop_file_path = $newTags['crop_path'][$i];
             //$t->file()->associate($newTags['fileId'][$i]);
             $t->file()->associate($id);
 
@@ -1811,15 +1832,9 @@ class SnapService
             $filePath = 'crops/' . $filename;
             $s3->put($filePath, file_get_contents($file), 'public');
 
-            $link = $this->completeImageLink('crops/' . $filename);
-
-            $crop = new \App\SnapCrop;
-            $crop->file_crop_path = $link;
-            $crop->file()->associate($request->input('file_id'));
-            $crop->save();
+            $link = 'crops/' . $filename;
 
             return $link;
-
         }
     }
 
