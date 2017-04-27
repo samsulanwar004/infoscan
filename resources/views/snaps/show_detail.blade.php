@@ -6,10 +6,11 @@
 		<thead>
 			<tr>
 				<th width="50"></th>
+				<th width="100"></th>
 				<th width="300">Product Item</th>
                 <th width="200">Brands</th>
-                <th width="300">Variants</th>
-                <th width="200">Weight</th>
+                <th width="200">Variants</th>
+                <th width="100">Weight</th>
                 <th width="100">Qty</th>
                 <th width="200">Total Price</th>
 			</tr>
@@ -26,6 +27,7 @@
                                     <i class="fa fa-remove"></i>
                                 </a>
                             </td>
+                            <td><div id="kotak-drop" class="{{ $tag->id }}" ondrop="drop(event)" ondragover="allowDrop(event)"></div></td>
 							<td><input type="text" name="tag[name][]" class="form-control input-sm tag-name-show" value="{{ $tag->name }}" placeholder="Product Name" required="required"></td>
 							<td><input type="text" name="tag[brands][]" class="form-control input-sm" value="{{ $tag->brands }}" placeholder="Brands"></td>
 							<td style="max-width: 100px"><input type="text" list="variants" name="tag[variants][]" class="form-control input-sm" value="{{ $tag->variants }}" placeholder="Variants"></td>
