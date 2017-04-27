@@ -18,6 +18,7 @@ Route::post('v1/register', 'SecureController@register');
 Route::get('v1/settings', 'Api\SettingController@index');
 Route::get('v1/promotion', 'Api\PromotionController@index');
 Route::get('v1/categories', 'Api\PromotionController@categories');
+Route::get('v1/internal', 'Api\InternalController@index');
 
 Route::group([
     'prefix' => 'v1',

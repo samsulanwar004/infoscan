@@ -315,4 +315,6 @@ return [
             'weekly' => 'Snap Anda sudah mencapai batas mingguan!',
         ],
     ],
+
+    'internal_api_token' => env('INTERNAL_API_TOKEN'),
 ];

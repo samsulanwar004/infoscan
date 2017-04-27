@@ -87,7 +87,7 @@
                                                     <button id="mode-tag" class="btn btn-primary btn-sm"><i class="fa fa-tag" aria-hidden="true"></i></button>
                                                     <button id="mode-zoom" class="btn btn-primary btn-sm"><i class="fa fa-search" aria-hidden="true"></i></button>
                                                     <button id="mode-crop" class="btn btn-primary btn-sm"><i class="fa fa-crop" aria-hidden="true"></i></button>
-                                                    <button id="crop-button" class="btn btn-primary btn-sm show-crop" style="display: none;"><i class="fa fa-scissors" aria-hidden="true"></i></button>
+                                                    <!-- <button id="crop-button" class="btn btn-primary btn-sm show-crop" style="display: none;"><i class="fa fa-scissors" aria-hidden="true"></i></button> -->
                                                 </div>
                                                 <div id="imgtag" class="show-tag">
                                                     <img src="{{ config('filesystems.s3url') . $files->first()->file_path }}" alt="{{ $files->first()->file_code }}" class="margin img-thumbnail img-responsive img-zoom"  id="tag-image">
@@ -124,25 +124,8 @@
                     <div class="col-md-6">
                         <p class="no-shadow">
 
-                        </p>                        
-                        <div class="timeline-item">
-                            <ul class="timeline timeline-inverse">
-                                <li class="no-margin-right">
-                                  <i class="fa fa-files-o bg-blue"></i>
-
-                                  <div class="timeline-item no-margin-right">
-
-                                    <h3 class="timeline-header">Image Crop</h3>
-
-                                    <div class="timeline-body">
-                                        <div id="crop-result">
-                                            
-                                        </div>
-                                    </div>
-                                  </div>
-                                </li>
-                            </ul>
-                        </div>
+                        </p>                       
+                        
                         <form id="snapUpdate" action="{{ admin_route_url('snaps.update', ['id' => $snap->id]) }}"  method="POST">
                         {{ csrf_field() }}
                         {{ method_field('PUT') }}
@@ -456,6 +439,7 @@
         height: 100px;
         width: 100px;
         margin: 2px;
+        cursor: move;
     }
 
     #side-left {
@@ -843,6 +827,7 @@
             movable: false,
             zoomable: false,
             viewMode: 1,
+            autoCrop: false,
             ready: function () {
               croppable = true;
             },
@@ -868,8 +853,7 @@
                 /*$result.append('<img id="crop-img" src="' + roundedCanvas.toDataURL() + '" draggable="true" ondragstart="drag(event)" id="drag1">');*/
                 //var _btn = '<button id="btn-drag" data-img="'+roundedCanvas.toDataURL()+'" draggable="true" ondragstart="drag(event)" id="drag1"><i class"fa fa-cut"></i>Move</button>'; 
                 
-                var _img = '<img id="crop-img" class="img-dragging" src="' + roundedCanvas.toDataURL() + '" draggable="true" ondragstart="drag(event)" id="drag1">';
-                console.log($('#crop-img').length);
+                var _img = '<img id="crop-img" class="img-dragging" src="' + roundedCanvas.toDataURL() + '" draggable="true" ondragstart="drag(event)">';
                 if($('.img-dragging').length > 0) {
                     $('.img-dragging').attr('src', roundedCanvas.toDataURL());
                 } else {
@@ -879,41 +863,41 @@
             }
         });
 
-        $button.on('click', function () {
-            var croppedCanvas;
-            var roundedCanvas;
+        // $button.on('click', function () {
+        //     var croppedCanvas;
+        //     var roundedCanvas;
 
-            if (!croppable) {
-              return;
-            }
+        //     if (!croppable) {
+        //       return;
+        //     }
 
-            // Crop
-            croppedCanvas = $image.cropper('getCroppedCanvas');
+        //     // Crop
+        //     croppedCanvas = $image.cropper('getCroppedCanvas');
 
-            // Round
-            roundedCanvas = getRoundedCanvas(croppedCanvas);
+        //     // Round
+        //     roundedCanvas = getRoundedCanvas(croppedCanvas);
 
-            //Show
-            //$result.append('<img id="crop-img" src="' + roundedCanvas.toDataURL() + '">');
-            $result.append('<img id="crop-img" src="' + roundedCanvas.toDataURL() + '" draggable="true" ondragstart="drag(event)" id="drag1">');
+        //     //Show
+        //     //$result.append('<img id="crop-img" src="' + roundedCanvas.toDataURL() + '">');
+        //     $result.append('<img id="crop-img" src="' + roundedCanvas.toDataURL() + '" draggable="true" ondragstart="drag(event)" id="drag1">');
 
-            // var blob = dataURItoBlob(roundedCanvas.toDataURL());
-            // var fd = new FormData();
-            // fd.append('image', blob);
-            // fd.append('file_id', fileId);
-            // $('#loading').show();
-            // $.ajax({
-            //     type: 'POST',
-            //     url: "{{ admin_route_url('crop.upload') }}",
-            //     data: fd,
-            //     processData: false,
-            //     contentType: false
-            // }).success(function(data) {
-            //     $result.html('<img src="' + data.message + '" style="max-width: 100px">');
-            // }).complete(function(data) {
-            //     $('#loading').hide();
-            // });
-        });
+        //     // var blob = dataURItoBlob(roundedCanvas.toDataURL());
+        //     // var fd = new FormData();
+        //     // fd.append('image', blob);
+        //     // fd.append('file_id', fileId);
+        //     // $('#loading').show();
+        //     // $.ajax({
+        //     //     type: 'POST',
+        //     //     url: "{{ admin_route_url('crop.upload') }}",
+        //     //     data: fd,
+        //     //     processData: false,
+        //     //     contentType: false
+        //     // }).success(function(data) {
+        //     //     $result.html('<img src="' + data.message + '" style="max-width: 100px">');
+        //     // }).complete(function(data) {
+        //     //     $('#loading').hide();
+        //     // });
+        // });
 
     });
 
@@ -943,20 +927,20 @@
         /*var image = $('#'+data).attr('data-img');
         this.innerHTML = '<img src="'+image+'">';*/
         
-        // var blob = dataURItoBlob(img.src);
-        // var fd = new FormData();
-        // fd.append('image', blob);
-        // fd.append('tag_id', ev.target.className);
-        // $('#loading').show();
-        // $.ajax({
-        //     type: 'POST',
-        //     url: "{{ admin_route_url('crop.upload') }}",
-        //     data: fd,
-        //     processData: false,
-        //     contentType: false
-        // }).success(function(data) {
-        //     $('#loading').hide();
-        // });
+        var blob = dataURItoBlob(img.src);
+        var fd = new FormData();
+        fd.append('image', blob);
+        $('#loading').show();
+        $.ajax({
+            type: 'POST',
+            url: "{{ admin_route_url('crop.upload') }}",
+            data: fd,
+            processData: false,
+            contentType: false
+        }).success(function(data) {
+            $('#crop-'+ev.target.className).val(data.message);
+            $('#loading').hide();
+        });
     }
 
     function getRoundedCanvas(sourceCanvas) {
