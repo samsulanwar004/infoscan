@@ -442,6 +442,12 @@
         cursor: move;
     }
 
+    #img-cropping {
+        width: 25px;
+        height: 26px;
+        margin: 2px;
+    }
+
     #side-left {
         margin-right: -35px;
     }
@@ -452,6 +458,13 @@
         height: 30px;
         background-color: white;
         margin-right: -35px;
+    }
+
+    .img-item-loading {
+        margin-left: 2px;
+        margin-top: 3px;
+        position: absolute;
+        color: white;
     }
 
 </style>
@@ -548,7 +561,14 @@
                 return;
             }
 
-            $('tbody#inputs-show').append('<tr id="input-show'+countOfTextbox+'"><td><a class="btn btn-box-tool" onclick="deleteTagShow('+countOfTextbox+')"><i class="fa fa-remove"></i></a></td><td width="300"><input type="text" name="newtag[name][]" class="form-control input-sm tag-name-show" placeholder="Product Name" required="required"></td><td width="300"><input type="text" name="newtag[brands][]" class="form-control input-sm" placeholder="Brands"></td><td width="300"><input type="text" list="variants" name="newtag[variants][]" class="form-control input-sm" placeholder="Variants"></td><td width="200"><input type="text" name="newtag[weight][]" class="form-control input-sm" placeholder="Weight"></td><td width="100"><input type="number" name="newtag[qty][]" class="form-control input-sm" placeholder="QTY" required="required"></td><td width="200" class="text-right"><input type="number" name="newtag[total][]" class="form-control input-sm" placeholder="Total Price" required="required"><input type="hidden" name="newtag[fileId][]" value="{{ $file->id }}"></td></tr>');
+            $('tbody#inputs-show').append('<tr id="input-show'+countOfTextbox+'">'+
+                '<td><a class="btn btn-box-tool" onclick="deleteTagShow('+countOfTextbox+')"><i class="fa fa-remove"></i></a></td>'+
+                '<td width="300"><input type="text" name="newtag[name][]" class="form-control input-sm tag-name-show" placeholder="Product Name" required="required"></td>'+
+                '<td width="300"><input type="text" name="newtag[brands][]" class="form-control input-sm" placeholder="Brands"></td>'+
+                '<td width="300"><input type="text" list="variants" name="newtag[variants][]" class="form-control input-sm" placeholder="Variants"></td>'+
+                '<td width="200"><input type="text" name="newtag[weight][]" class="form-control input-sm" placeholder="Weight"></td><td width="100"><input type="number" name="newtag[qty][]" class="form-control input-sm" placeholder="QTY" required="required"></td>'+
+                '<td width="200" class="text-right"><input type="number" name="newtag[total][]" class="form-control input-sm" placeholder="Total Price" required="required">'+
+                '<input type="hidden" name="newtag[fileId][]" value="{{ $file->id }}"></td></tr>');
         });
 
         $('a#remove-show').on('click', function(e) {
@@ -619,7 +639,16 @@
             mouseY = (e.pageY - offset.top);
 
             $('#tagit').remove(); // remove any tagit div first           
-            $('div#imgtag').append('<div id="tagit"><input type="text" name="name" class="form-control input-sm" placeholder="Product Name" id="name"><input type="text" name="weight" class="form-control input-sm" placeholder="Weight" id="weight"><input type="number" name="qty" class="form-control input-sm" placeholder="QTY" id="qty"><input type="number" class="form-control input-sm" placeholder="Total Price" id="total" name="total"><input type="hidden" name="x" id="x" value="'+mouseX+'"><input type="hidden" id="y" name="y" value="'+mouseY+'"><input type="button" name="btnsave" value="Save" id="btnsave"/><input type="button" name="btncancel" value="Cancel" id="btncancel" /></div>');
+            $('div#imgtag').append('<div id="tagit">'+
+                '<input type="text" name="name" class="form-control input-sm" placeholder="Product Name" id="name">'+
+                '<input type="text" name="weight" class="form-control input-sm" placeholder="Weight" id="weight">'+
+                '<input type="number" name="qty" class="form-control input-sm" placeholder="QTY" id="qty">'+
+                '<input type="number" class="form-control input-sm" placeholder="Total Price" id="total" name="total">'+
+                '<input type="hidden" name="x" id="x" value="'+mouseX+'">'+
+                '<input type="hidden" id="y" name="y" value="'+mouseY+'">'+
+                '<input type="button" name="btnsave" value="Save" id="btnsave"/>'+
+                '<input type="button" name="btncancel" value="Cancel" id="btncancel" />'+
+                '</div>');
             var imgtag = document.getElementById('imgtag');
             var tagit = document.getElementById('tagit');
             var tengah = imgtag.clientHeight/2;
@@ -675,11 +704,32 @@
             mouseX = mouseX / image.clientWidth;
             mouseY = mouseY / image.clientHeight;
 
-            taggingSave(name, weight, qty, total, mouseX, mouseY, fileId);
+            taggingSave(name, weight, qty, total, mouseX, mouseY, fileId, time);
 
             var className = countOfTextbox+'-new-tag';
             viewtagsave(name, mouseX, mouseY, className);
-            $('tbody#inputs-show').append('<tr class="tag-input" time=' + time + ' id="input'+countOfTextbox+'"><td><a class="btn btn-box-tool" onclick="deleteTag('+countOfTextbox+')"><i class="fa fa-remove"></i></a></td><td><div id="kotak-drop" ondrop="drop(event)" ondragover="allowDrop(event)"></div></td><td width="300"><input type="text" name="newtag[name][]" class="form-control input-sm tag-name '+countOfTextbox+'new" id="'+countOfTextbox+'|'+mouseX+'|'+mouseY+'" onclick="editTag(this)" onkeyup="editNewTag(this)" value="'+name+'"></td><td width="200"><input type="text" name="newtag[brands][]" class="form-control input-sm" placeholder="Brands"></td><td width="300"><input type="text" list="variants" name="newtag[variants][]" class="form-control input-sm" placeholder="Variants"></td><td width="200"><input type="text" name="newtag[weight][]" class="form-control input-sm" value="'+weight+'" placeholder="Weight"></td><td width="100"><input type="number" name="newtag[qty][]" class="form-control input-sm" value="'+qty+'"></td><td width="200"><input type="number" name="newtag[total][]" class="form-control input-sm" value="'+total+'"><input type="hidden" name="newtag[x][]" value="'+mouseX+'"><input type="hidden" name="newtag[y][]" value="'+mouseY+'"></td></tr>');
+            // $('tbody#inputs-show').append('<tr class="tag-input" time=' + time + ' id="input'+countOfTextbox+'">'+
+            //     '<td><a class="btn btn-box-tool" onclick="deleteTag('+countOfTextbox+')"><i class="fa fa-remove"></i></a></td>'+
+            //     '<td><div id="kotak-drop" class="'+time+'" ondrop="drop(event)" ondragover="allowDrop(event)"><input type="hidden" name="newtag[crop_path][]" id="crop-'+time+'"></div></td>'+
+            //     '<td width="300"><input type="text" name="newtag[name][]" class="form-control input-sm tag-name '+countOfTextbox+'new" id="'+countOfTextbox+'|'+mouseX+'|'+mouseY+'" onclick="editTag(this)" onkeyup="editNewTag(this)" value="'+name+'"></td>'+
+            //     '<td width="200"><input type="text" name="newtag[brands][]" class="form-control input-sm" placeholder="Brands"></td>'+
+            //     '<td width="300"><input type="text" list="variants" name="newtag[variants][]" class="form-control input-sm" placeholder="Variants"></td>'+
+            //     '<td width="200"><input type="text" name="newtag[weight][]" class="form-control input-sm" value="'+weight+'" placeholder="Weight"></td>'+
+            //     '<td width="100"><input type="number" name="newtag[qty][]" class="form-control input-sm" value="'+qty+'"></td>'+
+            //     '<td width="200"><input type="number" name="newtag[total][]" class="form-control input-sm" value="'+total+'">'+
+            //     '<input type="hidden" name="newtag[x][]" value="'+mouseX+'"><input type="hidden" name="newtag[y][]" value="'+mouseY+'"></td></tr>');
+
+            $('tbody#inputs-show').append('<tr class="tag-input" time=' + time + ' id="input'+countOfTextbox+'">'+
+                '<td><a class="btn btn-box-tool" onclick="deleteTag('+countOfTextbox+')"><i class="fa fa-remove"></i></a></td>'+
+                '<td><i class="fa fa-spinner fa-spin fa-2x img-item-loading" id="load-'+time+'" aria-hidden="true" style="display: none;"></i><div id="kotak-drop" class="'+time+'" ondrop="drop(event)" ondragover="allowDrop(event)"></div><input type="hidden" name="tag[crop_path][]" id="crop-'+time+'"></td>'+
+                '<td width="300"><input type="text" name="tag[name][]" class="form-control input-sm tag-name '+countOfTextbox+'new" id="'+countOfTextbox+'|'+mouseX+'|'+mouseY+'" onclick="editTag(this)" onkeyup="editNewTag(this)" value="'+name+'"></td>'+
+                '<td width="200"><input type="text" name="tag[brands][]" class="form-control input-sm" placeholder="Brands"></td>'+
+                '<td width="300"><input type="text" list="variants" name="tag[variants][]" class="form-control input-sm" placeholder="Variants"></td>'+
+                '<td width="200"><input type="text" name="tag[weight][]" class="form-control input-sm" value="'+weight+'" placeholder="Weight"></td>'+
+                '<td width="100"><input type="number" name="tag[qty][]" class="form-control input-sm" value="'+qty+'"></td>'+
+                '<td width="200"><input type="number" name="tag[total][]" class="form-control input-sm" value="'+total+'">'+
+                '<input type="hidden" name="tag[id][]" id="tag-id-'+time+'"></td></tr>');
+
 
             $('#tagit').fadeOut();
 
@@ -784,7 +834,7 @@
             });
         });
 
-        function taggingSave(name, weight, qty, price, x, y, fileId) {
+        function taggingSave(name, weight, qty, price, x, y, fileId, time) {
             $.get( "{{ admin_route_url('tagging.save') }}", { 
                 name : name,
                 weight : weight,
@@ -795,6 +845,7 @@
                 file_id : fileId,               
             })
                 .success(function( data ) {
+                $('#tag-id-'+time).val(data.message);
             });
         } 
 
@@ -848,12 +899,7 @@
                 // Round
                 roundedCanvas = getRoundedCanvas(croppedCanvas);
 
-                //Show
-                //$result.append('<img id="crop-img" src="' + roundedCanvas.toDataURL() + '">');
-                /*$result.append('<img id="crop-img" src="' + roundedCanvas.toDataURL() + '" draggable="true" ondragstart="drag(event)" id="drag1">');*/
-                //var _btn = '<button id="btn-drag" data-img="'+roundedCanvas.toDataURL()+'" draggable="true" ondragstart="drag(event)" id="drag1"><i class"fa fa-cut"></i>Move</button>'; 
-                
-                var _img = '<img id="crop-img" class="img-dragging" src="' + roundedCanvas.toDataURL() + '" draggable="true" ondragstart="drag(event)">';
+                var _img = '<img id="crop-img" class="img-dragging" src="' + roundedCanvas.toDataURL() + '" draggable="true" ondragstart="drag(event)" ondrop="drop(event)" ondragover="allowDrop(event)">';
                 if($('.img-dragging').length > 0) {
                     $('.img-dragging').attr('src', roundedCanvas.toDataURL());
                 } else {
@@ -862,42 +908,6 @@
                 
             }
         });
-
-        // $button.on('click', function () {
-        //     var croppedCanvas;
-        //     var roundedCanvas;
-
-        //     if (!croppable) {
-        //       return;
-        //     }
-
-        //     // Crop
-        //     croppedCanvas = $image.cropper('getCroppedCanvas');
-
-        //     // Round
-        //     roundedCanvas = getRoundedCanvas(croppedCanvas);
-
-        //     //Show
-        //     //$result.append('<img id="crop-img" src="' + roundedCanvas.toDataURL() + '">');
-        //     $result.append('<img id="crop-img" src="' + roundedCanvas.toDataURL() + '" draggable="true" ondragstart="drag(event)" id="drag1">');
-
-        //     // var blob = dataURItoBlob(roundedCanvas.toDataURL());
-        //     // var fd = new FormData();
-        //     // fd.append('image', blob);
-        //     // fd.append('file_id', fileId);
-        //     // $('#loading').show();
-        //     // $.ajax({
-        //     //     type: 'POST',
-        //     //     url: "{{ admin_route_url('crop.upload') }}",
-        //     //     data: fd,
-        //     //     processData: false,
-        //     //     contentType: false
-        //     // }).success(function(data) {
-        //     //     $result.html('<img src="' + data.message + '" style="max-width: 100px">');
-        //     // }).complete(function(data) {
-        //     //     $('#loading').hide();
-        //     // });
-        // });
 
     });
 
@@ -912,25 +922,48 @@
         ev.dataTransfer.setData("text", ev.target.id);
     }
 
+    function removeNode(node)
+    {
+
+    }
+
     function drop(ev) { 
 
         ev.preventDefault();
         var data = ev.dataTransfer.getData("text");
-        var img = ev.target.appendChild(document.getElementById(data));
-        ev.target.ondrop = '';
-        ev.target.ondragover = '';
+        var node = document.getElementById(data);
+        var nodeCopy = document.getElementById(data);
+       
+        var img = '';
+        var _className = '';
+        if(ev.target.nodeName == 'IMG') {
+            var nodeParent = node.parentNode;
+            var dropParent = ev.target.parentNode;
+            try{
+               _className = dropParent.className;
+                dropParent.innerHTML = '';
+                node.parentNode.removeChild(nodeCopy);// = '';
+                img = dropParent.appendChild(nodeCopy);
+            }catch(e){
+                img = nodeParent.appendChild(node);
+                _className = nodeParent.className;
+            }           
+        } else {
+            img = ev.target.appendChild(node);
+            _className = ev.target.className;
+        }
+
+        
         img.style.width += "25px";
         img.style.height += "25px";
 
         $('.img-dragging').removeClass('img-dragging').addClass('img-dropped');
-
-        /*var image = $('#'+data).attr('data-img');
-        this.innerHTML = '<img src="'+image+'">';*/
         
         var blob = dataURItoBlob(img.src);
         var fd = new FormData();
         fd.append('image', blob);
-        $('#loading').show();
+        $('#load-'+_className).show();
+        $('#submit').attr('disabled', 'disabled');
         $.ajax({
             type: 'POST',
             url: "{{ admin_route_url('crop.upload') }}",
@@ -938,8 +971,9 @@
             processData: false,
             contentType: false
         }).success(function(data) {
-            $('#crop-'+ev.target.className).val(data.message);
-            $('#loading').hide();
+            $('#submit').removeAttr('disabled');
+            $('#crop-'+_className).val(data.message);
+            $('#load-'+_className).hide();
         });
     }
 

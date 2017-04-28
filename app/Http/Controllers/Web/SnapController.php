@@ -333,7 +333,7 @@ class SnapController extends AdminController
 
             return response()->json([
                 'status' => 'ok',
-                'message' => 'successfully',
+                'message' => $t->id,
             ], 200);
         } catch (\Exception $e) {
             return response()->json([

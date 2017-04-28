@@ -28,12 +28,13 @@
                                 </a>
                             </td>
                             <td>
+                            	<i class="fa fa-spinner fa-spin fa-2x img-item-loading" id="load-{{ $tag->id }}" aria-hidden="true" style="display: none;"></i>
 	                            <div id="kotak-drop" class="{{ $tag->id }}" ondrop="drop(event)" ondragover="allowDrop(event)">
 	                            	@if($tag->crop_file_path)
-	                            	<img src="{{ config('filesystems.s3url') . $tag->crop_file_path }}">
+	                            	<img src="{{ config('filesystems.s3url') . $tag->crop_file_path }}" id="img-cropping">
 	                            	@endif
-	                            	<input type="hidden" name="tag[crop_path][]" id="crop-{{ $tag->id }}" value="{{$tag->crop_file_path}}">
 	                            </div>
+	                            <input type="hidden" name="tag[crop_path][]" id="crop-{{ $tag->id }}" value="{{$tag->crop_file_path}}">
                             </td>
 							<td><input type="text" name="tag[name][]" class="form-control input-sm tag-name-show" value="{{ $tag->name }}" placeholder="Product Name" required="required"></td>
 							<td><input type="text" name="tag[brands][]" class="form-control input-sm" value="{{ $tag->brands }}" placeholder="Brands"></td>
