@@ -361,6 +361,7 @@ class SnapService
         $snaps = $this->getSnapByid($id);
         $userId = auth()->user()->id;
         $comment = $request->input('comment');
+        $point = $request->input('point');
 
         if (!empty($request->input('reason'))) {
             if ($request->has('other')) {
@@ -393,6 +394,7 @@ class SnapService
             $snaps->approved_by = $userId;
             $snaps->comment = $comment;
             $snaps->status = 'approve';
+            $snaps->fixed_point = $point;
             $snaps->update();
 
             $tags = $this->getCountOfTags($snaps->files);
@@ -402,7 +404,7 @@ class SnapService
                     'snap_id' => $snaps->id,
                     'snap_code' => $snaps->request_code,
                     'comment' => $snaps->comment,
-                    'point' => $request->input('point'),
+                    'point' => $point,
                     'add_tag' => $tags['crowdsource_add'],
                     'edit_tag' => $tags['crowdsource_edit'],
                 ],
@@ -412,6 +414,7 @@ class SnapService
             $snaps->reject_by = $userId;
             $snaps->comment = $comment;
             $snaps->status = 'reject';
+            $snaps->fixed_point = '0';
             $snaps->update();
 
             $tags = $this->getCountOfTags($snaps->files);
