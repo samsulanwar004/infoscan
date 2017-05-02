@@ -104,19 +104,13 @@ class SnapController extends AdminController
             $snap = (new SnapService)->getSnapById($id);
             if(null === $snap) {
                 throw new Exception('Id Snap not valid!');
-            }
-            $files = $snap->files;
+            }      
 
-            $audioFiles = $files->filter(function($value, $Key) {
-                return starts_with($value->file_mimes, 'audio');
-            });
+            $files = $snap->files()->where('file_mimes', 'like', 'image%')->paginate(1);
 
-            $audios = [];
-            foreach ($audioFiles as $audio) {
-                $audios[] = $audio;
-            }
-
-            $files = $snap->files()->paginate(1);
+            $audios = $snap->files->filter(function($value, $Key) use ($files){
+                return starts_with($value->file_mimes, 'audio') && $value->position == $files->first()->position;
+            })->first();
 
             $paymentMethods = config("common.payment_methods");
 
