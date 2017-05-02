@@ -77,7 +77,7 @@
                                                     </div>
                                                 @endif
                                             @endforeach  
-                                            @if($snap->mode_type == 'input' || $snap->mode_type == 'tags') 
+                                            @if($snap->mode_type == 'input' || $snap->mode_type == 'tags' || $snap->mode_type == 'no_mode') 
                                                 @if($files->lastPage() > 1)  
                                                     <div class="new-pagination">
                                                         {{ $files->links() }}
@@ -87,7 +87,6 @@
                                                     <button id="mode-tag" class="btn btn-primary btn-sm"><i class="fa fa-tag" aria-hidden="true"></i></button>
                                                     <button id="mode-zoom" class="btn btn-primary btn-sm"><i class="fa fa-search" aria-hidden="true"></i></button>
                                                     <button id="mode-crop" class="btn btn-primary btn-sm"><i class="fa fa-crop" aria-hidden="true"></i></button>
-                                                    <!-- <button id="crop-button" class="btn btn-primary btn-sm show-crop" style="display: none;"><i class="fa fa-scissors" aria-hidden="true"></i></button> -->
                                                 </div>
                                                 <div id="imgtag" class="show-tag">
                                                     <img src="{{ config('filesystems.s3url') . $files->first()->file_path }}" alt="{{ $files->first()->file_code }}" class="margin img-thumbnail img-responsive img-zoom"  id="tag-image">
@@ -752,7 +751,7 @@
         var img = $('#imgtag').find('img');
         var id = $(img).attr('alt');
         var type = '{!! $snap->mode_type !!}';
-        if (type == 'input' || type == 'tags') {
+        if (type == 'input' || type == 'tags' || type == 'no_mode') {
             viewtag(id);
         }        
         function viewtag(id)
