@@ -46,4 +46,23 @@ class SettingController extends BaseApiController
 
         return $s;
     }
+
+    public function city($provinceId)
+    {
+        try {
+            $citys = collect(\DB::table('regencies')
+                ->where('province_id', $provinceId)
+                ->get());
+
+            $city = $citys->map(function($city) {
+                return [
+                'id' => $city->id,
+                'name' => $city->name,
+                ];
+            });
+            return $this->success($city->toArray(), 200);
+        } catch (\Exception $e) {
+            return $this->error($e, 400);
+        }
+    }
 }
