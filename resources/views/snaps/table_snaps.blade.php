@@ -32,7 +32,11 @@
                         Total image: {{ $snap->files->count() }}
                     </span>
 
-                    <span class="small ml10">Uploaded by: <a href="{{ admin_route_url('members.show', ['id' => $snap->member->id]) }}">{{ $snap->member->email }}</a></span><span class="small ml10">Point : {{ $snap->member->temporary_point }}</span><span class="small ml10">Level : {{ $snap->member->temporary_level }}</span>
+                    <span class="small ml10">Uploaded by: <a href="{{ admin_route_url('members.show', ['id' => $snap->member->id]) }}">{{ $snap->member->email }}</a></span>
+                    <span class="small ml10">Point : {{ $snap->member->temporary_point }}</span>
+                    <span class="small ml10">Level : {{ $snap->member->temporary_level }}</span>
+                    <span class="small ml10">Estimated Point : {{ $snap->estimated_point }}</span>
+                    <span class="small ml10">Fixed Point : @if($snap->fixed_point) {{ $snap->fixed_point }} @else n\a @endif</span>
                 </td>
                 <td class="vertical-middle">
                     {{ $snap->created_at->format('d M y H:i A') }} <br>

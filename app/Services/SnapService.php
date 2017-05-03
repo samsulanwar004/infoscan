@@ -361,6 +361,7 @@ class SnapService
         $snaps = $this->getSnapByid($id);
         $userId = auth()->user()->id;
         $comment = $request->input('comment');
+        $point = $request->input('point');
 
         if (!empty($request->input('reason'))) {
             if ($request->has('other')) {
@@ -393,6 +394,7 @@ class SnapService
             $snaps->approved_by = $userId;
             $snaps->comment = $comment;
             $snaps->status = 'approve';
+            $snaps->fixed_point = $point;
             $snaps->update();
 
             $tags = $this->getCountOfTags($snaps->files);
@@ -402,7 +404,7 @@ class SnapService
                     'snap_id' => $snaps->id,
                     'snap_code' => $snaps->request_code,
                     'comment' => $snaps->comment,
-                    'point' => $request->input('point'),
+                    'point' => $point,
                     'add_tag' => $tags['crowdsource_add'],
                     'edit_tag' => $tags['crowdsource_edit'],
                 ],
@@ -412,6 +414,7 @@ class SnapService
             $snaps->reject_by = $userId;
             $snaps->comment = $comment;
             $snaps->status = 'reject';
+            $snaps->fixed_point = '0';
             $snaps->update();
 
             $tags = $this->getCountOfTags($snaps->files);
@@ -510,7 +513,7 @@ class SnapService
             $t->weight = $tags['weight'][$i];
             $t->quantity = $tags['qty'][$i];
             $t->total_price = $tags['total'][$i];
-            $t->crop_file_path = $tags['crop_path'][$i];
+            $t->crop_file_path = isset($tags['crop_path'][$i]) ? $tags['crop_path'][$i] : null;
             $t->edited_signature = $this->generateSignature($tags['name'][$i], $tags['weight'][$i], $tags['qty'][$i], $tags['total'][$i]);
 
             $t->update();
@@ -525,8 +528,7 @@ class SnapService
             $t->weight = $newTags['weight'][$i];
             $t->quantity = $newTags['qty'][$i];
             $t->total_price = $newTags['total'][$i];
-            $t->crop_file_path = $newTags['crop_path'][$i];
-            //$t->file()->associate($newTags['fileId'][$i]);
+            $t->crop_file_path = isset($newTags['crop_path'][$i]) ? $newTags['crop_path'][$i] : null;
             $t->file()->associate($id);
 
             $t->save();

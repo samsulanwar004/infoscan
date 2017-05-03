@@ -63,6 +63,9 @@
         <a class="btn btn-default" id="add-show">
             <i class="fa fa-plus fa-btn"></i>Create New
         </a>
+        <a class="btn btn-default" id="submit-show">
+            <i class="fa fa-floppy-o fa-btn"></i>Save
+        </a>
     </div>
     @endif
 </div>

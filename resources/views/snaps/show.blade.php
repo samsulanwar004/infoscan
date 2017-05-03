@@ -50,33 +50,6 @@
                                             <a href="{{ admin_route_url('members.show', ['id' => $snap->member->id]) }}">{{ $snap->member->name }}</a> uploaded new photos
                                         </h3>
                                         <div class="timeline-body">
-                                            @foreach($snap->files as $file)
-                                                @if ($file->mode_type == 'audios')
-                                                    @if (starts_with($file->file_mimes, 'image'))
-                                                        <div class="img-thumbnail" style="padding-right: 10px;">
-                                                            <img src="{{ config('filesystems.s3url') . $file->file_path }}" alt="{{ $file->file_code }}" class="margin img-responsive" id="{{$file->id}}">
-                                                            @if (isset($audios[$loop->index]))
-                                                                <audio controls class="img-responsive" style="padding-top: 30px;">
-                                                                  <source src="{{ config('filesystems.s3url') . $audios[$loop->index]->file_path }}" type="audio/mpeg">
-                                                                    Your browser does not support the audio element.
-                                                                </audio>
-                                                            @endif
-                                                        </div>
-                                                    @endif
-                                                @elseif ($file->mode_type == 'image')
-                                                    <div id="window" class="magnify img-thumbnail" data-magnified-zone=".mg_zone" data-scale="2" style="padding-right: 10px;">
-                                                        <div class="magnify_glass">
-                                                            <div class="mg_ring"></div>
-                                                           <!--  <div class="pm_btn plus"><h2>+</h2></div>
-                                                            <div class="pm_btn minus"><h2>-</h2></div> -->
-                                                            <div class="mg_zone"></div>
-                                                        </div>
-                                                        <div class = "element_to_magnify">
-                                                            <img src="{{ config('filesystems.s3url') . $file->file_path }}" alt="{{ $file->file_code }}" class="margin img-responsive img-zoom" id="{{$file->id}}">
-                                                        </div>
-                                                    </div>
-                                                @endif
-                                            @endforeach  
                                             @if($snap->mode_type == 'input' || $snap->mode_type == 'tags' || $snap->mode_type == 'no_mode') 
                                                 @if($files->lastPage() > 1)  
                                                     <div class="new-pagination">
@@ -110,7 +83,71 @@
                                                     <img src="{{ config('filesystems.s3url') . $files->first()->file_path }}" alt="{{ $files->first()->file_code }}" class="  img-responsive img-crop" id="{{$files->first()->id}}">
                                                 </div>
                                                 <button id="click-zoom" style="display: none;"></button>
-                                            @endif                                                                      
+                                            @elseif ($snap->mode_type == 'image')
+                                                @if($files->lastPage() > 1)  
+                                                    <div class="new-pagination">
+                                                        {{ $files->links() }}
+                                                    </div>                                                   
+                                                @endif
+                                                <div class="new-mode">                                                   
+                                                    <button id="mode-tag" class="btn btn-primary btn-sm"><i class="fa fa-picture-o" aria-hidden="true"></i></button>
+                                                    <button id="mode-zoom" class="btn btn-primary btn-sm"><i class="fa fa-search" aria-hidden="true"></i></button>
+                                                </div>
+                                                <div class="show-tag">
+                                                    <img src="{{ config('filesystems.s3url') . $files->first()->file_path }}" alt="{{ $files->first()->file_code }}" class="margin img-thumbnail img-responsive">                 
+                                                </div>
+                                                <div class="show-zoom" style="display: none;">
+                                                    <div id="window" class="magnify img-thumbnail" data-magnified-zone=".mg_zone">
+                                                        <div class="magnify_glass">
+                                                            <div class="mg_ring"></div>
+                                                            <div class="pm_btn plus"><h3>+</h3></div>
+                                                            <div class="pm_btn minus"><h3>-</h3></div>
+                                                            <div class="mg_zone"></div>
+                                                        </div>
+                                                        <div class="element_to_magnify">
+                                                            <img src="{{ config('filesystems.s3url') . $files->first()->file_path }}" alt="{{ $files->first()->file_code }}" class="img-responsive img-zoom" id="{{$files->first()->id}}">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <button id="click-zoom" style="display: none;"></button>
+                                            @elseif($snap->mode_type == 'audios')
+                                                @if($files->lastPage() > 1)  
+                                                    <div class="new-pagination">
+                                                        {{ $files->links() }}
+                                                    </div>                                                   
+                                                @endif
+                                                <div class="new-mode">                                                   
+                                                    <button id="mode-tag" class="btn btn-primary btn-sm"><i class="fa fa-headphones" aria-hidden="true"></i></button>
+                                                    <button id="mode-zoom" class="btn btn-primary btn-sm"><i class="fa fa-search" aria-hidden="true"></i></button>
+                                                    <button id="mode-crop" class="btn btn-primary btn-sm"><i class="fa fa-crop" aria-hidden="true"></i></button>
+                                                </div>
+                                                <div class="img-thumbnail show-tag" style="padding-right: 10px;">
+                                                    <img src="{{ config('filesystems.s3url') . $files->first()->file_path }}" alt="{{ $files->first()->file_code }}" class="margin img-responsive" id="{{ $files->first()->id }}">
+                                                    @if($audios)
+                                                    <audio controls class="img-responsive" style="padding-top: 30px;">
+                                                      <source src="{{ config('filesystems.s3url') . $audios->file_path }}" type="audio/mpeg">
+                                                        Your browser does not support the audio element.
+                                                    </audio>
+                                                    @endif
+                                                </div>
+                                                <div class="show-zoom" style="display: none;">
+                                                    <div id="window" class="magnify img-thumbnail" data-magnified-zone=".mg_zone">
+                                                        <div class="magnify_glass">
+                                                            <div class="mg_ring"></div>
+                                                            <div class="pm_btn plus"><h3>+</h3></div>
+                                                            <div class="pm_btn minus"><h3>-</h3></div>
+                                                            <div class="mg_zone"></div>
+                                                        </div>
+                                                        <div class="element_to_magnify">
+                                                            <img src="{{ config('filesystems.s3url') . $files->first()->file_path }}" alt="{{ $files->first()->file_code }}" class="img-responsive img-zoom" id="{{$files->first()->id}}">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="show-crop img-thumbnail margin" style="display: none;">
+                                                    <img src="{{ config('filesystems.s3url') . $files->first()->file_path }}" alt="{{ $files->first()->file_code }}" class="  img-responsive img-crop" id="{{$files->first()->id}}">
+                                                </div>
+                                                <button id="click-zoom" style="display: none;"></button>
+                                            @endif                                                                     
                                         </div>
                                     </div>
                                 </li>
@@ -154,9 +191,7 @@
                                         <h3 class="timeline-header">Google OCR</h3>
 
                                         <textarea class="form-control" style="resize:none;width: 100%;height: 500px;margin-top: 10px;" cols="50" readonly="readonly">
-                                            @foreach($snap->files as $file)
-                                                {{ $file->recognition_text }}
-                                            @endforeach
+                                            {{ $files->first()->recognition_text }}
                                         </textarea>
                                     </div>
                                 </li>
@@ -554,6 +589,7 @@
         $('a#add-show').on('click', function(e) {
             e.preventDefault();
             var countOfTextbox = $('.tag-name-show').length;
+            var time = Math.round(Date.now() / 100);
 
             if(countOfTextbox >= 20) {
                 $(this).attr('disabled', 'disabled');
@@ -562,12 +598,13 @@
 
             $('tbody#inputs-show').append('<tr id="input-show'+countOfTextbox+'">'+
                 '<td><a class="btn btn-box-tool" onclick="deleteTagShow('+countOfTextbox+')"><i class="fa fa-remove"></i></a></td>'+
+                '<td><i class="fa fa-spinner fa-spin fa-2x img-item-loading" id="load-'+time+'" aria-hidden="true" style="display: none;"></i><div id="kotak-drop" class="'+time+'" ondrop="drop(event)" ondragover="allowDrop(event)"></div><input type="hidden" name="newtag[crop_path][]" id="crop-'+time+'"></td>'+
                 '<td width="300"><input type="text" name="newtag[name][]" class="form-control input-sm tag-name-show" placeholder="Product Name" required="required"></td>'+
                 '<td width="300"><input type="text" name="newtag[brands][]" class="form-control input-sm" placeholder="Brands"></td>'+
                 '<td width="300"><input type="text" list="variants" name="newtag[variants][]" class="form-control input-sm" placeholder="Variants"></td>'+
                 '<td width="200"><input type="text" name="newtag[weight][]" class="form-control input-sm" placeholder="Weight"></td><td width="100"><input type="number" name="newtag[qty][]" class="form-control input-sm" placeholder="QTY" required="required"></td>'+
                 '<td width="200" class="text-right"><input type="number" name="newtag[total][]" class="form-control input-sm" placeholder="Total Price" required="required">'+
-                '<input type="hidden" name="newtag[fileId][]" value="{{ $file->id }}"></td></tr>');
+                '</td></tr>');
         });
 
         $('a#remove-show').on('click', function(e) {
@@ -587,25 +624,6 @@
 
         $('#receipt_id').blur(function(e) {
             this.removeAttribute('tabIndex');
-        });
-
-        // $(".img-zoom").elevateZoom({
-        //     zoomType: "inner",
-        //     cursor: "crosshair",
-        //     easing: true,
-        // });
-
-        // $(window).resize(function() {
-        //     $(".zoomContainer").remove();
-        //     $(".img-zoom").elevateZoom({
-        //         zoomType: "inner",
-        //         cursor: "crosshair",
-        //         easing: true,
-        //     });
-        // });
-
-        $(".magnify").on('click', function() {
-            $(".magnify").jfMagnify();
         });
 
         $('#click-zoom').on('click', function() {
@@ -866,6 +884,10 @@
             $('.show-zoom').hide();
             $('.show-crop').show();
         });
+
+        $('#submit-show').on('click', function() {
+            $('#submit').click();
+        })
 
         // start cropping image
         var $image = $('.img-crop');
