@@ -123,10 +123,12 @@
                                                 </div>
                                                 <div class="img-thumbnail show-tag" style="padding-right: 10px;">
                                                     <img src="{{ config('filesystems.s3url') . $files->first()->file_path }}" alt="{{ $files->first()->file_code }}" class="margin img-responsive" id="{{ $files->first()->id }}">
+                                                    @if($audios)
                                                     <audio controls class="img-responsive" style="padding-top: 30px;">
                                                       <source src="{{ config('filesystems.s3url') . $audios->file_path }}" type="audio/mpeg">
                                                         Your browser does not support the audio element.
                                                     </audio>
+                                                    @endif
                                                 </div>
                                                 <div class="show-zoom" style="display: none;">
                                                     <div id="window" class="magnify img-thumbnail" data-magnified-zone=".mg_zone">
