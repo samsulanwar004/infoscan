@@ -38,7 +38,7 @@ class NotificationService
 	{
 		$user = auth('api')->user();
 		$member = DB::select('select count(`id`) as total from `member_push_tokens` where `token` = :token and `member_id` = :member_id;', [
-				'member_id' => $user->id
+				'member_id' => $user->id,
 				'token' => $token
 			]);
 
