@@ -252,6 +252,12 @@ Route::group([
         '/crop/upload',
         'Web\SnapController@cropUpload'
     )->name('crop.upload');
+
+    Route::put(
+        '/approve-image/{id}',
+        'Web\SnapController@approveImage'
+    )->name('approve.image');
+
 });
 
 Auth::routes();
