@@ -105,6 +105,8 @@ class SnapController extends AdminController
             if(null === $snap) {
                 throw new Exception('Id Snap not valid!');
             }      
+            // build code for approve
+            $code = $this->getCodeTask($snap->snap_type, $snap->mode_type);
 
             $files = $snap->files()->where('file_mimes', 'like', 'image%')->paginate(1);
 
@@ -114,7 +116,7 @@ class SnapController extends AdminController
 
             $paymentMethods = config("common.payment_methods");
 
-            return view('snaps.show', compact('snap', 'paymentMethods', 'audios', 'files'));
+            return view('snaps.show', compact('snap', 'paymentMethods', 'audios', 'files', 'code'));
         } catch (Exception $e) {
             logger($e->getMessage());
             return view('errors.404');
@@ -127,14 +129,20 @@ class SnapController extends AdminController
         try {
             $snap = (new SnapService)->getSnapByid($id);
 
-            $fixedPoint = (new PointService)->calculateApprovePoint($snap);
+            $point = [];
+            foreach ($snap->files as $file) {
+                $point[] = $file->image_point;
+            }
+            $fixedPoint = collect($point)->sum();
+            $point = (new PointService)->calculatePromoPoint($snap->member_id, $snap->outlet_city);
 
+            $promo = $point['point_city'] + $point['point_level_city'];
             $reasons = Setting::where('setting_group', 'snap_reason')
                 ->get();
 
             $admin = $this->isSuperAdministrator();
 
-            return view('snaps.edit', compact('snap', 'fixedPoint', 'reasons', 'admin'));
+            return view('snaps.edit', compact('snap', 'fixedPoint', 'promo', 'reasons', 'admin'));
         } catch (\Exception $e) {
             logger($e->getMessage());
             return response()->json([
@@ -191,14 +199,6 @@ class SnapController extends AdminController
     public function update(Request $request, $id)
     {
         $this->validate($request, [
-            'tag.name.*' => 'required|max:255',
-            'tag.weight.*' => 'required|max:255',
-            'tag.qty.*' => 'required|max:11',
-            'tag.total.*' => 'required|max:15',
-            'newtag.name.*' => 'required|max:255',
-            'newtag.weight.*' => 'required|max:255',
-            'newtag.qty.*' => 'required|max:11',
-            'newtag.total.*' => 'required|max:15',
             'comment' => 'max:100',
             'outlet_name' => 'max:100',
             'location' => 'max:255',
@@ -213,17 +213,7 @@ class SnapController extends AdminController
         ]);
 
         try {
-            if ($request->input('mode') === 'input') {
-                (new SnapService)->updateSnapModeTags($request, $id);
-            } else if ($request->input('mode') === 'tags') {
-                (new SnapService)->updateSnapModeTags($request, $id);
-            } else if ($request->input('mode') === 'no_mode') {
-                (new SnapService)->updateSnapModeTags($request, $id);
-            } else if ($request->input('mode') === 'audios') {
-                (new SnapService)->updateSnapModeAudios($request, $id);
-            } else if ($request->input('mode') === 'image') {
-                (new SnapService)->updateSnapModeImages($request, $id);
-            }else if ($request->input('mode') === 'confirm') {
+            if ($request->input('mode') === 'confirm') {
                 (new SnapService)->confirmSnap($request, $id);
             } else {
                 $snap = (new SnapService);
@@ -352,6 +342,107 @@ class SnapController extends AdminController
                 'message' => $e->getMessage(),
             ]);
         }
+    }
+
+    protected function getCodeTask($type, $mode)
+    {
+        if($type == 'receipt') {
+            $type = 'a';
+        } elseif ($type == 'handWritten') {
+            $type = 'b';
+        } else {
+            $type = 'c';
+        }
+
+        switch ($mode) {
+            case 'audios':
+                $mode = array('Only Pic' => $type.'|1','Error' =>$type.'|4', 'Error Free' =>$type.'|5');
+                break;
+
+            case 'tags':
+                $mode = array('Only Pic' => $type.'|1','Error' => $type.'|2', 'Error Free' =>$type.'|3');
+                break;
+
+            case 'input':
+                $mode = array('Only Pic' => $type.'|1','Error' => $type.'|2', 'Error Free' => $type.'|3');
+                break;
+            
+            default:
+                $mode = array('Only Pic' => $type.'|1');
+                break;
+        }
+
+        return $mode;
+    }
+
+    public function approveImage(Request $request, $id)
+    {
+        $this->validate($request, [
+            'tag.name.*' => 'required|max:255',
+            'tag.weight.*' => 'required|max:255',
+            'tag.qty.*' => 'required|max:11',
+            'tag.total.*' => 'required|max:15',
+            'newtag.name.*' => 'required|max:255',
+            'newtag.weight.*' => 'required|max:255',
+            'newtag.qty.*' => 'required|max:11',
+            'newtag.total.*' => 'required|max:15',
+        ]);
+
+        try {
+            if ($request->input('mode_type') === 'input') {
+                (new SnapService)->updateSnapModeTags($request, $id);
+            } else if ($request->input('mode_type') === 'tags') {
+                (new SnapService)->updateSnapModeTags($request, $id);
+            } else if ($request->input('mode_type') === 'no_mode') {
+                (new SnapService)->updateSnapModeTags($request, $id);
+            } else if ($request->input('mode_type') === 'audios') {
+                (new SnapService)->updateSnapModeAudios($request, $id);
+            } else if ($request->input('mode_type') === 'image') {
+                (new SnapService)->updateSnapModeImages($request, $id);
+            }            
+            
+
+            $file = (new SnapService)->getSnapFileById($id);
+            if ($file->mode_type == 'image') {
+                $tag = $request->input('tag');
+                $newtag = $request->input('newtag');
+                $totalTag = count($tag['name']) + count($newtag['name']);
+                $code = $request->input('image_approve');
+                $task = $this->getTaskPointByRange($code, $totalTag);
+
+                $file->image_code = isset($task->code) ? $task->code : null;
+                $file->image_point = isset($task->point) ? $task->point : 0;
+            } else {
+                $code = $request->input('image_approve');
+                $task = (new SnapService)->getTaskPointByCode($code);
+                $file->image_code = $code;
+                $file->image_point = isset($task->point) ? $task->point : 0;
+            }
+            
+            $file->update();
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+
+        return response()->json([
+            'status' => 'ok',
+            'message' => 'Approve this image successfully',
+        ]);
+    }
+
+    private function getTaskPointByRange($code, $count)
+    {
+        return \DB::table('tasks')
+            ->join('task_points', 'tasks.id', '=', 'task_points.task_id')
+            ->select('task_points.point as point', 'tasks.code as code')
+            ->where('tasks.code', 'like', $code.'%')
+            ->where('task_points.range_start', '<=', $count)
+            ->where('task_points.range_end', '>=', $count)
+            ->first();
     }
 
 }

@@ -362,6 +362,7 @@ class SnapService
         $userId = auth()->user()->id;
         $comment = $request->input('comment');
         $point = $request->input('point');
+        $promo = $request->input('promo');
 
         if (!empty($request->input('reason'))) {
             if ($request->has('other')) {
@@ -389,7 +390,7 @@ class SnapService
         if ($request->input('confirm') == 'approve') {
             //queue for calculate point
             $config = config('common.queue_list.point_process');
-            $job = (new PointCalculation($snaps))->onQueue($config)->onConnection(env('INFOSCAN_QUEUE'));
+            $job = (new PointCalculation($snaps, $point, $promo))->onQueue($config)->onConnection(env('INFOSCAN_QUEUE'));
             dispatch($job);
             $snaps->approved_by = $userId;
             $snaps->comment = $comment;
@@ -465,15 +466,15 @@ class SnapService
     public function updateSnap(Request $request, $id)
     {
         $snaps = $this->getSnapByid($id);
-        $firstFileId = $snaps->files->first()->id;
-        $tags = $request->input('tag');   
+        // $firstFileId = $snaps->files->first()->id;
+        // $tags = $request->input('tag');   
 
-        //delete tag
-        if ($snaps->mode_type == 'tags' || $snaps->mode_type == 'input') {
-            $this->deleteTagsOrInput($request, $id);
-        }
-        //update and new tag
-        $this->updateSnapModeInput($request, $firstFileId);
+        // //delete tag
+        // if ($snaps->mode_type == 'tags' || $snaps->mode_type == 'input') {
+        //     $this->deleteTagsOrInput($request, $id);
+        // }
+        // //update and new tag
+        // $this->updateSnapModeInput($request, $firstFileId);
 
         $snaps->receipt_id = $request->input('receipt_id');
         $snaps->location = $request->input('location');
@@ -1618,17 +1619,25 @@ class SnapService
         $files = $data['files'];
         $tags = $data['tags'];
 
-        $point = (new PointService)->calculateEstimatedPoint($memberId, $type, $mode, $tags);
+        $code = $this->getCodeTask($type, $mode);
 
-        if ($mode == 'tags' || $mode == 'input') {
-            if ($tags == 0) {
-                $total = $point['percent'];
-            } else {
-                $total = $point['point'] * $tags;
-            }
-        } else {
-            $total = $point['point'] * $files;
-        }        
+        $task = $this->getTaskPointByCode($code);
+
+        $point = isset($task->point) ? $task->point : 0;
+
+        $total = $point * $files;
+        
+        // $point = (new PointService)->calculateEstimatedPoint($memberId, $type, $mode, $tags);
+
+        // if ($mode == 'tags' || $mode == 'input') {
+        //     if ($tags == 0) {
+        //         $total = $point['percent'];
+        //     } else {
+        //         $total = $point['point'] * $tags;
+        //     }
+        // } else {
+        //     $total = $point['point'] * $files;
+        // }        
 
         $snap = (new SnapService)->getSnapByCode($requestCode);
         $snap->estimated_point = $total;
@@ -1838,6 +1847,50 @@ class SnapService
 
             return $link;
         }
+    }
+
+    protected function getCodeTask($type, $mode)
+    {
+        if($type == 'receipt') {
+            $type = 'a';
+        } elseif ($type == 'handWritten') {
+            $type = 'b';
+        } else {
+            $type = 'c';
+        }
+
+        switch ($mode) {
+            case 'audios':
+                $mode = $type.'|5';
+                break;
+
+            case 'tags':
+                $mode = $type.'|3';
+                break;
+
+            case 'input':
+                $mode = $type.'|3';
+                break;
+
+            case 'images':
+                $mode = $type;
+                break;
+            
+            default:
+                $mode = $type.'|1';
+                break;
+        }
+
+        return $mode;
+    }
+
+    public function getTaskPointByCode($code)
+    {
+        return \DB::table('tasks')
+            ->join('task_points', 'tasks.id', '=', 'task_points.task_id')
+            ->select('task_points.point as point')
+            ->where('tasks.code', 'like', $code.'%')
+            ->first();
     }
 
 }

@@ -119,7 +119,7 @@
                                                 <div class="new-mode">                                                   
                                                     <button id="mode-tag" class="btn btn-primary btn-sm"><i class="fa fa-headphones" aria-hidden="true"></i></button>
                                                     <button id="mode-zoom" class="btn btn-primary btn-sm"><i class="fa fa-search" aria-hidden="true"></i></button>
-                                                    <button id="mode-crop" class="btn btn-primary btn-sm"><i class="fa fa-crop" aria-hidden="true"></i></button>
+                                                    <button id="mode-crop" class="btn btn-primary btn-sm"><i class="fa fa-crop" aria-hidden="true"></i></button>                                                    
                                                 </div>
                                                 <div class="img-thumbnail show-tag" style="padding-right: 10px;">
                                                     <img src="{{ config('filesystems.s3url') . $files->first()->file_path }}" alt="{{ $files->first()->file_code }}" class="margin img-responsive" id="{{ $files->first()->id }}">
@@ -161,10 +161,6 @@
                         <p class="no-shadow">
 
                         </p>                       
-                        
-                        <form id="snapUpdate" action="{{ admin_route_url('snaps.update', ['id' => $snap->id]) }}"  method="POST">
-                        {{ csrf_field() }}
-                        {{ method_field('PUT') }}
                         <div class="timeline-item ">
                             <ul class="timeline timeline-inverse">
                                 <li class="no-margin-right">
@@ -200,7 +196,9 @@
                         </div>                       
                         
                     </div>
-
+                    <form id="snapUpdate" action="{{ admin_route_url('snaps.update', ['id' => $snap->id]) }}"  method="POST">
+                    {{ csrf_field() }}
+                    {{ method_field('PUT') }}
                     <div class="col-md-2">
                         <div class="snaps-button">
                                 <div class="form-group receipt_id">
@@ -554,6 +552,20 @@
             }, 3000);
         });
 
+        $('#tagUpdate').on('submit', function (e) {
+            e.preventDefault();
+            REBEL.onSubmit($(this), function (responseData) {
+                REBEL.removeAllMessageAlert();
+                if (responseData.status == "ok") {
+                    REBEL.smallNotifTemplate(responseData.message, '.body', 'success');               
+                }
+            }, false);
+
+            setTimeout(function() {
+                REBEL.removeAllMessageAlert();
+            }, 3000);
+        });
+
         $('#datetimepicker1').datetimepicker({
             icons: {
                 time: "fa fa-clock-o",
@@ -884,10 +896,6 @@
             $('.show-zoom').hide();
             $('.show-crop').show();
         });
-
-        $('#submit-show').on('click', function() {
-            $('#submit').click();
-        })
 
         // start cropping image
         var $image = $('.img-crop');

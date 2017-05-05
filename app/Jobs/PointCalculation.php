@@ -16,15 +16,19 @@ class PointCalculation implements ShouldQueue
     use InteractsWithQueue, Queueable, SerializesModels;
 
     protected $data;
+    protected $point;
+    protected $promo;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($data)
+    public function __construct($data, $point, $promo)
     {
         $this->data = $data;
+        $this->point = $point;
+        $this->promo = $promo;
     }
 
     /**
@@ -34,7 +38,7 @@ class PointCalculation implements ShouldQueue
      */
     public function handle()
     {
-        $point = (new PointService)->calculateApprovePoint($this->data);
+        $point = $this->point;
         $cashier = config('common.transaction.member.cashier');
         //$member = config('common.transaction.member.user');
 
