@@ -22,7 +22,8 @@ class PointController extends AdminController
     public function getTaskTable(Request $request)
     {
         if ($request->wantsJson()) {
-            return (new PointService)->getPivotGrid();
+            //return (new PointService)->getPivotGrid();
+            return (new PointService)->getNewPivotGrid();
         }
     }
 
@@ -57,18 +58,34 @@ class PointController extends AdminController
 
     public function store(Request $request)
     {  
-        $this->validate($request, [
-            'name' => 'required|unique:tasks,name',
-            'levels.*' => 'required'
-        ]);
+        if ($request->input('task_type') == 'a') {
+            $this->validate($request, [
+                'name' => 'required|unique:tasks,name',
+                'range_start' => 'required|numeric|different:range_end|min:0',
+                'range_end' => 'required|numeric|min:0',
+                'point' => 'required'
+            ]);
+        } else {
+            $this->validate($request, [
+                'name' => 'required|unique:tasks,name',
+                'point' => 'required'
+            ]);
+        }
 
         try {
 
             if ($request->input('task_mode') == '0') {
                 throw new \Exception("Task Mode Required");                
             }
+            if ($request->input('task_type') == 'a') {
+                if ($request->input('range_start') > $request->input('range_end')) {
+                    throw new \Exception("End range must be greater than start range.");
+                }
+            }            
             
-            (new PointService)->addTaskLevelPoint($request);
+            //(new PointService)->addTaskLevelPoint($request);
+            //new logic task point
+            (new PointService)->addTaskPoint($request);
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',
@@ -81,9 +98,14 @@ class PointController extends AdminController
             ], 500);
         } 
 
+        // return response()->json([
+        //     'status' => 'ok',
+        //     'message' => 'Task Level Points successfully created!',
+        // ]);
+
         return response()->json([
             'status' => 'ok',
-            'message' => 'Task Level Points successfully created!',
+            'message' => 'Task Points successfully created!',
         ]);
 
     }
@@ -92,7 +114,7 @@ class PointController extends AdminController
     {
         $this->isAllowed('Points.Update');
         $task = (new PointService)->getTaskById($id);
-        $levels = $task->levels;
+        $point = $task->point()->first();
         $limits = $task->limit;
 
         $lim = [];
@@ -100,15 +122,24 @@ class PointController extends AdminController
             $lim[$limit->name] = $limit->limit;
         }
 
-        return view('points.edit', compact('task', 'levels', 'lim'));
+        return view('points.edit', compact('task', 'point', 'lim'));
     }
 
     public function update(Request $request, $id)
     {
-        $this->validate($request, [
-            'name' => 'required',
-            'levels.*' => 'required'
-        ]);
+        if ($request->input('task_type') == 'a') {
+            $this->validate($request, [
+                'name' => 'required',
+                'range_start' => 'required|numeric|different:range_end|min:0',
+                'range_end' => 'required|numeric|min:0',
+                'point' => 'required'
+            ]);
+        } else {
+            $this->validate($request, [
+                'name' => 'required',
+                'point' => 'required'
+            ]);
+        }
 
         try {
 
@@ -116,7 +147,8 @@ class PointController extends AdminController
                 throw new \Exception("Task Mode Required");                
             }
 
-            (new PointService)->updateTaskLevelPoint($request, $id);
+            // (new PointService)->updateTaskLevelPoint($request, $id);
+            (new PointService)->updateTaskPoint($request, $id);
         } catch (\Exception $e) {
              return response()->json([
                 'status' => 'error',
@@ -141,6 +173,7 @@ class PointController extends AdminController
             $task = (new PointService)->getTaskById($id);
             $task->delete();
             cache()->forget('point.pivot');
+            cache()->forget('point.limit');
         } catch (\Exception $e) {
             return redirect($this->redirectAfterSave)->with('errors', $e->getMessage());
         }
