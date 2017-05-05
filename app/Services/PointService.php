@@ -9,6 +9,7 @@ use App\PromoPoint;
 use App\PromoLevelPoint;
 use App\SnapTag;
 use App\LimitPoint;
+use App\TaskPoint;
 use DB;
 use Carbon\Carbon;
 use App\Transformers\PortalPointTransformer;
@@ -319,7 +320,7 @@ inner join level_points as l on l.id = plp.level_id;');
 
     public function getTaskById($id)
     {
-        $t = Task::with('levels')
+        $t = Task::with('point')
             ->with('limit')
             ->where('id', '=', $id)
             ->first();
@@ -497,15 +498,16 @@ inner join level_points as l on l.id = plp.level_id;');
         $files = $snaps->files;
 
         $tags = (new SnapService)->getCountOfTags($files);
-        $memberTag = $tags['member_add'];
-
-        $calculateTask = $this->calculateEstimatedPoint($memberId, $type, $mode, $memberTag);
-
-        $calculatePromo = $this->calculatePromoPoint($memberId, $city);       
-
         $memberAdd = $tags['member_add'];
         $crowdSourceEdit = $tags['crowdsource_edit'];
         $crowdSourceAdd = $tags['crowdsource_add'];
+
+        $calculateTask = $this->calculateEstimatedPoint($memberId, $type, $mode, $memberTag);
+
+        $promo = $this->calculatePromoPoint($memberId, $city);       
+
+        $pointPromo = $promo['point_city'] + $promo['point_level_city'];
+
         $totalTag = $memberAdd + $crowdSourceEdit + $crowdSourceAdd;
 
         if ($type == 'receipt') {
@@ -531,7 +533,10 @@ inner join level_points as l on l.id = plp.level_id;');
 
         $totalPoint = round($point);
 
-        return $totalPoint;
+        return [
+            'point' => $point,
+            'promo' => $pointPromo,
+        ];
     }    
 
     protected function getTypeId($type)
@@ -712,6 +717,215 @@ inner join tasks as t on t.id = l.task_id order by t.id;');
             ->where('tasks.code', '=', $code)
             ->select('limit_points.name', 'limit_points.limit')
             ->get();
+    }
+
+    public function addTaskPoint($request)
+    {
+
+        if ($request->input('task_type') == 'a') {
+            $data = [
+                'name' => $request->input('name'),
+                'code' => sprintf("%s|%s|%s", $request->input('task_type'), $request->input('range_start'), $request->input('range_end')),
+            ];
+            DB::beginTransaction();
+            $task = $this->addNewTask($data);
+
+            if ($task) {
+                $point = new TaskPoint;
+                $point->range_start = $request->input('range_start');
+                $point->range_end = $request->input('range_end');
+                $point->point = $request->input('point');
+
+                $point->task()->associate($task);
+                $point->save();
+
+                foreach ($request->input('limit') as $limitName => $limit) {
+                    $taskLimitPoint = $this->getTaskLimitPoints($task->id, $limitName);   
+                    $newtaskLimitPoint = new LimitPoint;
+                    $newtaskLimitPoint->name = $limitName;
+                    $newtaskLimitPoint->limit = $limit;
+                    $newtaskLimitPoint->task()->associate($task);
+                    $newtaskLimitPoint->save();
+                }
+
+                $this->removeCache();
+
+                DB::commit();
+
+                return true;
+            }
+
+            DB::rollBack();
+
+            return false;
+        } else {
+            $data = [
+                'name' => $request->input('name'),
+                'code' => sprintf("%s|%s", $request->input('task_type'), $request->input('task_mode')),
+            ];
+            DB::beginTransaction();
+            $task = $this->addNewTask($data);
+
+            if ($task) {
+                $point = new TaskPoint;
+                $point->point = $request->input('point');
+
+                $point->task()->associate($task);
+                $point->save();
+
+                foreach ($request->input('limit') as $limitName => $limit) {
+                    $taskLimitPoint = $this->getTaskLimitPoints($task->id, $limitName);   
+                    $newtaskLimitPoint = new LimitPoint;
+                    $newtaskLimitPoint->name = $limitName;
+                    $newtaskLimitPoint->limit = $limit;
+                    $newtaskLimitPoint->task()->associate($task);
+                    $newtaskLimitPoint->save();
+                }
+
+                $this->removeCache();
+
+                DB::commit();
+
+                return true;
+            }
+
+            DB::rollBack();
+
+            return false;
+        }
+
+    }
+
+    public function addNewTask($data)
+    {
+        $task = new Task;
+        $task->name = $data['name'];
+        $task->code = $data['code'];
+        $task->save();
+
+        return $task;
+    }
+
+    public function getNewPivotGrid()
+    {
+        if($pivots = cache(self::CACHE_NAME)) {
+            return $pivots;
+        }
+
+        $points = DB::select('select t.id, t.name as task_name, tp.point from task_points as tp
+inner join tasks as t on t.id = tp.task_id order by t.id;');
+        $result = [];
+        foreach ($points as $pivot) {
+            $result[] = [
+                'Task' => $pivot->id.' '.$pivot->task_name,
+                'Level' => 'Points',
+                'Point' => $pivot->point,
+            ];
+        }
+
+        cache()->put(self::CACHE_NAME, $result, 1440);
+
+        return $result;
+    }
+
+    public function updateTaskPoint($request, $id)
+    {
+        if ($request->input('task_type') == 'a') {
+            $data = [
+                'name' => $request->input('name'),
+                'code' => sprintf("%s|%s|%s", $request->input('task_type'), $request->input('range_start'), $request->input('range_end')),
+            ];
+            DB::beginTransaction();
+            $task = $this->updateNewTask($data, $id);
+
+            if ($task) {
+                $point = TaskPoint::where('task_id', $task->id)->first();
+                $point->range_start = $request->input('range_start');
+                $point->range_end = $request->input('range_end');
+                $point->point = $request->input('point');
+
+                $point->update();
+
+                foreach ($request->input('limit') as $limitName => $limit) {
+                    $taskLimitPoint = $this->getTaskLimitPoints($task->id, $limitName);   
+
+                    if ($taskLimitPoint == false)
+                    {
+                        $newtaskLimitPoint = new LimitPoint;
+                        $newtaskLimitPoint->name = $limitName;
+                        $newtaskLimitPoint->limit = $limit;
+                        $newtaskLimitPoint->task()->associate($task);
+                        $newtaskLimitPoint->save();
+                    } else {
+                        $taskLimitPoint->name = $limitName;
+                        $taskLimitPoint->limit = $limit;
+                        $taskLimitPoint->update();
+                    }
+
+                }
+
+                $this->removeCache();
+
+                DB::commit();
+
+                return true;
+            }
+
+            DB::rollBack();
+
+            return false;
+        } else {
+            $data = [
+                'name' => $request->input('name'),
+                'code' => sprintf("%s|%s", $request->input('task_type'), $request->input('task_mode')),
+            ];
+            DB::beginTransaction();
+            $task = $this->updateNewTask($data, $id);
+
+            if ($task) {
+                $point = TaskPoint::where('task_id', $task->id)->first();
+                $point->point = $request->input('point');
+                $point->update();
+
+                foreach ($request->input('limit') as $limitName => $limit) {
+                    $taskLimitPoint = $this->getTaskLimitPoints($task->id, $limitName);   
+
+                    if ($taskLimitPoint == false)
+                    {
+                        $newtaskLimitPoint = new LimitPoint;
+                        $newtaskLimitPoint->name = $limitName;
+                        $newtaskLimitPoint->limit = $limit;
+                        $newtaskLimitPoint->task()->associate($task);
+                        $newtaskLimitPoint->save();
+                    } else {
+                        $taskLimitPoint->name = $limitName;
+                        $taskLimitPoint->limit = $limit;
+                        $taskLimitPoint->update();
+                    }
+
+                }
+
+                $this->removeCache();
+
+                DB::commit();
+
+                return true;
+            }
+
+            DB::rollBack();
+
+            return false;
+        }
+    }
+
+    public function updateNewTask($data, $id)
+    {
+        $task = $this->getTaskById($id);
+        $task->name = $data['name'];
+        $task->code = $data['code'];
+        $task->update();
+
+        return $task;
     }
 
 }

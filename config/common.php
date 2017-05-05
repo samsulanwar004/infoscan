@@ -178,24 +178,36 @@ return [
             ],
             'b' => [
                 '1' => [
-                    'label' => 'No Mode',
+                    'label' => 'ONLY PIC',
                 ],
                 '2' => [
-                    'label' => 'With Input',
+                    'label' => 'With Tag ER',
                 ],
                 '3' => [
-                    'label' => 'With Audio',
+                    'label' => 'With Tag EF',
+                ],
+                '4' => [
+                    'label' => 'With Audio ER',
+                ],
+                '5' => [
+                    'label' => 'With Audio EF',
                 ],
             ],
             'c' => [
                 '1' => [
-                    'label' => 'No Mode',
+                    'label' => 'ONLY PIC',
                 ],
                 '2' => [
-                    'label' => 'With Tag',
+                    'label' => 'With Tag ER',
                 ],
                 '3' => [
-                    'label' => 'With Audio',
+                    'label' => 'With Tag EF',
+                ],
+                '4' => [
+                    'label' => 'With Audio ER',
+                ],
+                '5' => [
+                    'label' => 'With Audio EF',
                 ],
             ],
         ]

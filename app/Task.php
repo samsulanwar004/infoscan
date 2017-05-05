@@ -25,12 +25,18 @@ class Task extends Model
         return $this->hasMany(LimitPoint::class, 'task_id', 'id');
     }
 
+    public function point()
+    {
+        return $this->hasMany(TaskPoint::class, 'task_id', 'id');
+    }
+
     protected static function boot() {
         parent::boot();
 
         static::deleting(function($task) { 
              $task->taskLevels()->delete();
              $task->limit()->delete();
+             $task->point()->delete();
         });
     }
 }

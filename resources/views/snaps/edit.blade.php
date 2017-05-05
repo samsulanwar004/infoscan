@@ -3,6 +3,7 @@
     {{ method_field('PUT') }}
     <input type="hidden" name="mode" value="confirm">
     <input type="hidden" name="point" id="point">
+    <input type="hidden" name="promo" value="{{$promo}}">
     <div class="modal-header">
         <a class="close btn-modal-close" data-dismiss="modal">&times;</a>
         <h4><i class="fa fa-file-o fa-btn"></i> <span class="action-title">Snap </span> Confirmation</h4>
@@ -63,12 +64,14 @@
               <tr>
                 <th>Estimated Point</th>
                 <th>Fixed Point</th>
+                <th>Promo Point</th>
               </tr>
               </thead>
               <tbody>
                   <tr>
                     <td>{{ $snap->estimated_point }}</td>
                     <td><span id="fixed-point">{{ $fixedPoint }}</span></td>
+                    <td>{{ $promo }}</td>
                   </tr>
               </tbody>
             </table>
@@ -110,14 +113,17 @@
 
       $('#approve').on('click', function() {
         $('.submit-to-server').removeAttr('disabled');
-        $('#wording').html('<label><input name="comment" type="radio" value="Selamat, klaim sebesar {{ $fixedPoint }} poin telah berhasil! Kluk!" required="required">Selamat, klaim sebesar {{ $fixedPoint }} poin telah berhasil! Kluk!</label><label><input name="comment" value="Oops, data belanja kamu belum lengkap. Kamu dapat {{ $fixedPoint }} poin! Kluk!" type="radio" required="required">Oops, data belanja kamu belum lengkap. Kamu dapat {{ $fixedPoint }} poin! Kluk!</label>');
+        $('#wording').html('<label><input name="comment" type="radio" onclick="fixed({{ $fixedPoint }});" value="Selamat, klaim sebesar {{ $fixedPoint }} poin telah berhasil! Kluk!" required="required">'+
+          'Selamat, klaim sebesar {{ $fixedPoint }} poin telah berhasil! Kluk!</label>'+
+          '<label><input name="comment" onclick="fixed({{ $fixedPoint }});" value="Oops, data belanja kamu belum lengkap. Kamu dapat {{ $fixedPoint }} poin! Kluk!" type="radio" required="required">'+
+          'Oops, data belanja kamu belum lengkap. Kamu dapat {{ $fixedPoint }} poin! Kluk!</label>');
         $('#reason').hide();
         $('#other').html('');
       });
 
       $('#reject').on('click', function() {
         $('.submit-to-server').removeAttr('disabled');
-        $('#wording').html('<label><input name="comment" value="Sayang sekali, transaksi kamu gagal. Ayo coba lagi!" type="radio" required="required">Sayang sekali, transaksi kamu gagal. Ayo coba lagi!</label>');
+        $('#wording').html('<label><input name="comment" onclick="fixed(0);" value="Sayang sekali, transaksi kamu gagal. Ayo coba lagi!" type="radio" required="required">Sayang sekali, transaksi kamu gagal. Ayo coba lagi!</label>');
         $('#reason').show();
         $('#reason').prop('selectedIndex', 0);
       });
@@ -137,6 +143,10 @@
       var fixed = $('#fixed-point').html();
       $('#point').val(fixed);
   });
+
+  function fixed(point) {
+    $('#fixed-point').html(point);
+  }
 
 </script>
 
