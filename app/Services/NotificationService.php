@@ -36,9 +36,20 @@ class NotificationService
 
 	public function updateMemberDeviceToken($token)
 	{
-		$member = DB::select('select count(`id`) as total from `member_push_tokens` where `token` = :token;', ['token' => $token]);
+		$user = auth('api')->user();
+		if($user) {
+			$member = DB::select('select count(`id`) as total from `member_push_tokens` where `token` = :token and `member_id` = :member_id;', [
+				'member_id' => $user->id,
+				'token' => $token
+			]);
+		} else {
+			$member = DB::select('select count(`id`) as total from `member_push_tokens` where `token` = :token', [
+				'token' => $token
+			]);
+		}
 
-		if(0 == $member[0]->total && auth('api')->user()) {
+
+		if(0 == $member[0]->total && $user) {
 			DB::insert('insert into member_push_tokens (member_id, token, created_at) values (?,?,?)', [
 				auth('api')->user()->id, $token, date('Y-m-d H:i:s')
 			]);
