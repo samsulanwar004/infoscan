@@ -43,8 +43,7 @@ class LocationCron extends Command
         $snaps = $snapService->getSnapByLocation();
         $this->info('Location:Cron Command Run successfully');
 
-        foreach ($snaps as $snap) {    
-
+        foreach ($snaps as $snap) {     
             if ($snap->latitude != 0 && $snap->longitude != 0 ) {
                 $location = $snapService->handleMapAddress($snap->latitude, $snap->longitude);
                 if (strtolower($location->status) == "ok") {
@@ -78,7 +77,6 @@ class LocationCron extends Command
             }
             
         }
-
 
     }
 }

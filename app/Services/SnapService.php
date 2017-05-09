@@ -353,6 +353,7 @@ class SnapService
         return Snap::where('location', null)
             ->orWhere('location', '')
             ->take(20)
+            ->orderBy('id', 'DESC')
             ->get();
     }
 
