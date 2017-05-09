@@ -562,6 +562,7 @@ class SnapService
             $t->weight = $tags['weight'][$i];
             $t->quantity = $tags['qty'][$i];
             $t->total_price = $tags['total'][$i];
+            $t->crop_file_path = isset($tags['crop_path'][$i]) ? $tags['crop_path'][$i] : null;
             $t->edited_signature = $this->generateSignature($tags['name'][$i], $tags['weight'][$i], $tags['qty'][$i], $tags['total'][$i]);
 
             $t->update();
@@ -578,7 +579,7 @@ class SnapService
             $t->total_price = $newTags['total'][$i];
             $t->img_x = $newTags['x'][$i];
             $t->img_y = $newTags['y'][$i];
-            //$t->file()->associate($newTags['fileId'][$i]);
+            $t->crop_file_path = isset($newTags['crop_path'][$i]) ? $newTags['crop_path'][$i] : null;
             $t->file()->associate($id);
 
             $t->save();
@@ -608,6 +609,7 @@ class SnapService
             $t->weight = $tags['weight'][$i];
             $t->quantity = $tags['qty'][$i];
             $t->total_price = $tags['total'][$i];
+            $t->crop_file_path = isset($tags['crop_path'][$i]) ? $tags['crop_path'][$i] : null;
             $t->edited_signature = $this->generateSignature($tags['name'][$i], $tags['weight'][$i], $tags['qty'][$i], $tags['total'][$i]);
 
             $t->update();
@@ -622,7 +624,7 @@ class SnapService
             $t->weight = $newTags['weight'][$i];
             $t->quantity = $newTags['qty'][$i];
             $t->total_price = $newTags['total'][$i];
-            //$t->file()->associate($newTags['fileId'][$i]);
+            $t->crop_file_path = isset($newTags['crop_path'][$i]) ? $newTags['crop_path'][$i] : null;
             $t->file()->associate($id);
 
             $t->save();
@@ -652,6 +654,7 @@ class SnapService
             $t->weight = $tags['weight'][$i];
             $t->quantity = $tags['qty'][$i];
             $t->total_price = $tags['total'][$i];
+            $t->crop_file_path = isset($tags['crop_path'][$i]) ? $tags['crop_path'][$i] : null;
             $t->edited_signature = $this->generateSignature($tags['name'][$i], $tags['weight'][$i], $tags['qty'][$i], $tags['total'][$i]);
 
             $t->update();
@@ -666,7 +669,7 @@ class SnapService
             $t->weight = $newTags['weight'][$i];
             $t->quantity = $newTags['qty'][$i];
             $t->total_price = $newTags['total'][$i];
-            //$t->file()->associate($newTags['fileId'][$i]);
+            $t->crop_file_path = isset($newTags['crop_path'][$i]) ? $newTags['crop_path'][$i] : null;
             $t->file()->associate($id);
 
             $t->save();
