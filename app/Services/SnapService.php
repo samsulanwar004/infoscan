@@ -352,6 +352,8 @@ class SnapService
     {
         return Snap::where('location', null)
             ->orWhere('location', '')
+            ->whereNotIn('longitude', ['0.00000000'])
+            ->whereNotIn('latitude', ['0.00000000'])
             ->take(20)
             ->orderBy('id', 'DESC')
             ->get();
