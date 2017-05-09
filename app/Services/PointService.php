@@ -638,7 +638,16 @@ inner join level_points as l on l.id = plp.level_id;');
         $levelId = $levelId + 1;
         $nextLevel = $this->getLevel($levelId);
         $nextPoint = ($nextLevel == null) ? $latestPoint : $nextLevel->point;
-        $pointNextLevel = $nextPoint - $latestPoint;   
+        $pointNextLevel = $nextPoint - $latestPoint;  
+
+        //get latest member point 
+        $score = $memberService['latest_point'];
+
+        if ($member->leaderboard_score != $score) {
+            $member->leaderboard_score = $score;
+
+            $member->update();
+        } 
 
         if ($member->temporary_point != $point || $member->temporary_level != $levelArray[1]) {
             $member->temporary_point = $point;

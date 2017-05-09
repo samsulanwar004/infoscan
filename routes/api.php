@@ -42,4 +42,5 @@ Route::group([
     Route::get('/history', 'Api\HistoryController@index');
     Route::get('/notification', 'Api\NotificationController@index');
     Route::post('/log', 'Api\LogController@store');
+    Route::get('/leaderboard', 'Api\LeaderboardController@index');
 });

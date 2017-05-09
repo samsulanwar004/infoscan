@@ -551,4 +551,10 @@ class MemberService
     {
         return $this->memberId;
     }
+
+    public function getLeaderboard()
+    {
+        return collect(\DB::select('SELECT id, name, temporary_point AS score, @curRank := @curRank + 1 AS rank FROM members m, 
+                (SELECT @curRank := 0) r ORDER BY  temporary_point DESC'));
+    }
 }

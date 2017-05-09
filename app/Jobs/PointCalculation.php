@@ -71,6 +71,15 @@ class PointCalculation implements ShouldQueue
         $level = (new PointService)->getLevel($levelId);
         $levelArray = explode(' ', $level->name);
 
+        //get latest member point 
+        $score = $memberService['latest_point'];
+
+        if ($member->leaderboard_score != $score) {
+            $member->leaderboard_score = $score;
+
+            $member->update();
+        }
+
         if ($member->temporary_point != $pointMember || $member->temporary_level != $levelArray[1]) {
             $member->temporary_point = $pointMember;
             $member->temporary_level = $levelArray[1];
