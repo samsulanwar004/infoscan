@@ -65,10 +65,11 @@
     	<input type="hidden" name="image_approve" value="a">
 	@else		
 		<select name="image_approve" class="form-control" required="required">
-		  <option value="">Select Approve</option>
+		  <option value="">Select Approve</option>		  
 		  @foreach($code as $key => $value)
 		  	<option @if($files->first()->image_code == $value) selected @endif value="{{ $value }}">{{ $key }}</option>
 		  @endforeach
+		  <option @if($files->first()->is_approve == 0) selected @endif value="reject">Reject</option>
 		</select>
 	@endif
 	<input type="hidden" name="mode_type" value="{{$files->first()->mode_type}}">

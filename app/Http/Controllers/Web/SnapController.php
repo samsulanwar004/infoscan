@@ -401,24 +401,33 @@ class SnapController extends AdminController
                 (new SnapService)->updateSnapModeImages($request, $id);
             }            
             
-
             $file = (new SnapService)->getSnapFileById($id);
-            if ($file->mode_type == 'image') {
-                $tag = $request->input('tag');
-                $newtag = $request->input('newtag');
-                $totalTag = count($tag['name']) + count($newtag['name']);
-                $code = $request->input('image_approve');
-                $task = $this->getTaskPointByRange($code, $totalTag);
-
-                $file->image_code = isset($task->code) ? $task->code : null;
-                $file->image_point = isset($task->point) ? $task->point : 0;
+            if ($request->input('image_approve') == 'reject') {
+                $file->is_approve = 0;
+                $file->image_point = 0;
             } else {
-                $code = $request->input('image_approve');
-                $task = (new SnapService)->getTaskPointByCode($code);
-                $file->image_code = $code;
-                $file->image_point = isset($task->point) ? $task->point : 0;
+
+                if ($file->mode_type == 'image') {
+                    $tag = $request->input('tag');
+                    $newtag = $request->input('newtag');
+                    $totalTag = count($tag['name']) + count($newtag['name']);
+                    $code = $request->input('image_approve');
+                    $task = $this->getTaskPointByRange($code, $totalTag);
+
+                    $file->image_code = isset($task->code) ? $task->code : null;
+                    $file->image_point = isset($task->point) ? $task->point : 0;
+
+                    $file->is_approve = 1;
+                } else {
+                    $code = $request->input('image_approve');
+                    $task = (new SnapService)->getTaskPointByCode($code);
+                    $file->image_code = $code;
+                    $file->image_point = isset($task->point) ? $task->point : 0;
+
+                    $file->is_approve = 1;
+                }
             }
-            
+
             $file->update();
 
         } catch (\Exception $e) {
