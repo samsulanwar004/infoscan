@@ -937,4 +937,58 @@ inner join tasks as t on t.id = tp.task_id order by t.id;');
         return $task;
     }
 
+    public function calculateNewApprovePoint($snaps)
+    {
+        $memberId = $snaps->member_id;
+        $type = $snaps->snap_type;
+        $mode = $snaps->mode_type;
+        $city = $snaps->outlet_city;
+        $files = $snaps->files;
+
+        $tags = (new SnapService)->getCountOfTags($files);
+        $memberAdd = $tags['member_add'];
+        $crowdSourceEdit = $tags['crowdsource_edit'];
+        $crowdSourceAdd = $tags['crowdsource_add'];
+
+        if ($memberAdd > 0 && $crowdSourceAdd > 0) {
+            $commonId = 2;
+        } elseif ($crowdSourceEdit > 0) {
+            $commonId = 2;
+        } elseif ($memberAdd > 0) {
+            $commonId = 3;
+        } else {
+            $commonId = 1;
+        }
+
+        // get code task
+        $code = $this->getCodeTaskTag($type, $mode, $commonId);
+
+        $task = (new SnapService)->getTaskPointByCode($code);
+
+        $point = isset($task->point) ? $task->point : 0;
+        
+        return $point;
+    } 
+
+    private function getCodeTaskTag($type, $mode, $commonId)
+    {
+        if ($type == 'handWritten') {
+            $type = 'b';
+        } else {
+            $type = 'c';
+        }
+
+        switch ($mode) {
+            case 'tags':
+                $mode = $type.'|'.$commonId;
+                break;
+            
+            default:
+                $mode = $type.'|'.$commonId;
+                break;
+        }
+
+        return $mode;
+    }
+
 }
