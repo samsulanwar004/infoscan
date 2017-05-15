@@ -716,14 +716,14 @@ inner join tasks as t on t.id = l.task_id order by t.id;');
 
     public function getLimitTaskPoint($type, $mode)
     {
-        $type = $this->getTypeId($type);
-        $mode = $this->getModeId($mode);      
+        $code = $this->getTypeId($type);
+        // $mode = $this->getModeId($mode);      
 
-        $code = $type.$mode;
+        // $code = $type.$mode;
 
         return DB::table('tasks')
             ->join('limit_points', 'limit_points.task_id', '=', 'tasks.id')
-            ->where('tasks.code', '=', $code)
+            ->where('tasks.code', 'like', $code.'%')
             ->select('limit_points.name', 'limit_points.limit')
             ->get();
     }

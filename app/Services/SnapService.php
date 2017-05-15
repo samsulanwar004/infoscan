@@ -751,8 +751,8 @@ class SnapService
         $point = isset($task->point) ? $task->point : 0;
 
         // send dispatcher
-        $job = $this->getPlainDispatcher($data);
-        dispatch($job);
+        // $job = $this->getPlainDispatcher($data);
+        // dispatch($job);
 
         // Auth Member
         $member = auth('api')->user();
@@ -1876,18 +1876,42 @@ class SnapService
         SnapTag::whereIn('id', $delete)->delete(); 
     }
 
-    public function countMemberSnap($type, $mode, $date, $nextDay = null)
+    public function countMemberSnap($id, $type, $mode, $date, $nextDay = null)
     {
         return ($nextDay == null) ?
             Snap::where('snap_type', $type)
+            ->where('member_id', $id)
             ->where('mode_type', $mode)
             ->whereDate('created_at', $date)
             ->count() :
             Snap::where('snap_type', $type)
+            ->where('member_id', $id)
             ->where('mode_type', $mode)
             ->whereDate('created_at', '>=', $date)
             ->whereDate('created_at', '<=', $nextDay)
             ->count();
+    }
+
+    public function countMemberSnapFile($id, $type, $mode, $date, $nextDay = null)
+    {
+        return ($nextDay == null) ?
+            \DB::table('snaps')
+                ->join('snap_files', 'snaps.id', '=', 'snap_files.snap_id')
+                ->where('snaps.member_id', $id)
+                ->where('snaps.snap_type', $type)
+                ->where('snaps.mode_type', $mode)
+                ->whereDate('snaps.created_at', $date)
+                ->where('snap_files.file_mimes', 'like', 'image%')
+                ->count() :
+            \DB::table('snaps')
+                ->join('snap_files', 'snaps.id', '=', 'snap_files.snap_id')
+                ->where('snaps.member_id', $id)
+                ->where('snaps.snap_type', $type)
+                ->where('snaps.mode_type', $mode)
+                ->where('snap_files.file_mimes', 'like', 'image%')
+                ->whereDate('snaps.created_at', '>=', $date)
+                ->whereDate('snaps.created_at', '<=', $nextDay)
+                ->count();
     }
 
     public function saveImageCrop($request)
