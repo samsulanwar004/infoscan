@@ -562,6 +562,7 @@ class SnapService
             $t->weight = $tags['weight'][$i];
             $t->quantity = $tags['qty'][$i];
             $t->total_price = $tags['total'][$i];
+            $t->crop_file_path = isset($tags['crop_path'][$i]) ? $tags['crop_path'][$i] : null;
             $t->edited_signature = $this->generateSignature($tags['name'][$i], $tags['weight'][$i], $tags['qty'][$i], $tags['total'][$i]);
 
             $t->update();
@@ -578,7 +579,7 @@ class SnapService
             $t->total_price = $newTags['total'][$i];
             $t->img_x = $newTags['x'][$i];
             $t->img_y = $newTags['y'][$i];
-            //$t->file()->associate($newTags['fileId'][$i]);
+            $t->crop_file_path = isset($newTags['crop_path'][$i]) ? $newTags['crop_path'][$i] : null;
             $t->file()->associate($id);
 
             $t->save();
@@ -608,6 +609,7 @@ class SnapService
             $t->weight = $tags['weight'][$i];
             $t->quantity = $tags['qty'][$i];
             $t->total_price = $tags['total'][$i];
+            $t->crop_file_path = isset($tags['crop_path'][$i]) ? $tags['crop_path'][$i] : null;
             $t->edited_signature = $this->generateSignature($tags['name'][$i], $tags['weight'][$i], $tags['qty'][$i], $tags['total'][$i]);
 
             $t->update();
@@ -622,7 +624,7 @@ class SnapService
             $t->weight = $newTags['weight'][$i];
             $t->quantity = $newTags['qty'][$i];
             $t->total_price = $newTags['total'][$i];
-            //$t->file()->associate($newTags['fileId'][$i]);
+            $t->crop_file_path = isset($newTags['crop_path'][$i]) ? $newTags['crop_path'][$i] : null;
             $t->file()->associate($id);
 
             $t->save();
@@ -652,6 +654,7 @@ class SnapService
             $t->weight = $tags['weight'][$i];
             $t->quantity = $tags['qty'][$i];
             $t->total_price = $tags['total'][$i];
+            $t->crop_file_path = isset($tags['crop_path'][$i]) ? $tags['crop_path'][$i] : null;
             $t->edited_signature = $this->generateSignature($tags['name'][$i], $tags['weight'][$i], $tags['qty'][$i], $tags['total'][$i]);
 
             $t->update();
@@ -666,7 +669,7 @@ class SnapService
             $t->weight = $newTags['weight'][$i];
             $t->quantity = $newTags['qty'][$i];
             $t->total_price = $newTags['total'][$i];
-            //$t->file()->associate($newTags['fileId'][$i]);
+            $t->crop_file_path = isset($newTags['crop_path'][$i]) ? $newTags['crop_path'][$i] : null;
             $t->file()->associate($id);
 
             $t->save();
@@ -740,9 +743,16 @@ class SnapService
             throw new Exception('Error when saving data in database!');
         }
 
+        // get code task
+        $code = $this->getCodeTask($snap->snap_type, $snap->mode_type);
+
+        $task = $this->getTaskPointByCode($code, 'receipt');
+
+        $point = isset($task->point) ? $task->point : 0;
+
         // send dispatcher
-        $job = $this->getPlainDispatcher($data);
-        dispatch($job);
+        // $job = $this->getPlainDispatcher($data);
+        // dispatch($job);
 
         // Auth Member
         $member = auth('api')->user();
@@ -757,6 +767,7 @@ class SnapService
             'mode' => 'images',
             'files' => count($images),
             'tags' => count($tags),
+            'point' => $point,
         ];
 
         // Save estimated point calculate
@@ -811,7 +822,14 @@ class SnapService
             DB::beginTransaction();
             try {
                 $snap = $this->createSnap($request);
-                $this->createFiles($request, $images, $snap);
+                // get code task
+                $code = $this->getCodeTask($snap->snap_type, $snap->mode_type);
+
+                $task = $this->getTaskPointByCode($code);
+
+                $point = isset($task->point) ? $task->point : 0;
+
+                $this->createFiles($request, $images, $snap, $point);
 
                 DB::commit();
             } catch (Exception $e) {
@@ -833,6 +851,7 @@ class SnapService
                 'mode' => $mode,
                 'files' => count($images),
                 'tags' => count($tags),
+                'point' => $point,
             ];
 
             // Save estimated point calculate
@@ -879,7 +898,14 @@ class SnapService
             DB::beginTransaction();
             try {
                 $snap = $this->createSnap($request);
-                $this->createFiles($request, $images, $snap);
+                // get code task
+                $code = $this->getCodeTask($snap->snap_type, $snap->mode_type);
+
+                $task = $this->getTaskPointByCode($code);
+
+                $point = isset($task->point) ? $task->point : 0;
+
+                $this->createFiles($request, $images, $snap, $point);
                 $this->createFiles($request, $audios, $snap);
 
                 DB::commit();
@@ -902,6 +928,7 @@ class SnapService
                 'mode' => $mode,
                 'files' => count($images),
                 'tags' => count($tags),
+                'point' => $point,
             ];
 
             // Save estimated point calculate
@@ -943,7 +970,14 @@ class SnapService
             DB::beginTransaction();
             try {
                 $snap = $this->createSnap($request);
-                $this->createFiles($request, $images, $snap);
+                // get code task
+                $code = $this->getCodeTask($snap->snap_type, $snap->mode_type);
+
+                $task = $this->getTaskPointByCode($code);
+
+                $point = isset($task->point) ? $task->point : 0;
+
+                $this->createFiles($request, $images, $snap, $point);
 
                 DB::commit();
             } catch (Exception $e) {
@@ -965,6 +999,7 @@ class SnapService
                 'mode' => $mode,
                 'files' => count($images),
                 'tags' => count($tags),
+                'point' => $point,
             ];
 
             // Save estimated point calculate
@@ -1024,7 +1059,14 @@ class SnapService
             DB::beginTransaction();
             try {
                 $snap = $this->createSnap($request);
-                $this->createFiles($request, $images, $snap);
+                // get code task
+                $code = $this->getCodeTask($snap->snap_type, $snap->mode_type);
+
+                $task = $this->getTaskPointByCode($code);
+
+                $point = isset($task->point) ? $task->point : 0;
+
+                $this->createFiles($request, $images, $snap, $point);
 
                 DB::commit();
             } catch (Exception $e) {
@@ -1050,6 +1092,7 @@ class SnapService
                 'mode' => $mode,
                 'files' => count($images),
                 'tags' => array_sum($countTags),
+                'point' => $point,
             ];
 
             // Save estimated point calculate
@@ -1096,7 +1139,14 @@ class SnapService
             DB::beginTransaction();
             try {
                 $snap = $this->createSnap($request);
-                $this->createFiles($request, $images, $snap);
+                // get code task
+                $code = $this->getCodeTask($snap->snap_type, $snap->mode_type);
+
+                $task = $this->getTaskPointByCode($code);
+
+                $point = isset($task->point) ? $task->point : 0;
+
+                $this->createFiles($request, $images, $snap, $point);
                 $this->createFiles($request, $audios, $snap);
 
                 DB::commit();
@@ -1135,6 +1185,7 @@ class SnapService
                 'mode' => $mode,
                 'files' => count($images),
                 'tags' => count($tags),
+                'point' => $point,
             ];
 
             // Save estimated point calculate
@@ -1176,7 +1227,14 @@ class SnapService
             DB::beginTransaction();
             try {
                 $snap = $this->createSnap($request);
-                $this->createFiles($request, $images, $snap);
+                // get code task
+                $code = $this->getCodeTask($snap->snap_type, $snap->mode_type);
+
+                $task = $this->getTaskPointByCode($code);
+
+                $point = isset($task->point) ? $task->point : 0;
+
+                $this->createFiles($request, $images, $snap, $point);
 
                 DB::commit();
             } catch (Exception $e) {
@@ -1198,6 +1256,7 @@ class SnapService
                 'mode' => $mode,
                 'files' => count($images),
                 'tags' => count($tags),
+                'point' => $point,
             ];
 
             // Save estimated point calculate
@@ -1401,13 +1460,13 @@ class SnapService
      * @param \App\Snap $snap
      * @return bool
      */
-    private function createFiles($request, array $files, \App\Snap $snap)
+    private function createFiles($request, array $files, \App\Snap $snap, $point = null)
     {
         if ($this->isMultidimensiArray($files)) {
             if($request->input('mode_type') == self::INPUT_TYPE_NAME) {
                 $tags = [];
                 foreach ($files as $file) {
-                    $snapFile = $this->persistFile($request, $file, $snap);
+                    $snapFile = $this->persistFile($request, $file, $snap, $point);
 
                     $this->createTag($request, $snapFile);
                     $tags[] = $this->getTags();
@@ -1416,7 +1475,7 @@ class SnapService
                 $this->setTags($tags);
             } else {
                 foreach ($files as $file) {
-                    $snapFile = $this->persistFile($request, $file, $snap);
+                    $snapFile = $this->persistFile($request, $file, $snap, $point);
 
                     $this->createTag($request, $snapFile);
                 }
@@ -1438,7 +1497,7 @@ class SnapService
      * @param $snap
      * @return \App\SnapFile
      */
-    private function persistFile(Request $request, array $data, $snap)
+    private function persistFile(Request $request, array $data, $snap, $point = null)
     {
         $f = new \App\SnapFile();
         $f->file_path = $data['filename'];
@@ -1450,6 +1509,8 @@ class SnapService
         if ($this->hasMode($request)) {
             $f->mode_type = $request->input('mode_type');
         }
+
+        $f->image_point = $point;
 
         $f->snap()->associate($snap);
         $f->save();
@@ -1621,14 +1682,13 @@ class SnapService
         $mode = $data['mode'];
         $files = $data['files'];
         $tags = $data['tags'];
+        $point = $data['point'];        
 
-        $code = $this->getCodeTask($type, $mode);
-
-        $task = $this->getTaskPointByCode($code);
-
-        $point = isset($task->point) ? $task->point : 0;
-
-        $total = $point * $files;
+        if ($mode == 'images') {
+            $total = $point;
+        } else {
+            $total = $point * $files;
+        }
         
         // $point = (new PointService)->calculateEstimatedPoint($memberId, $type, $mode, $tags);
 
@@ -1816,18 +1876,42 @@ class SnapService
         SnapTag::whereIn('id', $delete)->delete(); 
     }
 
-    public function countMemberSnap($type, $mode, $date, $nextDay = null)
+    public function countMemberSnap($id, $type, $mode, $date, $nextDay = null)
     {
         return ($nextDay == null) ?
             Snap::where('snap_type', $type)
+            ->where('member_id', $id)
             ->where('mode_type', $mode)
             ->whereDate('created_at', $date)
             ->count() :
             Snap::where('snap_type', $type)
+            ->where('member_id', $id)
             ->where('mode_type', $mode)
             ->whereDate('created_at', '>=', $date)
             ->whereDate('created_at', '<=', $nextDay)
             ->count();
+    }
+
+    public function countMemberSnapFile($id, $type, $mode, $date, $nextDay = null)
+    {
+        return ($nextDay == null) ?
+            \DB::table('snaps')
+                ->join('snap_files', 'snaps.id', '=', 'snap_files.snap_id')
+                ->where('snaps.member_id', $id)
+                ->where('snaps.snap_type', $type)
+                ->where('snaps.mode_type', $mode)
+                ->whereDate('snaps.created_at', $date)
+                ->where('snap_files.file_mimes', 'like', 'image%')
+                ->count() :
+            \DB::table('snaps')
+                ->join('snap_files', 'snaps.id', '=', 'snap_files.snap_id')
+                ->where('snaps.member_id', $id)
+                ->where('snaps.snap_type', $type)
+                ->where('snaps.mode_type', $mode)
+                ->where('snap_files.file_mimes', 'like', 'image%')
+                ->whereDate('snaps.created_at', '>=', $date)
+                ->whereDate('snaps.created_at', '<=', $nextDay)
+                ->count();
     }
 
     public function saveImageCrop($request)
@@ -1875,6 +1959,10 @@ class SnapService
                 $mode = $type.'|3';
                 break;
 
+            case 'image':
+                $mode = $type;
+                break;
+
             case 'images':
                 $mode = $type;
                 break;
@@ -1887,12 +1975,18 @@ class SnapService
         return $mode;
     }
 
-    public function getTaskPointByCode($code)
+    public function getTaskPointByCode($code, $type = null)
     {
-        return \DB::table('tasks')
+        return ($type == 'receipt') ? 
+            \DB::table('tasks')
             ->join('task_points', 'tasks.id', '=', 'task_points.task_id')
             ->select('task_points.point as point')
             ->where('tasks.code', 'like', $code.'%')
+            ->first() : 
+            \DB::table('tasks')
+            ->join('task_points', 'tasks.id', '=', 'task_points.task_id')
+            ->select('task_points.point as point')
+            ->where('tasks.code', '=', $code)
             ->first();
     }
 

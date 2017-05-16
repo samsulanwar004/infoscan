@@ -128,12 +128,24 @@ class SnapController extends AdminController
     {
         try {
             $snap = (new SnapService)->getSnapByid($id);
-
+            
             $point = [];
+            $tag = [];
             foreach ($snap->files as $file) {
+                $tag[] = count($file->tag);
                 $point[] = $file->image_point;
             }
-            $fixedPoint = collect($point)->sum();
+
+            if ($snap->snap_type == 'receipt') {
+                $totalTag = collect($tag)->sum();
+                $task = $this->getTaskPointByRange('a', $totalTag);
+                $fixedPoint = isset($task->point) ? $task->point : 0;
+            } elseif ($snap->mode_type == 'tags') {
+                $fixedPoint = (new PointService)->calculateNewApprovePoint($snap);                
+            } else {
+                $fixedPoint = collect($point)->sum();
+            }            
+            
             $point = (new PointService)->calculatePromoPoint($snap->member_id, $snap->outlet_city);
 
             $promo = $point['point_city'] + $point['point_level_city'];
