@@ -680,7 +680,7 @@ class SnapService
 
     public function generateSignature($name, $weight, $qty, $total)
     {
-        return str_replace(' ', '', $name.'|'.$weight.'|'.$qty.'|'.clean_numeric($total, '%', false, '.'));
+        return str_replace(' ', '', trim($name).'|'.trim($weight).'|'.trim($qty).'|'.clean_numeric(trim($total), '%', false, '.'));
     }
 
     public function deleteSnapTags($ids, $snapFileId)
@@ -751,8 +751,8 @@ class SnapService
         $point = isset($task->point) ? $task->point : 0;
 
         // send dispatcher
-        // $job = $this->getPlainDispatcher($data);
-        // dispatch($job);
+        $job = $this->getPlainDispatcher($data);
+        dispatch($job);
 
         // Auth Member
         $member = auth('api')->user();
