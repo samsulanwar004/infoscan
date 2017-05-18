@@ -143,7 +143,12 @@ class SnapController extends AdminController
             } elseif ($snap->mode_type == 'tags') {
                 $fixedPoint = (new PointService)->calculateNewApprovePoint($snap);                
             } else {
-                $fixedPoint = collect($point)->sum();
+                $imageCount = $snap->files()->where('file_mimes', 'like', 'image%')->count();
+                if($imageCount == 1) {
+                    $fixedPoint = (new PointService)->calculateNewApprovePoint($snap);
+                } else {
+                    $fixedPoint = collect($point)->sum();
+                }         
             }            
             
             $point = (new PointService)->calculatePromoPoint($snap->member_id, $snap->outlet_city);
@@ -391,7 +396,7 @@ class SnapController extends AdminController
     {
         $this->validate($request, [
             'tag.name.*' => 'required|max:255',
-            'tag.weight.*' => 'required|max:255',
+            // 'tag.weight.*' => 'required|max:255',
             'tag.qty.*' => 'required|max:11',
             'tag.total.*' => 'required|max:15',
             'newtag.name.*' => 'required|max:255',

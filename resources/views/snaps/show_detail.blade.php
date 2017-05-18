@@ -4,6 +4,7 @@
 <div class="table-responsive table-custom">
 	@php
 		$total_value = $snap->files->pluck('total')->sum();
+		$totalPage = $files->total();
 	@endphp
 	<table id="snap-table" class="table" totalValue="{{ $total_value }}">
 		<thead>
@@ -39,7 +40,7 @@
 					<td><input type="text" name="tag[name][]" class="form-control input-sm tag-name-show" value="{{ $tag->name }}" placeholder="Product Name" required="required"></td>
 					<td><input type="text" name="tag[brands][]" class="form-control input-sm" value="{{ $tag->brands }}" placeholder="Brands"></td>
 					<td style="max-width: 100px"><input type="text" list="variants" name="tag[variants][]" class="form-control input-sm" value="{{ $tag->variants }}" placeholder="Variants"></td>
-					<td><input type="text" name="tag[weight][]" class="form-control input-sm" value="{{ $tag->weight }}" placeholder="Weight" required="required"></td>
+					<td><input type="text" name="tag[weight][]" class="form-control input-sm" value="{{ $tag->weight }}" placeholder="Weight"></td>
 					<td><input type="number" name="tag[qty][]" class="form-control input-sm" value="{{ $tag->quantity }}" placeholder="QTY" required="required"></td>
 					<td><input type="number" name="tag[total][]" class="form-control input-sm" value="{{ clean_numeric($tag->total_price,'%',false,'.') }}" placeholder="Total Price" required="required"></td>
 					<input type="hidden" name="tag[id][]" value="{{ $tag->id }}">
@@ -63,6 +64,8 @@
     @endif
     @if($files->first()->mode_type == 'image')
     	<input type="hidden" name="image_approve" value="a">
+    @elseif($totalPage == 1)
+
 	@else		
 		<select name="image_approve" class="form-control" required="required">
 		  <option value="">Select Approve</option>		  
