@@ -48,8 +48,8 @@
 
                     <select class="form-control filter-status">
                         <option value="all" @if($status == 'all') selected @endif>Select Status</option>
-                        <option value="approve" @if($status == 'approve') selected @endif>Approve</option>
-                        <option value="reject" @if($status == 'reject') selected @endif>Reject</option>
+                        <option value="approve" @if($status == 'approve') selected @endif>Approved</option>
+                        <option value="reject" @if($status == 'reject') selected @endif>Rejected</option>
                         <option value="pending" @if($status == 'pending') selected @endif>Pending</option>
                     </select>
 
