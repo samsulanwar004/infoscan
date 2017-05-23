@@ -19,7 +19,7 @@
                 <h3 class="box-title">
                 </h3>
 
-                <div class="box-tools pull-right">
+                <div class="box-tools-new pull-right">
                     <?php
                       $back = isset($_SERVER['HTTP_REFERER']) ? htmlspecialchars($_SERVER['HTTP_REFERER']) : '/snaps';
                     ?>
@@ -499,6 +499,11 @@
         color: white;
     }
 
+    .box-tools-new {
+        position: absolute;
+        top: 5px;
+    }
+
 </style>
 <link rel="stylesheet" href="{{ elixirCDN('css/datetimepicker.css') }}" />
 <link rel="stylesheet" href="{{ elixirCDN('css/crop.css') }}" />
@@ -612,9 +617,11 @@
                 '<td><a class="btn btn-box-tool" onclick="deleteTagShow('+countOfTextbox+')"><i class="fa fa-remove"></i></a></td>'+
                 '<td><i class="fa fa-spinner fa-spin fa-2x img-item-loading" id="load-'+time+'" aria-hidden="true" style="display: none;"></i><div id="kotak-drop" class="'+time+'" ondrop="drop(event)" ondragover="allowDrop(event)"></div><input type="hidden" name="newtag[crop_path][]" id="crop-'+time+'"></td>'+
                 '<td width="300"><input type="text" name="newtag[name][]" class="form-control input-sm tag-name-show" placeholder="Product Name" required="required"></td>'+
+                '<td width="200"><input type="text" name="newtag[weight][]" class="form-control input-sm" placeholder="Weight"></td>'+
                 '<td width="300"><input type="text" name="newtag[brands][]" class="form-control input-sm" placeholder="Brands"></td>'+
-                '<td width="300"><input type="text" list="variants" name="newtag[variants][]" class="form-control input-sm" placeholder="Variants"></td>'+
-                '<td width="200"><input type="text" name="newtag[weight][]" class="form-control input-sm" placeholder="Weight"></td><td width="100"><input type="number" name="newtag[qty][]" class="form-control input-sm" placeholder="QTY" required="required"></td>'+
+                '<td width="300"><input type="text" name="newtag[sku][]" class="form-control input-sm" placeholder="SKU"></td>'+
+                // '<td width="300"><input type="text" list="variants" name="newtag[variants][]" class="form-control input-sm" placeholder="Variants"></td>'+                
+                '<td width="100"><input type="number" name="newtag[qty][]" class="form-control input-sm" placeholder="QTY" required="required"></td>'+
                 '<td width="200" class="text-right"><input type="number" name="newtag[total][]" class="form-control input-sm" placeholder="Total Price" required="required">'+
                 '</td></tr>');
         });
@@ -752,9 +759,10 @@
                 '<td><a class="btn btn-box-tool" onclick="deleteTag('+countOfTextbox+')"><i class="fa fa-remove"></i></a></td>'+
                 '<td><i class="fa fa-spinner fa-spin fa-2x img-item-loading" id="load-'+time+'" aria-hidden="true" style="display: none;"></i><div id="kotak-drop" class="'+time+'" ondrop="drop(event)" ondragover="allowDrop(event)"></div><input type="hidden" name="tag[crop_path][]" id="crop-'+time+'"></td>'+
                 '<td width="300"><input type="text" name="tag[name][]" class="form-control input-sm tag-name '+countOfTextbox+'new" id="'+countOfTextbox+'|'+mouseX+'|'+mouseY+'" onclick="editTag(this)" onkeyup="editNewTag(this)" value="'+name+'"></td>'+
-                '<td width="200"><input type="text" name="tag[brands][]" class="form-control input-sm" placeholder="Brands"></td>'+
-                '<td width="300"><input type="text" list="variants" name="tag[variants][]" class="form-control input-sm" placeholder="Variants"></td>'+
                 '<td width="200"><input type="text" name="tag[weight][]" class="form-control input-sm" value="'+weight+'" placeholder="Weight"></td>'+
+                '<td width="200"><input type="text" name="tag[brands][]" class="form-control input-sm" placeholder="Brands"></td>'+
+                '<td width="200"><input type="text" name="tag[sku][]" class="form-control input-sm" placeholder="SKU"></td>'+
+                // '<td width="300"><input type="text" list="variants" name="tag[variants][]" class="form-control input-sm" placeholder="Variants"></td>'+                
                 '<td width="100"><input type="number" name="tag[qty][]" class="form-control input-sm" value="'+qty+'"></td>'+
                 '<td width="200"><input type="number" name="tag[total][]" class="form-control input-sm" value="'+total+'">'+
                 '<input type="hidden" name="tag[id][]" id="tag-id-'+time+'"></td></tr>');
