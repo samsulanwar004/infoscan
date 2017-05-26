@@ -11,8 +11,6 @@
             <div class="box-header with-border form-inline" style="height: 45px;">
 
                 <div class="box-tools pull-right ">
-                    <button type="button" class="btn btn-default" data-toggle="modal" data-target="#modal-chart"><i class="fa fa-line-chart"></i> Chart
-                            </button>
                     <a class="btn btn-default btn-modal" href="javascript:void(0)"><i class="fa fa-btn fa-filter"></i> Filter</a>
                     <!-- Single button -->
                     <div class="btn-group">
@@ -52,7 +50,17 @@
                             @foreach($results as $result)
                             <tr>
                                 @foreach($configurations as $field => $label)
-                                <td>{{ $result->{$field} }}</td>
+                                <td>
+                                    @if($field == 'age')
+                                    @php
+                                        $newDate = new \Carbon\Carbon($result->{$field});
+                                        $newAge = intval( $newDate->diffInYears() );
+                                    @endphp
+                                        {{ $newAge }}
+                                    @else
+                                        {{ $result->{$field} }}
+                                    @endif
+                                </td>
                                 @endforeach
                             </tr>
                             @endforeach
@@ -67,12 +75,15 @@
                         @endif
                         </tbody>
                     </table>
-                </div>                
+                </div>            
             </div>
+                @if($results)
+                {{ $results->links() }}
+                @endif
         </div>  
 
-        <div id="chart"></div>    
-
+        @include('reports.chart')    
+        
     </section>
     <!-- /.content -->
 
@@ -84,15 +95,9 @@
                     <h4 class="modal-title">Filter</h4>
                 </div>
                 <div class="modal-body" style="padding-bottom: 1px;">
-                <form action="{{ admin_route_url('reports') }}" method="POST">
+                <!-- <form action="{{ admin_route_url('reports') }}" method="POST"> -->
                  {{ csrf_field() }}
-                 {{ method_field('POST') }}
-                 <input type="hidden" name="userid" id="user-id">
-                 <input type="hidden" name="provinces" id="provinces">
-                 <input type="hidden" name="lasteducation" id="last-education">
-                 <input type="hidden" name="product" id="product">
-                 <input type="hidden" name="userscity" id="users-city">
-                 <input type="hidden" name="genders" id="genders">
+                 {{ method_field('POST') }}                 
                     <div class="row" style="margin-bottom: 20px;">
                         <div class="col-md-6">
                             <div class="form-group">
@@ -110,7 +115,53 @@
                                 <button id="submit-button" type="submit" class="btn btn-block btn-info"><i class="fa fa-btn fa-filter"></i> Get Filter Data</button>
                             </div>
                         </div>
-                    </div>                    
+                    </div>   
+                    <div class="row" style="margin-bottom: 20px;">
+                        <div class="col-md-6">                            
+                            <div class="form-group">
+                                <label for="type" class="control-label">Chart Type</label>
+                                <select class="form-control" id="chart-type" name="chart_type" single style="width: 100%;">
+                                    <option value="">Select Chart Type</option>
+                                    <option value="line">Line</option>
+                                    <option value="bar">Bar</option>
+                                    <option value="horizontalBar">Horizontal Bar</option>
+                                    <option value="radar">Radar</option>
+                                    <option value="pie">Pie</option>
+                                    <option value="doughnut">Doughnut</option>
+                                    <option value="polarArea">Polar Area</option>
+                                </select>
+                            </div>
+                        </div> 
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="chart" class="control-label">Chart X:</label>
+                                    <select name="chart_x" id="chart-x" class="form-control" single style="width: 100%;">
+                                        <option value="">Select Chart X</option>
+                                        @foreach($configurations as $field => $label)
+                                            <option value="{{ $field }}">{{ $label['label'] }}</option>
+                                        @endforeach
+                                    </select>
+                            </div>
+                            <!-- <div class="form-group">
+                                <label for="chart" class="control-label">Chart Y:</label>
+                                    <select name="chart_y" id="chart-y" class="form-control" single style="width: 100%;">
+                                        <option value="">Select Chart Y</option>
+                                        @foreach($configurations as $field => $label)
+                                            <option value="{{ $field }}">{{ $label['label'] }}</option>
+                                        @endforeach
+                                    </select>
+                            </div> -->
+                            <div class="form-group">
+                                <label for="dataset" class="control-label">Dataset:</label>
+                                    <select name="dataset" id="dataset" class="form-control" single style="width: 100%;">
+                                        <option value="">Select Dataset</option>
+                                        @foreach($configurations as $field => $label)
+                                            <option value="{{ $field }}">{{ $label['label'] }}</option>
+                                        @endforeach
+                                    </select>
+                            </div>
+                        </div>
+                    </div>                 
                     <!-- <hr> -->
                     <!-- <div style="overflow-y: scroll; max-height: 350px;"> -->
                     <div class="checkbox-list">
@@ -184,7 +235,7 @@
                                             $val = [];
                                              foreach($members as $member)
                                              {
-                                                $val[] = $member->user_id;
+                                                $val[] = $member->id;
                                              }
                                             $value =  $val;    
                                         }
@@ -221,7 +272,7 @@
                                             $val = [];
                                              foreach($citys as $city)
                                              {
-                                                $val[] = $city->users_city;
+                                                $val[] = $city->city;
                                              }
                                             $value =  $val;    
                                         }
@@ -236,15 +287,13 @@
                                             $value =  array_merge($first, $val);   
                                         }
 
-
                                         if($field == 'outlet_name') {
                                             $val = [];
                                              foreach($outletName as $om)
                                              {
                                                 $val[] = $om->outlet_name;
                                              }
-                                            $first = ['Select Outlet Name'];
-                                            $value =  array_merge($first, $val);   
+                                            $value =  $val;   
                                         }
 
                                         if($field == 'outlet_province') {
@@ -271,7 +320,7 @@
                                             $val = [];
                                              foreach($products as $product)
                                              {
-                                                $val[] = $product->products;
+                                                $val[] = $product->name;
                                              }
                                             $value =  $val;    
                                         }
@@ -280,7 +329,7 @@
                                             $val = [];
                                              foreach($brands as $brand)
                                              {
-                                                $val[] = $brand->brand;
+                                                $val[] = $brand->brands;
                                              }
                                             $first = ['Select Brand'];
                                             $value =  array_merge($first, $val);   
@@ -290,7 +339,7 @@
                                             $val = [];
                                              foreach($provinces as $province)
                                              {
-                                                $val[] = $province->province;
+                                                $val[] = $province->name;
                                              }
                                             $value =  $val;    
                                         }
@@ -299,7 +348,7 @@
                                             $val = [];
                                              foreach($sec as $socio)
                                              {
-                                                $val[] = $socio->sec;
+                                                $val[] = $socio->monthly_expense_code;
                                              }
                                             $first = ['Select Sec'];
                                             $value =  array_merge($first, $val);   
@@ -312,7 +361,8 @@
                         </div>
                         @endforeach
                     </div>
-                </form>
+                    <input type="hidden" name="create_report" value="create">
+                <!-- </form> -->
                 </div>
                 <div class="modal-footer">
                     <a href="#" class="btn-link" data-dismiss="modal">Close</a>
@@ -322,52 +372,6 @@
         </div>
     </div>
 
-    <div class="modal fade" tabindex="-1" role="dialog" id="modal-chart">
-      <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title">Create Chart</h4>
-          </div>
-          <div class="modal-body">
-            <form action="/reports/chart" method="POST" id="submit-chart">
-                {{ csrf_field() }}
-                {{ method_field('POST') }}
-                <div class="form-group">
-                    <label for="type">Type Chart</label>
-                    <select class="form-control" id="type" name="type">
-                        <option value="line">Line</option>
-                        <option value="bar">Bar</option>
-                        <option value="horizontalBar">Horizontal Bar</option>
-                        <option value="radar">Radar</option>
-                        <option value="pie">Pie</option>
-                        <option value="doughnut">Doughnut</option>
-                        <option value="polarArea">Polar Area</option>
-                    </select>
-                </div>   
-                <div class="form-group">
-                    <label for="label">Month</label>
-                    <input type="text" name="month_labels" id="range-month">
-                </div>  
-                <div class="form-group">
-                    <label for="dataset">Dataset</label>
-                    <select name="dataset" id="dataset" class="form-control" multiple="multiple" required="required" style="width: 100%;">
-                        <option>Sari Roti</option>
-                        <option>Equil</option>
-                        <option>Sprite</option>
-                        <option>Mizone</option>
-                        <option>Aqua</option>
-                    </select>
-                </div> 
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            <button type="submit" class="btn btn-primary">Save changes</button>
-            </form>
-          </div>
-        </div><!-- /.modal-content -->
-      </div><!-- /.modal-dialog -->
-    </div><!-- /.modal -->
 @endsection
 
 @section('footer_scripts')
@@ -423,36 +427,6 @@
             }
         });
 
-        $('#submit-chart').on('submit', function() {
-            $.ajax({
-              url: this.action,
-              type: "post",
-              data: {
-                '_token':$('input[name=_token]').val(),
-                '_method':$('input[name=_method]').val(),  
-                'type':$('select[name=type]').val(),                  
-                'dataset':$('select[name=dataset]').val(),                  
-                'month_labels':$('input[name=month_labels]').val(),                               
-            },
-                success: function(msg){
-                    REBEL.smallNotifTemplate('Success Create Chart', 'body', 'success');
-                    $('#modal-chart').modal('hide');
-                    $('#chart').html(msg);
-                    setTimeout(function () {
-                        REBEL.removeAllMessageAlert();                         
-                    }, 3000)
-                },
-                error: function (msg) {
-                    REBEL.smallNotifTemplate(msg.message, '.modal-content', 'error');
-                    setTimeout(function () {
-                        REBEL.removeAllMessageAlert();
-                    }, 3000)
-                }
-            }); 
-
-            return false;
-        });
-
         $("#range-month").ionRangeSlider({
             type: 'double',
             min: 1,
@@ -460,111 +434,67 @@
         });
 
         $('#dataset').select2();
+        $('#chart-type').select2();
+        $('#chart-x').select2();
+        $('#chart-y').select2();
 
         $('#submit-button').on('click', function () {
 
+            var createReport = $('input[name=create_report]').val();
             var dateCreate = $('input[name=date_create]').val();
             var memberCode = $('select[name=user_id]').val();
-            var age = $('select[name=age]').val();
+            var age = $('input[name=age]').val();
             var province = $('select[name=province]').val();
             var gender = $('select[name=gender]').val();
             var occupation = $('select[name=occupation]').val();
-            var pih = $('select[name=person_in_house]').val();
+            var pih = $('input[name=person_in_house]').val();
             var le = $('select[name=last_education]').val();
             var userCity = $('select[name=users_city]').val();
             var sec = $('select[name=sec]').val();
-            var usership = $('select[name=usership]').val();
-            var receiptNumber = $('select[name=receipt_number]').val();
+            // var usership = $('select[name=usership]').val();
+            var receiptNumber = $('input[name=receipt_number]').val();
             var outletType = $('select[name=outlet_type]').val();
             var outletName = $('select[name=outlet_name]').val();
             var outletProvince = $('select[name=outlet_province]').val();
             var outletCity = $('select[name=outlet_city]').val();
-            var outletAddress = $('select[name=outlet_address]').val();
+            var outletAddress = $('input[name=outlet_address]').val();
             var products = $('select[name=products]').val();
             var brand = $('select[name=brand]').val();
-            var quantity = $('select[name=quantity]').val();
-            var tpq = $('select[name=total_price_quantity]').val();
-            var gtp = $('select[name=grand_total_price]').val();
+            var quantity = $('input[name=quantity]').val();
+            var tpq = $('input[name=total_price_quantity]').val();
+            var gtp = $('input[name=grand_total_price]').val();
             var purchaseDate = $('input[name=purchase_date]').val();
             var sentTime = $('input[name=sent_time]').val();
 
-            dateCreate = (dateCreate == null) ? '' : insertParam('date_create', dateCreate);
-            memberCode = (memberCode == null) ? '' : insertParam('user_id', memberCode);
-            province = (province == null) ? '' : insertParam('province', province);
-            gender = (gender == null) ? '' : insertParam('gender', gender);
-            occupation = (occupation == null) ? '' : insertParam('occupation', occupation);
-            age = (age == null) ? '' : insertParam('age', age);
-            products = (products == null) ? '' : insertParam('products', products);
-            le = (le == null) ? '' : insertParam('last_education', le);
-            pih = (pih == null) ? '' : insertParam('person_in_house', pih);
-            userCity = (userCity == null) ? '' : insertParam('users_city', userCity);
-            sec = (sec == 0) ? '' : insertParam('sec', sec);
-            usership = (usership == 0) ? '' : insertParam('usership', usership);
-            receiptNumber = (receiptNumber == null) ? '' : insertParam('receipt_number', receiptNumber);
-            outletType = (outletType == null) ? '' : insertParam('outlet_type', outletType);
-            outletName = (outletName == null) ? '' : insertParam('outlet_name', outletName);
-            outletProvince = (outletProvince == null) ? '' : insertParam('outlet_province', outletProvince);
-            outletCity = (outletCity == null) ? '' : insertParam('outlet_city', outletCity);
-            outletAddress = (outletAddress == null) ? '' : insertParam('outlet_address', outletAddress);
-            brand = (brand == null) ? '' : insertParam('brand', brand);
-            quantity = (quantity == null) ? '' : insertParam('quantity', quantity);
-            tpq = (tpq == null) ? '' : insertParam('total_price_quantity', tpq);
-            gtp = (gtp == null) ? '' : insertParam('grand_total_price', gtp);
-            purchaseDate = (purchaseDate == null) ? '' : insertParam('purchase_date', purchaseDate);
-            sentTime = (sentTime == null) ? '' : insertParam('sent_time', sentTime);
-            // window.location.href = '/reports?'+dateCreate+memberCode+province+gender+occupation+age+products+le+pih+userCity+sec+usership+receiptNumber+outletType+outletName+outletProvince+outletCity+outletAddress+brand+quantity+tpq+gtp+purchaseDate+sentTime;
-
-        });
-
-        $('select[name=user_id]').on('change', function () {
-            $('#user-id').val($('select[name=user_id]').val());
-        });
-
-        $('select[name=province]').on('change', function () {
-            $('#provinces').val($('select[name=province]').val());
-        });
-
-        $('select[name=last_education]').on('change', function () {
-            $('#last-education').val($('select[name=last_education]').val());
-        });
-
-        $('select[name=products]').on('change', function () {
-            $('#product').val($('select[name=products]').val());
-        });
-
-        $('select[name=users_city]').on('change', function () {
-            $('#users-city').val($('select[name=users_city]').val());
-        });
-
-        $('select[name=gender]').on('change', function () {
-            $('#genders').val($('select[name=gender]').val());
+            createReport = (createReport == null) ? '' : 'create_report='+createReport;
+            dateCreate = (dateCreate == null) ? '' : '&date_create='+dateCreate;
+            memberCode = (memberCode == null) ? '' : '&user_id='+memberCode;
+            province = (province == null) ? '' : '&province='+province;
+            gender = (gender == null) ? '' : '&gender='+gender;
+            occupation = (occupation == null) ? '' : '&occupation='+occupation;
+            age = (age == null) ? '' : '&age='+age;
+            products = (products == null) ? '' : '&products='+products;
+            le = (le == null) ? '' : '&last_education='+le;
+            pih = (pih == null) ? '' : '&person_in_house='+pih;
+            userCity = (userCity == null) ? '' : '&users_city='+userCity;
+            sec = (sec == 0) ? '' : '&sec='+sec;
+            // usership = (usership == 0) ? '' : '&usership='+usership;
+            receiptNumber = (receiptNumber == null) ? '' : '&receipt_number='+receiptNumber;
+            outletType = (outletType == null) ? '' : '&outlet_type='+outletType;
+            outletName = (outletName == null) ? '' : '&outlet_name='+outletName;
+            outletProvince = (outletProvince == null) ? '' : '&outlet_province='+outletProvince;
+            outletCity = (outletCity == null) ? '' : '&outlet_city='+outletCity;
+            outletAddress = (outletAddress == null) ? '' : '&outlet_address='+outletAddress;
+            brand = (brand == null) ? '' : '&brand='+brand;
+            quantity = (quantity == null) ? '' : '&quantity='+quantity;
+            tpq = (tpq == null) ? '' : '&total_price_quantity='+tpq;
+            gtp = (gtp == null) ? '' : '&grand_total_price='+gtp;
+            purchaseDate = (purchaseDate == null) ? '' : '&purchase_date='+purchaseDate;
+            sentTime = (sentTime == null) ? '' : '&sent_time='+sentTime;
+            window.location.href = '/reports?'+createReport+dateCreate+memberCode+province+gender+occupation+age+products+le+pih+userCity+sec+receiptNumber+outletType+outletName+outletProvince+outletCity+outletAddress+brand+quantity+tpq+gtp+purchaseDate+sentTime;
         });
 
     });
-
-    function insertParam(key, value)
-    {
-        key = encodeURI(key); value = encodeURI(value);
-
-        var kvp = document.location.search.substr(1).split('&');
-
-        var i=kvp.length; var x; while(i--) 
-        {
-            x = kvp[i].split('=');
-
-            if (x[0]==key)
-            {
-                x[1] = value;
-                kvp[i] = x.join('=');
-                break;
-            }
-        }
-
-        if(i<0) {kvp[kvp.length] = [key,value].join('=');}
-
-        //this will reload the page, it's likely better to store this until finished
-        return kvp.join('&'); 
-    }
 
     function whenLoaded() {
         //console.log(Cookies.get('reports'));
@@ -623,5 +553,97 @@
             }
         });
     }
+
+    (function() {
+        var ctx = document.getElementById("myChart").getContext("2d");
+        ctx.canvas.height = 150;
+        var data = {!! json_encode($charts) !!};
+        var type = '{!! $chartType !!}';
+        if (type == 'line' || type == 'bar' || type == 'radar' || type == 'horizontalBar') {
+            var options = {
+                scales:{
+                    yAxes:[{
+                        ticks:{
+                            beginAtZero:true,                                              
+                        },
+                        gridLines:{
+                            display:false
+                        }
+                    }]
+                },
+                title:{
+                    display:true,
+                    text:type.toUpperCase()+' CHART'
+                }
+            };
+        } else if (type == 'pie' || type == 'doughnut' || type == 'polarArea') {
+            if (type == 'pie' || type == 'doughnut') {
+                var options = {
+                    animation: {
+                        duration: 500,
+                        easing: "easeOutQuart",
+                        onComplete: function () {
+                          var ctx = this.chart.ctx;
+                          ctx.font = Chart.helpers.fontString(Chart.defaults.global.defaultFontFamily, 'normal', Chart.defaults.global.defaultFontFamily);
+                          ctx.textAlign = 'center';
+                          ctx.textBaseline = 'bottom';
+
+                          this.data.datasets.forEach(function (dataset) {
+
+                            for (var i = 0; i < dataset.data.length; i++) {
+                              var model = dataset._meta[Object.keys(dataset._meta)[0]].data[i]._model,
+                                  total = dataset._meta[Object.keys(dataset._meta)[0]].total,
+                                  mid_radius = model.innerRadius + (model.outerRadius - model.innerRadius)/2,
+                                  start_angle = model.startAngle,
+                                  end_angle = model.endAngle,
+                                  mid_angle = start_angle + (end_angle - start_angle)/2;
+
+                              var x = mid_radius * Math.cos(mid_angle);
+                              var y = mid_radius * Math.sin(mid_angle);
+
+                              ctx.fillStyle = '#fff';
+                              if (i == 3){ // Darker text color for lighter background
+                                ctx.fillStyle = '#444';
+                              }
+                              var percent = String(Math.round(dataset.data[i]/total*100)) + "%";
+                              ctx.fillText(dataset.data[i], model.x + x, model.y + y);
+                              // Display percent in another line, line break doesn't work for fillText
+                              ctx.fillText(percent, model.x + x, model.y + y + 15);
+                            }
+                            });               
+                        }
+                    },
+                    title : {
+                        display : true,
+                        text : type.toUpperCase()+' CHART'
+                    },
+                };
+            } else {
+                var options = {
+                    animation : {
+                        animateScale : true
+                    },
+                    title : {
+                        display : true,
+                        text : type.toUpperCase()+' CHART'
+                    },
+                };
+            }
+        }
+
+        var chartInstance = new Chart(ctx, {
+            type: type,
+            data: data,
+            options: options,
+        });
+    })();
+
+    $('#download').on('click', function(){
+        var canvas = document.getElementById("myChart");
+        var img    = canvas.toDataURL("image/png");
+        var link = $('#link-img');
+
+        link.attr('href', img);
+    });
 </script>
 @stop

@@ -235,6 +235,7 @@ return [
             'redeem' => '2',
             'survey' => '3',
             'lottery' => '4',
+            'bonus' => '5',
         ],
         'member' => [
             'cashier' => '101',
