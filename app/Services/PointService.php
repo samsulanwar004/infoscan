@@ -100,7 +100,7 @@ inner join level_points as l on l.id = blp.level_id;');
             ];
         }
 
-        //cache()->put(self::CACHE_BONUS_NAME, $result, 1440);
+        cache()->put(self::CACHE_BONUS_NAME, $result, 1440);
 
         return $result;
     }
@@ -782,7 +782,7 @@ inner join level_points as l on l.id = blp.level_id;');
 
         //get latest member point 
         $score = $memberService['latest_point'];
-
+dd($memberService);
         if ($member->leaderboard_score != $score) {
             $member->leaderboard_score = $score;
 
