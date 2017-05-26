@@ -120,6 +120,7 @@
                     <li><a href="/promotions"><i class="fa fa-circle-o"></i>Promotion</a></li>
                     <li><a href="/ses"><i class="fa fa-circle-o"></i>Socio Economic Status</a></li>
                     <li><a href="/points"><i class="fa fa-circle-o"></i>Task Points</a></li>
+                    <li><a href="/bonus-points"><i class="fa fa-circle-o"></i>Bonus Points</a></li>
                 </ul>
             </li>
 
