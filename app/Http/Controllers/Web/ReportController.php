@@ -5,172 +5,167 @@ namespace App\Http\Controllers\Web;
 use Illuminate\Http\Request;
 use App\Services\ReportService;
 use App\Reports;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class ReportController extends AdminController
 {
 	public function index(Request $request)
 	{	
-		$results = [];
-		$query = \DB::table('reports');
 
-		if ($request->has('date_create')) {			
-			$value = $request->input('date_create');
-			$valueArray = explode(' - ', $value);
-			$query->whereBetween('created_at',$valueArray);
-		}
-		if ($request->has('userid')) {
-			$value = $request->input('userid');
-			$valueArray = explode(',', $value);
-			$query->whereIn('user_id',$valueArray);
-		}
-		if ($request->has('userscity')) {
-			$value = $request->input('userscity');
-			$valueArray = explode(',', $value);
-			$query->whereIn('users_city',$valueArray);
-		}	
-		if ($request->has('genders')) {
-			$value = $request->input('genders');
-			$valueArray = explode(',', $value);
-			$query->whereIn('gender',$valueArray);
+		if ($request->has('create_report')) {
+			$requestAll = $request->all();
+			$reportService = (new ReportService);
+			$results = $reportService->createReport($request);
+			//$charts = $reportService->createChart($request, $results);
+			$charts = [];
+			$chartType = $request->input('chart_type');
+			foreach ($requestAll as $key => $value) {
+				$results->appends($key, $value);
+			}
+		} else {
+			$results = [];
+			$charts = [];
+			$chartType = '';
 		}		
-		if ($request->has('provinces')) {
-			$value = $request->input('provinces');
-			$valueArray = explode(',', $value);
-			$query->whereIn('province',$valueArray);
-		}
-		if ($request->has('age')) {			
-			$value = $request->input('age');
-			$valueArray = explode(';', $value);
-			$query->whereBetween('age',$valueArray);
-		}
-		if ($request->has('occupation')) {
-			$value = $request->input('occupation');
-			if (strtolower($value) != 'select occupation') {
-				$query->where('occupation',$value);
-			}				
-		}
-		if ($request->has('person_in_house')) {
-			$value = $request->input('person_in_house');
-			$valueArray = explode(';', $value);
-			$query->whereBetween('person_in_house',$valueArray);
-		}
-		if ($request->has('sec')) {
-			$value = $request->input('sec');			
-			if (strtolower($value) != 'select sec') {
-				$query->where('sec',$value);
-			}	
-		}
-		// if ($request->has('usership')) {
-		// 	$value = $request->input('usership');
-		// 	if (strtolower($value) != 'select usership') {
-		// 		$query->where('usership',$value);
-		// 	}
-		// }
-		if ($request->has('receipt_number')) {
-			$value = $request->input('receipt_number');
-			if (strtolower($value) != '') {
-				$query->where('receipt_number',$value);
-			}
-		}
-		if ($request->has('outlet_type')) {
-			$value = $request->input('outlet_type');
-			if (strtolower($value) != 'select outlet type') {
-				$query->where('outlet_type',$value);
-			}
-		}
-		if ($request->has('outlet_name')) {
-			$value = $request->input('outlet_name');
-			if (strtolower($value) != 'select outlet name') {
-				$query->where('outlet_name',$value);
-			}
-		}
-		if ($request->has('outlet_province')) {
-			$value = $request->input('outlet_province');
-			if (strtolower($value) != 'select outlet province') {
-				$query->where('outlet_province',$value);
-			}
-		}
-		if ($request->has('outlet_city')) {			
-			$value = $request->input('outlet_city');
-			if (strtolower($value) != 'select outlet city') {
-				$query->where('outlet_city',$value);
-			}
-		}
-		if ($request->has('outlet_address')) {
-			$value = $request->input('outlet_address');
-			if (strtolower($value) != '') {
-				$query->where('outlet_address',$value);
-			}
-		}
-		if ($request->has('lasteducation')) {
-			$value = $request->input('lasteducation');
-			$valueArray = explode(',', $value);
-			$query->whereIn('last_education',$valueArray);
-		}
-		if ($request->has('product')) {
-			$value = $request->input('product');
-			$valueArray = explode(',', $value);
-			$query->whereIn('products',$valueArray);
-		}
-		if ($request->has('brand')) {
-			$value = $request->input('brand');
-			if (strtolower($value) != 'select brand') {
-				$query->where('brand',$value);
-			}
-		}
-		if ($request->has('quantity')) {
-			$value = $request->input('quantity');
-			$valueArray = explode(';', $value);
-			$query->whereBetween('quantity',$valueArray);
-		}
-		if ($request->has('total_price_quantity')) {
-			$value = $request->input('total_price_quantity');
-			$valueArray = explode(';', $value);
-			$query->whereBetween('total_price_quantity',$valueArray);
-		}
-		if ($request->has('grand_total_price')) {
-			$value = $request->input('grand_total_price');
-			$valueArray = explode(';', $value);
-			$query->whereBetween('grand_total_price',$valueArray);
-		}
-		if ($request->has('purchase_date')) {
-			$value = $request->input('purchase_date');
-			$valueArray = explode(' - ', $value);
-			$query->whereBetween('purchase_date',$valueArray);
-		}
-		if ($request->has('sent_time')) {
-			$value = $request->input('sent_time');
-			$valueArray = explode(' - ', $value);
-			$query->whereBetween('sent_time',$valueArray);
+		$member = \DB::table('members')
+			->join('provinces', 'provinces.id', '=', 'members.province_id')
+			->distinct();
+		$snap = \DB::table('snaps')->distinct();
+		$snapTag = \DB::table('snap_tags')->distinct();
+
+		if (cache('members')) {
+			$members = cache('members');
+		} else {
+			$members = $member->get(['members.id']);
+			cache()->put('members', $members, 1440);
 		}
 
-		$results = $query->get();
-		$distinct = \DB::table('reports')->distinct();
-		$members = $distinct->get(['user_id']);
-		$gender = $distinct->get(['gender']);
-		$oc = $distinct->get(['occupation']);
-		$le = $distinct->get(['last_education']);
-		$citys = $distinct->get(['users_city']);
-		$provinces = $distinct->get(['province']);
-		$outletType = $distinct->get(['outlet_type']);
-		$outletName = $distinct->get(['outlet_name']);
-		$outletProvince = $distinct->get(['outlet_province']);
-		$outletCity = $distinct->get(['outlet_city']);
-		$products = $distinct->get(['products']);
-		$brands = $distinct->get(['brand']);
-		$sec = $distinct->get(['sec']);
+		if (cache('gender')) {
+			$gender = cache('gender');
+		} else {
+			$gender = $member->get(['members.gender']);
+			cache()->put('gender', $gender, 1440);
+		}
 
-		$age = \DB::select('SELECT (SELECT DISTINCT age FROM reports ORDER BY age LIMIT 1) as "first",(SELECT DISTINCT age FROM reports ORDER BY age DESC LIMIT 1) as "last"')[0];
-		$pih = \DB::select('SELECT (SELECT DISTINCT person_in_house FROM reports ORDER BY person_in_house LIMIT 1) as "first",(SELECT DISTINCT person_in_house FROM reports ORDER BY person_in_house DESC LIMIT 1) as "last"')[0];
-		$qty = \DB::select('SELECT (SELECT DISTINCT quantity FROM reports ORDER BY quantity LIMIT 1) as "first",(SELECT DISTINCT quantity FROM reports ORDER BY quantity DESC LIMIT 1) as "last"')[0];
-		$total = \DB::select('SELECT (SELECT DISTINCT total_price_quantity FROM reports ORDER BY total_price_quantity LIMIT 1) as "first",(SELECT DISTINCT total_price_quantity FROM reports ORDER BY total_price_quantity DESC LIMIT 1) as "last"')[0];
-		$grandTotal = \DB::select('SELECT (SELECT DISTINCT grand_total_price FROM reports ORDER BY grand_total_price LIMIT 1) as "first",(SELECT DISTINCT grand_total_price FROM reports ORDER BY grand_total_price DESC LIMIT 1) as "last"')[0];
+		if (cache('oc')) {
+			$oc = cache('oc');
+		} else {
+			$oc = $member->get(['members.occupation']);
+			cache()->put('oc', $oc, 1440);
+		}
+
+		if (cache('le')) {
+			$le = cache('le');
+		} else {
+			$le = $member->get(['members.last_education']);
+			cache()->put('le', $le, 1440);
+		}
+
+		if (cache('citys')) {
+			$citys = cache('citys');
+		} else {
+			$citys = $member->get(['members.city']);
+			cache()->put('citys', $citys, 1440);
+		}
+
+		if (cache('provinces')) {
+			$provinces = cache('provinces');
+		} else {
+			$provinces = $member->get(['provinces.name']);
+			cache()->put('provinces', $provinces, 1440);
+		}
+
+		if (cache('outletType')) {
+			$outletType = cache('outletType');
+		} else {
+			$outletType = $snap->get(['outlet_type']);
+			cache()->put('outletType', $outletType, 1440);
+		}
+
+		if (cache('outletName')) {
+			$outletName = cache('outletName');
+		} else {
+			$outletName = $snap->get(['outlet_name']);
+			cache()->put('outletName', $outletName, 1440);
+		}
+
+		if (cache('outletProvince')) {
+			$outletProvince = cache('outletProvince');
+		} else {
+			$outletProvince = $snap->get(['outlet_province']);
+			cache()->put('outletProvince', $outletProvince, 1440);
+		}
+
+		if (cache('outletCity')) {
+			$outletCity = cache('outletCity');
+		} else {
+			$outletCity = $snap->get(['outlet_city']);
+			cache()->put('outletCity', $outletCity, 1440);
+		}
+
+		if (cache('products')) {
+			$products = cache('products');
+		} else {
+			$products = $snapTag->get(['name']);
+			cache()->put('products', $products, 1440);
+		}
+
+		if (cache('brands')) {
+			$brands = cache('brands');
+		} else {
+			$brands = $snapTag->get(['brands']);
+			cache()->put('brands', $brands, 1440);
+		}
+
+		if (cache('sec')) {
+			$sec = cache('sec');
+		} else {
+			$sec = $member->get(['monthly_expense_code']);
+			cache()->put('sec', $sec, 1440);
+		}
+
+		if (cache('age')) {
+			$age = cache('age');
+		} else {
+			$age = \DB::select('SELECT (SELECT DISTINCT YEAR(CURRENT_TIMESTAMP) - YEAR(dob) - (RIGHT(CURRENT_TIMESTAMP, 5) < RIGHT(dob, 5)) AS age 
+  				FROM members WHERE dob IS NOT NULL ORDER BY age LIMIT 1) as "first",(SELECT DISTINCT YEAR(CURRENT_TIMESTAMP) - YEAR(dob) - (RIGHT(CURRENT_TIMESTAMP, 5) < RIGHT(dob, 5)) AS age 
+  				FROM members ORDER BY age DESC LIMIT 1) as "last"')[0];
+			cache()->put('age', $age, 1440);
+		}
+
+		if (cache('pih')) {
+			$pih = cache('pih');
+		} else {
+			$pih = \DB::select('SELECT (SELECT DISTINCT person_in_house FROM members ORDER BY person_in_house LIMIT 1) as "first",(SELECT DISTINCT person_in_house FROM members ORDER BY person_in_house DESC LIMIT 1) as "last"')[0];
+			cache()->put('pih', $pih, 1440);
+		}
+
+		if (cache('qty')) {
+			$qty = cache('qty');
+		} else {
+			$qty = \DB::select('SELECT (SELECT DISTINCT quantity FROM snap_tags ORDER BY quantity LIMIT 1) as "first",(SELECT DISTINCT quantity FROM snap_tags ORDER BY quantity DESC LIMIT 1) as "last"')[0];
+			cache()->put('qty', $qty, 1440);
+		}
+
+		if (cache('total')) {
+			$total = cache('total');
+		} else {
+			$total = \DB::select('SELECT (SELECT DISTINCT total_price FROM snap_tags ORDER BY total_price LIMIT 1) as "first",(SELECT DISTINCT total_price FROM snap_tags ORDER BY total_price DESC LIMIT 1) as "last"')[0];
+			cache()->put('total', $total, 1440);
+		}
+
+		if (cache('grandTotal')) {
+			$grandTotal = cache('grandTotal');
+		} else {
+			$grandTotal = \DB::select('SELECT (SELECT DISTINCT quantity * total_price as grand_total_price FROM snap_tags ORDER BY grand_total_price LIMIT 1) as "first",(SELECT DISTINCT quantity * total_price as grand_total_price FROM snap_tags ORDER BY grand_total_price DESC LIMIT 1) as "last"')[0];
+			cache()->put('grandTotal', $grandTotal, 1440);
+		}
 
 		$configs = null;
 		if ($request->has('config')) {
 			$configs = $request->input('config');
 			$configs = array_keys($configs);
-		}
+		}		
 
 		$data = [
 			'results',
@@ -195,25 +190,9 @@ class ReportController extends AdminController
 			'total',
 			'grandTotal',
 			'configs',
+			'charts',
+			'chartType',
 		];
 		return view('reports.index', compact($data));
-	}
-
-	public function createChart(Request $request)
-	{
-		try {
-			$reports = (new ReportService);
-			$chart = $reports->buildChart($request);
-			$size = $reports->getSize();
-			$type = $chart['type'];
-			$data = $chart['data'];
-
-			return view('reports.chart', compact('type', 'data', 'size'));
-		} catch (\Exception $e) {
-			return response()->json([
-                'status' => 'error',
-                'message' => $e->getMessage(),
-            ], 500);
-		}		
 	}
 }

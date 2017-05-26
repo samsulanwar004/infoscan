@@ -2,79 +2,340 @@
 
 namespace App\Services;
 
+use Carbon\Carbon;
+
 class ReportService
 {
 
-	public $setSize;
+	private $results;
 
-	public function buildChart($request)
+	private $date;
+
+	public function __construct()
 	{
-		$type = $request->input('type');
-		$dataset = $request->input('dataset');
-		$monthLabels = $request->input('month_labels');
-		$countDataset = count($dataset);
-		$year = \Carbon\Carbon::today()->year;
-		$monthArray = explode(';', $monthLabels);
+		$this->date = Carbon::now('Asia/Jakarta');
+	}
 
+	public function createReport($request)
+	{
+		$query = \DB::table('snaps')
+			->join('snap_files', 'snaps.id', '=', 'snap_files.snap_id')
+            ->join('snap_tags', 'snap_files.id', '=', 'snap_tags.snap_file_id')
+            ->join('members', 'members.id', '=', 'snaps.member_id')
+            ->join('provinces', 'provinces.id', '=', 'members.province_id')
+            ->select(
+            	'members.id as user_id',
+            	'members.dob as age',
+            	'members.gender',
+            	'members.occupation',
+            	'members.person_in_house',
+            	'members.last_education',
+            	'members.city as users_city',
+            	'members.monthly_expense_code as sec',
+            	'members.marital_status as usership',
+            	'provinces.name as province',
+            	'snaps.receipt_id as receipt_number',
+            	'snaps.outlet_type',
+            	'snaps.outlet_name',
+            	'snaps.outlet_province',
+            	'snaps.outlet_city',
+            	'snaps.location as outlet_address',
+            	'snap_tags.name as products',
+            	'snap_tags.brands as brand',
+            	'snap_tags.quantity',
+            	'snap_tags.total_price as total_price_quantity',
+            	'snap_tags.total_price as grand_total_price',
+            	'snaps.purchase_time as purchase_date',
+            	'snaps.created_at as sent_time'
+            );
+
+		if ($request->has('date_create')) {			
+			$value = $request->input('date_create');
+			$valueArray = explode(' - ', $value);
+			$query->whereBetween('snaps.created_at',$valueArray);
+		}
+		if ($request->has('user_id')) {
+			$value = $request->input('user_id');
+			$valueArray = explode(',', $value);
+			$query->whereIn('members.id',$valueArray);
+		}
+		if ($request->has('users_city')) {
+			$value = $request->input('users_city');
+			$valueArray = explode(',', $value);
+			$query->whereIn('members.city',$valueArray);
+		}
+		if ($request->has('gender')) {
+			$value = $request->input('gender');
+			$valueArray = explode(',', $value);
+			$query->whereIn('members.gender',$valueArray);
+		}		
+		if ($request->has('province')) {
+			$value = $request->input('province');
+			$valueArray = explode(',', $value);
+			$query->whereIn('provinces.name',$valueArray);
+		}
+		if ($request->has('age')) {			
+			$value = $request->input('age');
+			$valueArray = explode(';', $value);
+
+			$yearNow = $this->date->year;
+			$youngYear = $yearNow - $valueArray[0];
+			$oldYear = $yearNow - $valueArray[1];
+
+			$query->whereYear('members.dob','<=', $youngYear);
+			$query->whereYear('members.dob','>=', $oldYear);
+		}
+		if ($request->has('occupation')) {
+			$value = $request->input('occupation');
+			if (strtolower($value) != 'select occupation') {
+				$query->where('members.occupation',$value);
+			}				
+		}
+		if ($request->has('person_in_house')) {
+			$value = $request->input('person_in_house');
+			$valueArray = explode(';', $value);
+			$query->whereBetween('members.person_in_house',$valueArray);
+		}
+		if ($request->has('sec')) {
+			$value = $request->input('sec');			
+			if (strtolower($value) != 'select sec') {
+				$query->where('members.monthly_expense_code',$value);
+			}	
+		}
+		if ($request->has('last_education')) {
+			$value = $request->input('last_education');
+			$valueArray = explode(',', $value);
+			$query->whereIn('members.last_education',$valueArray);
+		}
+		if ($request->has('receipt_number')) {
+			$value = $request->input('receipt_number');
+			if (strtolower($value) != '') {
+				$query->where('snaps.receipt_id',$value);
+			}
+		}
+		if ($request->has('outlet_type')) {
+			$value = $request->input('outlet_type');
+			if (strtolower($value) != 'select outlet type') {
+				$query->where('snaps.outlet_type',$value);
+			}
+		}
+		if ($request->has('outlet_name')) {
+			$value = $request->input('outlet_name');
+			if (strtolower($value) != 'select outlet name') {
+				$query->where('snaps.outlet_name',$value);
+			}
+		}
+		if ($request->has('outlet_province')) {
+			$value = $request->input('outlet_province');
+			if (strtolower($value) != 'select outlet province') {
+				$query->where('snaps.outlet_province',$value);
+			}
+		}
+		if ($request->has('outlet_city')) {			
+			$value = $request->input('outlet_city');
+			if (strtolower($value) != 'select outlet city') {
+				$query->where('snaps.outlet_city',$value);
+			}
+		}
+		if ($request->has('outlet_address')) {
+			$value = $request->input('outlet_address');
+			if (strtolower($value) != '') {
+				$query->where('snaps.location', 'like', '%'.$value.'%');
+			}
+		}		
+		if ($request->has('products')) {
+			$value = $request->input('products');
+			$valueArray = explode(',', $value);
+			$query->whereIn('snap_tags.name',$valueArray);
+		}
+		if ($request->has('brand')) {
+			$value = $request->input('brand');
+			if (strtolower($value) != 'select brand') {
+				$query->where('snap_tags.brands',$value);
+			}
+		}
+		if ($request->has('quantity')) {
+			$value = $request->input('quantity');
+			$valueArray = explode(';', $value);
+			$query->whereBetween('snap_tags.quantity',$valueArray);
+		}
+		if ($request->has('total_price_quantity')) {
+			$value = $request->input('total_price_quantity');
+			$valueArray = explode(';', $value);
+			$query->whereBetween('snap_tags.total_price',$valueArray);
+		}
+		// if ($request->has('grand_total_price')) {
+		// 	$value = $request->input('grand_total_price');
+		// 	$valueArray = explode(';', $value);
+		// 	$query->whereBetween('grand_total_price',$valueArray);
+		// }
+		// if ($request->has('purchase_date')) {
+		// 	$value = $request->input('purchase_date');
+		// 	$valueArray = explode(' - ', $value);
+		// 	$query->whereBetween('snaps.purchase_time',$valueArray);
+		// }
+		// if ($request->has('sent_time')) {
+		// 	$value = $request->input('sent_time');
+		// 	$valueArray = explode(' - ', $value);
+		// 	$query->whereBetween('snaps.created_at',$valueArray);
+		// }
+
+		$query->orderBy('snaps.id', 'DESC');
+
+		$results = $query->paginate(50);
+
+		return $results;
+	}
+
+	public function createChart($request, $results)
+	{
+		$datasetRequest = $request->input('dataset');
+		$chartXRequest = $request->input('chart_x');
+		//$chartYRequest = $request->input('chart_y');
+
+  		$dataset = $request->input($datasetRequest);
+  		$chartType = $request->input('chart_type');
+  		$chartX = $request->input($chartXRequest);
+  		//$chartY = $request->input($chartYRequest);
+
+  		$datasetArray = $this->multiexplode(array(",",".","|",":",";"),$dataset);
+  		$chartXArray = $this->multiexplode(array(",",".","|",":",";"),$chartX);
+  		//$chartYArray = $this->multiexplode(array(",",".","|",":",";"),$chartY);
+
+  		$data = [
+  			'type' => $chartType,
+  			'dataset' => $datasetArray,
+  			'chartX' => $chartXArray,
+  			//'chartY' => $chartYArray,
+  		];
+
+  		$request = [
+  			'datasetRequest' => $datasetRequest,
+  			'chartXRequest' => $chartXRequest,
+  			//'chartYRequest' => $chartYRequest,
+  		];
+
+  		$charts = $this->buildChartGeneral($data, $request, $results);
+
+  		return $charts;
+	}
+
+	private function multiexplode($delimiters,$string) {
+	    $ready = str_replace($delimiters, $delimiters[0], $string);
+	    $launch = explode($delimiters[0], $ready);
+	    return  $launch;
+	}
+
+	private function buildChartGeneral($data, $request, $results)
+	{
+
+		$this->setResultReport($results);
+
+		$type = $data['type'];
+		$dataset = $data['dataset'];
+		$chartX = $data['chartX'];
+		//$chartY = $data['chartY'];
+
+		if(is_numeric($dataset[0])){
+		 	$startDataset = $dataset[0];
+		 	$countDataset = $dataset[1];
+		 	$datasetNumeric = true;
+		} else {
+			$startDataset = 0;
+		 	$countDataset = count($dataset);
+		 	$datasetNumeric = false;
+		}
+
+		if(is_numeric($chartX[0])){
+		 	$startchartX = $chartX[0];
+		 	$countchartX = $chartX[1];
+		 	$xNumeric = true;
+		} else {
+			$startchartX = 0;
+		 	$countchartX = count($chartX);
+		 	$xNumeric = false;
+		}
+
+		$labels = null;
+		$content = null;
 		if ($type == 'line' || $type == 'bar' || $type == 'radar' || $type == 'horizontalBar') {
 			$content = [];
-			for ($e=0; $e < $countDataset; $e++) { 
-				$search = $dataset[$e];
-				$background = config('common.chart.color.'.$e)['background'];
-				$border = config('common.chart.color.'.$e)['border'];
+			$no = 0;
+			for ($e=$startDataset; $e < $countDataset; $e++) { 
+				$search = ($datasetNumeric == true) ? $e : $dataset[$e];
+				$background = config('common.chart.color.'.$no)['background'];
+				$border = config('common.chart.color.'.$no)['border'];
 
 				$labels = [];
 				$data = [];
-				for ($i=$monthArray[0]; $i <= $monthArray[1]; $i++) { 
-					$labels[] = config('common.chart.month.'.$i);
-					$reports = \DB::table('reports')
-					->where('products', 'like', $search.'%')
-					->whereMonth('created_at', $i)
-					->whereYear('created_at', $year)
-					->select('products')
-					->get();
+				for ($i=$startchartX; $i < $countchartX; $i++) { 
+					$searchX = ($xNumeric == true) ? $i : $chartX[$i];
+					$labels[] = $searchX;
 
-					$data[] = count($reports);
-				}
+					$results = $this->getResultReport();
+
+					$results = $results->filter(function($value, $Key) use ($request, $search, $searchX) {
+			            return $value->{$request['datasetRequest']} == $search && 
+			            	$value->{$request['chartXRequest']} == $searchX;
+			        });
+
+					$data[] = count($results);
+				}				
 
 				$content[] = [
 			    	"label" => $search,
 	                "backgroundColor" => $background,
 	                "borderColor" => $border,
 	                "data" => $data,
-	                "borderWidth" => 1,
+	                "borderWidth" => 2,
+	                "fill" => false,
+	                "lineTension" => 0.1,
+	                "spanGaps" => false,
+	                "borderCapStyle" => 'butt',
+		            "borderDash" => [],
+		            "borderDashOffset" => 0.0,
+		            "borderJoinStyle" => 'miter',
+		            "pointBackgroundColor" => "#fff",
+		            "pointBorderWidth" => 1,
+		            "pointHoverRadius" => 5,
+		            "pointHoverBackgroundColor" => $background,
+		            "pointHoverBorderColor" => $border,
+		            "pointHoverBorderWidth" => 2,
+		            "pointRadius" => 1,
+		            "pointHitRadius" => 10,
 	            ];
+
+	            $no++;
 			}
-
-			$size = [
-				'padding' => 20,
-			];
-
-			$this->setSize($size);
 
 		} else if ($type == 'pie' || $type == 'doughnut' || $type == 'polarArea') {
 			$totalData = [];
 			$labels = [];
 			$background = [];
 			$border = [];
-			for ($e=0; $e < $countDataset; $e++) { 
-				$search = $dataset[$e];
-				$background[] = config('common.chart.color.'.$e)['background'];
-				$border[] = config('common.chart.color.'.$e)['border'];
+			$no = 0;
+			for ($e=$startDataset; $e < $countDataset; $e++) { 
+				$search = ($datasetNumeric == true) ? $e : $dataset[$e];
+				$background[] = config('common.chart.color.'.$no)['background'];
+				$border[] = config('common.chart.color.'.$no)['border'];
 				$labels[] = $search;
 				$data = [];
-				for ($i=$monthArray[0]; $i <= $monthArray[1]; $i++) { 					
-					$reports = \DB::table('reports')
-					->where('products', 'like', $search.'%')
-					->whereMonth('created_at', $i)
-					->whereYear('created_at', $year)
-					->select('products')
-					->get();
+				for ($i=$startchartX; $i < $countchartX; $i++) {
+					$searchX = ($xNumeric == true) ? $i : $chartX[$i]; 					
 
-					$data[] = count($reports);
+					$results = $this->getResultReport();
+
+					$results = $results->filter(function($value, $Key) use ($request, $search, $searchX) {
+			            return $value->{$request['datasetRequest']} == $search && 
+			            	$value->{$request['chartXRequest']} == $searchX;
+			        });
+
+					$data[] = count($results);
 				}
 
-				$totalData[] = collect($data)->sum();				
+				$totalData[] = collect($data)->sum();	
+
+				$no++;			
 			}
 
 			$content = [
@@ -85,32 +346,25 @@ class ReportService
             	]
             ];
 
-			$size = [
-				'padding' => 30,
-			];
-
-			$this->setSize($size);
 		}			
 
 		$chartjs = [
-            "type" => $type,
-            "data" => [
-                "labels" => $labels,
-                "datasets" => $content
-            ],
+            "labels" => $labels,
+            "datasets" => $content
         ];
 
 		return $chartjs;
 	}
 
-	public function setSize($value)
+	private function setResultReport($value)
 	{
-		$this->setSize = $value;
+		$this->results = $value;
 		return $this;
 	}
 
-	public function getSize()
+	private function getResultReport()
 	{
-		return $this->setSize;
+		return $this->results;
 	}
+
 }

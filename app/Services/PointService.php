@@ -10,6 +10,8 @@ use App\PromoLevelPoint;
 use App\SnapTag;
 use App\LimitPoint;
 use App\TaskPoint;
+use App\BonusLevelPoint;
+use App\BonusPoint;
 use DB;
 use Carbon\Carbon;
 use App\Transformers\PortalPointTransformer;
@@ -20,6 +22,7 @@ class PointService
     const CACHE_NAME = 'point.pivot';
     const CACHE_PROMO_NAME = 'promo.point.pivot';
     const CACHE_TASK_LIMIT = 'point.limit';
+    const CACHE_BONUS_NAME = 'bonus.point';
 
     public function __construct()
     {
@@ -78,6 +81,30 @@ inner join level_points as l on l.id = plp.level_id;');
         return $result;
     }
 
+    public function getBonusPivotGrid()
+    {
+        if($pivots = cache(self::CACHE_BONUS_NAME)) {
+            return $pivots;
+        }
+
+        $points = DB::select('select b.id, b.bonus_name, b.is_active, l.name as level_name, blp.point from bonus_level_points as blp
+inner join bonus_points as b on b.id = blp.bonus_point_id
+inner join level_points as l on l.id = blp.level_id;');
+        $result = [];
+        foreach ($points as $pivot) {
+            $active = ($pivot->is_active == 0) ? '(Deactive)' : '';
+            $result[] = [
+                'Bonus' => $pivot->id.' '.$pivot->bonus_name.' '.$active,
+                'Level' => $pivot->level_name,
+                'Point' => $pivot->point,
+            ];
+        }
+
+        cache()->put(self::CACHE_BONUS_NAME, $result, 1440);
+
+        return $result;
+    }
+
     public function getLevels()
     {
         return TaskLevelPoint::orderBy('id', 'asc')->get(['id', 'name', 'point']);
@@ -90,6 +117,8 @@ inner join level_points as l on l.id = plp.level_id;');
         cache()->forget(self::CACHE_PROMO_NAME);
 
         cache()->forget(self::CACHE_TASK_LIMIT);
+
+        cache()->forget(self::CACHE_BONUS_NAME);
 
         return;
     }
@@ -137,6 +166,17 @@ inner join level_points as l on l.id = plp.level_id;');
         return $promos;
     }
 
+    public function addBonusPoint($request)
+    {
+
+        $bonus = new BonusPoint;
+        $bonus->bonus_name = $request['bonus_name'];
+
+        $bonus->save();
+
+        return $bonus;
+    }
+
     public function updateTask($request, $id)
     {
         $task = $this->getTaskById($id);
@@ -180,6 +220,18 @@ inner join level_points as l on l.id = plp.level_id;');
         }
         
         return $promos;
+    }
+
+    public function updateBonusPoint($request, $id)
+    {
+        $name = $request->input('bonus_name');           
+        $bonus = $this->getBonusPointById($id);
+        $bonus->bonus_name = $name;
+        $bonus->is_active = $request->has('is_active') ? 1 : 0;
+
+        $bonus->update();
+        
+        return $bonus;
     }
 
     public function addTaskLevelPoint($request)
@@ -295,6 +347,15 @@ inner join level_points as l on l.id = plp.level_id;');
         return $plp;
     }
 
+    public function getBonusLevelPoints($bonusPointid, $levelid)
+    {
+        $blp = BonusLevelPoint::where('bonus_point_id', '=', $bonusPointid)
+            ->where('level_id', '=', $levelid)
+            ->first();
+
+        return $blp;
+    }
+
     public function lastLevel()
     {
         return TaskLevelPoint::orderBy('id', 'desc')->first();
@@ -337,6 +398,15 @@ inner join level_points as l on l.id = plp.level_id;');
         return $t;
     }
 
+    public function getBonusPointById($id)
+    {
+        $t = BonusPoint::with('levels')
+            ->where('id', '=', $id)
+            ->first();
+
+        return $t;
+    }
+
     public function addPromoLevelPoint($request)
     {
         DB::beginTransaction();
@@ -353,6 +423,34 @@ inner join level_points as l on l.id = plp.level_id;');
                     $promoLevelPoint->promoPoint()->associate($promo[$i]);
                     $promoLevelPoint->save();
                 }
+            }
+
+            $this->removeCache();
+
+            DB::commit();
+
+            return true;
+        }
+
+        DB::rollBack();
+
+        return false;
+    }
+
+    public function addBonusLevelPoint($request)
+    {
+        DB::beginTransaction();
+
+        $bonus = $this->addBonusPoint($request->all());
+
+        if ($bonus) {
+            foreach ($request->input('levels') as $levelName => $point) {
+                $bonusLevelPoint = new BonusLevelPoint;
+                $bonusLevelPoint->point = $point;
+                $level = $this->findLevel($levelName);
+                $bonusLevelPoint->levelPoint()->associate($level);
+                $bonusLevelPoint->bonusPoint()->associate($bonus);
+                $bonusLevelPoint->save();
             }
 
             $this->removeCache();
@@ -398,6 +496,48 @@ inner join level_points as l on l.id = plp.level_id;');
                 PromoLevelPoint::where('promo_point_id', '=', $id)
                         ->whereNotIn('level_id', $levelId)->delete();
             }
+
+            $this->removeCache();
+
+            DB::commit();
+
+            return true;
+        }
+
+        DB::rollBack();
+
+        return false;        
+    }
+
+    public function updateBonusLevelPoint($request, $id)
+    {
+        DB::beginTransaction();
+
+        $bonus = $this->updateBonusPoint($request, $id);
+
+        if ($bonus) {
+            $levelId = [];
+            foreach ($request->input('levels') as $levelName => $point) {
+                $level = $this->findLevel($levelName);
+                $levelId[] = $level->id;
+                $bonusLevelPoint = $this->getBonusLevelPoints($bonus->id, $level->id);   
+
+                if ($bonusLevelPoint == false)
+                {
+                    $newBonusLevelPoint = new BonusLevelPoint;
+                    $newBonusLevelPoint->point = $point;
+                    $newBonusLevelPoint->levelPoint()->associate($level);
+                    $newBonusLevelPoint->bonusPoint()->associate($bonus);
+                    $newBonusLevelPoint->save();
+                } else {
+                    $bonusLevelPoint->point = $point;
+                    $bonusLevelPoint->update();
+                }
+
+            }
+            // delete unnesesary level
+            BonusLevelPoint::where('bonus_point_id', '=', $id)
+                    ->whereNotIn('level_id', $levelId)->delete();
 
             $this->removeCache();
 

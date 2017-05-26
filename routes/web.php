@@ -75,6 +75,12 @@ Route::group([
     );
 
     Route::resource(
+        '/bonus-points',
+        'Web\BonusPointController',
+        ['except' => ['show'], 'names' => route_resource_name($routePrefix, 'bonus-points')]
+    );
+
+    Route::resource(
         '/questionnaire',
         'Web\QuestionnaireController',
         ['except' => ['show'], 'names' => route_resource_name($routePrefix, 'questionnaire')]

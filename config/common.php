@@ -2,9 +2,9 @@
 
 return [
     'snap_category' => [
-        'rc' => 'Moderen Receipt',
+        'rc' => 'Modern Receipt',
         'gt' => 'General Trade',
-        'hw' => 'Hand Written',
+        'hw' => 'Handwritten',
     ],
     'snap_category_mode' => [
         'in' => 'Input',
@@ -74,10 +74,6 @@ return [
             ],
             'sec' => [
                 'label' => 'SEC',
-                'type' => 'single'
-            ],
-            'usership' => [
-                'label' => 'User Ship',
                 'type' => 'single'
             ],
             'receipt_number' => [
@@ -239,6 +235,7 @@ return [
             'redeem' => '2',
             'survey' => '3',
             'lottery' => '4',
+            'bonus' => '5',
         ],
         'member' => [
             'cashier' => '101',

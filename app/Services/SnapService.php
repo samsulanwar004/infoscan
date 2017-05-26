@@ -558,7 +558,8 @@ class SnapService
             $t = $this->getSnapTagById($tagId);
             $t->name = $tags['name'][$i];
             $t->brands = $tags['brands'][$i];
-            $t->variants = $tags['variants'][$i];
+            //$t->variants = $tags['variants'][$i];
+            $t->sku = $tags['sku'][$i];
             $t->weight = $tags['weight'][$i];
             $t->quantity = $tags['qty'][$i];
             $t->total_price = $tags['total'][$i];
@@ -573,7 +574,8 @@ class SnapService
             $t = new SnapTag;
             $t->name = $newTags['name'][$i];
             $t->brands = $newTags['brands'][$i];
-            $t->variants = $newTags['variants'][$i];
+            // $t->variants = $newTags['variants'][$i];
+            $t->sku = $newTags['sku'][$i];
             $t->weight = $newTags['weight'][$i];
             $t->quantity = $newTags['qty'][$i];
             $t->total_price = $newTags['total'][$i];
@@ -605,7 +607,8 @@ class SnapService
             $t = $this->getSnapTagById($tagId);
             $t->name = $tags['name'][$i];
             $t->brands = $tags['brands'][$i];
-            $t->variants = $tags['variants'][$i];
+            // $t->variants = $tags['variants'][$i];
+            $t->sku = $tags['sku'][$i];
             $t->weight = $tags['weight'][$i];
             $t->quantity = $tags['qty'][$i];
             $t->total_price = $tags['total'][$i];
@@ -620,7 +623,8 @@ class SnapService
             $t = new SnapTag;
             $t->name = $newTags['name'][$i];
             $t->brands = $newTags['brands'][$i];
-            $t->variants = $newTags['variants'][$i];
+            // $t->variants = $newTags['variants'][$i];
+            $t->sku = $newTags['sku'][$i];
             $t->weight = $newTags['weight'][$i];
             $t->quantity = $newTags['qty'][$i];
             $t->total_price = $newTags['total'][$i];
@@ -650,7 +654,8 @@ class SnapService
             $t = $this->getSnapTagById($tagId);
             $t->name = $tags['name'][$i];
             $t->brands = $tags['brands'][$i];
-            $t->variants = $tags['variants'][$i];
+            // $t->variants = $tags['variants'][$i];
+            $t->sku = $tags['sku'][$i];
             $t->weight = $tags['weight'][$i];
             $t->quantity = $tags['qty'][$i];
             $t->total_price = $tags['total'][$i];
@@ -665,7 +670,8 @@ class SnapService
             $t = new SnapTag;
             $t->name = $newTags['name'][$i];
             $t->brands = $newTags['brands'][$i];
-            $t->variants = $newTags['variants'][$i];
+            // $t->variants = $newTags['variants'][$i];
+            $t->sku = $newTags['sku'][$i];
             $t->weight = $newTags['weight'][$i];
             $t->quantity = $newTags['qty'][$i];
             $t->total_price = $newTags['total'][$i];
