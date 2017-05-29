@@ -223,6 +223,8 @@ class SnapService
                         'of_images' => $snap['main']->files->count(),
                         'email' => $snap['main']->member->email,
                         'name' => $snap['main']->member->name,
+                        'estimated_point' => $snap['main']->estimated_point,
+                        'fixed_point' => $snap['main']->fixed_point,
                         'current_point' => $snap['main']->member->temporary_point,
                         'current_level' => $snap['main']->member->temporary_level,
                         'snapped' => $snap['main']->created_at->toDateTimeString(),
@@ -245,8 +247,10 @@ class SnapService
                     'of_images' => $snap['main']->files->count(),
                     'email' => $snap['main']->member->email,
                     'name' => $snap['main']->member->name,
+                    'estimated_point' => $snap['main']->estimated_point,
+                    'fixed_point' => $snap['main']->fixed_point,
                     'current_point' => $snap['main']->member->temporary_point,
-                        'current_level' => $snap['main']->member->temporary_level,
+                    'current_level' => $snap['main']->member->temporary_level,
                     'snapped' => $snap['main']->created_at->toDateTimeString(),
                     'approve_or_reject_date' => $snap['main']->updated_at->toDateTimeString(),
                     'approve_or_reject_by' => isset($approve) ? $approve : $reject,
@@ -263,11 +267,11 @@ class SnapService
 
         if ($data['type'] == 'new') {
             $filename = strtolower(str_random(10)).'.csv';
-            $title = 'No,Snap Code,Type,# of images,User Details,Name,Current Point,Current Level,Aproved / Rejected,Rejection Reason,Receipt Snapped,Approved / Rejected Date,Approved / Rejected By,Product Name,Brands,Variants,Quantity,Total Price,OCR';       
+            $title = 'No,Snap Code,Type,# of images,User Details,Name,Estimated Point,Fixed Point,Current Point,Current Level,Aproved / Rejected,Rejection Reason,Receipt Snapped,Approved / Rejected Date,Approved / Rejected By,Product Name,Brands,Variants,Quantity,Total Price,OCR';       
             \Storage::disk('csv')->put($filename, $title);
             $no = 1;
             foreach($results as $row) {
-                $baris = $no.','.$row['snap_code'].','.$row['type'].','.$row['of_images'].','.$row['email'].','.$row['name'].','.$row['current_point'].','.$row['current_level'].','.$row['status'].','.$row['reason'].','.$row['snapped'].','.$row['approve_or_reject_date'].','.$row['approve_or_reject_by'].','.$row['product_name'].','.$row['brands'].','.$row['variants'].','.$row['quantity'].','.$row['total_price'].','.$row['ocr'];
+                $baris = $no.','.$row['snap_code'].','.$row['type'].','.$row['of_images'].','.$row['email'].','.$row['name'].','.$row['estimated_point'].','.$row['fixed_point'].','.$row['current_point'].','.$row['current_level'].','.$row['status'].','.$row['reason'].','.$row['snapped'].','.$row['approve_or_reject_date'].','.$row['approve_or_reject_by'].','.$row['product_name'].','.$row['brands'].','.$row['variants'].','.$row['quantity'].','.$row['total_price'].','.$row['ocr'];
                 \Storage::disk('csv')->append($filename, $baris);
                 $no++;
             }
@@ -276,7 +280,7 @@ class SnapService
             $filename = $data['filename'];
             $no = $data['no'];
             foreach($results as $row) {
-                $baris = $no.','.$row['snap_code'].','.$row['type'].','.$row['of_images'].','.$row['email'].','.$row['name'].','.$row['current_point'].','.$row['current_level'].','.$row['status'].','.$row['reason'].','.$row['snapped'].','.$row['approve_or_reject_date'].','.$row['approve_or_reject_by'].','.$row['product_name'].','.$row['brands'].','.$row['variants'].','.$row['quantity'].','.$row['total_price'].','.$row['ocr'];
+                $baris = $no.','.$row['snap_code'].','.$row['type'].','.$row['of_images'].','.$row['email'].','.$row['name'].','.$row['estimated_point'].','.$row['fixed_point'].','.$row['current_point'].','.$row['current_level'].','.$row['status'].','.$row['reason'].','.$row['snapped'].','.$row['approve_or_reject_date'].','.$row['approve_or_reject_by'].','.$row['product_name'].','.$row['brands'].','.$row['variants'].','.$row['quantity'].','.$row['total_price'].','.$row['ocr'];
                   \Storage::disk('csv')->append($filename, $baris);
                 $no++;
             }
