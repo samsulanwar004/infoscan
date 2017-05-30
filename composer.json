@@ -19,7 +19,7 @@
         "laravel/socialite": "^2.0",
         "dusterio/laravel-plain-sqs": "^0.1.7",
         "elibyy/tcpdf-laravel": "5.3.*",
-        "maatwebsite/excel": "~2.0.0",
+        "maatwebsite/excel": "^2.1",
         "phpoffice/phpword": "dev-master",
         "socialiteproviders/instagram": "^2.0",
         "socialiteproviders/linkedin": "^2.0",

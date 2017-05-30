@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 
 class PointModeling extends Command
 {
@@ -13,7 +14,7 @@ class PointModeling extends Command
      *
      * @var string
      */
-    protected $signature = 'gojago:point:model';
+    protected $signature = 'gojago:point:model {--export} {--exportdb}';
 
     /**
      * The console command description.
@@ -56,17 +57,24 @@ class PointModeling extends Command
      */
     public function handle()
     {
-        $snap = $this->getApprovedSnap();
-        if(! $snap) {
+        // export point_modeling table to excel
+        if($this->option('exportdb')) {
+            $modeling = $this->getPointModeling();
+            if(empty($modeling)) exit();
+
+            $this->exportToExcel($modeling);
             exit();
         }
+
+        $snap = $this->getApprovedSnap();
+        if(empty($snap)) exit();
 
         $today = Carbon::now()->format('Y-m-d H:i:s');
         $result = [];
         foreach ($snap as $s) {
             $func = sprintf('%s%s%s', 'get', ucfirst($s->snap_type), 'CategoryID');
             $category = $this->$func($s->id, $s->mode_type);
-            //logger($s->id . ': ' . $s->mode_type .': '. $category);
+
             $result[] = [
                 'snap_code' => $s->request_code,
                 'snap_file_id' => $s->id,
@@ -81,7 +89,9 @@ class PointModeling extends Command
         }
 
         if(count($result) > 0 ) {
-            $this->insertToTable($result);
+            $this->hasOption('export')
+                ? $this->exportToExcel()
+                : $this->insertToTable($result);
 
             $this->info('Success.');
             exit();
@@ -93,12 +103,12 @@ class PointModeling extends Command
 
     private function getApprovedSnap()
     {
-        $sql = "select s.request_code, sf.id, sf.file_code, s.snap_type, sf.file_path, sf.mode_type, sf.image_point, sf.image_point
+        $sql = "select s.request_code, s.fixed_point, sf.id, sf.file_code, s.snap_type, sf.file_path, sf.mode_type, sf.image_point, sf.image_point
 from snap_files as sf
 inner join snaps as s on s.id = sf.snap_id
 where s.snap_type in ('handWritten', 'generalTrade') and
       s.status = 'approve'
-order by s.snap_type, s.request_code asc
+order by s.snap_type, s.request_code asc limit 4
 ;";
 
         return DB::select($sql);
@@ -166,5 +176,33 @@ order by s.snap_type, s.request_code asc
     private function insertToTable(array $data)
     {
         return DB::table('point_modeling')->insert($data);
+    }
+
+    private function exportToExcel($data)
+    {
+        if(! is_array($data)) {
+            $data = collect($data)->toArray();
+        }
+
+        $data = collect($data)->map(function($entry) {
+            return [
+                'TRX ID' => strtoupper($entry['snap_file_code']),
+                'Transaction Description' => sprintf('Snap Type: %s with %s mode.', strtoupper($entry['snap_type']), strtoupper($entry['mode_type'])),
+                'Category' => $entry['category'],
+            ];
+        });
+
+        Excel::create('Point Modeling', function($excel) use($data) {
+            $excel->sheet('Sheetname', function($sheet) use($data) {
+                $sheet->fromArray($data);
+            });
+        })->store('xlsx');
+    }
+
+    private function getPointModeling()
+    {
+        DB::setFetchMode(\PDO::FETCH_ASSOC);
+
+        return DB::select('Select * From point_modeling;');
     }
 }
