@@ -16,6 +16,7 @@ use DB;
 use Carbon\Carbon;
 use App\Transformers\PortalPointTransformer;
 use App\Exchange;
+use App\CityRate;
 
 class PointService
 {
@@ -1140,6 +1141,14 @@ inner join tasks as t on t.id = tp.task_id order by t.id;');
     public function getCurrencyRate()
     {
         return Exchange::orderBy('created_at', 'DESC')
+            ->first();
+    }
+
+    public function getCurrencyRateByCity($city)
+    {
+        return CityRate::where('city_name', strtolower($city))
+            ->where('is_active', 1)
+            ->orderBy('created_at', 'DESC')
             ->first();
     }
 
