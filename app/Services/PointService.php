@@ -15,6 +15,7 @@ use App\BonusPoint;
 use DB;
 use Carbon\Carbon;
 use App\Transformers\PortalPointTransformer;
+use App\Exchange;
 
 class PointService
 {
@@ -1103,6 +1104,11 @@ inner join tasks as t on t.id = tp.task_id order by t.id;');
         // get code task
         $code = $this->getCodeTaskTag($type, $mode, $commonId);
 
+        //save code in file
+        $file = \App\SnapFile::where('id', $files[0]->id)->first();
+        $file->image_code = $code;
+        $file->update();
+
         $task = (new SnapService)->getTaskPointByCode($code);
 
         $point = isset($task->point) ? $task->point : 0;
@@ -1129,6 +1135,12 @@ inner join tasks as t on t.id = tp.task_id order by t.id;');
         }
 
         return $mode;
+    }
+
+    public function getCurrencyRate()
+    {
+        return Exchange::orderBy('created_at', 'DESC')
+            ->first();
     }
 
 }
