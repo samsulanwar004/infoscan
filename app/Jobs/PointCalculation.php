@@ -40,7 +40,19 @@ class PointCalculation implements ShouldQueue
     {
         $point = $this->point;
         $cashier = config('common.transaction.member.cashier');
+        $cashierMoney = config('common.transaction.member.cashier_money');
         //$member = config('common.transaction.member.user');
+
+        $city = $this->data->outlet_city;
+
+        $cityRate = (new PointService)->getCurrencyRateByCity($city);
+        if($cityRate) {
+            $exchange = $cityRate;
+        } else {
+            $exchange = (new PointService)->getCurrencyRate();
+        }        
+
+        $cash = isset($exchange) ? $exchange->cash_per_unit : 0 * $point;
 
         $member = $this->data->member->member_code;
         $transactionData = [
@@ -56,6 +68,18 @@ class PointCalculation implements ShouldQueue
                     'member_code_from' => $cashier,
                     'member_code_to' => $member,
                     'amount' => $point,
+                    'detail_type' => 'cr'
+                ],
+                '2' => [
+                    'member_code_from' => $cashierMoney,
+                    'member_code_to' => $member,
+                    'amount' => $cash,
+                    'detail_type' => 'db'
+                ],
+                '3' => [
+                    'member_code_from' => $cashierMoney,
+                    'member_code_to' => $member,
+                    'amount' => $cash,
                     'detail_type' => 'cr'
                 ],
             ],
