@@ -141,7 +141,7 @@ class SnapController extends AdminController
                 $task = $this->getTaskPointByRange('a', $totalTag);
                 $fixedPoint = isset($task->point) ? $task->point : 0;
             } elseif ($snap->mode_type == 'tags') {
-                $fixedPoint = (new PointService)->calculateNewApprovePoint($snap);                
+                $fixedPoint = (new PointService)->calculateNewApprovePoint($snap);          
             } else {
                 $imageCount = $snap->files()->where('file_mimes', 'like', 'image%')->count();
                 if($imageCount == 1) {

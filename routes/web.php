@@ -264,6 +264,31 @@ Route::group([
         'Web\SnapController@approveImage'
     )->name('approve.image');
 
+    Route::get(
+        '/exchange/city/create',
+        'Web\ExchangeController@cityCreate'
+    )->name('city.rate.create');
+
+    Route::post(
+        '/exchange/city/store',
+        'Web\ExchangeController@cityStore'
+    )->name('city.rate.store');
+
+    Route::get(
+        '/exchange/city/{id}/edit',
+        'Web\ExchangeController@cityEdit'
+    )->name('city.rate.edit');
+
+    Route::put(
+        '/exchange/city/{id}/update',
+        'Web\ExchangeController@cityUpdate'
+    )->name('city.rate.update');
+
+    Route::delete(
+        '/exchange/city/{id}',
+        'Web\ExchangeController@cityDestroy'
+    )->name('city.rate.destroy');
+
 });
 
 Auth::routes();
