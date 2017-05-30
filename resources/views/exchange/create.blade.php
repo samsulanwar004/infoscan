@@ -32,6 +32,12 @@
                     <div class="box-body" id="form-body">
                         <div class="form-group has-feedback">
                             <label for="cash">Cash</label>
+                            <input type="number" class="form-control" step="0.01" name="cash" id="cash"
+                                   value="{{ old('cash') }}"
+                                   placeholder="Enter cash" required>
+                        </div>
+<!--                         <div class="form-group has-feedback">
+                            <label for="cash">Cash</label>
                             <input type="number" class="form-control" name="cash" id="cash"
                                    value="{{ old('cash') }}"
                                    placeholder="Enter cash" required>
@@ -41,12 +47,12 @@
                             <input type="number" class="form-control" name="point" id="point"
                                    value="{{ old('point') }}"
                                    placeholder="Enter point" required>
-                        </div>
+                        </div> -->
                         <div class="form-group has-feedback">
-                            <label for="minimum_point">Minimum Point</label>
+                            <label for="minimum_point">Minimum Cash</label>
                             <input type="number" class="form-control" name="minimum_point" id="minimum-point"
                                    value="{{ old('minimum_point') }}"
-                                   placeholder="Enter minimum point" required>
+                                   placeholder="Enter minimum cash" required>
                         </div>
                     </div>
                     <!-- /.box-body -->
