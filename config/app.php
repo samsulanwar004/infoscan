@@ -189,6 +189,7 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+        Maatwebsite\Excel\ExcelServiceProvider::class,
 
     ],
 
@@ -244,6 +245,7 @@ return [
         'Image' => Intervention\Image\Facades\Image::class,
         //'Sentry' => Sentry\SentryLaravel\SentryFacade::class,
         'OneSignal' => Berkayk\OneSignal\OneSignalFacade::class,
+        'Excel' => Maatwebsite\Excel\Facades\Excel::class,
     ],
 
 ];

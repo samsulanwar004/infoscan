@@ -51,6 +51,21 @@ class Handler extends ExceptionHandler
             return response()->view('errors.403');
         }
 
+        if($exception instanceof \Illuminate\Session\TokenMismatchException) {
+            $req = request();
+
+            if($request->expectsJson()) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Can not process the login form. Please try again!'
+                ], 400);
+            }
+
+            return redirect()->back()
+                             ->withInput($req->all())
+                             ->withDanger('Can not process the login form. Please try again!');
+        }
+
         // if ($exception instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException) {
         //     return redirect('pages/404');
         // }
