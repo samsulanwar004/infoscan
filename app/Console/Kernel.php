@@ -15,6 +15,7 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         Commands\LocationCron::class,
         Commands\LotteryCron::class,
+        Commands\PointModeling::class,
     ];
 
     /**

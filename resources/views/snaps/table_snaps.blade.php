@@ -4,8 +4,10 @@
             <th width="25">#</th>
             <th width="100">Code</th>
             <th>Snap Details</th>
-            <th>Upload Date</th>
-            <th width="250"></th>
+            <th>Estimated Point</th>
+            <th>Fixed Point</th>
+            <th width="150">Upload Date</th>
+            <th width="50"></th>
         </tr>
     </thead>
     <tbody>
@@ -28,15 +30,19 @@
                         <b>{{ strtoupper($snap->snap_type) }}</b> Snap {{$snap->snap_type !== 'receipt' && (!is_null($snap->mode_type) || !empty($snap->snap_type)) ? 'with ' . strtoupper($snap->mode_type) . ' mode.' : '' }}
                     </span>
                     <br>
-                    <span class="small">
+                    <span class="small pull-left">
                         Total image: {{ $snap->files->count() }}
                     </span>
 
-                    <span class="small ml10">Uploaded by: <a href="{{ admin_route_url('members.show', ['id' => $snap->member->id]) }}">{{ $snap->member->email }}</a></span>
-                    <span class="small ml10">Point : {{ $snap->member->temporary_point }}</span>
-                    <span class="small ml10">Level : {{ $snap->member->temporary_level }}</span>
-                    <span class="small ml10">Estimated Point : {{ $snap->estimated_point }}</span>
-                    <span class="small ml10">Fixed Point : @if($snap->fixed_point) {{ $snap->fixed_point }} @else n\a @endif</span>
+                    <span class="small ml10 pull-left" style="min-width: 250px;">Uploaded by: <a href="{{ admin_route_url('members.show', ['id' => $snap->member->id]) }}">{{ $snap->member->email }}</a></span>
+                    <span class="small ml10 pull-left" style="min-width: 100px;">Point : {{ $snap->member->temporary_point }}</span>
+                    <span class="small ml10 pull-left">Level : {{ $snap->member->temporary_level }}</span>
+                </td>
+                <td class="vertical-middle text-center">
+                    {{ $snap->estimated_point }}
+                </td>
+                <td class="vertical-middle text-center">
+                    @if($snap->fixed_point) {{ $snap->fixed_point }} @else n\a @endif
                 </td>
                 <td class="vertical-middle">
                     {{ $snap->created_at->format('d M y H:i A') }} <br>
@@ -57,4 +63,4 @@
     </tbody>
 </table>
 
-{{ $snaps->links() }} 
+{{ $snaps->links() }}
