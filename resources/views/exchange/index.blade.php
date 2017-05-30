@@ -174,6 +174,12 @@
             var lastTab = localStorage.getItem('lastTab');
             if (lastTab) {
                 $('[href="' + lastTab + '"]').tab('show');
+
+                if (lastTab == '#entry-rate') {
+                    $('#entry').click();
+                } else {
+                    $('#city').click();
+                }
             }
         });
     </script>
