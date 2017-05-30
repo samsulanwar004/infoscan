@@ -52,7 +52,7 @@ class PointCalculation implements ShouldQueue
             $exchange = (new PointService)->getCurrencyRate();
         }        
 
-        $cash = $exchange->cash_per_unit * $point;
+        $cash = isset($exchange) ? $exchange->cash_per_unit : 0 * $point;
 
         $member = $this->data->member->member_code;
         $transactionData = [
