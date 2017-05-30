@@ -3,7 +3,7 @@
 @section('content')
     @include('partials.content_header', [
         'pageTitle' => 'Exchange Rates',
-        'pageDescription' => 'Create a new Exchange rate',
+        'pageDescription' => 'Create a new City rate',
         'breadcrumbs' => [
             'Exchange rates' => admin_route_url('exchange.index'),
             'Create' => false]
@@ -26,34 +26,36 @@
                 </div>
             </div>
             <div class="box-body">
-                <form role="form" action="{{ admin_route_url('exchange.store') }}" method="POST"
+                <form role="form" action="{{ admin_route_url('city.rate.store') }}" method="POST"
                       enctype="multipart/form-data" class="form" accept-charset="utf-8">
                     {{ csrf_field() }}
                     <div class="box-body" id="form-body">
+                        <div class="form-group has-feedback">
+                            <label for="city">City</label>
+                            <select class="form-control" name="city_name" id="select-city">
+                                @foreach($provincies as $province)
+                                    <optgroup label="{{ $province->name }}">
+                                        @foreach($province->regencies as $regency)
+                                            <option value="{{ $regency->name }}">{{ $regency->name }}</option>
+                                        @endforeach
+                                    </optgroup>
+                                @endforeach
+                            </select>
+                        </div>
                         <div class="form-group has-feedback">
                             <label for="cash">Cash</label>
                             <input type="number" class="form-control" step="0.01" name="cash" id="cash"
                                    value="{{ old('cash') }}"
                                    placeholder="Enter cash" required>
                         </div>
-<!--                         <div class="form-group has-feedback">
-                            <label for="cash">Cash</label>
-                            <input type="number" class="form-control" name="cash" id="cash"
-                                   value="{{ old('cash') }}"
-                                   placeholder="Enter cash" required>
+
+                        <div class="checkbox">
+                            <label>
+                                <input name="is_active" checked="checked" type="checkbox">
+                                Is Active ?
+                            </label>
                         </div>
-                        <div class="form-group has-feedback">
-                            <label for="point">Point</label>
-                            <input type="number" class="form-control" name="point" id="point"
-                                   value="{{ old('point') }}"
-                                   placeholder="Enter point" required>
-                        </div> -->
-                        <div class="form-group has-feedback">
-                            <label for="minimum_point">Minimum Cash</label>
-                            <input type="number" class="form-control" name="minimum_point" id="minimum-point"
-                                   value="{{ old('minimum_point') }}"
-                                   placeholder="Enter minimum cash" required>
-                        </div>
+
                     </div>
                     <!-- /.box-body -->
                     <div class="box-footer text-right">
@@ -72,5 +74,11 @@
 @endsection
 
 @section('footer_scripts')
-
+<link rel="stylesheet" href="{{ elixirCDN('css/report-vendor.css') }}" />
+<script src="{{ elixirCDN('js/report-vendor.js') }}"></script>
+<script type="text/javascript">
+    $("#select-city").select2({
+        placeholder: "Select a City",
+    });
+</script>
 @endsection

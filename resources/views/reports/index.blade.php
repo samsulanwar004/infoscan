@@ -21,8 +21,7 @@
                             Action <span class="caret"></span>
                         </button>
                         <ul class="dropdown-menu">
-                            <li><a href="#"><i class="fa fa-btn fa-file-pdf-o"></i>PDF</a></li>
-                            <li><a href="#"><i class="fa fa-btn fa-file-excel-o"></i>Excel</a></li>
+                            <li><a href="#" id="get-excel"><i class="fa fa-btn fa-file-excel-o"></i>Excel</a></li>
                             <!-- <li><a href="#">Something else here</a></li> -->
                         </ul>
                     </div>
@@ -644,6 +643,19 @@
         var link = $('#link-img');
 
         link.attr('href', img);
+    });
+
+    $('#get-excel').on('click', function() {
+        var _link = window.location.href;
+        var _linkArray = _link.split("?");
+        var _isiLink = _linkArray[1].split("&");
+        var obj = {};
+        $.each( _isiLink, function( key, value ) {
+          var _field = value.split("=");
+          obj[_field[0]] = _field[1];
+        });
+
+        console.log(obj);
     });
 </script>
 @stop

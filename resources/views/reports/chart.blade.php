@@ -18,8 +18,8 @@
                     </div>
                 </div>
             </div>
-            <div class="box-body" style="padding-left: {{$size['padding']}}%;"> 
-                <div class="col-md-6">
+            <div class="box-body"> 
+                <div class="col-md-12">
                     <canvas id="myChart" width="400" height="400"></canvas>
                 </div>                                  
             </div>
@@ -28,95 +28,3 @@
         <!-- /.box -->
     </div>
 </div> 
-<script type="text/javascript">
-    (function() {
-        var ctx = document.getElementById("myChart").getContext("2d");
-        var data = {!! json_encode($data) !!};
-        var type = '{!! $type !!}';
-        if (type == 'line' || type == 'bar' || type == 'radar' || type == 'horizontalBar') {
-            var options = {
-                scales:{
-                    yAxes:[{
-                        ticks:{
-                            beginAtZero:true,                                              
-                        },
-                        gridLines:{
-                            display:false
-                        }
-                    }]
-                },
-                title:{
-                    display:true,
-                    text:type.toUpperCase()+' CHART'
-                }
-            };
-        } else if (type == 'pie' || type == 'doughnut' || type == 'polarArea') {
-            if (type == 'pie' || type == 'doughnut') {
-                var options = {
-                    animation: {
-                        duration: 500,
-                        easing: "easeOutQuart",
-                        onComplete: function () {
-                          var ctx = this.chart.ctx;
-                          ctx.font = Chart.helpers.fontString(Chart.defaults.global.defaultFontFamily, 'normal', Chart.defaults.global.defaultFontFamily);
-                          ctx.textAlign = 'center';
-                          ctx.textBaseline = 'bottom';
-
-                          this.data.datasets.forEach(function (dataset) {
-
-                            for (var i = 0; i < dataset.data.length; i++) {
-                              var model = dataset._meta[Object.keys(dataset._meta)[0]].data[i]._model,
-                                  total = dataset._meta[Object.keys(dataset._meta)[0]].total,
-                                  mid_radius = model.innerRadius + (model.outerRadius - model.innerRadius)/2,
-                                  start_angle = model.startAngle,
-                                  end_angle = model.endAngle,
-                                  mid_angle = start_angle + (end_angle - start_angle)/2;
-
-                              var x = mid_radius * Math.cos(mid_angle);
-                              var y = mid_radius * Math.sin(mid_angle);
-
-                              ctx.fillStyle = '#fff';
-                              if (i == 3){ // Darker text color for lighter background
-                                ctx.fillStyle = '#444';
-                              }
-                              var percent = String(Math.round(dataset.data[i]/total*100)) + "%";
-                              ctx.fillText(dataset.data[i], model.x + x, model.y + y);
-                              // Display percent in another line, line break doesn't work for fillText
-                              ctx.fillText(percent, model.x + x, model.y + y + 15);
-                            }
-                            });               
-                        }
-                    },
-                    title : {
-                        display : true,
-                        text : type.toUpperCase()+' CHART'
-                    },
-                };
-            } else {
-                var options = {
-                    animation : {
-                        animateScale : true
-                    },
-                    title : {
-                        display : true,
-                        text : type.toUpperCase()+' CHART'
-                    },
-                };
-            }
-        }
-
-        var chartInstance = new Chart(ctx, {
-            type: type,
-            data: data,
-            options: options,
-        });
-    })();
-
-    $('#download').on('click', function(){
-        var canvas = document.getElementById("myChart");
-        var img    = canvas.toDataURL("image/png");
-        var link = $('#link-img');
-
-        link.attr('href', img);
-    });
-</script>
