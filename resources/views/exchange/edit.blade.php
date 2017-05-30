@@ -35,7 +35,7 @@
                     <div class="box-body" id="form-body">
                         <div class="form-group has-feedback">
                             <label for="cash">Cash</label>
-                            <input type="number" class="form-control" name="cash" id="cash"
+                            <input type="number" class="form-control" name="cash" step="0.01" id="cash"
                                    value="{{ old('cash', $rate->cash_per_unit) }}"
                                    placeholder="Enter cash" required>
                         </div>
