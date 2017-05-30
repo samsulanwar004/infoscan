@@ -11,6 +11,7 @@ deploy.sh
 /public/fonts/*
 /public/img/*
 /public/build/*
+/storage/app/*.log
 
 *.DS_Store
 .AppleDouble
