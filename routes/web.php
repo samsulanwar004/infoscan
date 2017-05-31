@@ -148,6 +148,11 @@ Route::group([
     )->name('snaps.export');
 
     Route::get(
+        '/download/payment',
+        'Web\PaymentPortalController@export'
+    )->name('payment.export');
+
+    Route::get(
         '/snaps/{id}/tagging',
         'Web\SnapController@tagging'
     )->name('snaps.tagging');

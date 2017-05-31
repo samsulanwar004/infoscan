@@ -186,4 +186,44 @@ class PaymentService
 		$payment->approved_by = auth('web')->user()->id;
 		$payment->update();
 	}
+
+	public function getExportPaymentToCsv($data)
+	{
+		$results = RedeemPoint::whereDate('created_at', '>=', $data['start_date'])
+            ->whereDate('created_at', '<=', $data['end_date'])
+            ->orderBy('created_at', 'DESC')
+            ->paginate(200);
+
+        if ($data['type'] == 'new') {
+            $filename = strtolower(str_random(10)).'.csv';
+            $title = 'No,Point Redeem,Cashout,Name,Email,Bank Account,Account Number,Status,Date';       
+            \Storage::disk('csv')->put($filename, $title);
+            $no = 1;
+            foreach($results as $row) {
+                $baris = $no.','.$row['point'].','.$row['cashout'].','.$row['name'].','.$row['email'].','.$row['bank_account'].','.$row['account_number'].','.$row['status'].','.$row['created_at'];
+                \Storage::disk('csv')->append($filename, $baris);
+                $no++;
+            }
+
+        } else if ($data['type'] == 'next') {
+            $filename = $data['filename'];
+            $no = $data['no'];
+            foreach($results as $row) {
+                $baris = $no.','.$row['point'].','.$row['cashout'].','.$row['name'].','.$row['email'].','.$row['bank_account'].','.$row['account_number'].','.$row['status'].','.$row['created_at'];
+                \Storage::disk('csv')->append($filename, $baris);
+                $no++;
+            }
+        }
+
+        $lastPage = $results->lastPage();
+        $params = [
+            'type_request' => ($lastPage == $data['page'] || count($results) == 0) ? 'download' : 'next',
+            'filename' => $filename,
+            'page' => $data['page'] + 1,
+            'no' => $no,
+            'last' => $lastPage,
+        ];     
+
+        return $params;
+	}
 }
