@@ -46,18 +46,18 @@ class TransactionService
     		->first();
     }
 
-    public function getCreditMember($member_code)
+    public function getCreditMember($memberCode)
 	{
         $cashier = config('common.transaction.member.cashier');
 
 		$cr = \DB::table('transaction_detail')
-            ->where('member_code_to', '=', $member_code)
+            ->where('member_code_to', '=', $memberCode)
             ->where('member_code_from', '=', $cashier)
             ->where('detail_type', '=', 'cr')
             ->sum('amount');
 
         $db = \DB::table('transaction_detail')
-            ->where('member_code_from', '=', $member_code)
+            ->where('member_code_from', '=', $memberCode)
             ->where('member_code_to', '=', $cashier)
             ->where('detail_type', '=', 'db')
             ->sum('amount');
@@ -66,6 +66,27 @@ class TransactionService
 
         return $credit;
 	}
+
+    public function getCashCreditMember($memberCode)
+    {
+        $cashier = config('common.transaction.member.cashier_money');
+
+        $cr = \DB::table('transaction_detail')
+            ->where('member_code_to', '=', $memberCode)
+            ->where('member_code_from', '=', $cashier)
+            ->where('detail_type', '=', 'cr')
+            ->sum('amount');
+
+        $db = \DB::table('transaction_detail')
+            ->where('member_code_from', '=', $memberCode)
+            ->where('member_code_to', '=', $cashier)
+            ->where('detail_type', '=', 'db')
+            ->sum('amount');
+
+        $credit = $cr - $db;
+
+        return $credit;
+    }
 
     public function saveTransaction()
     {
