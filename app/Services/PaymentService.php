@@ -22,28 +22,31 @@ class PaymentService
 	public function getPaymentPortal()
 	{
 		$exchange = $this->getExchange();
-
+		// get current point
 		$point = (new TransactionService)->getCreditMember($this->member->member_code);
+		// get current cash
+		$cash = (new TransactionService)->getCashCreditMember($this->member->member_code);
 
-        $snaps = (new SnapService)->getSnapByMemberCode($this->member->member_code);
+        // $snaps = (new SnapService)->getSnapByMemberCode($this->member->member_code);
 
-        $snaps = $snaps->filter(function($value, $Key) {
-            return $value->approved_by == null && $value->reject_by == null;
-        });
+        // $snaps = $snaps->filter(function($value, $Key) {
+        //     return $value->approved_by == null && $value->reject_by == null;
+        // });
 
-        $estimated = [];
-        foreach ($snaps as $snap) {
-            $estimated[] = $snap->estimated_point;
-        }
+        // $estimated = [];
+        // foreach ($snaps as $snap) {
+        //     $estimated[] = $snap->estimated_point;
+        // }
 
-        $estimated = collect($estimated)->sum();
+        // $estimated = collect($estimated)->sum();
 
         $data = [
+	        'current_cash' => $cash,
 	        'current_point' => $point,
-	        'estimated_point' => $estimated,
-	        'point_unit_count' => $exchange->point_unit_count,
-	        'cash_per_unit' => $exchange->cash_per_unit,
-	        'minimum_point' => $exchange->minimum_point,
+	        // 'estimated_point' => $estimated,
+	        // 'point_unit_count' => $exchange->point_unit_count,
+	        // 'cash_per_unit' => $exchange->cash_per_unit,
+	        'minimum_cash' => $exchange->minimum_point,
        	];
 
 		return $data;
@@ -117,6 +120,82 @@ class PaymentService
 
 	}
 
+	public function redeemCashout($request)
+	{
+		$memberCode = $this->member->member_code;
+
+		$name = $request->input('name');
+		$cashback = $request->input('cashback');
+		$bankAccount = $request->input('bank_account');
+		$accountNumber = $request->input('account_number');
+
+		$point = $this->getDeductPoint($memberCode, $cashback);
+
+		$transaction = [
+			'member_code' => $this->member->member_code,
+			'point' => $point,
+			'cashout' => $cashback,
+		];	
+
+		$data = [
+			'name' => $name,
+			'point' => $point,
+			'cashout' => $cashback,
+			'bank_account' => $bankAccount,
+			'account_number' => $accountNumber,
+		];	
+
+		//save to redeem point table
+		$this->saveToRedeemPoint($data, $this->member);
+
+		//credit point to member
+		$this->transactionCredit($transaction);
+
+		//build data for member history
+        $content = [
+            'type' => 'cashback',
+            'title' => 'Cashback',
+            'description' => 'Kamu telah menukarkan poin untuk cashback. Kami akan mengirim notifikasi setelah kami verifikasi.',
+            'flag' => 1,
+        ];
+
+        $config = config('common.queue_list.member_action_log');
+        $job = (new MemberActionJob($this->member->id, 'portalpoint', $content))->onQueue($config)->onConnection(env('INFOSCAN_QUEUE'));
+        dispatch($job);
+
+		return true;
+	}
+
+	public function getDeductPoint($memberCode, $cash)
+	{
+		$exchange = $this->getExchange();
+
+		$minimumCash = $exchange->minimum_point;
+
+		if ($cash < $minimumCash) {
+			throw new \Exception("Credit must be greater than minimum cash", 1);
+		}
+
+		$currentMemberPoint = (new TransactionService)->getCreditMember($memberCode);
+		$currentMemberCash = (new TransactionService)->getCashCreditMember($memberCode);
+
+		$exitRate = $currentMemberCash / $currentMemberPoint;
+
+		$point = $cash / $exitRate;
+
+		if ($currentMemberCash < $cash)
+		{
+			throw new \Exception("Credit Cash not enough!", 1);			
+		}
+
+		if ($currentMemberPoint < $point)
+		{
+			throw new \Exception("Credit Point not enough!", 1);			
+		}
+
+		return round($point);
+	}
+
 	public function transactionCredit($transaction)
 	{
 		$cashier = config('common.transaction.member.cashier');
@@ -136,14 +215,14 @@ class PaymentService
                     'detail_type' => 'cr'
                 ],
                 '2' => [
-                    'member_code_from' => $cashierMoney,
-                    'member_code_to' => $transaction['member_code'],
+                    'member_code_from' => $transaction['member_code'],
+                    'member_code_to' => $cashierMoney,
                     'amount' => $transaction['cashout'],
                     'detail_type' => 'db'
                 ],
                 '3' => [
-                    'member_code_from' => $cashierMoney,
-                    'member_code_to' => $transaction['member_code'],
+                    'member_code_from' => $transaction['member_code'],
+                    'member_code_to' => $cashierMoney,
                     'amount' => $transaction['cashout'],
                     'detail_type' => 'cr'
                 ],
@@ -158,6 +237,7 @@ class PaymentService
 		$redeem = new RedeemPoint;
 		$redeem->point = $data['point'];
 		$redeem->cashout = $data['cashout'];
+		$redeem->name = $data['name'];
 		$redeem->bank_account = $data['bank_account'];
 		$redeem->account_number = $data['account_number'];
 

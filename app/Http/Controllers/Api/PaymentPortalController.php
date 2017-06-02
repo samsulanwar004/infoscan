@@ -31,7 +31,7 @@ class PaymentPortalController extends BaseApiController
                 return $this->error($validation->errors(), 400, true);
             }
 
-            (new PaymentService)->redeemPointToCash($request);
+            (new PaymentService)->redeemCashout($request);
 
             return $this->success();
     	} catch (\Exception $e) {
@@ -49,7 +49,8 @@ class PaymentPortalController extends BaseApiController
     {
 
         $rules = [
-            'point' => 'required|numeric',
+            'name' => 'required',
+            'cashback' => 'required|numeric',
             'bank_account' => 'required',
             'account_number' => 'required',
         ];
