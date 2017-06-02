@@ -63,6 +63,7 @@ class PointModeling extends Command
             if(empty($modeling)) exit();
 
             $this->exportToExcel($modeling);
+            $this->info('Success Export to xslx');
             exit();
         }
 
@@ -85,13 +86,16 @@ class PointModeling extends Command
                 'category' => $category,
                 'new_point' => $this->categories[$category],
                 'created_at' => $today,
+                'snapped_at' => $s->created_at,
+                'email' => $s->email,
             ];
         }
 
         if(count($result) > 0 ) {
-            $this->hasOption('export')
+            /*$this->hasOption('export')
                 ? $this->exportToExcel()
-                : $this->insertToTable($result);
+                : $this->insertToTable($result);*/
+            $this->insertToTable($result);
 
             $this->info('Success.');
             exit();
@@ -103,12 +107,13 @@ class PointModeling extends Command
 
     private function getApprovedSnap()
     {
-        $sql = "select s.request_code, s.fixed_point, sf.id, sf.file_code, s.snap_type, sf.file_path, sf.mode_type, sf.image_point, sf.image_point
+        $sql = "select m.email, s.request_code, s.fixed_point, s.created_at, sf.id, sf.file_code, s.snap_type, sf.file_path, sf.mode_type, sf.image_point, sf.image_point
 from snap_files as sf
 inner join snaps as s on s.id = sf.snap_id
-where s.snap_type in ('handWritten', 'generalTrade') and
+inner join members as m on m.id = s.member_id
+where s.snap_type in ('handWritten', 'generalTrade', 'receipt') and
       s.status = 'approve'
-order by s.snap_type, s.request_code asc limit 4
+order by s.snap_type, s.request_code asc
 ;";
 
         return DB::select($sql);
@@ -173,6 +178,11 @@ order by s.snap_type, s.request_code asc limit 4
         }
     }
 
+    public function getReceiptCategoryID($snapFileId, $mode)
+    {
+        return 1;
+    }
+
     private function insertToTable(array $data)
     {
         return DB::table('point_modeling')->insert($data);
@@ -186,7 +196,9 @@ order by s.snap_type, s.request_code asc limit 4
 
         $data = collect($data)->map(function($entry) {
             return [
+                'Member' => $entry['email'],
                 'TRX ID' => strtoupper($entry['snap_file_code']),
+                'Snap Date' => $entry['snapped_at'],
                 'Transaction Description' => sprintf('Snap Type: %s with %s mode.', strtoupper($entry['snap_type']), strtoupper($entry['mode_type'])),
                 'Category' => $entry['category'],
             ];
