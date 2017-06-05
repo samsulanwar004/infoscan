@@ -179,7 +179,7 @@ class SnapService
 
         $query->orderBy('created_at', 'DESC');
 
-        $r = $query->paginate(200);
+        $r = $query->paginate(100);
 
         $files = [];
         $snapFileIds = [];
@@ -225,8 +225,8 @@ class SnapService
                         'name' => $snap['main']->member->name,
                         'estimated_point' => $snap['main']->estimated_point,
                         'fixed_point' => $snap['main']->fixed_point,
-                        'current_point' => $snap['main']->member->temporary_point,
-                        'current_level' => $snap['main']->member->temporary_level,
+                        'current_point' => $snap['main']->current_point_member,
+                        'current_level' => $snap['main']->current_level_member,
                         'snapped' => $snap['main']->created_at->toDateTimeString(),
                         'approve_or_reject_date' => $snap['main']->updated_at->toDateTimeString(),
                         'approve_or_reject_by' => isset($approve) ? $approve : $reject,
@@ -250,8 +250,8 @@ class SnapService
                     'name' => $snap['main']->member->name,
                     'estimated_point' => $snap['main']->estimated_point,
                     'fixed_point' => $snap['main']->fixed_point,
-                    'current_point' => $snap['main']->member->temporary_point,
-                    'current_level' => $snap['main']->member->temporary_level,
+                    'current_point' => $snap['main']->current_point_member,
+                    'current_level' => $snap['main']->current_level_member,
                     'snapped' => $snap['main']->created_at->toDateTimeString(),
                     'approve_or_reject_date' => $snap['main']->updated_at->toDateTimeString(),
                     'approve_or_reject_by' => isset($approve) ? $approve : $reject,
@@ -1461,6 +1461,8 @@ class SnapService
         $snap->status = 'pending';
         $snap->longitude = $request->input('longitude');
         $snap->latitude = $request->input('latitude');
+        $snap->current_point_member = auth('api')->user()->temporary_point;
+        $snap->current_level_member = auth('api')->user()->temporary_level;
         $snap->save();
 
         return $snap;
