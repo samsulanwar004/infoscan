@@ -772,6 +772,7 @@ inner join level_points as l on l.id = blp.level_id;');
     public function getDetailMe($member)
     {
         $point = (new TransactionService)->getCreditMember($member->member_code);
+        $cash = (new TransactionService)->getCashCreditMember($member->member_code);
         $memberService = (new MemberService)->getLevelByMemberId($member->id);
         $levelId = $memberService['level_id'];
         $latestPoint = $memberService['latest_point'];
@@ -800,6 +801,7 @@ inner join level_points as l on l.id = blp.level_id;');
 
         $data = [
             'current_point' => $point,
+            'current_cash' => $cash,
             'current_level' => $levelArray[1],
             'point_next_level' => $pointNextLevel,
         ];
