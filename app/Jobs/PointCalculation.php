@@ -58,6 +58,7 @@ class PointCalculation implements ShouldQueue
         $member = $this->data->member->member_code;
         $transactionData = [
             'snap_id' => $this->data->id,
+            'current_rate' => $rate,
             'detail_transaction' => [
                 '0' => [
                     'member_code_from' => $cashier,
