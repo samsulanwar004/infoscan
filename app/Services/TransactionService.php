@@ -15,6 +15,18 @@ class TransactionService
      */
     private $data;
 
+    private $transactionCode;
+
+    private $memberCode;
+
+    private $transactionType;
+
+    private $snapId;
+
+    private $detailTransaction;
+
+    private $currentRate;
+
     private $date;
 
     /**
@@ -26,11 +38,12 @@ class TransactionService
     {
         $this->date = Carbon::now('Asia/Jakarta');
 
-    	$this->transaction_code = isset($data['transaction_code']) ? $data['transaction_code'] : '';
-    	$this->member_code = isset($data['member_code']) ? $data['member_code'] : '';
-    	$this->transaction_type = isset($data['transaction_type']) ? $data['transaction_type'] : '';
-        $this->snap_id = isset($data['snap_id']) ? $data['snap_id'] : '';
-    	$this->detail_transaction = isset($data['detail_transaction']) ? $data['detail_transaction'] : '';
+    	$this->transactionCode = isset($data['transaction_code']) ? $data['transaction_code'] : '';
+    	$this->memberCode = isset($data['member_code']) ? $data['member_code'] : '';
+    	$this->transactionType = isset($data['transaction_type']) ? $data['transaction_type'] : '';
+        $this->snapId = isset($data['snap_id']) ? $data['snap_id'] : '';
+        $this->currentRate = isset($data['current_rate']) ? $data['current_rate'] : '';
+    	$this->detailTransaction = isset($data['detail_transaction']) ? $data['detail_transaction'] : '';
     }
 
     public function getAllTransaction()
@@ -91,19 +104,22 @@ class TransactionService
     public function saveTransaction()
     {
         $t = new Transaction;
-        $t->transaction_code = $this->transaction_code;
-        $t->member_code = $this->member_code;
-        $t->transaction_type = $this->transaction_type;
-        $t->snap_id = $this->snap_id;
+        $t->transaction_code = $this->transactionCode;
+        $t->member_code = $this->memberCode;
+        $t->transaction_type = $this->transactionType;
+        $t->snap_id = $this->snapId;
 
         $t->save();
     }
 
     public function savePoint()
     {
-        $snapId = $this->snap_id;
+        $snapId = $this->snapId;
         $t = $this->getTransactionBySnapId($snapId);
-        foreach($this->detail_transaction as $data) {
+        $t->current_cash_per_unit = $this->currentRate;
+        $t->update();
+
+        foreach($this->detailTransaction as $data) {
             $td = new TransactionDetail;
             $td->member_code_from = $data['member_code_from'];
             $td->member_code_to = $data['member_code_to'];
