@@ -17,6 +17,7 @@ use Carbon\Carbon;
 use App\Transformers\PortalPointTransformer;
 use App\Exchange;
 use App\CityRate;
+use App\Jobs\PointProcessJob;
 
 class PointService
 {
@@ -153,7 +154,7 @@ inner join level_points as l on l.id = blp.level_id;');
         $dateArray = explode(' - ', $date);
 
         $promos = [];
-        for ($i=0; $i < count($name); $i++) { 
+        for ($i=0; $i < count($name); $i++) {
             $promo = new PromoPoint;
             $promo->city_name = $request['name'][$i];
             $promo->point_city = $request['point_city'];
@@ -194,10 +195,10 @@ inner join level_points as l on l.id = blp.level_id;');
     {
         $name = $request->input('name');
         $date = $request->input('start_at');
-        $dateArray = explode(' - ', $date);        
+        $dateArray = explode(' - ', $date);
 
         $promos = [];
-        for ($i=0; $i < count($name); $i++) {             
+        for ($i=0; $i < count($name); $i++) {
             $promo = $this->getPromoPointById($id);
 
             if ($promo->city_name == $name[$i]) {
@@ -220,19 +221,19 @@ inner join level_points as l on l.id = blp.level_id;');
             }
             $promos[] = $promo->id;
         }
-        
+
         return $promos;
     }
 
     public function updateBonusPoint($request, $id)
     {
-        $name = $request->input('bonus_name');           
+        $name = $request->input('bonus_name');
         $bonus = $this->getBonusPointById($id);
         $bonus->bonus_name = $name;
         $bonus->is_active = $request->has('is_active') ? 1 : 0;
 
         $bonus->update();
-        
+
         return $bonus;
     }
 
@@ -275,7 +276,7 @@ inner join level_points as l on l.id = blp.level_id;');
             foreach ($request->input('levels') as $levelName => $point) {
                 $level = $this->findLevel($levelName);
                 $levelId[] = $level->id;
-                $taskLevelPoint = $this->getTaskLevelPoints($task->id, $level->id);   
+                $taskLevelPoint = $this->getTaskLevelPoints($task->id, $level->id);
 
                 if ($taskLevelPoint == false)
                 {
@@ -292,7 +293,7 @@ inner join level_points as l on l.id = blp.level_id;');
             }
 
             foreach ($request->input('limit') as $limitName => $limit) {
-                $taskLimitPoint = $this->getTaskLimitPoints($task->id, $limitName);   
+                $taskLimitPoint = $this->getTaskLimitPoints($task->id, $limitName);
 
                 if ($taskLimitPoint == false)
                 {
@@ -321,7 +322,7 @@ inner join level_points as l on l.id = blp.level_id;');
 
         DB::rollBack();
 
-        return false;        
+        return false;
     }
 
     public function getTaskLevelPoints($taskid, $levelid)
@@ -416,7 +417,7 @@ inner join level_points as l on l.id = blp.level_id;');
         $promo = $this->addCityPromo($request->all());
 
         if ($promo) {
-            for ($i=0; $i < count($promo); $i++) { 
+            for ($i=0; $i < count($promo); $i++) {
                 foreach ($request->input('levels') as $levelName => $point) {
                     $promoLevelPoint = new PromoLevelPoint;
                     $promoLevelPoint->point = $point;
@@ -474,12 +475,12 @@ inner join level_points as l on l.id = blp.level_id;');
         $promo = $this->updatePromoPoint($request, $id);
 
         if ($promo) {
-            for ($i=0; $i < count($promo); $i++) { 
+            for ($i=0; $i < count($promo); $i++) {
                 $levelId = [];
                 foreach ($request->input('levels') as $levelName => $point) {
                     $level = $this->findLevel($levelName);
                     $levelId[] = $level->id;
-                    $promoLevelPoint = $this->getPromoLevelPoints($promo[$i], $level->id);   
+                    $promoLevelPoint = $this->getPromoLevelPoints($promo[$i], $level->id);
 
                     if ($promoLevelPoint == false)
                     {
@@ -508,7 +509,7 @@ inner join level_points as l on l.id = blp.level_id;');
 
         DB::rollBack();
 
-        return false;        
+        return false;
     }
 
     public function updateBonusLevelPoint($request, $id)
@@ -522,7 +523,7 @@ inner join level_points as l on l.id = blp.level_id;');
             foreach ($request->input('levels') as $levelName => $point) {
                 $level = $this->findLevel($levelName);
                 $levelId[] = $level->id;
-                $bonusLevelPoint = $this->getBonusLevelPoints($bonus->id, $level->id);   
+                $bonusLevelPoint = $this->getBonusLevelPoints($bonus->id, $level->id);
 
                 if ($bonusLevelPoint == false)
                 {
@@ -550,7 +551,7 @@ inner join level_points as l on l.id = blp.level_id;');
 
         DB::rollBack();
 
-        return false;        
+        return false;
     }
 
     public function updatePointManager($request)
@@ -581,7 +582,7 @@ inner join level_points as l on l.id = blp.level_id;');
     {
 
         $type = $this->getTypeId($type);
-        $mode = $this->getModeId($mode);      
+        $mode = $this->getModeId($mode);
 
         $code = $type.$mode;
 
@@ -646,7 +647,7 @@ inner join level_points as l on l.id = blp.level_id;');
 
         $calculateTask = $this->calculateEstimatedPoint($memberId, $type, $mode, $memberTag);
 
-        $promo = $this->calculatePromoPoint($memberId, $city);       
+        $promo = $this->calculatePromoPoint($memberId, $city);
 
         $pointPromo = $promo['point_city'] + $promo['point_level_city'];
 
@@ -667,7 +668,7 @@ inner join level_points as l on l.id = blp.level_id;');
             if ($memberAdd <= 0) {
                 $fixedPoint = $calculateTask['percent'];
                 $point = $fixedPoint + $calculatePromo['point_city'] + $calculatePromo['point_level_city'];
-            } else {                
+            } else {
                 $fixedPoint = $memberAdd * $calculateTask['point'];
                 $point = $fixedPoint + $calculatePromo['point_city'] + $calculatePromo['point_level_city'];
             }
@@ -679,7 +680,7 @@ inner join level_points as l on l.id = blp.level_id;');
             'point' => $point,
             'promo' => $pointPromo,
         ];
-    }    
+    }
 
     protected function getTypeId($type)
     {
@@ -709,7 +710,7 @@ inner join level_points as l on l.id = blp.level_id;');
             case 'input':
                 $mode = '2';
                 break;
-            
+
             default:
                 $mode = '1';
                 break;
@@ -781,23 +782,52 @@ inner join level_points as l on l.id = blp.level_id;');
         $levelId = $levelId + 1;
         $nextLevel = $this->getLevel($levelId);
         $nextPoint = ($nextLevel == null) ? $latestPoint : $nextLevel->point;
-        $pointNextLevel = $nextPoint - $latestPoint;  
+        $pointNextLevel = $nextPoint - $latestPoint;
 
-        //get latest member point 
+        //get latest member point
         $score = $memberService['latest_point'];
 
         if ($member->leaderboard_score != $score) {
             $member->leaderboard_score = $score;
 
             $member->update();
-        } 
+        }
 
         if ($member->temporary_point != $point || $member->temporary_level != $levelArray[1]) {
             $member->temporary_point = $point;
             $member->temporary_level = $levelArray[1];
 
             $member->update();
-        }     
+        }
+
+        $ml = (new MemberService)->getLatestMemberLevelById($member->id);
+
+        if ($memberService['level_id'] > $ml->level_id) {
+            //save to db member levels
+            $ml = new \App\MemberLevel;
+            $ml->latest_point = $point;
+            $ml->latest_level_point = $levelArray[1];
+            $ml->member()->associate($member);
+            $ml->level()->associate($memberService['level_id']);
+            $ml->save();
+
+            //get bonus level
+            $bonus = DB::table('bonus_points')
+                ->join('bonus_level_points', 'bonus_points.id', '=', 'bonus_level_points.bonus_point_id')
+                ->select('bonus_level_points.point')
+                ->orderBy('bonus_points.id', 'DESC')
+                ->where('bonus_level_points.level_id', $memberService['level_id'])
+                ->first();
+
+            //queue for point process
+            $config = config('common.queue_list.point_process');
+            $type = config('common.transaction.transaction_type.bonus');
+            $pointBonus = isset($bonus->point) ? $bonus->point : 0;
+            $job = (new PointProcessJob($member->member_code, $pointBonus, $type))
+                ->onQueue($config)
+                ->onConnection(env('INFOSCAN_QUEUE'));
+            dispatch($job);
+        }
 
         $data = [
             'current_point' => $point,
@@ -805,7 +835,7 @@ inner join level_points as l on l.id = blp.level_id;');
             'current_level' => $levelArray[1],
             'point_next_level' => $pointNextLevel,
         ];
-        
+
         return $data;
     }
 
@@ -861,7 +891,7 @@ inner join tasks as t on t.id = l.task_id order by t.id;');
     public function getLimitTaskPoint($type, $mode)
     {
         $code = $this->getTypeId($type);
-        // $mode = $this->getModeId($mode);      
+        // $mode = $this->getModeId($mode);
 
         // $code = $type.$mode;
 
@@ -893,7 +923,7 @@ inner join tasks as t on t.id = l.task_id order by t.id;');
                 $point->save();
 
                 foreach ($request->input('limit') as $limitName => $limit) {
-                    $taskLimitPoint = $this->getTaskLimitPoints($task->id, $limitName);   
+                    $taskLimitPoint = $this->getTaskLimitPoints($task->id, $limitName);
                     $newtaskLimitPoint = new LimitPoint;
                     $newtaskLimitPoint->name = $limitName;
                     $newtaskLimitPoint->limit = $limit;
@@ -927,7 +957,7 @@ inner join tasks as t on t.id = l.task_id order by t.id;');
                 $point->save();
 
                 foreach ($request->input('limit') as $limitName => $limit) {
-                    $taskLimitPoint = $this->getTaskLimitPoints($task->id, $limitName);   
+                    $taskLimitPoint = $this->getTaskLimitPoints($task->id, $limitName);
                     $newtaskLimitPoint = new LimitPoint;
                     $newtaskLimitPoint->name = $limitName;
                     $newtaskLimitPoint->limit = $limit;
@@ -1000,7 +1030,7 @@ inner join tasks as t on t.id = tp.task_id order by t.id;');
                 $point->update();
 
                 foreach ($request->input('limit') as $limitName => $limit) {
-                    $taskLimitPoint = $this->getTaskLimitPoints($task->id, $limitName);   
+                    $taskLimitPoint = $this->getTaskLimitPoints($task->id, $limitName);
 
                     if ($taskLimitPoint == false)
                     {
@@ -1041,7 +1071,7 @@ inner join tasks as t on t.id = tp.task_id order by t.id;');
                 $point->update();
 
                 foreach ($request->input('limit') as $limitName => $limit) {
-                    $taskLimitPoint = $this->getTaskLimitPoints($task->id, $limitName);   
+                    $taskLimitPoint = $this->getTaskLimitPoints($task->id, $limitName);
 
                     if ($taskLimitPoint == false)
                     {
@@ -1115,9 +1145,9 @@ inner join tasks as t on t.id = tp.task_id order by t.id;');
         $task = (new SnapService)->getTaskPointByCode($code);
 
         $point = isset($task->point) ? $task->point : 0;
-        
+
         return $point;
-    } 
+    }
 
     private function getCodeTaskTag($type, $mode, $commonId)
     {
@@ -1131,7 +1161,7 @@ inner join tasks as t on t.id = tp.task_id order by t.id;');
             case 'tags':
                 $mode = $type.'|'.$commonId;
                 break;
-            
+
             default:
                 $mode = $type.'|'.$commonId;
                 break;

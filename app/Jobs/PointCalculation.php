@@ -66,7 +66,7 @@ class PointCalculation implements ShouldQueue
         $point = $this->point;
         $cashier = config('common.transaction.member.cashier');
         $cashierMoney = config('common.transaction.member.cashier_money');
-        //$member = config('common.transaction.member.user');
+        $type = config('common.transaction.transaction_type.snaps');
 
         $city = $this->data->outlet_city;
 
@@ -89,6 +89,9 @@ class PointCalculation implements ShouldQueue
 
         $member = $this->data->member->member_code;
         $transactionData = [
+            'transaction_code' => strtolower(str_random(10)),
+            'member_code' => $member,
+            'transaction_type' => $type,
             'snap_id' => $this->data->id,
             'current_rate' => $rate,
             'detail_transaction' => [
@@ -119,7 +122,7 @@ class PointCalculation implements ShouldQueue
             ],
         ];
 
-        (new TransactionService($transactionData))->savePoint();
+        (new TransactionService($transactionData))->savePointProcess();
 
         $memberService = (new MemberService);
         $member = $memberService->getMemberByCode($member);

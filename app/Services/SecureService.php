@@ -117,13 +117,6 @@ class SecureService
                 ->setApiToken(str_random(60))
                 ->register($request->all());
 
-            // //debit for new member
-            // $transaction = [
-            //     'member_code' => $request->input('social_media_id'),
-            //     'point' => 1000,
-            // ];
-            // $this->transactionDebit($transaction);
-
         }
 
         //build data for member history
@@ -156,27 +149,4 @@ class SecureService
         return $this->memberService->member($email);
     }
 
-    public function transactionDebit($transaction)
-    {
-        $kasir = config('common.transaction.member.cashier');
-        $member = config('common.transaction.member.user');
-        $data = [
-            'detail_transaction' => [
-                '0' => [
-                    'member_code_from' => $kasir,
-                    'member_code_to' => $member,
-                    'amount' => $transaction['point'],
-                    'detail_type' => 'db'
-                ],
-                '1' => [
-                    'member_code_from' => $member,
-                    'member_code_to' => $kasir,
-                    'amount' => $transaction['point'],
-                    'detail_type' => 'cr'
-                ],
-            ],
-        ];
-
-        (new TransactionService())->debitNewMember($transaction, $data);
-    }
 }

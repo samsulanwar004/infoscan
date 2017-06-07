@@ -10,6 +10,11 @@ class MemberLevel extends Model
 
     public function member() 
     {
-    	return $this->belongsTo(member::class, 'member_id');
+    	return $this->belongsTo(Member::class, 'member_id');
+    }
+
+    public function level()
+    {
+    	return $this->belongsTo(TaskLevelPoint::class, 'level_id');
     }
 }

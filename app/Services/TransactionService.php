@@ -37,12 +37,12 @@ class TransactionService
     {
         $this->date = Carbon::now('Asia/Jakarta');
 
-        $this->transactionCode = isset($data['transaction_code']) ? $data['transaction_code'] : '';
-        $this->memberCode = isset($data['member_code']) ? $data['member_code'] : '';
-        $this->transactionType = isset($data['transaction_type']) ? $data['transaction_type'] : '';
-        $this->snapId = isset($data['snap_id']) ? $data['snap_id'] : '';
-        $this->currentRate = isset($data['current_rate']) ? $data['current_rate'] : '';
-        $this->detailTransaction = isset($data['detail_transaction']) ? $data['detail_transaction'] : '';
+        $this->transactionCode = isset($data['transaction_code']) ? $data['transaction_code'] : null;
+        $this->memberCode = isset($data['member_code']) ? $data['member_code'] : null;
+        $this->transactionType = isset($data['transaction_type']) ? $data['transaction_type'] : null;
+        $this->snapId = isset($data['snap_id']) ? $data['snap_id'] : null;
+        $this->currentRate = isset($data['current_rate']) ? $data['current_rate'] : null;
+        $this->detailTransaction = isset($data['detail_transaction']) ? $data['detail_transaction'] : null;
     }
 
     public function getAllTransaction()
@@ -109,31 +109,6 @@ class TransactionService
         $t->snap_id = $this->snapId;
 
         $t->save();
-    }
-
-    public function savePoint()
-    {
-        $snapId = $this->snapId;
-        $t = $this->getTransactionBySnapId($snapId);
-        $t->current_cash_per_unit = $this->currentRate;
-        $t->update();
-
-        foreach ($this->detailTransaction as $data) {
-            $td = new TransactionDetail;
-            $td->member_code_from = $data['member_code_from'];
-            $td->member_code_to = $data['member_code_to'];
-            $td->amount = $data['amount'];
-            $td->detail_type = $data['detail_type'];
-            $td->transaction()->associate($t);
-            $td->save();
-        }
-
-        return true;
-    }
-
-    public function getTransactionBySnapId($snapId)
-    {
-        return Transaction::where('snap_id', $snapId)->first();
     }
 
     public function redeemPointToLuckyDraw($transaction, $datas)
@@ -256,5 +231,29 @@ class TransactionService
         }
 
         return $notif;
+    }
+
+    public function savePointProcess()
+    {
+        $t = new Transaction;
+        $t->transaction_code = $this->transactionCode;
+        $t->member_code = $this->memberCode;
+        $t->transaction_type = $this->transactionType;
+        $t->current_cash_per_unit = $this->currentRate;
+        $t->snap_id = $this->snapId;
+
+        $t->save();
+
+        foreach ($this->detailTransaction as $data) {
+            $td = new TransactionDetail;
+            $td->member_code_from = $data['member_code_from'];
+            $td->member_code_to = $data['member_code_to'];
+            $td->amount = $data['amount'];
+            $td->detail_type = $data['detail_type'];
+            $td->transaction()->associate($t);
+            $td->save();
+        }
+
+        return true;
     }
 }
