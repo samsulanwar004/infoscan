@@ -10,7 +10,7 @@ class BonusLevelPoint extends Model
 
     public function levelPoint()
     {
-    	return $this->belongsTo(TaskLevelPoint::class, 'level_id');
+        return $this->belongsTo(TaskLevelPoint::class, 'level_id');
     }
 
     public function bonusPoint()
