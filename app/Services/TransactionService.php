@@ -37,12 +37,12 @@ class TransactionService
     {
         $this->date = Carbon::now('Asia/Jakarta');
 
-        $this->transactionCode = isset($data['transaction_code']) ? $data['transaction_code'] : '';
-        $this->memberCode = isset($data['member_code']) ? $data['member_code'] : '';
-        $this->transactionType = isset($data['transaction_type']) ? $data['transaction_type'] : '';
-        $this->snapId = isset($data['snap_id']) ? $data['snap_id'] : '';
-        $this->currentRate = isset($data['current_rate']) ? $data['current_rate'] : '';
-        $this->detailTransaction = isset($data['detail_transaction']) ? $data['detail_transaction'] : '';
+        $this->transactionCode = isset($data['transaction_code']) ? $data['transaction_code'] : null;
+        $this->memberCode = isset($data['member_code']) ? $data['member_code'] : null;
+        $this->transactionType = isset($data['transaction_type']) ? $data['transaction_type'] : null;
+        $this->snapId = isset($data['snap_id']) ? $data['snap_id'] : null;
+        $this->currentRate = isset($data['current_rate']) ? $data['current_rate'] : null;
+        $this->detailTransaction = isset($data['detail_transaction']) ? $data['detail_transaction'] : null;
     }
 
     public function getAllTransaction()
