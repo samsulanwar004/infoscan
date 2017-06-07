@@ -179,7 +179,7 @@ class SnapService
 
         $query->orderBy('created_at', 'DESC');
 
-        $r = $query->paginate(200);
+        $r = $query->paginate(100);
 
         $files = [];
         $snapFileIds = [];
@@ -225,15 +225,16 @@ class SnapService
                         'name' => $snap['main']->member->name,
                         'estimated_point' => $snap['main']->estimated_point,
                         'fixed_point' => $snap['main']->fixed_point,
-                        'current_point' => $snap['main']->member->temporary_point,
-                        'current_level' => $snap['main']->member->temporary_level,
+                        'current_point' => $snap['main']->current_point_member,
+                        'current_level' => $snap['main']->current_level_member,
                         'snapped' => $snap['main']->created_at->toDateTimeString(),
                         'approve_or_reject_date' => $snap['main']->updated_at->toDateTimeString(),
                         'approve_or_reject_by' => isset($approve) ? $approve : $reject,
                         'ocr' => trim(str_replace(array("\n","\r",","), ' ', $ocr)),
                         'product_name' => trim(str_replace(array("\n","\r",","), ' ',$tag->name)),                
                         'brands' => trim(str_replace(array("\n","\r",","), ' ',$tag->brands)),
-                        'variants' => trim(str_replace(array("\n","\r",","), ' ',$tag->variants)),
+                        'weight' => trim(str_replace(array("\n","\r",","), ' ',$tag->weight)),
+                        'sku' => trim(str_replace(array("\n","\r",","), ' ',$tag->sku)),
                         'quantity' => trim(str_replace(array("\n","\r",","), ' ',$tag->quantity)),
                         'total_price' => trim(str_replace(array("\n","\r",","), ' ',$tag->total_price)),
                     ];
@@ -249,15 +250,16 @@ class SnapService
                     'name' => $snap['main']->member->name,
                     'estimated_point' => $snap['main']->estimated_point,
                     'fixed_point' => $snap['main']->fixed_point,
-                    'current_point' => $snap['main']->member->temporary_point,
-                    'current_level' => $snap['main']->member->temporary_level,
+                    'current_point' => $snap['main']->current_point_member,
+                    'current_level' => $snap['main']->current_level_member,
                     'snapped' => $snap['main']->created_at->toDateTimeString(),
                     'approve_or_reject_date' => $snap['main']->updated_at->toDateTimeString(),
                     'approve_or_reject_by' => isset($approve) ? $approve : $reject,
                     'ocr' => trim(str_replace(array("\n","\r",","), ' ', $ocr)),
                     'product_name' => '',
                     'brands' => '',
-                    'variants' => '',
+                    'weight' => '',
+                    'sku' => '',
                     'quantity' => '',
                     'total_price' => '',
                 ];
@@ -267,11 +269,11 @@ class SnapService
 
         if ($data['type'] == 'new') {
             $filename = strtolower(str_random(10)).'.csv';
-            $title = 'No,Snap Code,Type,# of images,User Details,Name,Estimated Point,Fixed Point,Current Point,Current Level,Aproved / Rejected,Rejection Reason,Receipt Snapped,Approved / Rejected Date,Approved / Rejected By,Product Name,Brands,Variants,Quantity,Total Price,OCR';       
+            $title = 'No,Snap Code,Type,# of images,User Details,Name,Estimated Point,Fixed Point,Current Point,Current Level,Aproved / Rejected,Rejection Reason,Receipt Snapped,Approved / Rejected Date,Approved / Rejected By,Product Name,Brands,Weight,SKU,Quantity,Total Price,OCR';       
             \Storage::disk('csv')->put($filename, $title);
             $no = 1;
             foreach($results as $row) {
-                $baris = $no.','.$row['snap_code'].','.$row['type'].','.$row['of_images'].','.$row['email'].','.$row['name'].','.$row['estimated_point'].','.$row['fixed_point'].','.$row['current_point'].','.$row['current_level'].','.$row['status'].','.$row['reason'].','.$row['snapped'].','.$row['approve_or_reject_date'].','.$row['approve_or_reject_by'].','.$row['product_name'].','.$row['brands'].','.$row['variants'].','.$row['quantity'].','.$row['total_price'].','.$row['ocr'];
+                $baris = $no.','.$row['snap_code'].','.$row['type'].','.$row['of_images'].','.$row['email'].','.$row['name'].','.$row['estimated_point'].','.$row['fixed_point'].','.$row['current_point'].','.$row['current_level'].','.$row['status'].','.$row['reason'].','.$row['snapped'].','.$row['approve_or_reject_date'].','.$row['approve_or_reject_by'].','.$row['product_name'].','.$row['brands'].','.$row['weight'].','.$row['sku'].','.$row['quantity'].','.$row['total_price'].','.$row['ocr'];
                 \Storage::disk('csv')->append($filename, $baris);
                 $no++;
             }
@@ -280,8 +282,8 @@ class SnapService
             $filename = $data['filename'];
             $no = $data['no'];
             foreach($results as $row) {
-                $baris = $no.','.$row['snap_code'].','.$row['type'].','.$row['of_images'].','.$row['email'].','.$row['name'].','.$row['estimated_point'].','.$row['fixed_point'].','.$row['current_point'].','.$row['current_level'].','.$row['status'].','.$row['reason'].','.$row['snapped'].','.$row['approve_or_reject_date'].','.$row['approve_or_reject_by'].','.$row['product_name'].','.$row['brands'].','.$row['variants'].','.$row['quantity'].','.$row['total_price'].','.$row['ocr'];
-                  \Storage::disk('csv')->append($filename, $baris);
+                $baris = $no.','.$row['snap_code'].','.$row['type'].','.$row['of_images'].','.$row['email'].','.$row['name'].','.$row['estimated_point'].','.$row['fixed_point'].','.$row['current_point'].','.$row['current_level'].','.$row['status'].','.$row['reason'].','.$row['snapped'].','.$row['approve_or_reject_date'].','.$row['approve_or_reject_by'].','.$row['product_name'].','.$row['brands'].','.$row['weight'].','.$row['sku'].','.$row['quantity'].','.$row['total_price'].','.$row['ocr'];
+                \Storage::disk('csv')->append($filename, $baris);
                 $no++;
             }
         }
@@ -1459,6 +1461,8 @@ class SnapService
         $snap->status = 'pending';
         $snap->longitude = $request->input('longitude');
         $snap->latitude = $request->input('latitude');
+        $snap->current_point_member = auth('api')->user()->temporary_point;
+        $snap->current_level_member = auth('api')->user()->temporary_level;
         $snap->save();
 
         return $snap;

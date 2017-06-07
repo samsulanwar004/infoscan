@@ -35,8 +35,8 @@
                     </span>
 
                     <span class="small ml10 pull-left" style="min-width: 250px;">Uploaded by: <a href="{{ admin_route_url('members.show', ['id' => $snap->member->id]) }}">{{ $snap->member->email }}</a></span>
-                    <span class="small ml10 pull-left" style="min-width: 100px;">Point : {{ $snap->member->temporary_point }}</span>
-                    <span class="small ml10 pull-left">Level : {{ $snap->member->temporary_level }}</span>
+                    <span class="small ml10 pull-left" style="min-width: 100px;">Point : {{ $snap->current_point_member }}</span>
+                    <span class="small ml10 pull-left">Level : {{ $snap->current_level_member }}</span>
                 </td>
                 <td class="vertical-middle text-center">
                     {{ $snap->estimated_point }}
