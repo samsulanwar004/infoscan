@@ -16,6 +16,7 @@ class Kernel extends ConsoleKernel
         Commands\LocationCron::class,
         Commands\LotteryCron::class,
         Commands\PointModeling::class,
+        Commands\ExportCurrentPoint::class,
     ];
 
     /**
