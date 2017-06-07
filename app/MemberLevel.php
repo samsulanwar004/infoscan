@@ -8,13 +8,13 @@ class MemberLevel extends Model
 {
     protected $table = 'member_levels';
 
-    public function member() 
+    public function member()
     {
-    	return $this->belongsTo(Member::class, 'member_id');
+        return $this->belongsTo(Member::class, 'member_id');
     }
 
     public function level()
     {
-    	return $this->belongsTo(TaskLevelPoint::class, 'level_id');
+        return $this->belongsTo(TaskLevelPoint::class, 'level_id');
     }
 }

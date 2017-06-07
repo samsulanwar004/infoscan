@@ -22,7 +22,7 @@ use App\Jobs\PointProcessJob;
 class PointService
 {
 
-    const CACHE_NAME = 'point.pivot';
+    const CACHE_NAME       = 'point.pivot';
     const CACHE_PROMO_NAME = 'promo.point.pivot';
     const CACHE_TASK_LIMIT = 'point.limit';
     const CACHE_BONUS_NAME = 'bonus.point';
@@ -39,7 +39,7 @@ class PointService
      */
     public function getPivotGrid()
     {
-        if($pivots = cache(self::CACHE_NAME)) {
+        if ($pivots = cache(self::CACHE_NAME)) {
             return $pivots;
         }
 
@@ -49,7 +49,7 @@ inner join level_points as l on l.id = tlp.level_id order by t.id;');
         $result = [];
         foreach ($points as $pivot) {
             $result[] = [
-                'Task' => $pivot->id.' '.$pivot->task_name,
+                'Task' => $pivot->id . ' ' . $pivot->task_name,
                 'Level' => $pivot->level_name,
                 'Point' => $pivot->point,
             ];
@@ -62,7 +62,7 @@ inner join level_points as l on l.id = tlp.level_id order by t.id;');
 
     public function getPromoPivotGrid()
     {
-        if($pivots = cache(self::CACHE_PROMO_NAME)) {
+        if ($pivots = cache(self::CACHE_PROMO_NAME)) {
             return $pivots;
         }
 
@@ -73,7 +73,7 @@ inner join level_points as l on l.id = plp.level_id;');
         foreach ($points as $pivot) {
             $active = ($pivot->is_active == 0) ? '(Deactive)' : '';
             $result[] = [
-                'City' => $pivot->id.' '.$pivot->city_name.' '.$active,
+                'City' => $pivot->id . ' ' . $pivot->city_name . ' ' . $active,
                 'Level' => $pivot->level_name,
                 'Point' => $pivot->point,
             ];
@@ -86,7 +86,7 @@ inner join level_points as l on l.id = plp.level_id;');
 
     public function getBonusPivotGrid()
     {
-        if($pivots = cache(self::CACHE_BONUS_NAME)) {
+        if ($pivots = cache(self::CACHE_BONUS_NAME)) {
             return $pivots;
         }
 
@@ -97,7 +97,7 @@ inner join level_points as l on l.id = blp.level_id;');
         foreach ($points as $pivot) {
             $active = ($pivot->is_active == 0) ? '(Deactive)' : '';
             $result[] = [
-                'Bonus' => $pivot->id.' '.$pivot->bonus_name.' '.$active,
+                'Bonus' => $pivot->id . ' ' . $pivot->bonus_name . ' ' . $active,
                 'Level' => $pivot->level_name,
                 'Point' => $pivot->point,
             ];
@@ -154,7 +154,7 @@ inner join level_points as l on l.id = blp.level_id;');
         $dateArray = explode(' - ', $date);
 
         $promos = [];
-        for ($i=0; $i < count($name); $i++) {
+        for ($i = 0; $i < count($name); $i++) {
             $promo = new PromoPoint;
             $promo->city_name = $request['name'][$i];
             $promo->point_city = $request['point_city'];
@@ -198,7 +198,7 @@ inner join level_points as l on l.id = blp.level_id;');
         $dateArray = explode(' - ', $date);
 
         $promos = [];
-        for ($i=0; $i < count($name); $i++) {
+        for ($i = 0; $i < count($name); $i++) {
             $promo = $this->getPromoPointById($id);
 
             if ($promo->city_name == $name[$i]) {
@@ -278,8 +278,7 @@ inner join level_points as l on l.id = blp.level_id;');
                 $levelId[] = $level->id;
                 $taskLevelPoint = $this->getTaskLevelPoints($task->id, $level->id);
 
-                if ($taskLevelPoint == false)
-                {
+                if ($taskLevelPoint == false) {
                     $newTaskLevelPoint = new TaskLevelPoints;
                     $newTaskLevelPoint->point = $point;
                     $newTaskLevelPoint->levelPoint()->associate($level);
@@ -295,8 +294,7 @@ inner join level_points as l on l.id = blp.level_id;');
             foreach ($request->input('limit') as $limitName => $limit) {
                 $taskLimitPoint = $this->getTaskLimitPoints($task->id, $limitName);
 
-                if ($taskLimitPoint == false)
-                {
+                if ($taskLimitPoint == false) {
                     $newtaskLimitPoint = new LimitPoint;
                     $newtaskLimitPoint->name = $limitName;
                     $newtaskLimitPoint->limit = $limit;
@@ -311,7 +309,7 @@ inner join level_points as l on l.id = blp.level_id;');
             }
             // delete unnesesary level
             TaskLevelPoints::where('task_id', '=', $id)
-                    ->whereNotIn('level_id', $levelId)->delete();
+                           ->whereNotIn('level_id', $levelId)->delete();
 
             $this->removeCache();
 
@@ -328,8 +326,8 @@ inner join level_points as l on l.id = blp.level_id;');
     public function getTaskLevelPoints($taskid, $levelid)
     {
         $tlp = TaskLevelPoints::where('task_id', '=', $taskid)
-            ->where('level_id', '=', $levelid)
-            ->first();
+                              ->where('level_id', '=', $levelid)
+                              ->first();
 
         return $tlp;
     }
@@ -337,15 +335,15 @@ inner join level_points as l on l.id = blp.level_id;');
     public function getTaskLimitPoints($taskid, $name)
     {
         return LimitPoint::where('task_id', $taskid)
-            ->where('name', $name)
-            ->first();
+                         ->where('name', $name)
+                         ->first();
     }
 
     public function getPromoLevelPoints($promoPointid, $levelid)
     {
         $plp = PromoLevelPoint::where('promo_point_id', '=', $promoPointid)
-            ->where('level_id', '=', $levelid)
-            ->first();
+                              ->where('level_id', '=', $levelid)
+                              ->first();
 
         return $plp;
     }
@@ -353,8 +351,8 @@ inner join level_points as l on l.id = blp.level_id;');
     public function getBonusLevelPoints($bonusPointid, $levelid)
     {
         $blp = BonusLevelPoint::where('bonus_point_id', '=', $bonusPointid)
-            ->where('level_id', '=', $levelid)
-            ->first();
+                              ->where('level_id', '=', $levelid)
+                              ->first();
 
         return $blp;
     }
@@ -371,8 +369,7 @@ inner join level_points as l on l.id = blp.level_id;');
 
     public function findLevel($levelName)
     {
-        if ($level = $this->getLevelByName($levelName))
-        {
+        if ($level = $this->getLevelByName($levelName)) {
             return $level;
         } else {
             $name = 'Level ' . $levelName;
@@ -385,9 +382,9 @@ inner join level_points as l on l.id = blp.level_id;');
     public function getTaskById($id)
     {
         $t = Task::with('point')
-            ->with('limit')
-            ->where('id', '=', $id)
-            ->first();
+                 ->with('limit')
+                 ->where('id', '=', $id)
+                 ->first();
 
         return $t;
     }
@@ -395,8 +392,8 @@ inner join level_points as l on l.id = blp.level_id;');
     public function getPromoPointById($id)
     {
         $t = PromoPoint::with('levels')
-            ->where('id', '=', $id)
-            ->first();
+                       ->where('id', '=', $id)
+                       ->first();
 
         return $t;
     }
@@ -404,8 +401,8 @@ inner join level_points as l on l.id = blp.level_id;');
     public function getBonusPointById($id)
     {
         $t = BonusPoint::with('levels')
-            ->where('id', '=', $id)
-            ->first();
+                       ->where('id', '=', $id)
+                       ->first();
 
         return $t;
     }
@@ -417,7 +414,7 @@ inner join level_points as l on l.id = blp.level_id;');
         $promo = $this->addCityPromo($request->all());
 
         if ($promo) {
-            for ($i=0; $i < count($promo); $i++) {
+            for ($i = 0; $i < count($promo); $i++) {
                 foreach ($request->input('levels') as $levelName => $point) {
                     $promoLevelPoint = new PromoLevelPoint;
                     $promoLevelPoint->point = $point;
@@ -475,15 +472,14 @@ inner join level_points as l on l.id = blp.level_id;');
         $promo = $this->updatePromoPoint($request, $id);
 
         if ($promo) {
-            for ($i=0; $i < count($promo); $i++) {
+            for ($i = 0; $i < count($promo); $i++) {
                 $levelId = [];
                 foreach ($request->input('levels') as $levelName => $point) {
                     $level = $this->findLevel($levelName);
                     $levelId[] = $level->id;
                     $promoLevelPoint = $this->getPromoLevelPoints($promo[$i], $level->id);
 
-                    if ($promoLevelPoint == false)
-                    {
+                    if ($promoLevelPoint == false) {
                         $newPromoLevelPoint = new PromoLevelPoint;
                         $newPromoLevelPoint->point = $point;
                         $newPromoLevelPoint->levelPoint()->associate($level);
@@ -497,7 +493,7 @@ inner join level_points as l on l.id = blp.level_id;');
                 }
                 // delete unnesesary level
                 PromoLevelPoint::where('promo_point_id', '=', $id)
-                        ->whereNotIn('level_id', $levelId)->delete();
+                               ->whereNotIn('level_id', $levelId)->delete();
             }
 
             $this->removeCache();
@@ -525,8 +521,7 @@ inner join level_points as l on l.id = blp.level_id;');
                 $levelId[] = $level->id;
                 $bonusLevelPoint = $this->getBonusLevelPoints($bonus->id, $level->id);
 
-                if ($bonusLevelPoint == false)
-                {
+                if ($bonusLevelPoint == false) {
                     $newBonusLevelPoint = new BonusLevelPoint;
                     $newBonusLevelPoint->point = $point;
                     $newBonusLevelPoint->levelPoint()->associate($level);
@@ -540,7 +535,7 @@ inner join level_points as l on l.id = blp.level_id;');
             }
             // delete unnesesary level
             BonusLevelPoint::where('bonus_point_id', '=', $id)
-                    ->whereNotIn('level_id', $levelId)->delete();
+                           ->whereNotIn('level_id', $levelId)->delete();
 
             $this->removeCache();
 
@@ -571,27 +566,28 @@ inner join level_points as l on l.id = blp.level_id;');
     }
 
     /**
-    * Get calculate Estimated point
-    * @param integer $memberId
-    * @param string $type
-    * @param string $mode
-    * @param integer $tags
-    * @return integer point
-    */
+     * Get calculate Estimated point
+     *
+     * @param integer $memberId
+     * @param string  $type
+     * @param string  $mode
+     * @param integer $tags
+     *
+     * @return integer point
+     */
     public function calculateEstimatedPoint($memberId, $type, $mode, $tags)
     {
 
         $type = $this->getTypeId($type);
         $mode = $this->getModeId($mode);
 
-        $code = $type.$mode;
+        $code = $type . $mode;
 
         $levelId = (new MemberService)->getLevelIdByMemberId($memberId);
 
         $point = $this->getPointByCode($code, $levelId);
 
-        if ($point == null && $levelId > 1)
-        {
+        if ($point == null && $levelId > 1) {
             $point = $this->getPointMaxLevelByCode($code);
         }
 
@@ -604,25 +600,27 @@ inner join level_points as l on l.id = blp.level_id;');
     }
 
     /**
-    * Get calculate Promo point
-    * @param integer $memberId
-    * @param string $city
-    * @return array
-    */
+     * Get calculate Promo point
+     *
+     * @param integer $memberId
+     * @param string  $city
+     *
+     * @return array
+     */
     public function calculatePromoPoint($memberId, $city)
     {
         $levelId = (new MemberService)->getLevelIdByMemberId($memberId);
         $cityName = strtoupper($city);
         $cityPromo = \DB::table('promo_points')
-            ->join('promo_level_points', 'promo_points.id', '=', 'promo_level_points.promo_point_id')
-            ->join('level_points', 'level_points.id', '=', 'promo_level_points.level_id')
-            ->select('promo_points.point_city', 'promo_level_points.point')
-            ->where('promo_points.city_name', $cityName)
-            ->where('promo_level_points.level_id', $levelId)
-            ->where('start_at', '<=', $this->date)
-            ->where('end_at', '>=', $this->date)
-            ->where('is_active', '1')
-            ->first();
+                        ->join('promo_level_points', 'promo_points.id', '=', 'promo_level_points.promo_point_id')
+                        ->join('level_points', 'level_points.id', '=', 'promo_level_points.level_id')
+                        ->select('promo_points.point_city', 'promo_level_points.point')
+                        ->where('promo_points.city_name', $cityName)
+                        ->where('promo_level_points.level_id', $levelId)
+                        ->where('start_at', '<=', $this->date)
+                        ->where('end_at', '>=', $this->date)
+                        ->where('is_active', '1')
+                        ->first();
 
         $data = [
             'point_city' => isset($cityPromo) ? $cityPromo->point_city : 0,
@@ -656,21 +654,23 @@ inner join level_points as l on l.id = blp.level_id;');
         if ($type == 'receipt') {
             $point = $calculateTask['point'] * count($files);
             $point = $point + $calculatePromo['point_city'] + $calculatePromo['point_level_city'];
-        } else if ($mode == 'no_mode' || $mode == 'audios') {
-            $files = $files->filter(function($value, $Key) {
-                return starts_with($value->file_mimes, 'image');
-            });
-
-            $point = $calculateTask['point'] * count($files);
-            $point = $point + $calculatePromo['point_city'] + $calculatePromo['point_level_city'];
         } else {
-            //new logic for snap member snap * task point
-            if ($memberAdd <= 0) {
-                $fixedPoint = $calculateTask['percent'];
-                $point = $fixedPoint + $calculatePromo['point_city'] + $calculatePromo['point_level_city'];
+            if ($mode == 'no_mode' || $mode == 'audios') {
+                $files = $files->filter(function ($value, $Key) {
+                    return starts_with($value->file_mimes, 'image');
+                });
+
+                $point = $calculateTask['point'] * count($files);
+                $point = $point + $calculatePromo['point_city'] + $calculatePromo['point_level_city'];
             } else {
-                $fixedPoint = $memberAdd * $calculateTask['point'];
-                $point = $fixedPoint + $calculatePromo['point_city'] + $calculatePromo['point_level_city'];
+                //new logic for snap member snap * task point
+                if ($memberAdd <= 0) {
+                    $fixedPoint = $calculateTask['percent'];
+                    $point = $fixedPoint + $calculatePromo['point_city'] + $calculatePromo['point_level_city'];
+                } else {
+                    $fixedPoint = $memberAdd * $calculateTask['point'];
+                    $point = $fixedPoint + $calculatePromo['point_city'] + $calculatePromo['point_level_city'];
+                }
             }
         }
 
@@ -701,19 +701,19 @@ inner join level_points as l on l.id = blp.level_id;');
         switch ($mode) {
             case 'audios':
                 $mode = '3';
-                break;
+            break;
 
             case 'tags':
                 $mode = '2';
-                break;
+            break;
 
             case 'input':
                 $mode = '2';
-                break;
+            break;
 
             default:
                 $mode = '1';
-                break;
+            break;
         }
 
         return $mode;
@@ -728,16 +728,16 @@ inner join level_points as l on l.id = blp.level_id;');
 
         $historys = $transaction->getHistoryMember($member->id);
 
-        $historys = $historys->filter(function($value, $Key) {
+        $historys = $historys->filter(function ($value, $Key) {
             return $value->group == 'portalpoint';
         });
 
         $end = $this->date->format('Y-m-d');
         $start = $this->date->subWeek()->format('Y-m-d');
 
-        $historys = $historys->filter(function($value, $Key) use ($start, $end) {
+        $historys = $historys->filter(function ($value, $Key) use ($start, $end) {
             return $value->created_at->format('Y-m-d') >= $start &&
-                    $value->created_at->format('Y-m-d') <= $end;
+                $value->created_at->format('Y-m-d') <= $end;
         });
 
         $notif = [];
@@ -746,11 +746,11 @@ inner join level_points as l on l.id = blp.level_id;');
                 'title' => $history->content['title'],
                 'description' => $history->content['description'],
                 'flag' => isset($history->content['flag']) ? $history->content['flag'] : 1,
-                'date'  => $history->created_at->toDateTimeString(),
+                'date' => $history->created_at->toDateTimeString(),
             ];
         }
 
-        $snaps = $snaps->filter(function($value, $Key) {
+        $snaps = $snaps->filter(function ($value, $Key) {
             return $value->approved_by == null && $value->reject_by == null;
         });
 
@@ -801,8 +801,8 @@ inner join level_points as l on l.id = blp.level_id;');
         }
 
         $ml = (new MemberService)->getLatestMemberLevelById($member->id);
-
-        if ($memberService['level_id'] > $ml->level_id) {
+        $lastLevel = $ml ? $ml->level_id : 1;
+        if ($memberService['level_id'] > $lastLevel) {
             //save to db member levels
             $ml = new \App\MemberLevel;
             $ml->latest_point = $point;
@@ -813,11 +813,11 @@ inner join level_points as l on l.id = blp.level_id;');
 
             //get bonus level
             $bonus = DB::table('bonus_points')
-                ->join('bonus_level_points', 'bonus_points.id', '=', 'bonus_level_points.bonus_point_id')
-                ->select('bonus_level_points.point')
-                ->orderBy('bonus_points.id', 'DESC')
-                ->where('bonus_level_points.level_id', $memberService['level_id'])
-                ->first();
+                       ->join('bonus_level_points', 'bonus_points.id', '=', 'bonus_level_points.bonus_point_id')
+                       ->select('bonus_level_points.point')
+                       ->orderBy('bonus_points.id', 'DESC')
+                       ->where('bonus_level_points.level_id', $memberService['level_id'])
+                       ->first();
 
             //queue for point process
             $config = config('common.queue_list.point_process');
@@ -828,6 +828,7 @@ inner join level_points as l on l.id = blp.level_id;');
                 ->onConnection(env('INFOSCAN_QUEUE'));
             dispatch($job);
         }
+
 
         $data = [
             'current_point' => $point,
@@ -847,28 +848,28 @@ inner join level_points as l on l.id = blp.level_id;');
     private function getPointByCode($code, $levelId)
     {
         return \DB::table('tasks')
-            ->join('tasks_level_points', 'tasks.id', '=', 'tasks_level_points.task_id')
-            ->join('level_points', 'level_points.id', '=', 'tasks_level_points.level_id')
-            ->select('tasks.percentage as percent', 'tasks_level_points.point as point')
-            ->where('tasks.code', $code)
-            ->where('tasks_level_points.level_id', $levelId)
-            ->first();
+                  ->join('tasks_level_points', 'tasks.id', '=', 'tasks_level_points.task_id')
+                  ->join('level_points', 'level_points.id', '=', 'tasks_level_points.level_id')
+                  ->select('tasks.percentage as percent', 'tasks_level_points.point as point')
+                  ->where('tasks.code', $code)
+                  ->where('tasks_level_points.level_id', $levelId)
+                  ->first();
     }
 
     private function getPointMaxLevelByCode($code)
     {
         return \DB::table('tasks')
-            ->join('tasks_level_points', 'tasks.id', '=', 'tasks_level_points.task_id')
-            ->join('level_points', 'level_points.id', '=', 'tasks_level_points.level_id')
-            ->select('tasks.percentage as percent', 'tasks_level_points.point as point')
-            ->where('tasks.code', $code)
-            ->orderBy('tasks_level_points.point', 'DESC')
-            ->first();
+                  ->join('tasks_level_points', 'tasks.id', '=', 'tasks_level_points.task_id')
+                  ->join('level_points', 'level_points.id', '=', 'tasks_level_points.level_id')
+                  ->select('tasks.percentage as percent', 'tasks_level_points.point as point')
+                  ->where('tasks.code', $code)
+                  ->orderBy('tasks_level_points.point', 'DESC')
+                  ->first();
     }
 
     public function getTaskPivotLimit()
     {
-        if($pivots = cache(self::CACHE_TASK_LIMIT)) {
+        if ($pivots = cache(self::CACHE_TASK_LIMIT)) {
             return $pivots;
         }
 
@@ -877,7 +878,7 @@ inner join tasks as t on t.id = l.task_id order by t.id;');
         $result = [];
         foreach ($points as $pivot) {
             $result[] = [
-                'Task' => $pivot->id.' '.$pivot->task_name,
+                'Task' => $pivot->id . ' ' . $pivot->task_name,
                 'limit_name' => ucfirst($pivot->limit_name),
                 'Limit' => $pivot->limit,
             ];
@@ -896,10 +897,10 @@ inner join tasks as t on t.id = l.task_id order by t.id;');
         // $code = $type.$mode;
 
         return DB::table('tasks')
-            ->join('limit_points', 'limit_points.task_id', '=', 'tasks.id')
-            ->where('tasks.code', 'like', $code.'%')
-            ->select('limit_points.name', 'limit_points.limit')
-            ->get();
+                 ->join('limit_points', 'limit_points.task_id', '=', 'tasks.id')
+                 ->where('tasks.code', 'like', $code . '%')
+                 ->select('limit_points.name', 'limit_points.limit')
+                 ->get();
     }
 
     public function addTaskPoint($request)
@@ -991,7 +992,7 @@ inner join tasks as t on t.id = l.task_id order by t.id;');
 
     public function getNewPivotGrid()
     {
-        if($pivots = cache(self::CACHE_NAME)) {
+        if ($pivots = cache(self::CACHE_NAME)) {
             return $pivots;
         }
 
@@ -1000,7 +1001,7 @@ inner join tasks as t on t.id = tp.task_id order by t.id;');
         $result = [];
         foreach ($points as $pivot) {
             $result[] = [
-                'Task' => $pivot->id.' '.$pivot->task_name,
+                'Task' => $pivot->id . ' ' . $pivot->task_name,
                 'Level' => 'Points',
                 'Point' => $pivot->point,
             ];
@@ -1032,8 +1033,7 @@ inner join tasks as t on t.id = tp.task_id order by t.id;');
                 foreach ($request->input('limit') as $limitName => $limit) {
                     $taskLimitPoint = $this->getTaskLimitPoints($task->id, $limitName);
 
-                    if ($taskLimitPoint == false)
-                    {
+                    if ($taskLimitPoint == false) {
                         $newtaskLimitPoint = new LimitPoint;
                         $newtaskLimitPoint->name = $limitName;
                         $newtaskLimitPoint->limit = $limit;
@@ -1073,8 +1073,7 @@ inner join tasks as t on t.id = tp.task_id order by t.id;');
                 foreach ($request->input('limit') as $limitName => $limit) {
                     $taskLimitPoint = $this->getTaskLimitPoints($task->id, $limitName);
 
-                    if ($taskLimitPoint == false)
-                    {
+                    if ($taskLimitPoint == false) {
                         $newtaskLimitPoint = new LimitPoint;
                         $newtaskLimitPoint->name = $limitName;
                         $newtaskLimitPoint->limit = $limit;
@@ -1159,12 +1158,12 @@ inner join tasks as t on t.id = tp.task_id order by t.id;');
 
         switch ($mode) {
             case 'tags':
-                $mode = $type.'|'.$commonId;
-                break;
+                $mode = $type . '|' . $commonId;
+            break;
 
             default:
-                $mode = $type.'|'.$commonId;
-                break;
+                $mode = $type . '|' . $commonId;
+            break;
         }
 
         return $mode;
@@ -1173,15 +1172,15 @@ inner join tasks as t on t.id = tp.task_id order by t.id;');
     public function getCurrencyRate()
     {
         return Exchange::orderBy('created_at', 'DESC')
-            ->first();
+                       ->first();
     }
 
     public function getCurrencyRateByCity($city)
     {
         return CityRate::where('city_name', strtolower($city))
-            ->where('is_active', 1)
-            ->orderBy('created_at', 'DESC')
-            ->first();
+                       ->where('is_active', 1)
+                       ->orderBy('created_at', 'DESC')
+                       ->first();
     }
 
 }

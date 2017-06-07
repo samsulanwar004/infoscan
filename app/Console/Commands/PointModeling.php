@@ -307,16 +307,15 @@ order by s.snap_type, s.request_code, s.created_at asc
 
                     // create new transcation
                     $firstSnap = $snap->first();
-                    $memberCode = $firstSnap['member_code'];
+                    /*$memberCode = $firstSnap['member_code'];
                     $snapId = $firstSnap['snap_id'];
-                    $this->createNewTransaction($memberCode, $snapId);
+                    $this->createNewTransaction($memberCode, $snapId);*/
 
                     // update member Total Temporary Point
-                    /* DB::update(
+                     DB::update(
                          'Update members set temporary_point = :current_point where email=:email',
                          ['email' => $key, 'current_point' => $currentPoint]
-                     );*/
-
+                     );
 
                     $pointCalculation
                         ->initialize(
