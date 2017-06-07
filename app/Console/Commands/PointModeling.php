@@ -293,6 +293,7 @@ order by s.snap_type, s.request_code, s.created_at asc
                     }
 
                     // update snap
+                    // TODO: need update current_exchange_rate value and current_total_money value
                     DB::update(
                         'Update snaps set fixed_point = :fixed_point, current_point_member=:current_point  where request_code = :req',
                         ['fixed_point' => $fixedPoint, 'current_point' => $currentPoint, 'req' => $requestCode]
