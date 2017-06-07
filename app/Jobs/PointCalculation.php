@@ -19,16 +19,41 @@ class PointCalculation implements ShouldQueue
     protected $point;
     protected $promo;
 
+    private $isSendNotification = true;
+
     /**
      * Create a new job instance.
      *
-     * @return void
+     * @param $data
+     * @param $point
+     * @param $promo
      */
-    public function __construct($data, $point, $promo)
+    public function __construct($data = null, $point = null, $promo = null)
     {
         $this->data = $data;
         $this->point = $point;
         $this->promo = $promo;
+    }
+
+    public function initialize($data, $point, $promo = null)
+    {
+        $this->data = $data;
+        $this->point = $point;
+        $this->promo = $promo;
+
+        return $this;
+    }
+
+    /**
+     * @param bool $send
+     *
+     * @return $this
+     */
+    public function setIsSendNotification($send)
+    {
+        $this->isSendNotification = $send;
+
+        return $this;
     }
 
     /**
@@ -46,7 +71,7 @@ class PointCalculation implements ShouldQueue
         $city = $this->data->outlet_city;
 
         $cityRate = (new PointService)->getCurrencyRateByCity($city);
-        if($cityRate) {
+        if ($cityRate) {
             $exchange = $cityRate;
         } else {
             $exchange = (new PointService)->getCurrencyRate();
@@ -71,25 +96,25 @@ class PointCalculation implements ShouldQueue
                     'member_code_from' => $cashier,
                     'member_code_to' => $member,
                     'amount' => $point,
-                    'detail_type' => 'db'
+                    'detail_type' => 'db',
                 ],
                 '1' => [
                     'member_code_from' => $cashier,
                     'member_code_to' => $member,
                     'amount' => $point,
-                    'detail_type' => 'cr'
+                    'detail_type' => 'cr',
                 ],
                 '2' => [
                     'member_code_from' => $cashierMoney,
                     'member_code_to' => $member,
                     'amount' => $cash,
-                    'detail_type' => 'db'
+                    'detail_type' => 'db',
                 ],
                 '3' => [
                     'member_code_from' => $cashierMoney,
                     'member_code_to' => $member,
                     'amount' => $cash,
-                    'detail_type' => 'cr'
+                    'detail_type' => 'cr',
                 ],
             ],
         ];
@@ -120,8 +145,10 @@ class PointCalculation implements ShouldQueue
             $member->update();
         }
 
-        $memberId = $this->data->member->id;
-        $this->sendNotification($point, $memberId);
+        if (true === $this->isSendNotification) {
+            $memberId = $this->data->member->id;
+            $this->sendNotification($point, $memberId);
+        }
     }
 
     private function sendNotification($point, $memberId)
@@ -131,8 +158,8 @@ class PointCalculation implements ShouldQueue
 
         (new NotificationService($sendMessage))->setUser($memberId)
                                                ->setData([
-                                                    'action' => 'history',
-                                                ])->send();
+                                                   'action' => 'history',
+                                               ])->send();
     }
 
     private function getSnapById($id)

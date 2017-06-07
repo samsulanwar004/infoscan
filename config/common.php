@@ -9,7 +9,7 @@ return [
     'snap_category_mode' => [
         'in' => 'Input',
         'ta' => 'Tags',
-        'au' => 'Audios'
+        'au' => 'Audios',
     ],
     'snap_mode' => [
         'in' => 'input',
@@ -17,9 +17,9 @@ return [
         'au' => 'audios',
     ],
     'snap_type' => [
-    	'rc' => 'receipt',
-    	'gt' => 'generaltrade',
-    	'hw' => 'handwritten',
+        'rc' => 'receipt',
+        'gt' => 'generaltrade',
+        'hw' => 'handwritten',
     ],
     'payment_methods' => [
         'cash' => 'Cash',
@@ -27,10 +27,10 @@ return [
         'credit_card' => 'Credit Card',
     ],
     'reports' => [
-        'fields' => [            
+        'fields' => [
             'user_id' => [
                 'label' => 'User ID',
-                'type' => 'multiple'
+                'type' => 'multiple',
             ],
             'age' => [
                 'label' => 'Age',
@@ -38,19 +38,19 @@ return [
                 'data' => [
                     'min' => 17,
                     'max' => 100,
-                ]
+                ],
             ],
             'province' => [
                 'label' => 'Province',
-                'type' => 'multiple'
+                'type' => 'multiple',
             ],
             'gender' => [
                 'label' => 'Gender',
-                'type' => 'multiple'
+                'type' => 'multiple',
             ],
             'occupation' => [
                 'label' => 'Occupation',
-                'type' => 'single'
+                'type' => 'single',
             ],
             'person_in_house' => [
                 'label' => 'Person in House',
@@ -58,7 +58,7 @@ return [
                 'data' => [
                     'min' => 1,
                     'max' => 5,
-                ]
+                ],
             ],
             'last_education' => [
                 'label' => 'Latest Education',
@@ -66,47 +66,47 @@ return [
                 'data' => [
                     'min' => 0,
                     'max' => 1000000,
-                ]
+                ],
             ],
             'users_city' => [
                 'label' => 'City',
-                'type' => 'multiple'
+                'type' => 'multiple',
             ],
             'sec' => [
                 'label' => 'SEC',
-                'type' => 'single'
+                'type' => 'single',
             ],
             'receipt_number' => [
                 'label' => 'Receipt Number',
-                'type' => 'input'
+                'type' => 'input',
             ],
             'outlet_type' => [
                 'label' => 'Outlet Type',
-                'type' => 'single'
+                'type' => 'single',
             ],
             'outlet_name' => [
                 'label' => 'Outlet Name',
-                'type' => 'multiple'
+                'type' => 'multiple',
             ],
             'outlet_province' => [
                 'label' => 'Outlet Province',
-                'type' => 'single'
+                'type' => 'single',
             ],
             'outlet_city' => [
                 'label' => 'Outlet City',
-                'type' => 'single'
+                'type' => 'single',
             ],
             'outlet_address' => [
                 'label' => 'Outlet Address',
-                'type' => 'input'
+                'type' => 'input',
             ],
             'products' => [
                 'label' => 'Products',
-                'type' => 'multiple'
+                'type' => 'multiple',
             ],
             'brand' => [
                 'label' => 'Brands',
-                'type' => 'single'
+                'type' => 'single',
             ],
             'quantity' => [
                 'label' => 'Quantity',
@@ -114,7 +114,7 @@ return [
                 'data' => [
                     'min' => 0,
                     'max' => 1000,
-                ]
+                ],
             ],
             'total_price_quantity' => [
                 'label' => 'Total Price',
@@ -122,7 +122,7 @@ return [
                 'data' => [
                     'min' => 0,
                     'max' => 3000,
-                ]
+                ],
             ],
             'grand_total_price' => [
                 'label' => 'Grand Total Price',
@@ -130,7 +130,7 @@ return [
                 'data' => [
                     'min' => 0,
                     'max' => 3000,
-                ]
+                ],
             ],
             'purchase_date' => [
                 'label' => 'Purchase Date',
@@ -139,7 +139,7 @@ return [
                     'min' => -0,
                     'max' => \Carbon\Carbon::today()->toDateString(),
                     'format' => 'YYYY-MM-DD',
-                ]
+                ],
             ],
             'sent_time' => [
                 'label' => 'Sent Date',
@@ -148,13 +148,13 @@ return [
                     'min' => -0,
                     'max' => \Carbon\Carbon::today()->toDateString(),
                     'format' => 'YYYY-MM-DD',
-                ]
+                ],
             ],
         ],
         'ignored_fields' => [
             'user_id',
             'receipt_number',
-        ]
+        ],
     ],
 
     // tasks code
@@ -206,11 +206,16 @@ return [
                     'label' => 'With Audio EF',
                 ],
             ],
-        ]
+        ],
     ],
 
     'latest_educations' => [
-        'SD', 'SMP', 'SMA', 'Diploma', 'Sarjana', 'Other',
+        'SD',
+        'SMP',
+        'SMA',
+        'Diploma',
+        'Sarjana',
+        'Other',
     ],
 
     'banks' => [
@@ -316,7 +321,7 @@ return [
 
         'register' => [
             'verification' => 'Verifikasi Email - Verifikasi akun GoJaGomu sekarang!',
-            'resend' => 'Akun Belum Terverifikasi - Kami sudah mengirim ulang email verifikasi ke emailmu. Verifikasi akunmu untuk bisa cashback!'
+            'resend' => 'Akun Belum Terverifikasi - Kami sudah mengirim ulang email verifikasi ke emailmu. Verifikasi akunmu untuk bisa cashback!',
         ],
 
         'limit' => [

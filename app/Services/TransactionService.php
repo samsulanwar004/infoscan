@@ -47,8 +47,8 @@ class TransactionService
 
     public function getAllTransaction()
     {
-    	return Transaction::orderBy('updated_at', 'DESC')
-    		->paginate(50);
+        return Transaction::orderBy('updated_at', 'DESC')
+                          ->paginate(50);
     }
 
     public function getTransactionDetailById($id)
@@ -115,7 +115,6 @@ class TransactionService
     {
         $snapId = $this->snapId;
         $t = $this->getTransactionBySnapId($snapId);
-
         $t->current_cash_per_unit = $this->currentRate;
         $t->update();
 
