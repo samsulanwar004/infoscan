@@ -2,6 +2,9 @@
 
 namespace App\Console\Commands;
 
+use App\Jobs\PointCalculation;
+use App\Services\SnapService;
+use App\Transaction;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
@@ -81,6 +84,7 @@ class PointModeling extends Command
 
             $result[] = [
                 'snap_code' => $s->request_code,
+                'snap_id' => $s->snap_id,
                 'snap_file_id' => $s->id,
                 'snap_file_code' => $s->file_code,
                 'snap_type' => $s->snap_type,
@@ -91,6 +95,7 @@ class PointModeling extends Command
                 'created_at' => $today,
                 'snapped_at' => $s->created_at,
                 'email' => $s->email,
+                'member_code' => $s->member_code,
             ];
         }
 
@@ -123,7 +128,7 @@ class PointModeling extends Command
 
     private function getApprovedSnap()
     {
-        $sql = "select m.email, s.request_code, s.fixed_point, s.created_at, sf.id, sf.file_code, s.snap_type, sf.file_path, sf.mode_type, sf.image_point, sf.image_point
+        $sql = "select m.member_code, m.email, s.id as snap_id, s.request_code, s.fixed_point, s.created_at, sf.id, sf.file_code, s.snap_type, sf.file_path, sf.mode_type, sf.image_point, sf.image_point
 from snap_files as sf
 inner join snaps as s on s.id = sf.snap_id
 inner join members as m on m.id = s.member_id
@@ -273,6 +278,7 @@ order by s.snap_type, s.request_code, s.created_at asc
 
         try {
             $results = $this->remapMemberPoint();
+            $pointCalculation = new PointCalculation;
 
             foreach ($results as $key => $result) {
                 $result = collect($result)->groupBy('snap_code');
@@ -294,16 +300,34 @@ order by s.snap_type, s.request_code, s.created_at asc
 
                     // update snap
                     // TODO: need update current_exchange_rate value and current_total_money value
-                    DB::update(
+                    /*DB::update(
                         'Update snaps set fixed_point = :fixed_point, current_point_member=:current_point  where request_code = :req',
                         ['fixed_point' => $fixedPoint, 'current_point' => $currentPoint, 'req' => $requestCode]
-                    );
+                    );*/
+
+                    // create new transcation
+                    $firstSnap = $snap->first();
+                    $memberCode = $firstSnap['member_code'];
+                    $snapId = $firstSnap['snap_id'];
+                    $this->createNewTransaction($memberCode, $snapId);
 
                     // update member Total Temporary Point
-                    DB::update(
-                        'Update members set temporary_point = :current_point where email=:email',
-                        ['email' => $key, 'current_point' => $currentPoint]
-                    );
+                    /* DB::update(
+                         'Update members set temporary_point = :current_point where email=:email',
+                         ['email' => $key, 'current_point' => $currentPoint]
+                     );*/
+
+
+                    $pointCalculation
+                        ->initialize(
+                            (new SnapService)->getSnapByCode($requestCode),
+                            $fixedPoint,
+                            null
+                        )->setIsSendNotification(false)
+                        ->handle();
+
+                    /*$job = (new PointCalculation((new SnapService)->getSnapByCode($requestCode), $fixedPoint, null))->onQueue($config)->onConnection(env('INFOSCAN_QUEUE'));
+                    dispatch($job);*/
 
                     ++$memberIncrement;
                 }
@@ -328,14 +352,27 @@ order by s.snap_type, s.request_code, s.created_at asc
         foreach ($results as $r) {
             $email = $r['email'];
             $snaps[$email][] = [
+                'snap_id' => $r['snap_id'],
                 'snap_code' => $r['snap_code'],
                 'snap_file_id' => $r['snap_file_id'],
                 'new_point' => $r['new_point'],
                 'snapped_at' => $r['snapped_at'],
                 'email' => $r['email'],
+                'member_code' => $r['member_code'],
             ];
         }
 
         return $snaps;
     }
+
+    private function createNewTransaction($memberCode, $snapId)
+    {
+        $t = new Transaction;
+        $t->transaction_code = strtolower(str_random(10));
+        $t->member_code = $memberCode;
+        $t->transaction_type = '1';
+        $t->snap_id = $snapId;
+        $t->save();
+    }
+
 }

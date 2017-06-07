@@ -72,48 +72,56 @@ class SnapService
     public function getAvailableSnaps()
     {
         return Snap::with('member')
-            ->with(array('files' => function($query) {
-                $query->where('file_mimes', 'like', 'image%');
-            }))
-            ->orderBy('created_at', 'DESC')
-            ->paginate(50);
+                   ->with([
+                       'files' => function ($query) {
+                           $query->where('file_mimes', 'like', 'image%');
+                       },
+                   ])
+                   ->orderBy('created_at', 'DESC')
+                   ->paginate(50);
     }
 
     public function getAvailableSnapsByUser($id)
     {
         return Snap::with('member')
-            ->with(array('files' => function($query) {
-                $query->where('file_mimes', 'like', 'image%');
-            }))
-            ->where('user_id', $id)
-            ->orderBy('created_at', 'DESC')
-            ->paginate(50);
+                   ->with([
+                       'files' => function ($query) {
+                           $query->where('file_mimes', 'like', 'image%');
+                       },
+                   ])
+                   ->where('user_id', $id)
+                   ->orderBy('created_at', 'DESC')
+                   ->paginate(50);
     }
 
     public function getAvailableSnapByUserId($id)
     {
         return Snap::with('member')
-            ->with(array('files' => function($query) {
-                $query->where('file_mimes', 'like', 'image%');
-            }))
-            ->where('user_id', $id)
-            ->orderBy('created_at', 'DESC')
-            ->paginate(50);
+                   ->with([
+                       'files' => function ($query) {
+                           $query->where('file_mimes', 'like', 'image%');
+                       },
+                   ])
+                   ->where('user_id', $id)
+                   ->orderBy('created_at', 'DESC')
+                   ->paginate(50);
     }
 
     public function getSnapsByFilter($data, $userId = null)
     {
-        $query = Snap::with(array('files' => function($query) {
+        $query = Snap::with([
+            'files' => function ($query) {
                 $query->where('file_mimes', 'like', 'image%');
-            }))
-            ->whereDate('created_at', '>=', $data['start_date'])
-            ->whereDate('created_at', '<=', $data['end_date']);
+            },
+        ])
+                     ->whereDate('created_at', '>=', $data['start_date'])
+                     ->whereDate('created_at', '<=', $data['end_date']);
 
         if ($data['search'] == true) {
             $search = $data['search'];
             $query->whereHas('member', function ($query) use ($search) {
-                $query->where('name', 'like', '%'.$search.'%')
-                ->orWhere('email','like','%'.$search.'%');
+                $query->where('name', 'like', '%' . $search . '%')
+                      ->orWhere('email', 'like', '%' . $search . '%');
             });
         } else {
             $query->with('member');
@@ -143,19 +151,21 @@ class SnapService
 
     public function getExportSnapToCsv($data, $userId = null)
     {
-        $query = Snap::with(array('files' => function($query) {
+        $query = Snap::with([
+            'files' => function ($query) {
                 $query->where('file_mimes', 'like', 'image%');
-            }))
-            ->with('approve')
-            ->with('reject')
-            ->whereDate('created_at', '>=', $data['start_date'])
-            ->whereDate('created_at', '<=', $data['end_date']);
+            },
+        ])
+                     ->with('approve')
+                     ->with('reject')
+                     ->whereDate('created_at', '>=', $data['start_date'])
+                     ->whereDate('created_at', '<=', $data['end_date']);
 
         if ($data['search'] == true) {
             $search = $data['search'];
             $query->whereHas('member', function ($query) use ($search) {
-                $query->where('name', 'like', '%'.$search.'%')
-                ->orWhere('email','like','%'.$search.'%');
+                $query->where('name', 'like', '%' . $search . '%')
+                      ->orWhere('email', 'like', '%' . $search . '%');
             });
         } else {
             $query->with('member');
@@ -183,7 +193,7 @@ class SnapService
 
         $files = [];
         $snapFileIds = [];
-        foreach ($r  as  $value) {
+        foreach ($r as $value) {
             $snaps[$value->id]['main'] = $value;
 
             foreach ($value->files as $file) {
@@ -193,10 +203,10 @@ class SnapService
         }
 
         $snapTags = SnapTag::whereIn('snap_file_id', $snapFileIds)
-            ->get();
+                           ->get();
 
         foreach ($snapTags as $tag) {
-             $snaps[$files[$tag->snap_file_id]]['tags'][] = $tag;
+            $snaps[$files[$tag->snap_file_id]]['tags'][] = $tag;
         }
 
         $results = [];
@@ -209,7 +219,7 @@ class SnapService
             $ocr = implode(' ', $ocr);
             $approve = isset($snap['main']->approve) ? $snap['main']->approve->name : null;
             $reject = isset($snap['main']->reject) ? $snap['main']->reject->name : null;
-            $type = ($snap['main']->snap_type == 'receipt') ? strtoupper($snap['main']->snap_type) : strtoupper($snap['main']->snap_type).' Snap with '.strtoupper($snap['main']->mode_type).' mode';
+            $type = ($snap['main']->snap_type == 'receipt') ? strtoupper($snap['main']->snap_type) : strtoupper($snap['main']->snap_type) . ' Snap with ' . strtoupper($snap['main']->mode_type) . ' mode';
             $comment = explode('\n', $snap['main']->comment);
 
             if (isset($snap['tags'])) {
@@ -230,13 +240,13 @@ class SnapService
                         'snapped' => $snap['main']->created_at->toDateTimeString(),
                         'approve_or_reject_date' => $snap['main']->updated_at->toDateTimeString(),
                         'approve_or_reject_by' => isset($approve) ? $approve : $reject,
-                        'ocr' => trim(str_replace(array("\n","\r",","), ' ', $ocr)),
-                        'product_name' => trim(str_replace(array("\n","\r",","), ' ',$tag->name)),
-                        'brands' => trim(str_replace(array("\n","\r",","), ' ',$tag->brands)),
-                        'weight' => trim(str_replace(array("\n","\r",","), ' ',$tag->weight)),
-                        'sku' => trim(str_replace(array("\n","\r",","), ' ',$tag->sku)),
-                        'quantity' => trim(str_replace(array("\n","\r",","), ' ',$tag->quantity)),
-                        'total_price' => trim(str_replace(array("\n","\r",","), ' ',$tag->total_price)),
+                        'ocr' => trim(str_replace(["\n", "\r", ","], ' ', $ocr)),
+                        'product_name' => trim(str_replace(["\n", "\r", ","], ' ', $tag->name)),
+                        'brands' => trim(str_replace(["\n", "\r", ","], ' ', $tag->brands)),
+                        'weight' => trim(str_replace(["\n", "\r", ","], ' ', $tag->weight)),
+                        'sku' => trim(str_replace(["\n", "\r", ","], ' ', $tag->sku)),
+                        'quantity' => trim(str_replace(["\n", "\r", ","], ' ', $tag->quantity)),
+                        'total_price' => trim(str_replace(["\n", "\r", ","], ' ', $tag->total_price)),
                     ];
                 }
             } else {
@@ -255,7 +265,7 @@ class SnapService
                     'snapped' => $snap['main']->created_at->toDateTimeString(),
                     'approve_or_reject_date' => $snap['main']->updated_at->toDateTimeString(),
                     'approve_or_reject_by' => isset($approve) ? $approve : $reject,
-                    'ocr' => trim(str_replace(array("\n","\r",","), ' ', $ocr)),
+                    'ocr' => trim(str_replace(["\n", "\r", ","], ' ', $ocr)),
                     'product_name' => '',
                     'brands' => '',
                     'weight' => '',
@@ -268,23 +278,25 @@ class SnapService
         }
 
         if ($data['type'] == 'new') {
-            $filename = strtolower(str_random(10)).'.csv';
+            $filename = strtolower(str_random(10)) . '.csv';
             $title = 'No,Snap Code,Type,# of images,User Details,Name,Estimated Point,Fixed Point,Current Point,Current Level,Aproved / Rejected,Rejection Reason,Receipt Snapped,Approved / Rejected Date,Approved / Rejected By,Product Name,Brands,Weight,SKU,Quantity,Total Price,OCR';
             \Storage::disk('csv')->put($filename, $title);
             $no = 1;
-            foreach($results as $row) {
-                $baris = $no.','.$row['snap_code'].','.$row['type'].','.$row['of_images'].','.$row['email'].','.$row['name'].','.$row['estimated_point'].','.$row['fixed_point'].','.$row['current_point'].','.$row['current_level'].','.$row['status'].','.$row['reason'].','.$row['snapped'].','.$row['approve_or_reject_date'].','.$row['approve_or_reject_by'].','.$row['product_name'].','.$row['brands'].','.$row['weight'].','.$row['sku'].','.$row['quantity'].','.$row['total_price'].','.$row['ocr'];
+            foreach ($results as $row) {
+                $baris = $no . ',' . $row['snap_code'] . ',' . $row['type'] . ',' . $row['of_images'] . ',' . $row['email'] . ',' . $row['name'] . ',' . $row['estimated_point'] . ',' . $row['fixed_point'] . ',' . $row['current_point'] . ',' . $row['current_level'] . ',' . $row['status'] . ',' . $row['reason'] . ',' . $row['snapped'] . ',' . $row['approve_or_reject_date'] . ',' . $row['approve_or_reject_by'] . ',' . $row['product_name'] . ',' . $row['brands'] . ',' . $row['weight'] . ',' . $row['sku'] . ',' . $row['quantity'] . ',' . $row['total_price'] . ',' . $row['ocr'];
                 \Storage::disk('csv')->append($filename, $baris);
                 $no++;
             }
 
-        } else if ($data['type'] == 'next') {
-            $filename = $data['filename'];
-            $no = $data['no'];
-            foreach($results as $row) {
-                $baris = $no.','.$row['snap_code'].','.$row['type'].','.$row['of_images'].','.$row['email'].','.$row['name'].','.$row['estimated_point'].','.$row['fixed_point'].','.$row['current_point'].','.$row['current_level'].','.$row['status'].','.$row['reason'].','.$row['snapped'].','.$row['approve_or_reject_date'].','.$row['approve_or_reject_by'].','.$row['product_name'].','.$row['brands'].','.$row['weight'].','.$row['sku'].','.$row['quantity'].','.$row['total_price'].','.$row['ocr'];
-                \Storage::disk('csv')->append($filename, $baris);
-                $no++;
+        } else {
+            if ($data['type'] == 'next') {
+                $filename = $data['filename'];
+                $no = $data['no'];
+                foreach ($results as $row) {
+                    $baris = $no . ',' . $row['snap_code'] . ',' . $row['type'] . ',' . $row['of_images'] . ',' . $row['email'] . ',' . $row['name'] . ',' . $row['estimated_point'] . ',' . $row['fixed_point'] . ',' . $row['current_point'] . ',' . $row['current_level'] . ',' . $row['status'] . ',' . $row['reason'] . ',' . $row['snapped'] . ',' . $row['approve_or_reject_date'] . ',' . $row['approve_or_reject_by'] . ',' . $row['product_name'] . ',' . $row['brands'] . ',' . $row['weight'] . ',' . $row['sku'] . ',' . $row['quantity'] . ',' . $row['total_price'] . ',' . $row['ocr'];
+                    \Storage::disk('csv')->append($filename, $baris);
+                    $no++;
+                }
             }
         }
 
@@ -304,26 +316,30 @@ class SnapService
     {
         return ($userId == null) ?
             Snap::whereHas('member', function ($query) use ($search) {
-                $query->where('name', 'like', '%'.$search.'%')
-                ->orWhere('email','like','%'.$search.'%');
+                $query->where('name', 'like', '%' . $search . '%')
+                      ->orWhere('email', 'like', '%' . $search . '%');
             })
-            ->with(array('files' => function($query) {
-                $query->where('file_mimes', 'like', 'image%');
-            }))
-            ->orWhere('request_code', $search)
-            ->orderBy('created_at', 'DESC')
-            ->paginate(50) :
+                ->with([
+                    'files' => function ($query) {
+                        $query->where('file_mimes', 'like', 'image%');
+                    },
+                ])
+                ->orWhere('request_code', $search)
+                ->orderBy('created_at', 'DESC')
+                ->paginate(50) :
             Snap::whereHas('member', function ($query) use ($search) {
-                $query->where('name', 'like', '%'.$search.'%')
-                ->orWhere('email','like','%'.$search.'%');
+                $query->where('name', 'like', '%' . $search . '%')
+                      ->orWhere('email', 'like', '%' . $search . '%');
             })
-            ->with(array('files' => function($query) {
-                $query->where('file_mimes', 'like', 'image%');
-            }))
-            ->where('user_id', '=', $userId)
-            ->orWhere('request_code', $search)
-            ->orderBy('created_at', 'DESC')
-            ->paginate(50);
+                ->with([
+                    'files' => function ($query) {
+                        $query->where('file_mimes', 'like', 'image%');
+                    },
+                ])
+                ->where('user_id', '=', $userId)
+                ->orWhere('request_code', $search)
+                ->orderBy('created_at', 'DESC')
+                ->paginate(50);
     }
 
     public function getSnapFileById($id)
@@ -334,9 +350,9 @@ class SnapService
     public function getSnapFileByPosition($snapId, $position)
     {
         return SnapFile::where('snap_id', $snapId)
-            ->where('position', $position)
-            ->orderBy('id', 'DESC')
-            ->first();
+                       ->where('position', $position)
+                       ->orderBy('id', 'DESC')
+                       ->first();
     }
 
     public function getSnapByid($id)
@@ -357,12 +373,12 @@ class SnapService
     public function getSnapByLocation()
     {
         return Snap::where('location', null)
-            ->orWhere('location', '')
-            ->whereNotIn('longitude', ['0.00000000'])
-            ->whereNotIn('latitude', ['0.00000000'])
-            ->take(20)
-            ->orderBy('id', 'DESC')
-            ->get();
+                   ->orWhere('location', '')
+                   ->whereNotIn('longitude', ['0.00000000'])
+                   ->whereNotIn('latitude', ['0.00000000'])
+                   ->take(20)
+                   ->orderBy('id', 'DESC')
+                   ->get();
     }
 
     public function confirmSnap(Request $request, $id)
@@ -389,11 +405,11 @@ class SnapService
             } else {
                 $reason = $request->input('reason');
                 $setting = \App\Setting::where('id', $reason)
-                    ->first();
+                                       ->first();
                 $reason = $setting->setting_value;
             }
 
-            $comment = nl2br($comment.' \n Alasan :'.$reason);
+            $comment = nl2br($comment . ' \n Alasan :' . $reason);
         }
 
         if ($request->input('confirm') == 'approve') {
@@ -459,12 +475,12 @@ class SnapService
         dispatch($job);
 
 
-        if('reject' === $originalData['action']) {
+        if ('reject' === $originalData['action']) {
             $message = config('common.notification_messages.snaps.failed');
             (new NotificationService($message))->setUser($snaps->member_id)
-                                                   ->setData([
-                                                        'action' => 'history',
-                                                    ])->send();
+                                               ->setData([
+                                                   'action' => 'history',
+                                               ])->send();
         }
 
         return true;
@@ -512,7 +528,7 @@ class SnapService
         $this->deleteSnapTags($ids, $id);
 
         // update tag.
-        for ($i=0; $i < $tagCount; ++$i) {
+        for ($i = 0; $i < $tagCount; ++$i) {
             $tagId = $tags['id'][$i];
             $t = $this->getSnapTagById($tagId);
             $t->name = $tags['name'][$i];
@@ -528,7 +544,7 @@ class SnapService
         }
 
         // create new tag
-        for ($i=0; $i < $newTagCount; $i++) {
+        for ($i = 0; $i < $newTagCount; $i++) {
             $t = new SnapTag;
             $t->name = $newTags['name'][$i];
             $t->brands = $newTags['brands'][$i];
@@ -557,7 +573,7 @@ class SnapService
         $this->deleteSnapTags($ids, $id);
 
         // update tag.
-        for ($i=0; $i < $tagCount; ++$i) {
+        for ($i = 0; $i < $tagCount; ++$i) {
             $tagId = $tags['id'][$i];
             $t = $this->getSnapTagById($tagId);
             $t->name = $tags['name'][$i];
@@ -574,7 +590,7 @@ class SnapService
         }
 
         // create new tag
-        for ($i=0; $i < $newTagCount; $i++) {
+        for ($i = 0; $i < $newTagCount; $i++) {
             $t = new SnapTag;
             $t->name = $newTags['name'][$i];
             $t->brands = $newTags['brands'][$i];
@@ -606,7 +622,7 @@ class SnapService
         $this->deleteSnapTags($ids, $id);
 
         // update tag.
-        for ($i=0; $i < $tagCount; ++$i) {
+        for ($i = 0; $i < $tagCount; ++$i) {
             $tagId = $tags['id'][$i];
             $t = $this->getSnapTagById($tagId);
             $t->name = $tags['name'][$i];
@@ -623,7 +639,7 @@ class SnapService
         }
 
         // create new tag
-        for ($i=0; $i < $newTagCount; $i++) {
+        for ($i = 0; $i < $newTagCount; $i++) {
             $t = new SnapTag;
             $t->name = $newTags['name'][$i];
             $t->brands = $newTags['brands'][$i];
@@ -653,7 +669,7 @@ class SnapService
         $this->deleteSnapTags($ids, $id);
 
         // update tag.
-        for ($i=0; $i < $tagCount; ++$i) {
+        for ($i = 0; $i < $tagCount; ++$i) {
             $tagId = $tags['id'][$i];
             $t = $this->getSnapTagById($tagId);
             $t->name = $tags['name'][$i];
@@ -670,7 +686,7 @@ class SnapService
         }
 
         // create new tag
-        for ($i=0; $i < $newTagCount; $i++) {
+        for ($i = 0; $i < $newTagCount; $i++) {
             $t = new SnapTag;
             $t->name = $newTags['name'][$i];
             $t->brands = $newTags['brands'][$i];
@@ -690,20 +706,21 @@ class SnapService
 
     public function generateSignature($name, $weight, $qty, $total)
     {
-        return str_replace(' ', '', trim($name).'|'.trim($weight).'|'.trim($qty).'|'.clean_numeric(trim($total), '%', false, '.'));
+        return str_replace(' ', '',
+            trim($name) . '|' . trim($weight) . '|' . trim($qty) . '|' . clean_numeric(trim($total), '%', false, '.'));
     }
 
     public function deleteSnapTags($ids, $snapFileId)
     {
         $ids = is_null($ids) ? [0] : $ids;
         SnapTag::where('snap_file_id', '=', $snapFileId)
-                    ->whereNotIn('id', $ids)->delete();
+               ->whereNotIn('id', $ids)->delete();
     }
 
     public function totalValue($tagsTotal, $newTagsTotal, $id)
     {
-        $tagsTotal = ($tagsTotal == true) ? $tagsTotal : array();
-        $newTagsTotal = ($newTagsTotal == true) ? $newTagsTotal : array();
+        $tagsTotal = ($tagsTotal == true) ? $tagsTotal : [];
+        $newTagsTotal = ($newTagsTotal == true) ? $newTagsTotal : [];
 
         $total = collect(array_merge($tagsTotal, $newTagsTotal))->sum();
 
@@ -730,6 +747,7 @@ class SnapService
 
     /**
      * @param \Illuminate\Http\Request $request
+     *
      * @return array|mixed
      * @throws \App\Exceptions\Services\SnapServiceException
      * @throws \Exception
@@ -749,7 +767,7 @@ class SnapService
             'snap_files' => $images,
         ];
 
-        if (! $snap = $this->presistData($request, $images)) {
+        if (!$snap = $this->presistData($request, $images)) {
             throw new Exception('Error when saving data in database!');
         }
 
@@ -815,6 +833,7 @@ class SnapService
 
     /**
      * @param \Illuminate\Http\Request $request
+     *
      * @return array
      * @throws \App\Exceptions\Services\SnapServiceException
      * @throws \Exception
@@ -1052,6 +1071,7 @@ class SnapService
      * Snap handler for handwritten with input & audio mode
      *
      * @param  \Illuminate\Http\Request $request
+     *
      * @return array|mixed
      * @throws \App\Exceptions\Services\SnapServiceException
      */
@@ -1309,6 +1329,7 @@ class SnapService
      * Store all image to local storage and upload the to s3 by event jobs (queue).
      *
      * @param  Request $request
+     *
      * @return array|mixed
      * @throws \App\Exceptions\Services\SnapServiceException
      */
@@ -1330,6 +1351,7 @@ class SnapService
 
     /**
      * @param \Illuminate\Http\Request $request
+     *
      * @return array
      * @throws \App\Exceptions\Services\SnapServiceException
      */
@@ -1352,8 +1374,9 @@ class SnapService
     /**
      * Upload file to s3.
      *
-     * @param  array $files
+     * @param  array  $files
      * @param  string $type
+     *
      * @return array
      */
     private function filesUploads(array $files, $type, $mimes = null)
@@ -1395,6 +1418,7 @@ class SnapService
 
     /**
      * @param \Illuminate\Http\Request $request
+     *
      * @return int
      */
     private function countOfImage(Request $request)
@@ -1408,6 +1432,7 @@ class SnapService
 
     /**
      * @param \Illuminate\Http\Request $request
+     *
      * @return int
      */
     private function countOfAudio(Request $request)
@@ -1421,7 +1446,8 @@ class SnapService
 
     /**
      * @param \Illuminate\Http\Request $request
-     * @param array $files
+     * @param array                    $files
+     *
      * @return bool
      */
     public function presistData(Request $request, array $files)
@@ -1445,6 +1471,7 @@ class SnapService
 
     /**
      * @param \Illuminate\Http\Request $request
+     *
      * @return \App\Snap;
      */
     private function createSnap(Request $request)
@@ -1467,15 +1494,16 @@ class SnapService
     }
 
     /**
-     * @param $request
-     * @param array $files
+     * @param           $request
+     * @param array     $files
      * @param \App\Snap $snap
+     *
      * @return bool
      */
     private function createFiles($request, array $files, \App\Snap $snap, $point = null)
     {
         if ($this->isMultidimensiArray($files)) {
-            if($request->input('mode_type') == self::INPUT_TYPE_NAME) {
+            if ($request->input('mode_type') == self::INPUT_TYPE_NAME) {
                 $tags = [];
                 foreach ($files as $file) {
                     $snapFile = $this->persistFile($request, $file, $snap, $point);
@@ -1492,6 +1520,7 @@ class SnapService
                     $this->createTag($request, $snapFile);
                 }
             }
+
             return true;
         }
 
@@ -1505,8 +1534,9 @@ class SnapService
      * Insert a new files data into database.
      *
      * @param \Illuminate\Http\Request $request
-     * @param array $data
-     * @param $snap
+     * @param array                    $data
+     * @param                          $snap
+     *
      * @return \App\SnapFile
      */
     private function persistFile(Request $request, array $data, $snap, $point = null)
@@ -1532,7 +1562,8 @@ class SnapService
 
     /**
      * @param \Illuminate\Http\Request $request
-     * @param \App\SnapFile $file
+     * @param \App\SnapFile            $file
+     *
      * @return array|string
      */
     private function createTag(Request $request, \App\SnapFile $file)
@@ -1569,11 +1600,13 @@ class SnapService
 
         // add total value
         $this->totalValue($total, [], $file->id);
+
         return $tags;
     }
 
     /**
      * @param \Illuminate\Http\Request $request
+     *
      * @return bool
      */
     private function hasMode(Request $request)
@@ -1583,6 +1616,7 @@ class SnapService
 
     /**
      * @param \Illuminate\Http\Request $request
+     *
      * @return bool
      */
     private function isTagsMode(Request $request)
@@ -1596,6 +1630,7 @@ class SnapService
 
     /**
      * @param \Illuminate\Http\Request $request
+     *
      * @return bool
      */
     private function isInputMode(Request $request)
@@ -1609,6 +1644,7 @@ class SnapService
 
     /**
      * @param \Illuminate\Http\Request $request
+     *
      * @return bool
      */
     private function isAudioMode(Request $request)
@@ -1622,6 +1658,7 @@ class SnapService
 
     /**
      * @param \Illuminate\Http\Request $request
+     *
      * @return bool
      */
     private function isNoMode(Request $request)
@@ -1636,6 +1673,7 @@ class SnapService
 
     /**
      * @param \Illuminate\Http\Request $request
+     *
      * @return bool
      */
     private function isNeedRecognition(Request $request)
@@ -1651,6 +1689,7 @@ class SnapService
 
     /**
      * @param $object
+     *
      * @return \Dusterio\PlainSqs\Jobs\DispatcherJob
      */
     protected function getPlainDispatcher($object)
@@ -1660,6 +1699,7 @@ class SnapService
 
     /**
      * @param $filename
+     *
      * @return string
      */
     protected function completeImageLink($filename)
@@ -1669,6 +1709,7 @@ class SnapService
 
     /**
      * @param $array
+     *
      * @return bool
      */
     private function isMultidimensiArray($array)
@@ -1682,10 +1723,12 @@ class SnapService
     }
 
     /**
-    * Save Estimated point
-    * @param $data
-    * @return bool
-    */
+     * Save Estimated point
+     *
+     * @param $data
+     *
+     * @return bool
+     */
     public function saveEstimatedPoint($data)
     {
         $requestCode = $data['request_code'];
@@ -1726,6 +1769,7 @@ class SnapService
     private function setTags($value)
     {
         $this->countOfTags = $value;
+
         return $this;
     }
 
@@ -1789,6 +1833,7 @@ class SnapService
     private function setEstimatedPoint($value)
     {
         $this->estimatedPoint = $value;
+
         return $this;
     }
 
@@ -1800,7 +1845,7 @@ class SnapService
     public function getSnapToAssign()
     {
         return collect(Snap::whereNull('user_id')
-            ->get())->toArray();
+                           ->get())->toArray();
     }
 
     public function assignToCrowdsource()
@@ -1813,8 +1858,8 @@ class SnapService
     public function getSnapByMemberCode($memberCode)
     {
         $member = Member::with('snap')
-            ->where('member_code', $memberCode)
-            ->first();
+                        ->where('member_code', $memberCode)
+                        ->first();
 
         return $member->snap;
     }
@@ -1823,10 +1868,14 @@ class SnapService
     {
         if ($type == 'handWritten') {
             return 'Nota Tulis';
-        } else if ($type == 'generalTrade') {
-            return 'Warung';
-        } else if ($type == 'receipt') {
-            return 'Struk';
+        } else {
+            if ($type == 'generalTrade') {
+                return 'Warung';
+            } else {
+                if ($type == 'receipt') {
+                    return 'Struk';
+                }
+            }
         }
     }
 
@@ -1834,21 +1883,21 @@ class SnapService
     {
 
         $point = $this->getEstimatedPoint();
-        $snaps->comment = 'Kami sedang memproses foto transaksimu. Kamu bisa mendapatkan bonus poin sebesar '.$point.' poin!';
+        $snaps->comment = 'Kami sedang memproses foto transaksimu. Kamu bisa mendapatkan bonus poin sebesar ' . $point . ' poin!';
         $snaps->update();
     }
 
     public function getSnapByMemberId($memberId)
     {
         return Snap::with('files')
-            ->where('member_id', $memberId)
-            ->orderBy('updated_at', 'DESC')
-            ->get();
+                   ->where('member_id', $memberId)
+                   ->orderBy('updated_at', 'DESC')
+                   ->get();
     }
 
     public function sendSnapNotification($type, $point = '')
     {
-        $message = config('common.notification_messages.snaps.'.$type);
+        $message = config('common.notification_messages.snaps.' . $type);
         $sendMessage = sprintf("$message", (string)$point);
 
         (new NotificationService($sendMessage))->setData([
@@ -1858,7 +1907,7 @@ class SnapService
 
     public function sendSnapLimitNotification($type, $mode = '')
     {
-        $message = config('common.notification_messages.limit.'.$type);
+        $message = config('common.notification_messages.limit.' . $type);
         $sendMessage = sprintf("$message", (string)$mode);
 
         (new NotificationService($sendMessage))->setData([
@@ -1873,12 +1922,12 @@ class SnapService
         $ids = is_null($ids) ? [0] : $ids;
 
         $t = \DB::table('snaps')
-            ->join('snap_files', 'snaps.id', '=', 'snap_files.snap_id')
-            ->join('snap_tags', 'snap_files.id', '=', 'snap_tags.snap_file_id')
-            ->where('snaps.id', $id)
-            ->select('snap_tags.id')
-            ->whereNotIn('snap_tags.id', $ids)
-            ->get();
+                ->join('snap_files', 'snaps.id', '=', 'snap_files.snap_id')
+                ->join('snap_tags', 'snap_files.id', '=', 'snap_tags.snap_file_id')
+                ->where('snaps.id', $id)
+                ->select('snap_tags.id')
+                ->whereNotIn('snap_tags.id', $ids)
+                ->get();
 
         $delete = [];
         foreach ($t as $tag) {
@@ -1892,38 +1941,38 @@ class SnapService
     {
         return ($nextDay == null) ?
             Snap::where('snap_type', $type)
-            ->where('member_id', $id)
-            ->where('mode_type', $mode)
-            ->whereDate('created_at', $date)
-            ->count() :
+                ->where('member_id', $id)
+                ->where('mode_type', $mode)
+                ->whereDate('created_at', $date)
+                ->count() :
             Snap::where('snap_type', $type)
-            ->where('member_id', $id)
-            ->where('mode_type', $mode)
-            ->whereDate('created_at', '>=', $date)
-            ->whereDate('created_at', '<=', $nextDay)
-            ->count();
+                ->where('member_id', $id)
+                ->where('mode_type', $mode)
+                ->whereDate('created_at', '>=', $date)
+                ->whereDate('created_at', '<=', $nextDay)
+                ->count();
     }
 
     public function countMemberSnapFile($id, $type, $mode, $date, $nextDay = null)
     {
         return ($nextDay == null) ?
             \DB::table('snaps')
-                ->join('snap_files', 'snaps.id', '=', 'snap_files.snap_id')
-                ->where('snaps.member_id', $id)
-                ->where('snaps.snap_type', $type)
-                ->where('snaps.mode_type', $mode)
-                ->whereDate('snaps.created_at', $date)
-                ->where('snap_files.file_mimes', 'like', 'image%')
-                ->count() :
+               ->join('snap_files', 'snaps.id', '=', 'snap_files.snap_id')
+               ->where('snaps.member_id', $id)
+               ->where('snaps.snap_type', $type)
+               ->where('snaps.mode_type', $mode)
+               ->whereDate('snaps.created_at', $date)
+               ->where('snap_files.file_mimes', 'like', 'image%')
+               ->count() :
             \DB::table('snaps')
-                ->join('snap_files', 'snaps.id', '=', 'snap_files.snap_id')
-                ->where('snaps.member_id', $id)
-                ->where('snaps.snap_type', $type)
-                ->where('snaps.mode_type', $mode)
-                ->where('snap_files.file_mimes', 'like', 'image%')
-                ->whereDate('snaps.created_at', '>=', $date)
-                ->whereDate('snaps.created_at', '<=', $nextDay)
-                ->count();
+               ->join('snap_files', 'snaps.id', '=', 'snap_files.snap_id')
+               ->where('snaps.member_id', $id)
+               ->where('snaps.snap_type', $type)
+               ->where('snaps.mode_type', $mode)
+               ->where('snap_files.file_mimes', 'like', 'image%')
+               ->whereDate('snaps.created_at', '>=', $date)
+               ->whereDate('snaps.created_at', '<=', $nextDay)
+               ->count();
     }
 
     public function saveImageCrop($request)
@@ -1950,7 +1999,7 @@ class SnapService
 
     protected function getCodeTask($type, $mode)
     {
-        if($type == 'receipt') {
+        if ($type == 'receipt') {
             $type = 'a';
         } elseif ($type == 'handWritten') {
             $type = 'b';
@@ -1960,28 +2009,28 @@ class SnapService
 
         switch ($mode) {
             case 'audios':
-                $mode = $type.'|5';
-                break;
+                $mode = $type . '|5';
+            break;
 
             case 'tags':
-                $mode = $type.'|3';
-                break;
+                $mode = $type . '|3';
+            break;
 
             case 'input':
-                $mode = $type.'|3';
-                break;
+                $mode = $type . '|3';
+            break;
 
             case 'image':
                 $mode = $type;
-                break;
+            break;
 
             case 'images':
                 $mode = $type;
-                break;
+            break;
 
             default:
-                $mode = $type.'|1';
-                break;
+                $mode = $type . '|1';
+            break;
         }
 
         return $mode;
@@ -1991,15 +2040,15 @@ class SnapService
     {
         return ($type == 'receipt') ?
             \DB::table('tasks')
-            ->join('task_points', 'tasks.id', '=', 'task_points.task_id')
-            ->select('task_points.point as point')
-            ->where('tasks.code', 'like', $code.'%')
-            ->first() :
+               ->join('task_points', 'tasks.id', '=', 'task_points.task_id')
+               ->select('task_points.point as point')
+               ->where('tasks.code', 'like', $code . '%')
+               ->first() :
             \DB::table('tasks')
-            ->join('task_points', 'tasks.id', '=', 'task_points.task_id')
-            ->select('task_points.point as point')
-            ->where('tasks.code', '=', $code)
-            ->first();
+               ->join('task_points', 'tasks.id', '=', 'task_points.task_id')
+               ->select('task_points.point as point')
+               ->where('tasks.code', '=', $code)
+               ->first();
     }
 
 }
