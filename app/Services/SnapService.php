@@ -114,10 +114,10 @@ class SnapService
             $query->whereHas('member', function ($query) use ($search) {
                 $query->where('name', 'like', '%'.$search.'%')
                 ->orWhere('email','like','%'.$search.'%');
-            });            
+            });
         } else {
             $query->with('member');
-        }        
+        }
 
         if ($data['status'] != 'all') {
             $query->where('status', '=', $data['status']);
@@ -159,7 +159,7 @@ class SnapService
             });
         } else {
             $query->with('member');
-        } 
+        }
 
         if ($data['status'] != 'all') {
             $query->where('status', '=', $data['status']);
@@ -185,7 +185,7 @@ class SnapService
         $snapFileIds = [];
         foreach ($r  as  $value) {
             $snaps[$value->id]['main'] = $value;
-           
+
             foreach ($value->files as $file) {
                 $snapFileIds[] = $file->id;
                 $files[$file->id] = $value->id;
@@ -198,7 +198,7 @@ class SnapService
         foreach ($snapTags as $tag) {
              $snaps[$files[$tag->snap_file_id]]['tags'][] = $tag;
         }
-        
+
         $results = [];
         foreach ($snaps as $snap) {
             $ocr = [];
@@ -214,7 +214,7 @@ class SnapService
 
             if (isset($snap['tags'])) {
                 foreach ($snap['tags'] as $tag) {
-                    
+
                     $results[] = [
                         'snap_code' => $snap['main']->request_code,
                         'type' => $type,
@@ -231,7 +231,7 @@ class SnapService
                         'approve_or_reject_date' => $snap['main']->updated_at->toDateTimeString(),
                         'approve_or_reject_by' => isset($approve) ? $approve : $reject,
                         'ocr' => trim(str_replace(array("\n","\r",","), ' ', $ocr)),
-                        'product_name' => trim(str_replace(array("\n","\r",","), ' ',$tag->name)),                
+                        'product_name' => trim(str_replace(array("\n","\r",","), ' ',$tag->name)),
                         'brands' => trim(str_replace(array("\n","\r",","), ' ',$tag->brands)),
                         'weight' => trim(str_replace(array("\n","\r",","), ' ',$tag->weight)),
                         'sku' => trim(str_replace(array("\n","\r",","), ' ',$tag->sku)),
@@ -269,7 +269,7 @@ class SnapService
 
         if ($data['type'] == 'new') {
             $filename = strtolower(str_random(10)).'.csv';
-            $title = 'No,Snap Code,Type,# of images,User Details,Name,Estimated Point,Fixed Point,Current Point,Current Level,Aproved / Rejected,Rejection Reason,Receipt Snapped,Approved / Rejected Date,Approved / Rejected By,Product Name,Brands,Weight,SKU,Quantity,Total Price,OCR';       
+            $title = 'No,Snap Code,Type,# of images,User Details,Name,Estimated Point,Fixed Point,Current Point,Current Level,Aproved / Rejected,Rejection Reason,Receipt Snapped,Approved / Rejected Date,Approved / Rejected By,Product Name,Brands,Weight,SKU,Quantity,Total Price,OCR';
             \Storage::disk('csv')->put($filename, $title);
             $no = 1;
             foreach($results as $row) {
@@ -295,7 +295,7 @@ class SnapService
             'page' => $data['page'] + 1,
             'no' => $no,
             'last' => $lastPage,
-        ];     
+        ];
 
         return $params;
     }
@@ -403,8 +403,6 @@ class SnapService
             dispatch($job);
             $snaps->approved_by = $userId;
             $snaps->comment = $comment;
-            $snaps->status = 'approve';
-            $snaps->fixed_point = $point;
             $snaps->update();
 
             $tags = $this->getCountOfTags($snaps->files);
@@ -476,7 +474,7 @@ class SnapService
     {
         $snaps = $this->getSnapByid($id);
         // $firstFileId = $snaps->files->first()->id;
-        // $tags = $request->input('tag');   
+        // $tags = $request->input('tag');
 
         // //delete tag
         // if ($snaps->mode_type == 'tags' || $snaps->mode_type == 'input') {
@@ -1550,7 +1548,7 @@ class SnapService
             $tags = isset($tags[$position]) ? $tags[$position] : null;
         }
 
-        $this->setTags($tags);        
+        $this->setTags($tags);
         $total = [];
         if ($tags != null) {
             foreach ($tags as $t) {
@@ -1696,14 +1694,14 @@ class SnapService
         $mode = $data['mode'];
         $files = $data['files'];
         $tags = $data['tags'];
-        $point = $data['point'];        
+        $point = $data['point'];
 
         if ($mode == 'images') {
             $total = $point;
         } else {
             $total = $point * $files;
         }
-        
+
         // $point = (new PointService)->calculateEstimatedPoint($memberId, $type, $mode, $tags);
 
         // if ($mode == 'tags' || $mode == 'input') {
@@ -1714,7 +1712,7 @@ class SnapService
         //     }
         // } else {
         //     $total = $point['point'] * $files;
-        // }        
+        // }
 
         $snap = (new SnapService)->getSnapByCode($requestCode);
         $snap->estimated_point = $total;
@@ -1887,7 +1885,7 @@ class SnapService
             $delete[] = $tag->id;
         }
 
-        SnapTag::whereIn('id', $delete)->delete(); 
+        SnapTag::whereIn('id', $delete)->delete();
     }
 
     public function countMemberSnap($id, $type, $mode, $date, $nextDay = null)
@@ -1980,7 +1978,7 @@ class SnapService
             case 'images':
                 $mode = $type;
                 break;
-            
+
             default:
                 $mode = $type.'|1';
                 break;
@@ -1991,12 +1989,12 @@ class SnapService
 
     public function getTaskPointByCode($code, $type = null)
     {
-        return ($type == 'receipt') ? 
+        return ($type == 'receipt') ?
             \DB::table('tasks')
             ->join('task_points', 'tasks.id', '=', 'task_points.task_id')
             ->select('task_points.point as point')
             ->where('tasks.code', 'like', $code.'%')
-            ->first() : 
+            ->first() :
             \DB::table('tasks')
             ->join('task_points', 'tasks.id', '=', 'task_points.task_id')
             ->select('task_points.point as point')
