@@ -784,8 +784,6 @@ class SnapService
 
         // Auth Member
         $member = auth('api')->user();
-        $transactionType = config('common.transaction.transaction_type.snaps');
-        $snapId = $snap->id;
         $tags = $this->getTags();
 
         $dataSnap = [
@@ -804,9 +802,6 @@ class SnapService
         $dataPoint = [
             'estimated_point' => $estimatedPoint,
         ];
-
-        // Save transaction
-        event(new TransactionEvent($member->member_code, $transactionType, $snapId));
 
         //build data to save member log
         $data = [
@@ -869,8 +864,6 @@ class SnapService
 
             // Auth Member
             $member = auth('api')->user();
-            $transactionType = config('common.transaction.transaction_type.snaps');
-            $snapId = $snap->id;
             $tags = $this->getTags();
 
             $dataSnap = [
@@ -889,9 +882,6 @@ class SnapService
             $dataPoint = [
                 'estimated_point' => $estimatedPoint,
             ];
-
-            // Save transaction
-            event(new TransactionEvent($member->member_code, $transactionType, $snapId));
 
             //build data to save member log
             $data = [
@@ -946,8 +936,6 @@ class SnapService
 
             // Auth Member
             $member = auth('api')->user();
-            $transactionType = config('common.transaction.transaction_type.snaps');
-            $snapId = $snap->id;
             $tags = $this->getTags();
 
             $dataSnap = [
@@ -966,9 +954,6 @@ class SnapService
             $dataPoint = [
                 'estimated_point' => $estimatedPoint,
             ];
-
-            // Save transaction
-            event(new TransactionEvent($member->member_code, $transactionType, $snapId));
 
             //build data to save member log
             $data = [
@@ -1017,8 +1002,6 @@ class SnapService
 
             // Auth Member
             $member = auth('api')->user();
-            $transactionType = config('common.transaction.transaction_type.snaps');
-            $snapId = $snap->id;
             $tags = $this->getTags();
 
             $dataSnap = [
@@ -1037,9 +1020,6 @@ class SnapService
             $dataPoint = [
                 'estimated_point' => $estimatedPoint,
             ];
-
-            // Save transaction
-            event(new TransactionEvent($member->member_code, $transactionType, $snapId));
 
             //build data to save member log
             $data = [
@@ -1106,8 +1086,6 @@ class SnapService
 
             // Auth Member
             $member = auth('api')->user();
-            $transactionType = config('common.transaction.transaction_type.snaps');
-            $snapId = $snap->id;
             $tags = $this->getTags();
 
             $countTags = [];
@@ -1131,9 +1109,6 @@ class SnapService
             $dataPoint = [
                 'estimated_point' => $estimatedPoint,
             ];
-
-            // Save transaction
-            event(new TransactionEvent($member->member_code, $transactionType, $snapId));
 
             //build data to save member log
             $data = [
@@ -1204,8 +1179,6 @@ class SnapService
 
             // Auth Member
             $member = auth('api')->user();
-            $transactionType = config('common.transaction.transaction_type.snaps');
-            $snapId = $snap->id;
             $tags = $this->getTags();
 
             $dataSnap = [
@@ -1224,9 +1197,6 @@ class SnapService
             $dataPoint = [
                 'estimated_point' => $estimatedPoint,
             ];
-
-            // Save transaction
-            event(new TransactionEvent($member->member_code, $transactionType, $snapId));
 
             //build data to save member log
             $data = [
@@ -1275,8 +1245,6 @@ class SnapService
 
             // Auth Member
             $member = auth('api')->user();
-            $transactionType = config('common.transaction.transaction_type.snaps');
-            $snapId = $snap->id;
             $tags = $this->getTags();
 
             $dataSnap = [
@@ -1295,9 +1263,6 @@ class SnapService
             $dataPoint = [
                 'estimated_point' => $estimatedPoint,
             ];
-
-            // Save transaction
-            event(new TransactionEvent($member->member_code, $transactionType, $snapId));
 
             //build data to save member log
             $data = [
