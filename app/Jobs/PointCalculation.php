@@ -50,10 +50,17 @@ class PointCalculation implements ShouldQueue
             $exchange = $cityRate;
         } else {
             $exchange = (new PointService)->getCurrencyRate();
-        }   
+        }
 
         $rate = isset($exchange) ? $exchange->cash_per_unit : 0;
         $cash = $rate * $point;
+
+        $snap = $this->getSnapById($this->data->id);
+        $snap->status = 'approve';
+        $snap->fixed_point = $point;
+        $snap->current_exchange_rate = $rate;
+        $snap->current_total_money = $cash;
+        $snap->update();
 
         $member = $this->data->member->member_code;
         $transactionData = [
@@ -97,7 +104,7 @@ class PointCalculation implements ShouldQueue
         $level = (new PointService)->getLevel($levelId);
         $levelArray = explode(' ', $level->name);
 
-        //get latest member point 
+        //get latest member point
         $score = $memberService['latest_point'];
 
         if ($member->leaderboard_score != $score) {
@@ -126,5 +133,10 @@ class PointCalculation implements ShouldQueue
                                                ->setData([
                                                     'action' => 'history',
                                                 ])->send();
+    }
+
+    private function getSnapById($id)
+    {
+        return \App\Snap::where('id', $id)->first();
     }
 }

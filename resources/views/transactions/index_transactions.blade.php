@@ -24,7 +24,9 @@
                         <th width="300">Transaction Code</th>
                         <th width="300">Member Code</th>
                         <th width="300">Transaction Type</th>
+                        <th width="300">Current Rate</th>
                         <th width="300">Date</th>
+                        <th width="300">Update Date</th>
                         <th width="250"></th>
                     </tr>
                     </thead>
@@ -44,7 +46,13 @@
                                 ?> <br>
                             </td>
                             <td class="vertical-middle">
+                                {{ $transaction->current_cash_per_unit }} <br>
+                            </td>
+                            <td class="vertical-middle">
                                 {{ date_format(date_create($transaction->created_at), 'M, d Y') }} <br>
+                            </td>
+                            <td class="vertical-middle">
+                                {{ date_format(date_create($transaction->updated_at), 'M, d Y') }} <br>
                             </td>
                             <td class="text-right vertical-middle">
                                 <div class="btn-group">
