@@ -201,8 +201,6 @@ class TransactionService
             'history' => $notif,
         ];
 
-        dd($data);
-
         return $data;
     }
 
