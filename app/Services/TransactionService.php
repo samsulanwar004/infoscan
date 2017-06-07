@@ -168,13 +168,13 @@ class TransactionService
         $end = $this->date->format('Y-m-d');
         $start = $this->date->subWeek()->format('Y-m-d');
 
-        $historys = $snaps->filter(function ($value, $Key) use ($start, $end) {
+        $histories = $snaps->filter(function ($value, $Key) use ($start, $end) {
             return $value->updated_at->format('Y-m-d') >= $start &&
                 $value->updated_at->format('Y-m-d') <= $end;
         });
 
         $notif = [];
-        foreach ($historys as $history) {
+        foreach ($histories as $history) {
             $notif[] = [
                 'title' => $snapService->getType($history->snap_type),
                 'description' => $history->comment,
@@ -200,6 +200,8 @@ class TransactionService
             'estimated_point' => $estimated,
             'history' => $notif,
         ];
+
+        dd($data);
 
         return $data;
     }
