@@ -18,7 +18,6 @@ class TransactionService
     private $date;
 
     /**
-     *
      * @param array $data
      */
 
@@ -26,46 +25,46 @@ class TransactionService
     {
         $this->date = Carbon::now('Asia/Jakarta');
 
-    	$this->transaction_code = isset($data['transaction_code']) ? $data['transaction_code'] : '';
-    	$this->member_code = isset($data['member_code']) ? $data['member_code'] : '';
-    	$this->transaction_type = isset($data['transaction_type']) ? $data['transaction_type'] : '';
+        $this->transaction_code = isset($data['transaction_code']) ? $data['transaction_code'] : '';
+        $this->member_code = isset($data['member_code']) ? $data['member_code'] : '';
+        $this->transaction_type = isset($data['transaction_type']) ? $data['transaction_type'] : '';
         $this->snap_id = isset($data['snap_id']) ? $data['snap_id'] : '';
-    	$this->detail_transaction = isset($data['detail_transaction']) ? $data['detail_transaction'] : '';
+        $this->detail_transaction = isset($data['detail_transaction']) ? $data['detail_transaction'] : '';
     }
 
     public function getAllTransaction()
     {
-    	return Transaction::orderBy('id', 'DESC')
-    		->paginate(50);
+        return Transaction::orderBy('id', 'DESC')
+                          ->paginate(50);
     }
 
     public function getTransactionDetailById($id)
     {
-    	return Transaction::with('transactionDetail')
-    		->where('id', '=', $id)
-    		->first();
+        return Transaction::with('transactionDetail')
+                          ->where('id', '=', $id)
+                          ->first();
     }
 
     public function getCreditMember($member_code)
-	{
+    {
         $cashier = config('common.transaction.member.cashier');
 
-		$cr = \DB::table('transaction_detail')
-            ->where('member_code_to', '=', $member_code)
-            ->where('member_code_from', '=', $cashier)
-            ->where('detail_type', '=', 'cr')
-            ->sum('amount');
+        $cr = \DB::table('transaction_detail')
+                 ->where('member_code_to', '=', $member_code)
+                 ->where('member_code_from', '=', $cashier)
+                 ->where('detail_type', '=', 'cr')
+                 ->sum('amount');
 
         $db = \DB::table('transaction_detail')
-            ->where('member_code_from', '=', $member_code)
-            ->where('member_code_to', '=', $cashier)
-            ->where('detail_type', '=', 'db')
-            ->sum('amount');
+                 ->where('member_code_from', '=', $member_code)
+                 ->where('member_code_to', '=', $cashier)
+                 ->where('detail_type', '=', 'db')
+                 ->sum('amount');
 
         $credit = $cr - $db;
 
         return $credit;
-	}
+    }
 
     public function saveTransaction()
     {
@@ -82,7 +81,7 @@ class TransactionService
     {
         $snapId = $this->snap_id;
         $t = $this->getTransactionBySnapId($snapId);
-        foreach($this->detail_transaction as $data) {
+        foreach ($this->detail_transaction as $data) {
             $td = new TransactionDetail;
             $td->member_code_from = $data['member_code_from'];
             $td->member_code_to = $data['member_code_to'];
@@ -109,7 +108,7 @@ class TransactionService
 
         $t->save();
 
-        foreach($datas['detail_transaction'] as $data) {
+        foreach ($datas['detail_transaction'] as $data) {
             $td = new TransactionDetail;
             $td->member_code_from = $data['member_code_from'];
             $td->member_code_to = $data['member_code_to'];
@@ -130,7 +129,7 @@ class TransactionService
 
         $t->save();
 
-        foreach($datas['detail_transaction'] as $data) {
+        foreach ($datas['detail_transaction'] as $data) {
             $td = new TransactionDetail;
             $td->member_code_from = $data['member_code_from'];
             $td->member_code_to = $data['member_code_to'];
@@ -151,7 +150,7 @@ class TransactionService
 
         $t->save();
 
-        foreach($datas['detail_transaction'] as $data) {
+        foreach ($datas['detail_transaction'] as $data) {
             $td = new TransactionDetail;
             $td->member_code_from = $data['member_code_from'];
             $td->member_code_to = $data['member_code_to'];
@@ -165,8 +164,8 @@ class TransactionService
     public function getHistoryMember($memberId)
     {
         return MemberActionLog::where('member_id', $memberId)
-            ->orderBy('created_at', 'DESC')
-            ->get();
+                              ->orderBy('created_at', 'DESC')
+                              ->get();
     }
 
     public function getHistoryTransaction($member)
@@ -178,10 +177,10 @@ class TransactionService
         $end = $this->date->format('Y-m-d');
         $start = $this->date->subWeek()->format('Y-m-d');
 
-        $historys = $snaps->filter(function($value, $Key) use ($start, $end) {
+        $historys = $snaps->filter(function ($value, $Key) use ($start, $end) {
             return $value->updated_at->format('Y-m-d') >= $start &&
-                    $value->updated_at->format('Y-m-d') <= $end;
-        }); 
+                $value->updated_at->format('Y-m-d') <= $end;
+        });
 
         $notif = [];
         foreach ($historys as $history) {
@@ -189,12 +188,12 @@ class TransactionService
                 'title' => $snapService->getType($history->snap_type),
                 'description' => $history->comment,
                 'mode_type' => $history->mode_type,
-                'thumbnail' => config('filesystems.s3url').$history->files[0]->file_path,
+                'thumbnail' => config('filesystems.s3url') . $history->files[0]->file_path,
                 'status' => $history->status,
-                'date'  => $history->updated_at->toDateTimeString(),
+                'date' => $history->updated_at->toDateTimeString(),
             ];
         }
-        $snaps = $snaps->filter(function($value, $Key) {
+        $snaps = $snaps->filter(function ($value, $Key) {
             return $value->approved_by == null && $value->reject_by == null;
         });
 
@@ -218,17 +217,17 @@ class TransactionService
     {
         $notifications = $this->getHistoryMember($member->id);
 
-        $notifications = $notifications->filter(function($value, $Key) {
+        $notifications = $notifications->filter(function ($value, $Key) {
             return $value->group == 'notification' || $value->group == 'authentication';
         });
 
         $end = $this->date->format('Y-m-d');
         $start = $this->date->subWeek()->format('Y-m-d');
 
-        $notifications = $notifications->filter(function($value, $Key) use ($start, $end) {
+        $notifications = $notifications->filter(function ($value, $Key) use ($start, $end) {
             return $value->created_at->format('Y-m-d') >= $start &&
-                    $value->created_at->format('Y-m-d') <= $end;
-        });               
+                $value->created_at->format('Y-m-d') <= $end;
+        });
 
         $notif = [];
         foreach ($notifications as $notification) {
@@ -236,7 +235,7 @@ class TransactionService
                 'type' => $notification->content['type'],
                 'title' => $notification->content['title'],
                 'description' => $notification->content['description'],
-                'date'  => $notification->created_at->toDateTimeString(),
+                'date' => $notification->created_at->toDateTimeString(),
             ];
         }
 

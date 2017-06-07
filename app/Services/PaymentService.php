@@ -6,28 +6,28 @@ use App\Exchange;
 use App\RedeemPoint;
 use App\Jobs\MemberActionJob;
 
-class PaymentService 
+class PaymentService
 {
 
-	/**
+    /**
      * @var string
      */
     private $member;
 
-	public function __construct()
-	{
-		$this->member = auth('api')->user();
-	}
+    public function __construct()
+    {
+        $this->member = auth('api')->user();
+    }
 
-	public function getPaymentPortal()
-	{
-		$exchange = $this->getExchange();
+    public function getPaymentPortal()
+    {
+        $exchange = $this->getExchange();
 
-		$point = (new TransactionService)->getCreditMember($this->member->member_code);
+        $point = (new TransactionService)->getCreditMember($this->member->member_code);
 
         $snaps = (new SnapService)->getSnapByMemberCode($this->member->member_code);
 
-        $snaps = $snaps->filter(function($value, $Key) {
+        $snaps = $snaps->filter(function ($value, $Key) {
             return $value->approved_by == null && $value->reject_by == null;
         });
 
@@ -39,69 +39,68 @@ class PaymentService
         $estimated = collect($estimated)->sum();
 
         $data = [
-	        'current_point' => $point,
-	        'estimated_point' => $estimated,
-	        'point_unit_count' => $exchange->point_unit_count,
-	        'cash_per_unit' => $exchange->cash_per_unit,
-	        'minimum_point' => $exchange->minimum_point,
-       	];
+            'current_point' => $point,
+            'estimated_point' => $estimated,
+            'point_unit_count' => $exchange->point_unit_count,
+            'cash_per_unit' => $exchange->cash_per_unit,
+            'minimum_point' => $exchange->minimum_point,
+        ];
 
-		return $data;
-	}
+        return $data;
+    }
 
-	public function getExchange()
-	{
-		return Exchange::orderBy('created_at', 'DESC')->first();
-	}
+    public function getExchange()
+    {
+        return Exchange::orderBy('created_at', 'DESC')->first();
+    }
 
-	public function redeemPointToCash($request)
-	{
-		$point = $request->input('point');
-		$bankAccount = $request->input('bank_account');
-		$accountNumber = $request->input('account_number');
-		$currentMemberPoint = (new TransactionService)->getCreditMember($this->member->member_code);
+    public function redeemPointToCash($request)
+    {
+        $point = $request->input('point');
+        $bankAccount = $request->input('bank_account');
+        $accountNumber = $request->input('account_number');
+        $currentMemberPoint = (new TransactionService)->getCreditMember($this->member->member_code);
 
-		if ($currentMemberPoint < $point)
-		{
-			throw new \Exception("Credit not enough!", 1);			
-		}
+        if ($currentMemberPoint < $point) {
+            throw new \Exception("Credit not enough!", 1);
+        }
 
-		$exchange = $this->getExchange();
+        $exchange = $this->getExchange();
 
-		$exchangeCash = $exchange->cash_per_unit;
-		$exchangePoint = $exchange->point_unit_count;
-		$minimumPoint = $exchange->minimum_point;
+        $exchangeCash = $exchange->cash_per_unit;
+        $exchangePoint = $exchange->point_unit_count;
+        $minimumPoint = $exchange->minimum_point;
 
-		if ($point < $minimumPoint) {
-			throw new \Exception("Credit must be greater than minimum point", 1);
-		}
+        if ($point < $minimumPoint) {
+            throw new \Exception("Credit must be greater than minimum point", 1);
+        }
 
-		if ($point < $exchangePoint) {
-			throw new \Exception("Credit must be greater than exchange rate", 1);
-		}
+        if ($point < $exchangePoint) {
+            throw new \Exception("Credit must be greater than exchange rate", 1);
+        }
 
-		$cashout = ($point / $exchangePoint) * $exchangeCash;
+        $cashout = ($point / $exchangePoint) * $exchangeCash;
 
-		$transaction = [
-			'member_code' => $this->member->member_code,
-			'point' => $point,
-			'cashout' => $cashout,
-		];	
+        $transaction = [
+            'member_code' => $this->member->member_code,
+            'point' => $point,
+            'cashout' => $cashout,
+        ];
 
-		$data = [
-			'point' => $point,
-			'cashout' => $cashout,
-			'bank_account' => $bankAccount,
-			'account_number' => $accountNumber,
-		];	
+        $data = [
+            'point' => $point,
+            'cashout' => $cashout,
+            'bank_account' => $bankAccount,
+            'account_number' => $accountNumber,
+        ];
 
-		//save to redeem point table
-		$this->saveToRedeemPoint($data, $this->member);
+        //save to redeem point table
+        $this->saveToRedeemPoint($data, $this->member);
 
-		//credit point to member
-		$this->transactionCredit($transaction);
+        //credit point to member
+        $this->transactionCredit($transaction);
 
-		//build data for member history
+        //build data for member history
         $content = [
             'type' => 'cashback',
             'title' => 'Cashback',
@@ -113,13 +112,13 @@ class PaymentService
         $job = (new MemberActionJob($this->member->id, 'portalpoint', $content))->onQueue($config)->onConnection(env('INFOSCAN_QUEUE'));
         dispatch($job);
 
-		return true;
+        return true;
 
-	}
+    }
 
-	public function transactionCredit($transaction)
-	{
-		$cashier = config('common.transaction.member.cashier');
+    public function transactionCredit($transaction)
+    {
+        $cashier = config('common.transaction.member.cashier');
         $cashierMoney = config('common.transaction.member.cashier_money');
         $data = [
             'detail_transaction' => [
@@ -127,63 +126,63 @@ class PaymentService
                     'member_code_from' => $transaction['member_code'],
                     'member_code_to' => $cashier,
                     'amount' => $transaction['point'],
-                    'detail_type' => 'db'
+                    'detail_type' => 'db',
                 ],
                 '1' => [
                     'member_code_from' => $transaction['member_code'],
                     'member_code_to' => $cashier,
                     'amount' => $transaction['point'],
-                    'detail_type' => 'cr'
+                    'detail_type' => 'cr',
                 ],
                 '2' => [
                     'member_code_from' => $cashierMoney,
                     'member_code_to' => $transaction['member_code'],
                     'amount' => $transaction['cashout'],
-                    'detail_type' => 'db'
+                    'detail_type' => 'db',
                 ],
                 '3' => [
                     'member_code_from' => $cashierMoney,
                     'member_code_to' => $transaction['member_code'],
                     'amount' => $transaction['cashout'],
-                    'detail_type' => 'cr'
+                    'detail_type' => 'cr',
                 ],
             ],
         ];
 
         (new TransactionService())->redeemPointToCash($transaction, $data);
-	}
+    }
 
-	public function saveToRedeemPoint($data, $member)
-	{
-		$redeem = new RedeemPoint;
-		$redeem->point = $data['point'];
-		$redeem->cashout = $data['cashout'];
-		$redeem->bank_account = $data['bank_account'];
-		$redeem->account_number = $data['account_number'];
+    public function saveToRedeemPoint($data, $member)
+    {
+        $redeem = new RedeemPoint;
+        $redeem->point = $data['point'];
+        $redeem->cashout = $data['cashout'];
+        $redeem->bank_account = $data['bank_account'];
+        $redeem->account_number = $data['account_number'];
 
-		$redeem->member()->associate($member);
+        $redeem->member()->associate($member);
 
-		$redeem->save();
-	}
+        $redeem->save();
+    }
 
-	public function getListPaymentPortal()
-	{
-		return RedeemPoint::with('member')
-			->orderBy('created_at', 'DESC')
-			->paginate(50);
-	}
+    public function getListPaymentPortal()
+    {
+        return RedeemPoint::with('member')
+                          ->orderBy('created_at', 'DESC')
+                          ->paginate(50);
+    }
 
-	public function getPaymentPortalById($id)
-	{
-		return RedeemPoint::with('member')
-			->where('id', $id)
-			->first();
-	}
+    public function getPaymentPortalById($id)
+    {
+        return RedeemPoint::with('member')
+                          ->where('id', $id)
+                          ->first();
+    }
 
-	public function saveConfirmation($request, $id)
-	{
-		$payment = $this->getPaymentPortalById($id);
-		$payment->approved_by = auth('web')->user()->id;
-		$payment->update();
-	}
+    public function saveConfirmation($request, $id)
+    {
+        $payment = $this->getPaymentPortalById($id);
+        $payment->approved_by = auth('web')->user()->id;
+        $payment->update();
+    }
 }

@@ -14,7 +14,7 @@ class PointModeling extends Command
      *
      * @var string
      */
-    protected $signature = 'gojago:point:model {--export} {--exportdb}';
+    protected $signature = 'gojago:point:model {--exportxls} {--clear-transaction} {--cleardb} {--update-point}';
 
     /**
      * The console command description.
@@ -22,6 +22,11 @@ class PointModeling extends Command
      * @var string
      */
     protected $description = 'Export current snap transaction point into excel';
+
+    /**
+     * @var array
+     */
+    private $results;
 
     private $categories = [
         1 => 500,
@@ -42,8 +47,6 @@ class PointModeling extends Command
 
     /**
      * Create a new command instance.
-     *
-     * @return void
      */
     public function __construct()
     {
@@ -57,18 +60,18 @@ class PointModeling extends Command
      */
     public function handle()
     {
-        // export point_modeling table to excel
-        if($this->option('exportdb')) {
-            $modeling = $this->getPointModeling();
-            if(empty($modeling)) exit();
+        $this->truncatePointModelTable();
+        $this->warn('Clear point modeling table.');
 
-            $this->exportToExcel($modeling);
-            $this->info('Success Export to xslx');
-            exit();
+        // truncate transaction table
+        if ($this->option('clear-transaction')) {
+            $this->truncateTransactionsTable();
         }
 
         $snap = $this->getApprovedSnap();
-        if(empty($snap)) exit();
+        if (empty($snap)) {
+            exit();
+        }
 
         $today = Carbon::now()->format('Y-m-d H:i:s');
         $result = [];
@@ -91,13 +94,26 @@ class PointModeling extends Command
             ];
         }
 
-        if(count($result) > 0 ) {
-            /*$this->hasOption('export')
-                ? $this->exportToExcel()
-                : $this->insertToTable($result);*/
-            $this->insertToTable($result);
+        if (count($result) > 0) {
+            $this->results = $result;
 
-            $this->info('Success.');
+            $this->insertToTable($result);
+            $this->info('Success insert into point modeling table.');
+
+            // export point_modeling table to excel
+            if ($this->option('exportxls')) {
+                $modeling = $this->getPointModeling();
+                if (empty($modeling)) {
+                    exit();
+                }
+
+                $this->exportToExcel($modeling);
+                $this->info('Success Export to xslx.');
+            }
+
+            $this->updateNewMemberPoint();
+
+            $this->truncatePointModelTable();
             exit();
         }
 
@@ -113,7 +129,7 @@ inner join snaps as s on s.id = sf.snap_id
 inner join members as m on m.id = s.member_id
 where s.snap_type in ('handWritten', 'generalTrade', 'receipt') and
       s.status = 'approve'
-order by s.snap_type, s.request_code asc
+order by s.snap_type, s.request_code, s.created_at asc
 ;";
 
         return DB::select($sql);
@@ -121,32 +137,35 @@ order by s.snap_type, s.request_code asc
 
     private function getSnapTags($snapFileId)
     {
-        return DB::Select('Select id, current_signature, edited_signature from snap_tags where snap_file_id = :fileId', ['fileId' => $snapFileId]);
+        return DB::Select('Select id, current_signature, edited_signature from snap_tags where snap_file_id = :fileId',
+            ['fileId' => $snapFileId]);
     }
 
     private function getHandWrittenCategoryID($snapFileId, $mode)
     {
         $tags = $this->getSnapTags($snapFileId);
 
-        if(empty($tags)) return 5;
+        if (empty($tags)) {
+            return 5;
+        }
 
         foreach ($tags as $tag) {
             $current = trim(strtolower($tag->current_signature));
 
             switch ($mode) {
                 case 'input':
-                    if(null !== $tag->edited_signature
+                    if (null !== $tag->edited_signature
                         && $current != trim(strtolower($tag->edited_signature))
                     ) {
                         return 6;
                     }
 
                     return 7;
-                    break;
+                break;
 
                 case 'audios':
                     return 9;
-                    break;
+                break;
             }
         }
     }
@@ -155,25 +174,27 @@ order by s.snap_type, s.request_code asc
     {
         $tags = $this->getSnapTags($snapFileId);
 
-        if(empty($tags) || 'no_mode' === $mode) return 10;
+        if (empty($tags) || 'no_mode' === $mode) {
+            return 10;
+        }
 
         foreach ($tags as $tag) {
             $current = trim(strtolower($tag->current_signature));
 
             switch ($mode) {
                 case 'tags':
-                    if(null !== $tag->edited_signature
+                    if (null !== $tag->edited_signature
                         && $current != trim(strtolower($tag->edited_signature))
                     ) {
                         return 11;
                     }
 
                     return 12;
-                    break;
+                break;
 
                 case 'audios':
                     return 14;
-                    break;
+                break;
             }
         }
     }
@@ -190,22 +211,24 @@ order by s.snap_type, s.request_code asc
 
     private function exportToExcel($data)
     {
-        if(! is_array($data)) {
+        if (!is_array($data)) {
             $data = collect($data)->toArray();
         }
 
-        $data = collect($data)->map(function($entry) {
+        $data = collect($data)->map(function ($entry) {
             return [
                 'Member' => $entry['email'],
                 'TRX ID' => strtoupper($entry['snap_file_code']),
                 'Snap Date' => $entry['snapped_at'],
-                'Transaction Description' => sprintf('Snap Type: %s with %s mode.', strtoupper($entry['snap_type']), strtoupper($entry['mode_type'])),
+                'Transaction Description' => sprintf('Snap Type: %s with %s mode.', strtoupper($entry['snap_type']),
+                    strtoupper($entry['mode_type'])),
                 'Category' => $entry['category'],
             ];
         });
 
-        Excel::create('Point Modeling', function($excel) use($data) {
-            $excel->sheet('Sheetname', function($sheet) use($data) {
+        $filename = 'PointModeling-' . date('YmdHis');
+        Excel::create($filename, function ($excel) use ($data) {
+            $excel->sheet('Model', function ($sheet) use ($data) {
                 $sheet->fromArray($data);
             });
         })->store('xlsx');
@@ -216,5 +239,102 @@ order by s.snap_type, s.request_code asc
         DB::setFetchMode(\PDO::FETCH_ASSOC);
 
         return DB::select('Select * From point_modeling;');
+    }
+
+    private function truncateTransactionsTable()
+    {
+        try {
+            DB::select('truncate table transaction_detail;');
+            $this->info('clear transaction detail table.');
+
+            DB::delete('delete from transactions;');
+            $this->info('clear transaction table.');
+
+            DB::select('ALTER TABLE transactions AUTO_INCREMENT = 1;');
+            $this->info('reset auto increment start value.');
+        } catch (\Exception $e) {
+            logger($e->getMessage());
+        }
+    }
+
+    private function truncatePointModelTable()
+    {
+        if ($this->option('cleardb')) {
+            DB::table('point_modeling')->truncate();
+            $this->info('Success clear point model table.');
+        }
+    }
+
+    private function updateNewMemberPoint()
+    {
+        if (!$this->option('update-point')) {
+            return false;
+        }
+
+        try {
+            $results = $this->remapMemberPoint();
+
+            foreach ($results as $key => $result) {
+                $result = collect($result)->groupBy('snap_code');
+
+                $currentPoint = 0;
+                $fixedPoint = 0;
+                $memberIncrement = 0;
+                foreach ($result as $requestCode => $snap) {
+                    foreach ($snap as $item) {
+                        // snap file
+                        DB::update(
+                            'Update snap_files set image_point = :point where id = :id',
+                            ['id' => $item['snap_file_id'], 'point' => $item['new_point']]
+                        );
+
+                        $currentPoint = 0 === $memberIncrement ? 0 : $currentPoint + $item['new_point'];
+                        $fixedPoint = $snap->sum('new_point');
+                    }
+
+                    // update snap
+                    DB::update(
+                        'Update snaps set fixed_point = :fixed_point, current_point_member=:current_point  where request_code = :req',
+                        ['fixed_point' => $fixedPoint, 'current_point' => $currentPoint, 'req' => $requestCode]
+                    );
+
+                    // update member Total Temporary Point
+                    DB::update(
+                        'Update members set temporary_point = :current_point where email=:email',
+                        ['email' => $key, 'current_point' => $currentPoint]
+                    );
+
+                    ++$memberIncrement;
+                }
+            }
+
+            $this->info('Success update image point.');
+        } catch (\Exception $e) {
+            logger($e->getMessage() . ' File: ' . $e->getFile() . ' Line:' . $e->getLine());
+
+            throw new \Exception();
+        }
+    }
+
+    private function remapMemberPoint()
+    {
+        $results = collect($this->results)->sortBy(function ($entry, $key) {
+            return $entry['snapped_at'];
+        }, SORT_NUMERIC);
+
+        // manually groupping by email
+        $snaps = [];
+        foreach ($results as $r) {
+            $email = $r['email'];
+            $snaps[$email][] = [
+                'snap_code' => $r['snap_code'],
+                'snap_file_id' => $r['snap_file_id'],
+                'new_point' => $r['new_point'],
+                'snapped_at' => $r['snapped_at'],
+                'email' => $r['email'],
+            ];
+        }
+
+        return $snaps;
     }
 }
