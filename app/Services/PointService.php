@@ -819,14 +819,15 @@ inner join level_points as l on l.id = blp.level_id;');
                        ->where('bonus_level_points.level_id', $memberService['level_id'])
                        ->first();
 
-            //queue for point process
-            $config = config('common.queue_list.point_process');
-            $type = config('common.transaction.transaction_type.bonus');
-            $pointBonus = isset($bonus->point) ? $bonus->point : 0;
-            $job = (new PointProcessJob($member->member_code, $pointBonus, $type))
-                ->onQueue($config)
-                ->onConnection(env('INFOSCAN_QUEUE'));
-            dispatch($job);
+            if ($bonus) {
+                //queue for point process
+                $config = config('common.queue_list.point_process');
+                $type = config('common.transaction.transaction_type.bonus');
+                $job = (new PointProcessJob($member->member_code, $bonus->point, $type))
+                    ->onQueue($config)
+                    ->onConnection(env('INFOSCAN_QUEUE'));
+                dispatch($job);
+            }
         }
 
 
