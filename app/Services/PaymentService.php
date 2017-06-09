@@ -171,6 +171,11 @@ class PaymentService
         $job = (new MemberActionJob($this->member->id, 'portalpoint', $content))->onQueue($config)->onConnection(env('INFOSCAN_QUEUE'));
         dispatch($job);
 
+        $currentPoint = (new TransactionService)->getCreditMember($memberCode);
+
+        $this->member->temporary_point = $currentPoint;
+        $this->member->update();
+
         return true;
     }
 
@@ -246,6 +251,7 @@ class PaymentService
         $redeem->name = $data['name'];
         $redeem->bank_account = $data['bank_account'];
         $redeem->account_number = $data['account_number'];
+        $redeem->status = 'approved';
 
         $redeem->member()->associate($member);
 
@@ -282,11 +288,14 @@ class PaymentService
 
         if ($data['type'] == 'new') {
             $filename = strtolower(str_random(10)) . '.csv';
-            $title = 'No,Point Redeem,Cashout,Name,Email,Bank Account,Account Number,Status,Date';
+            $title = 'No,Point Redeem,Cashout,Current Point,Current Money,Username,Email,Name,Bank Account,Account Number,Status,Date';
             \Storage::disk('csv')->put($filename, $title);
             $no = 1;
             foreach ($results as $row) {
-                $baris = $no . ',' . $row['point'] . ',' . $row['cashout'] . ',' . $row['name'] . ',' . $row['email'] . ',' . $row['bank_account'] . ',' . $row['account_number'] . ',' . $row['status'] . ',' . $row['created_at'];
+                $baris = $no . ',' . $row['point'] . ',' . $row['cashout'] . ',' . $row['member']->temporary_point
+                . ',' . $row['member']->temporary_point * 2.5 . ',' . $row['member']->name . ','
+                . $row['member']->email . ',' . $row['name']. ',' . $row['bank_account'] . ',' . $row['account_number']
+                . ',' . $row['status'] . ',' . $row['created_at'];
                 \Storage::disk('csv')->append($filename, $baris);
                 $no++;
             }
@@ -296,7 +305,10 @@ class PaymentService
                 $filename = $data['filename'];
                 $no = $data['no'];
                 foreach ($results as $row) {
-                    $baris = $no . ',' . $row['point'] . ',' . $row['cashout'] . ',' . $row['name'] . ',' . $row['email'] . ',' . $row['bank_account'] . ',' . $row['account_number'] . ',' . $row['status'] . ',' . $row['created_at'];
+                    $baris = $no . ',' . $row['point'] . ',' . $row['cashout'] . ',' . $row['member']->temporary_point
+                    . ',' . $row['member']->temporary_point * 2.5 . ',' . $row['member']->name . ','
+                    . $row['member']->email . ',' . $row['name']. ',' . $row['bank_account'] . ',' . $row['account_number']
+                    . ',' . $row['status'] . ',' . $row['created_at'];
                     \Storage::disk('csv')->append($filename, $baris);
                     $no++;
                 }

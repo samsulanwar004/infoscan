@@ -24,9 +24,9 @@
                         </div>
                         <input type="text" class="form-control datepicker" name="filter_date" id="filter-date"
                             @if(isset($date)) value="{{$date}}" @endif
-                        >                  
+                        >
                     </div>
-                    <button class="btn btn-primary" id="export">Export</button> 
+                    <button class="btn btn-primary" id="export">Export</button>
                 </div>
             </div>
             <div class="box-body">
@@ -36,19 +36,21 @@
                         <th>#</th>
                         <th>Point Redeem</th>
                         <th>Cashout</th>
+                        <th>Current Point</th>
+                        <th>Current Money</th>
                         <th>Username & Email</th>
                         <th>Bank Account</th>
                         <th>Account Number</th>
                         <th>Date</th>
-                        <th width="250"></th>
+                        <!-- <th width="250"></th> -->
                     </tr>
                     </thead>
                     <tbody>
                     @forelse($payment as $item)
                         <tr>
                             <td class="vertical-middle">
-                                <i class="fa fa-check-circle 
-                                    @if($item->status == 'approve') 'text-green' 
+                                <i class="fa fa-check-circle
+                                    @if($item->status == 'approve') 'text-green'
                                     @elseif($item->status == 'reject') 'text-red'
                                     @else 'text-default' @endif "></i>
                             </td>
@@ -59,11 +61,18 @@
                                 Rp {{ number_format($item->cashout) }}
                             </td>
                             <td class="vertical-middle">
-                                {{ $item->name }} <br>
-                                <small>{{ $item->email }}</small>
+                                {{ number_format($item->member->temporary_point) }} Pts
                             </td>
                             <td class="vertical-middle">
-                                {{ $item->bank_account }}
+                                Rp {{ $item->member->temporary_point * 2.5 }}
+                            </td>
+                            <td class="vertical-middle">
+                                {{ $item->member->name }} <br>
+                                <small>{{ $item->member->email }}</small>
+                            </td>
+                            <td class="vertical-middle">
+                                {{ $item->name }} <br>
+                                {{ strtoupper($item->bank_account) }}
                             </td>
                             <td class="vertical-middle">
                                 {{ $item->account_number }}
@@ -71,7 +80,7 @@
                             <td class="vertical-middle">
                                 {{ date_format(date_create($item->created_at), 'M, d Y') }}
                             </td>
-                            <td class="text-right vertical-middle">
+                            {{--<td class="text-right vertical-middle">
                                 <div class="btn-group">
                                     @cando('PaymentPortal.Confirm')
                                     <a href="{{ admin_route_url('payment-portal.edit', ['id' => $item->id]) }}"
@@ -80,9 +89,9 @@
                                       modal-size="modal-md"
                                       class="btn btn-success"
                                       title="Edit">
-                                      <i class="fa fa-pencil"> </i></a> 
-                                    @endcando                          
-                                </div>
+                                      <i class="fa fa-pencil"> </i></a>
+                                    @endcando
+                                </div> --}}
                             </td>
                         </tr>
                     @empty
@@ -140,7 +149,7 @@
         });
 
         function requestCsv(start_at, end_at, type_request, page, filename, no = null) {
-            $.get( "{{ admin_route_url('payment.export') }}", { 
+            $.get( "{{ admin_route_url('payment.export') }}", {
                 date_start : start_at,
                 date_end : end_at,
                 type_request : type_request,
@@ -167,8 +176,8 @@
                             return 100+'%';
                         });
                         $('#persent').text('100% Please wait...');
-                        setTimeout(function(){ 
-                            $('.progress').hide(); 
+                        setTimeout(function(){
+                            $('.progress').hide();
                         }, 3000);
                         window.location.href = 'download/payment/?download='+data.message.filename;
                     }
