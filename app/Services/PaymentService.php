@@ -21,7 +21,7 @@ class PaymentService
 
     public function getPaymentPortal()
     {
-        $exchange = $this->getExchange();
+        $minimum = $this->getMinimumCash();
         // get current point
         $point = (new TransactionService)->getCreditMember($this->member->member_code);
         // get current cash
@@ -46,10 +46,19 @@ class PaymentService
             // 'estimated_point' => $estimated,
             // 'point_unit_count' => $exchange->point_unit_count,
             // 'cash_per_unit' => $exchange->cash_per_unit,
-            'minimum_cash' => $exchange->minimum_point,
+            'minimum_cash' => $minimum,
         ];
 
         return $data;
+    }
+
+    public function getMinimumCash()
+    {
+        $rate = Exchange::where('minimum_point', '>', 0)
+            ->orderBy('id', 'DESC')
+            ->first();
+
+        return $rate ? $rate->minimum_point : 0;
     }
 
     public function getExchange()

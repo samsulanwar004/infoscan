@@ -8,7 +8,14 @@
 
         <!-- Default box -->
         <div class="box">
-            <div class="box-header with-border">
+            <div class="box-header with-border" style="overflow: hidden; height: 45px;">
+                <div class="box-tools-new">
+                    <a href="{{ admin_route_url('exchange.setting') }}" class="btn btn-box-tool"
+                    data-toggle="modal"
+                    data-target="#"
+                    title="Setting">
+                    <i class="fa fa-plus-circle fa-btn"></i>Setting</a>
+                </div>
                 <div id="create-rate">
                     <div class="box-tools pull-right">
                         @cando('Exchange.Create')
@@ -33,7 +40,7 @@
                 <ul class="nav nav-tabs">
                     <li class="active"><a data-toggle="tab" href="#entry-rate" id="entry">Entry Rate</a></li>
                     <li><a data-toggle="tab" href="#city-rate" id="city">City Rate</a></li>
-                </ul>              
+                </ul>
             </div>
             <div class="box-body">
                 <div class="tab-content">
@@ -43,8 +50,8 @@
                             <tr>
                                 <th width="100">Date</th>
                                 <!-- <th width="100">Cash</th>
-                                <th width="100">Point</th>  -->                          
-                                <th width="100">Entry Rate</th>                           
+                                <th width="100">Point</th>  -->
+                                <th width="100">Entry Rate</th>
                                 <th width="250"></th>
                             </tr>
                             </thead>
@@ -59,7 +66,7 @@
                                     </td>
                                     <!-- <td>
                                         {{ number_format($item->point_unit_count) }} Pts
-                                    </td>   -->                                
+                                    </td>   -->
                                     <td class="text-right vertical-middle">
                                         <div class="btn-group">
                                             @cando('Exchange.Update')
@@ -93,9 +100,9 @@
                             <thead>
                             <tr>
                                 <th width="100">Date</th>
-                                <th width="100">City</th>                      
-                                <th width="100">Rate</th>                           
-                                <th width="100">Active</th>                           
+                                <th width="100">City</th>
+                                <th width="100">Rate</th>
+                                <th width="100">Active</th>
                                 <th width="250"></th>
                             </tr>
                             </thead>
@@ -113,7 +120,7 @@
                                     </td>
                                     <td>
                                        <i class="fa fa-check-circle {{ $item->is_active == 1 ? 'text-green' : 'text-default' }}"></i>
-                                    </td>                                  
+                                    </td>
                                     <td class="text-right vertical-middle">
                                         <div class="btn-group">
                                             @cando('Exchange.Update')
@@ -152,6 +159,12 @@
 @endsection
 
 @section('footer_scripts')
+    <style type="text/css">
+        .box-tools-new {
+            position: absolute;
+            top: 5px;
+        }
+    </style>
     <script type="text/javascript">
         $('#entry').on('click', function() {
             $('#create-rate').show();
@@ -163,7 +176,7 @@
             $('#create-city').show();
         });
 
-        $(function() { 
+        $(function() {
             // for bootstrap 3 use 'shown.bs.tab', for bootstrap 2 use 'shown' in the next line
             $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
                 // save the latest tab; use cookies if you like 'em better:

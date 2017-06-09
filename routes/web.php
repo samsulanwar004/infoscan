@@ -107,7 +107,7 @@ Route::group([
     Route::resource(
         '/exchange',
         'Web\ExchangeController',
-        ['names' => route_resource_name($routePrefix, 'exchange')]
+        ['except' => ['show'],'names' => route_resource_name($routePrefix, 'exchange')]
     );
 
     Route::resource(
@@ -293,6 +293,16 @@ Route::group([
         '/download/reports',
         'Web\ReportController@export'
     )->name('reports.export');
+
+    Route::get(
+        '/exchange/setting',
+        'Web\ExchangeController@setting'
+    )->name('exchange.setting');
+
+    Route::post(
+        '/exchange/setting-update',
+        'Web\ExchangeController@settingUpdate'
+    )->name('exchange.setting.update');
 
 });
 
