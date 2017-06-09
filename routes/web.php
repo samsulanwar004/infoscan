@@ -210,11 +210,6 @@ Route::group([
     )->name($routePrefix == null ? 'reports' : '.reports');
 
     Route::post(
-        '/reports',
-        'Web\ReportController@index'
-    )->name($routePrefix == null ? 'reports' : '.reports');
-
-    Route::post(
         '/merchants/settingReports',
         'Web\MerchantController@storeSettingReports'
     )->name($routePrefix == null ? 'merchants.settingReports.store' : '.merchants.settingReports.store');
@@ -293,6 +288,11 @@ Route::group([
         '/exchange/city/{id}',
         'Web\ExchangeController@cityDestroy'
     )->name('city.rate.destroy');
+
+    Route::get(
+        '/download/reports',
+        'Web\ReportController@export'
+    )->name('reports.export');
 
 });
 
