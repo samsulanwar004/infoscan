@@ -49,10 +49,13 @@
                     @forelse($payment as $item)
                         <tr>
                             <td class="vertical-middle">
-                                <i class="fa fa-check-circle
-                                    @if($item->status == 'approve') 'text-green'
-                                    @elseif($item->status == 'reject') 'text-red'
-                                    @else 'text-default' @endif "></i>
+                                @if ($item->status == 'approved')
+                                    <i class="fa fa-check-circle text-green"></i>
+                                @elseif ($item->status == 'rejected')
+                                    <i class="fa fa-times-circle text-red"></i>
+                                @else
+                                    <i class="fa fa-check-circle text-default"></i>
+                                @endif
                             </td>
                             <td class="vertical-middle">
                                 {{ number_format($item->point) }} Pts
@@ -64,7 +67,7 @@
                                 {{ number_format($item->member->temporary_point) }} Pts
                             </td>
                             <td class="vertical-middle">
-                                Rp {{ $item->member->temporary_point * 2.5 }}
+                                Rp {{ number_format($item->member->temporary_point * 2.5) }}
                             </td>
                             <td class="vertical-middle">
                                 {{ $item->member->name }} <br>
