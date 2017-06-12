@@ -64,7 +64,7 @@ class NotificationService
     {
         $user = null !== $this->user ? $this->user : auth('api')->user()->id;
         //$activeUser = auth('api')->user()->id;
-        $member = DB::select('select token from `member_push_tokens` where `member_id`= :memberId and token <> '' order by id desc limit 1',
+        $member = DB::select('select token from `member_push_tokens` where `member_id`= :memberId and token <> \'\' order by id desc limit 1',
             ['memberId' => $user]);
 
         if ($member) {
