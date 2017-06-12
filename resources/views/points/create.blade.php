@@ -30,8 +30,8 @@
                     <div class="form-group range_end">
                         <label for="range_end">End Range</label>
                         <input type="number" name="range_end" id="range-end" class="form-control" placeholder="Enter End range" disabled="disabled">
-                    </div>    
-                </div>                               
+                    </div>
+                </div>
                 <div id="general" style="display: none;">
                     <div class="form-group mode_type">
                         <label for="name">Task Mode</label>
@@ -39,24 +39,13 @@
                             <option value=" " nameValue="">Select Mode</option>
                         </select>
                     </div>
-                </div>                
+                </div>
 
                 <div class="form-group">
                     <label for="point">Point</label>
                     <input type="number" name="point" id="point" class="form-control" placeholder="Enter Point" required="required">
                 </div>
 
-                <div class="row">
-                    <div class="form-group col-sm-2" style="margin-right: 0px;">
-                        <label for="daily">Daily</label>
-                        <input type="text" class="form-control input-sm" name="limit[daily]" placeholder="Limit" required="required">
-                    </div>
-
-                    <div class="form-group col-sm-2">
-                        <label for="weekly">Weekly</label>
-                        <input type="text" class="form-control input-sm" name="limit[weekly]" placeholder="Limit" required="required">
-                    </div>
-                </div>
             </div>
         </div>
     </div>
@@ -104,30 +93,30 @@
 
         $('#task-type').on('change', function(e) {
             var type = $(this).find(':selected').attr('nameValue');
-            if (this.value == 'a') {  
-                $('#range-start').removeAttr('disabled');              
-                $('#range-end').removeAttr('disabled');  
-                $('#task-mode').attr('disabled', 'disabled');  
-                $('#receipt').show(); 
-                $('#general').hide();                      
+            if (this.value == 'a') {
+                $('#range-start').removeAttr('disabled');
+                $('#range-end').removeAttr('disabled');
+                $('#task-mode').attr('disabled', 'disabled');
+                $('#receipt').show();
+                $('#general').hide();
                 $('#name').val(type);
             } else if (this.value == 'b') {
-                $('#general').show(); 
-                $('#receipt').hide();   
-                $('#task-mode').removeAttr('disabled'); 
-                $('#range-start').attr('disabled', 'disabled');              
+                $('#general').show();
+                $('#receipt').hide();
+                $('#task-mode').removeAttr('disabled');
+                $('#range-start').attr('disabled', 'disabled');
                 $('#range-end').attr('disabled', 'disabled');
                 $('#name').val(type);
                 $("#task-mode").html('<select name="task_mode" class="form-control" id="task-mode" required><option value="">Select Task Mode</option>@foreach(config("common.tasks.select_mode.b") as $key => $mode)<option value="{{ $key }}" nameValue="{{ $mode["label"] }}">{{ $mode["label"] }}</option>@endforeach</select>');
             } else if (this.value == 'c') {
                 $('#general').show();
-                $('#receipt').hide();    
-                $('#task-mode').removeAttr('disabled'); 
-                $('#range-start').attr('disabled', 'disabled');              
+                $('#receipt').hide();
+                $('#task-mode').removeAttr('disabled');
+                $('#range-start').attr('disabled', 'disabled');
                 $('#range-end').attr('disabled', 'disabled');
                 $('#name').val(type);
                 $("#task-mode").html('<select name="task_mode" class="form-control" id="task-mode" required><option value="">Select Task Mode</option>@foreach(config("common.tasks.select_mode.c") as $key => $mode)<option value="{{ $key }}" nameValue="{{ $mode["label"] }}">{{ $mode["label"] }}</option>@endforeach</select>');
-            }    
+            }
 
         });
 

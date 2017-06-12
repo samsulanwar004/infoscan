@@ -304,6 +304,26 @@ Route::group([
         'Web\ExchangeController@settingUpdate'
     )->name('exchange.setting.update');
 
+    Route::get(
+        '/point/limit/create',
+        'Web\PointController@limitCreate'
+    )->name('task.limit.create');
+
+    Route::post(
+        '/point/limit/store',
+        'Web\PointController@limitStore'
+    )->name('task.limit.store');
+
+    Route::get(
+        '/point/limit/{id}/edit',
+        'Web\PointController@limitEdit'
+    )->name('task.limit.edit');
+
+    Route::put(
+        '/point/limit/{id}/update',
+        'Web\PointController@limitUpdate'
+    )->name('task.limit.update');
+
 });
 
 Auth::routes();
