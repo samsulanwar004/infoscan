@@ -79,40 +79,35 @@ class SnapController extends BaseApiController
             $countWeekly = $snapService->countMemberSnap($member->id, $type, $mode, $monday, $nextMonday);
 
             //get file count by daily and weekly
-            $countFileDaily = $snapService->countMemberSnapFile($member->id, $type, $mode, $date);
-            $countFileWeekly = $snapService->countMemberSnapFile($member->id, $type, $mode, $monday, $nextMonday);
+            // $countFileDaily = $snapService->countMemberSnapFile($member->id, $type, $mode, $date);
+            // $countFileWeekly = $snapService->countMemberSnapFile($member->id, $type, $mode, $monday, $nextMonday);
 
             //get limit by task point
-            $limits = (new PointService)->getLimitTaskPoint($type, $mode);
-
-            $limit = [];
-            foreach ($limits as $lim) {
-                $limit[$lim->name] = $lim->limit;
-            }
+            $limit = (new PointService)->getTaskLimitByName($type);
 
             //limit for daily
-            if (isset($limit['daily']) && $countDaily >= $limit['daily'])
+            if (isset($limit->limit_daily) && $countDaily >= $limit->limit_daily)
             {
-                return $this->error('Snap Anda sudah mencapai batas harian', 400, true);
+                return $this->error('Snap '.$limit->task_category.' Anda sudah mencapai batas harian', 400, true);
             }
 
             //limit for weekly
-            if (isset($limit['weekly']) && $countWeekly >= $limit['weekly'])
+            if (isset($limit->limit_weekly) && $countWeekly >= $limit->limit_weekly)
             {
-                return $this->error('Snap Anda sudah mencapai batas mingguan', 400, true);
+                return $this->error('Snap '.$limit->task_category.' Anda sudah mencapai batas mingguan', 400, true);
             }
 
-            //limit file for daily
-            if (isset($limit['daily']) && $countFileDaily >= $limit['daily'])
-            {
-                return $this->error('Snap Anda sudah mencapai batas harian', 400, true);
-            }
+            // //limit file for daily
+            // if (isset($limit['daily']) && $countFileDaily >= $limit['daily'])
+            // {
+            //     return $this->error('Snap Anda sudah mencapai batas harian', 400, true);
+            // }
 
-            //limit file for weekly
-            if (isset($limit['weekly']) && $countFileWeekly >= $limit['weekly'])
-            {
-                return $this->error('Snap Anda sudah mencapai batas mingguan', 400, true);
-            }
+            // //limit file for weekly
+            // if (isset($limit['weekly']) && $countFileWeekly >= $limit['weekly'])
+            // {
+            //     return $this->error('Snap Anda sudah mencapai batas mingguan', 400, true);
+            // }
 
             // add request code on the fly
             // TODO: need to refactor!!!!!
@@ -126,32 +121,32 @@ class SnapController extends BaseApiController
             if ($process) {
                 $nextCountDaily = $countDaily + 1;
                 $nextCountWeekly = $countWeekly + 1;
-                //push notif limit for daily 
-                if (isset($limit['daily']) && $nextCountDaily >= $limit['daily'])
+                //push notif limit for daily
+                if (isset($limit->limit_daily) && $nextCountDaily >= $limit->limit_daily)
                 {
                     $snap->sendSnapLimitNotification('daily', $mode = '');
                 }
 
                 //push notif limit for weekly
-                if (isset($limit['weekly']) && $nextCountWeekly >= $limit['weekly'])
+                if (isset($limit->limit_weekly) && $nextCountWeekly >= $limit->limit_weekly)
                 {
                     $snap->sendSnapLimitNotification('weekly', $mode = '');
                 }
 
-                $nextCountFileDaily = $countFileDaily + 1;
-                $nextCountFileWeekly = $countFileWeekly + 1;
-                //push notif limit file for daily 
-                if (isset($limit['daily']) && $nextCountFileDaily >= $limit['daily'])
-                {
-                    $snap->sendSnapLimitNotification('daily', $mode = '');
-                }
+                // $nextCountFileDaily = $countFileDaily + 1;
+                // $nextCountFileWeekly = $countFileWeekly + 1;
+                // //push notif limit file for daily
+                // if (isset($limit['daily']) && $nextCountFileDaily >= $limit['daily'])
+                // {
+                //     $snap->sendSnapLimitNotification('daily', $mode = '');
+                // }
 
-                //push notif limit file for weekly
-                if (isset($limit['weekly']) && $nextCountFileWeekly >= $limit['weekly'])
-                {
-                    $snap->sendSnapLimitNotification('weekly', $mode = '');
-                }
-                
+                // //push notif limit file for weekly
+                // if (isset($limit['weekly']) && $nextCountFileWeekly >= $limit['weekly'])
+                // {
+                //     $snap->sendSnapLimitNotification('weekly', $mode = '');
+                // }
+
             }
 
             return $this->success([

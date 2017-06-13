@@ -21,7 +21,7 @@ class PaymentService
 
     public function getPaymentPortal()
     {
-        $exchange = $this->getExchange();
+        $minimum = $this->getMinimumCash();
         // get current point
         $point = (new TransactionService)->getCreditMember($this->member->member_code);
         // get current cash
@@ -46,10 +46,19 @@ class PaymentService
             // 'estimated_point' => $estimated,
             // 'point_unit_count' => $exchange->point_unit_count,
             // 'cash_per_unit' => $exchange->cash_per_unit,
-            'minimum_cash' => $exchange->minimum_point,
+            'minimum_cash' => $minimum,
         ];
 
         return $data;
+    }
+
+    public function getMinimumCash()
+    {
+        $rate = Exchange::where('minimum_point', '>', 0)
+            ->orderBy('id', 'DESC')
+            ->first();
+
+        return $rate ? $rate->minimum_point : 0;
     }
 
     public function getExchange()
@@ -162,6 +171,11 @@ class PaymentService
         $job = (new MemberActionJob($this->member->id, 'portalpoint', $content))->onQueue($config)->onConnection(env('INFOSCAN_QUEUE'));
         dispatch($job);
 
+        $currentPoint = (new TransactionService)->getCreditMember($memberCode);
+
+        $this->member->temporary_point = $currentPoint;
+        $this->member->update();
+
         return true;
     }
 
@@ -237,6 +251,7 @@ class PaymentService
         $redeem->name = $data['name'];
         $redeem->bank_account = $data['bank_account'];
         $redeem->account_number = $data['account_number'];
+        $redeem->status = 'approved';
 
         $redeem->member()->associate($member);
 
@@ -273,11 +288,14 @@ class PaymentService
 
         if ($data['type'] == 'new') {
             $filename = strtolower(str_random(10)) . '.csv';
-            $title = 'No,Point Redeem,Cashout,Name,Email,Bank Account,Account Number,Status,Date';
+            $title = 'No,Point Redeem,Cashout,Current Point,Current Money,Username,Email,Name,Bank Account,Account Number,Status,Date';
             \Storage::disk('csv')->put($filename, $title);
             $no = 1;
             foreach ($results as $row) {
-                $baris = $no . ',' . $row['point'] . ',' . $row['cashout'] . ',' . $row['name'] . ',' . $row['email'] . ',' . $row['bank_account'] . ',' . $row['account_number'] . ',' . $row['status'] . ',' . $row['created_at'];
+                $baris = $no . ',' . $row['point'] . ',' . $row['cashout'] . ',' . $row['member']->temporary_point
+                . ',' . $row['member']->temporary_point * 2.5 . ',' . $row['member']->name . ','
+                . $row['member']->email . ',' . $row['name']. ',' . $row['bank_account'] . ',' . $row['account_number']
+                . ',' . $row['status'] . ',' . $row['created_at'];
                 \Storage::disk('csv')->append($filename, $baris);
                 $no++;
             }
@@ -287,7 +305,10 @@ class PaymentService
                 $filename = $data['filename'];
                 $no = $data['no'];
                 foreach ($results as $row) {
-                    $baris = $no . ',' . $row['point'] . ',' . $row['cashout'] . ',' . $row['name'] . ',' . $row['email'] . ',' . $row['bank_account'] . ',' . $row['account_number'] . ',' . $row['status'] . ',' . $row['created_at'];
+                    $baris = $no . ',' . $row['point'] . ',' . $row['cashout'] . ',' . $row['member']->temporary_point
+                    . ',' . $row['member']->temporary_point * 2.5 . ',' . $row['member']->name . ','
+                    . $row['member']->email . ',' . $row['name']. ',' . $row['bank_account'] . ',' . $row['account_number']
+                    . ',' . $row['status'] . ',' . $row['created_at'];
                     \Storage::disk('csv')->append($filename, $baris);
                     $no++;
                 }

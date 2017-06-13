@@ -17,6 +17,7 @@ use Carbon\Carbon;
 use App\Transformers\PortalPointTransformer;
 use App\Exchange;
 use App\CityRate;
+use App\TaskLimit;
 use App\Jobs\PointProcessJob;
 
 class PointService
@@ -819,14 +820,15 @@ inner join level_points as l on l.id = blp.level_id;');
                        ->where('bonus_level_points.level_id', $memberService['level_id'])
                        ->first();
 
-            //queue for point process
-            $config = config('common.queue_list.point_process');
-            $type = config('common.transaction.transaction_type.bonus');
-            $pointBonus = isset($bonus->point) ? $bonus->point : 0;
-            $job = (new PointProcessJob($member->member_code, $pointBonus, $type))
-                ->onQueue($config)
-                ->onConnection(env('INFOSCAN_QUEUE'));
-            dispatch($job);
+            if ($bonus) {
+                //queue for point process
+                $config = config('common.queue_list.point_process');
+                $type = config('common.transaction.transaction_type.bonus');
+                $job = (new PointProcessJob($member->member_code, $bonus->point, $type))
+                    ->onQueue($config)
+                    ->onConnection(env('INFOSCAN_QUEUE'));
+                dispatch($job);
+            }
         }
 
 
@@ -873,14 +875,19 @@ inner join level_points as l on l.id = blp.level_id;');
             return $pivots;
         }
 
-        $points = DB::select('select t.id, t.name as task_name, l.name as limit_name, l.limit from limit_points as l
-inner join tasks as t on t.id = l.task_id order by t.id;');
+        $points = DB::select('select id, task_category as name, limit_daily as daily, limit_weekly as weekly
+            from task_limits order by id;');
         $result = [];
         foreach ($points as $pivot) {
             $result[] = [
-                'Task' => $pivot->id . ' ' . $pivot->task_name,
-                'limit_name' => ucfirst($pivot->limit_name),
-                'Limit' => $pivot->limit,
+                'Task' => $pivot->id . ' ' . $pivot->name,
+                'limit_name' => 'Daily',
+                'Limit' => $pivot->daily,
+            ];
+            $result[] = [
+                'Task' => $pivot->id . ' ' . $pivot->name,
+                'limit_name' => 'Weekly',
+                'Limit' => $pivot->weekly,
             ];
         }
 
@@ -903,6 +910,13 @@ inner join tasks as t on t.id = l.task_id order by t.id;');
                  ->get();
     }
 
+    public function getTaskLimitByName($name)
+    {
+        $category = ($name == 'generalTrade') ? 'general trade' : strtolower($name);
+        return TaskLimit::where('task_category', $category)
+            ->first();
+    }
+
     public function addTaskPoint($request)
     {
 
@@ -922,15 +936,6 @@ inner join tasks as t on t.id = l.task_id order by t.id;');
 
                 $point->task()->associate($task);
                 $point->save();
-
-                foreach ($request->input('limit') as $limitName => $limit) {
-                    $taskLimitPoint = $this->getTaskLimitPoints($task->id, $limitName);
-                    $newtaskLimitPoint = new LimitPoint;
-                    $newtaskLimitPoint->name = $limitName;
-                    $newtaskLimitPoint->limit = $limit;
-                    $newtaskLimitPoint->task()->associate($task);
-                    $newtaskLimitPoint->save();
-                }
 
                 $this->removeCache();
 
@@ -956,15 +961,6 @@ inner join tasks as t on t.id = l.task_id order by t.id;');
 
                 $point->task()->associate($task);
                 $point->save();
-
-                foreach ($request->input('limit') as $limitName => $limit) {
-                    $taskLimitPoint = $this->getTaskLimitPoints($task->id, $limitName);
-                    $newtaskLimitPoint = new LimitPoint;
-                    $newtaskLimitPoint->name = $limitName;
-                    $newtaskLimitPoint->limit = $limit;
-                    $newtaskLimitPoint->task()->associate($task);
-                    $newtaskLimitPoint->save();
-                }
 
                 $this->removeCache();
 
@@ -1030,23 +1026,6 @@ inner join tasks as t on t.id = tp.task_id order by t.id;');
 
                 $point->update();
 
-                foreach ($request->input('limit') as $limitName => $limit) {
-                    $taskLimitPoint = $this->getTaskLimitPoints($task->id, $limitName);
-
-                    if ($taskLimitPoint == false) {
-                        $newtaskLimitPoint = new LimitPoint;
-                        $newtaskLimitPoint->name = $limitName;
-                        $newtaskLimitPoint->limit = $limit;
-                        $newtaskLimitPoint->task()->associate($task);
-                        $newtaskLimitPoint->save();
-                    } else {
-                        $taskLimitPoint->name = $limitName;
-                        $taskLimitPoint->limit = $limit;
-                        $taskLimitPoint->update();
-                    }
-
-                }
-
                 $this->removeCache();
 
                 DB::commit();
@@ -1069,23 +1048,6 @@ inner join tasks as t on t.id = tp.task_id order by t.id;');
                 $point = TaskPoint::where('task_id', $task->id)->first();
                 $point->point = $request->input('point');
                 $point->update();
-
-                foreach ($request->input('limit') as $limitName => $limit) {
-                    $taskLimitPoint = $this->getTaskLimitPoints($task->id, $limitName);
-
-                    if ($taskLimitPoint == false) {
-                        $newtaskLimitPoint = new LimitPoint;
-                        $newtaskLimitPoint->name = $limitName;
-                        $newtaskLimitPoint->limit = $limit;
-                        $newtaskLimitPoint->task()->associate($task);
-                        $newtaskLimitPoint->save();
-                    } else {
-                        $taskLimitPoint->name = $limitName;
-                        $taskLimitPoint->limit = $limit;
-                        $taskLimitPoint->update();
-                    }
-
-                }
 
                 $this->removeCache();
 
@@ -1181,6 +1143,23 @@ inner join tasks as t on t.id = tp.task_id order by t.id;');
                        ->where('is_active', 1)
                        ->orderBy('created_at', 'DESC')
                        ->first();
+    }
+
+    public function persistTaskLimit($request, $id = null)
+    {
+        $limit = is_null($id) ? new TaskLimit : $this->getTaskLimitById($id);
+        $limit->task_category = $request->input('name');
+        $limit->limit_daily = $request->input('limit_daily');
+        $limit->limit_weekly = $request->input('limit_weekly');
+        $limit->save();
+
+        $this->removeCache();
+    }
+
+    public function getTaskLimitById($id)
+    {
+        return TaskLimit::where('id', $id)
+            ->first();
     }
 
 }

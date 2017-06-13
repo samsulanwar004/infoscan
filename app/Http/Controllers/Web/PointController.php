@@ -57,7 +57,7 @@ class PointController extends AdminController
     }
 
     public function store(Request $request)
-    {  
+    {
         if ($request->input('task_type') == 'a') {
             $this->validate($request, [
                 'name' => 'required|unique:tasks,name',
@@ -75,14 +75,14 @@ class PointController extends AdminController
         try {
 
             if ($request->input('task_mode') == '0') {
-                throw new \Exception("Task Mode Required");                
+                throw new \Exception("Task Mode Required");
             }
             if ($request->input('task_type') == 'a') {
                 if ($request->input('range_start') > $request->input('range_end')) {
                     throw new \Exception("End range must be greater than start range.");
                 }
-            }            
-            
+            }
+
             //(new PointService)->addTaskLevelPoint($request);
             //new logic task point
             (new PointService)->addTaskPoint($request);
@@ -96,7 +96,7 @@ class PointController extends AdminController
                 'status' => 'error',
                 'message' => $e->getMessage(),
             ], 500);
-        } 
+        }
 
         // return response()->json([
         //     'status' => 'ok',
@@ -115,14 +115,8 @@ class PointController extends AdminController
         $this->isAllowed('Points.Update');
         $task = (new PointService)->getTaskById($id);
         $point = $task->point()->first();
-        $limits = $task->limit;
 
-        $lim = [];
-        foreach ($limits as $limit) {
-            $lim[$limit->name] = $limit->limit;
-        }
-
-        return view('points.edit', compact('task', 'point', 'lim'));
+        return view('points.edit', compact('task', 'point'));
     }
 
     public function update(Request $request, $id)
@@ -143,8 +137,10 @@ class PointController extends AdminController
 
         try {
 
-            if ($request->input('task_mode') == '0') {
-                throw new \Exception("Task Mode Required");                
+            if ($request->input('task_type') != 'a') {
+                if ($request->input('task_mode') == '0') {
+                    throw new \Exception("Task Mode Required");
+                }
             }
 
             // (new PointService)->updateTaskLevelPoint($request, $id);
@@ -202,11 +198,11 @@ class PointController extends AdminController
         $this->validate($request, [
             'levels.*' => 'required',
         ]);
-        
+
         try {
             (new PointService)->updatePointManager($request);
         } catch (\Exception $e) {
-             return response()->json([
+            return response()->json([
                 'status' => 'error',
                 'message' => $e->getMessage(),
             ], 500);
@@ -235,5 +231,65 @@ class PointController extends AdminController
     protected function getLevels()
     {
         return (new PointService)->getLevels();
+    }
+
+    public function limitCreate()
+    {
+        $this->isAllowed('Points.Create');
+
+        return view('points.create_limit');
+    }
+
+    public function limitStore(Request $request)
+    {
+        $this->validate($request, [
+            'name' => 'required|unique:task_limits,task_category',
+            'limit_daily' => 'required',
+            'limit_weekly' => 'required'
+        ]);
+
+        try {
+            (new PointService)->persistTaskLimit($request);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+
+        return response()->json([
+            'status' => 'ok',
+            'message' => 'Task Limit successfully created!',
+        ]);
+    }
+
+    public function limitEdit($id)
+    {
+        $limit = (new PointService)->getTaskLimitById($id);
+
+        return view('points.edit_limit', compact('limit'));
+    }
+
+    public function limitUpdate(Request $request, $id)
+    {
+        $this->validate($request, [
+            'name' => 'required',
+            'limit_daily' => 'required',
+            'limit_weekly' => 'required'
+        ]);
+
+        try {
+            (new PointService)->persistTaskLimit($request, $id);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+
+        return response()->json([
+            'status' => 'ok',
+            'message' => 'Task Limit successfully updated!',
+        ]);
     }
 }

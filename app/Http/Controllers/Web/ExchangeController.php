@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Web;
 use App\Exchange;
 use App\CityRate;
 use App\Services\LocationService;
+use App\Services\PaymentService;
 use Illuminate\Http\Request;
 
 class ExchangeController extends AdminController
@@ -44,14 +45,11 @@ class ExchangeController extends AdminController
     {
         $this->validate($request, [
             'cash' => 'required|numeric',
-            // 'cash' => 'required|numeric|different:point',
-            // 'point' => 'required|numeric',
-            'minimum_point' => 'required|numeric',
         ]);
 
         try {
             // if ($request->input('cash') > $request->input('point')) {
-            //     throw new \Exception("Point must be greater than Cash", 1);                
+            //     throw new \Exception("Point must be greater than Cash", 1);
             // }
             $this->persistExchange($request);
         } catch (\Exception $e) {
@@ -84,14 +82,11 @@ class ExchangeController extends AdminController
     {
         $this->validate($request, [
             'cash' => 'required|numeric',
-            // 'cash' => 'required|numeric|different:point',
-            // 'point' => 'required|numeric',
-            'minimum_point' => 'required|numeric',
         ]);
 
         try {
             // if ($request->input('cash') > $request->input('point')) {
-            //     throw new \Exception("Point must be greater than Cash", 1);                
+            //     throw new \Exception("Point must be greater than Cash", 1);
             // }
             $this->persistExchange($request, $id);
         } catch (\Exception $e) {
@@ -124,8 +119,7 @@ class ExchangeController extends AdminController
         $r = is_null($id) ? new Exchange : $this->getRateById($id);
         $r->cash_per_unit = $request->input('cash');
         $r->point_unit_count = 1;
-        // $r->point_unit_count = $request->input('point');
-        $r->minimum_point = $request->input('minimum_point');
+        $r->minimum_point = is_null($id) ? 0 : $r->minimum_point;
 
         return $r->save();
     }
@@ -213,5 +207,31 @@ class ExchangeController extends AdminController
     private function getCityRateById($id)
     {
         return CityRate::where('id', '=', $id)->first();
+    }
+
+    public function setting()
+    {
+        $minimum = (new PaymentService)->getMinimumCash();
+
+        return view('exchange.setting', compact('minimum'));
+    }
+
+    public function settingUpdate(Request $request)
+    {
+        $this->validate($request, [
+            'minimum_cash' => 'required|numeric'
+        ]);
+
+        try {
+            $rate = Exchange::orderBy('id', 'DESC')
+                ->first();
+            $rate->minimum_point = $request->input('minimum_cash');
+            $rate->update();
+
+        } catch (\Exception $e) {
+            return back()->with('errors', $e->getMessage());
+        }
+
+        return redirect($this->redirectAfterSave)->with('success', 'Setting Exchange successfully updated!');
     }
 }
