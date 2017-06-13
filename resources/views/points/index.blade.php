@@ -36,7 +36,6 @@
                         <a href="{{ admin_route_url('task.limit.create') }}" class="btn btn-box-tool"
                             data-toggle="modal"
                             data-target="#"
-                            modal-size="modal-lg"
                             title="Create New">
                             <i class="fa fa-plus-circle fa-btn"></i> Create New</a>
                         @endcando
@@ -52,7 +51,6 @@
             <a href="#" style="display: none;"
                 data-toggle="modal"
                 data-target="#"
-                modal-size="modal-lg"
                 id="modal-edit"
                 title="Edit">
                 Edit Select Row</a>
