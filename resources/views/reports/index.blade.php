@@ -2,10 +2,15 @@
 
 @section('content')
     @include('partials.content_header', ['pageTitle' => 'Reports', 'pageDescription' => '', 'breadcrumbs' => ['Reports' => false]])
-    <?php $configurations = config('common.reports.fields'); ?>   
+    <?php $configurations = config('common.reports.fields'); ?>
     <!-- Main content -->
     <section class="content">
-
+        <div class="progress" style="display: none">
+          <div class="progress-bar progress-bar-striped active" role="progressbar"
+            aria-valuenow="10" aria-valuemin="0" aria-valuemax="100" style="width:0%">
+            <span id="persent"></span>
+          </div>
+        </div>
         <!-- Default box -->
         <div class="box">
             <div class="box-header with-border form-inline" style="height: 45px;">
@@ -74,15 +79,15 @@
                         @endif
                         </tbody>
                     </table>
-                </div>            
+                </div>
             </div>
                 @if($results)
                 {{ $results->links() }}
                 @endif
-        </div>  
+        </div>
 
-        @include('reports.chart')    
-        
+        @include('reports.chart')
+
     </section>
     <!-- /.content -->
 
@@ -96,7 +101,7 @@
                 <div class="modal-body" style="padding-bottom: 1px;">
                 <!-- <form action="{{ admin_route_url('reports') }}" method="POST"> -->
                  {{ csrf_field() }}
-                 {{ method_field('POST') }}                 
+                 {{ method_field('POST') }}
                     <div class="row" style="margin-bottom: 20px;">
                         <div class="col-md-6">
                             <div class="form-group">
@@ -107,16 +112,16 @@
                                     <input type="text" name="date_create" class="form-control datepicker" id="date_range">
                                 </div>
                             </div>
-                        </div>                
+                        </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="submit-button" class="control-label">&nbsp;</label>
                                 <button id="submit-button" type="submit" class="btn btn-block btn-info"><i class="fa fa-btn fa-filter"></i> Get Filter Data</button>
                             </div>
                         </div>
-                    </div>   
+                    </div>
                     <div class="row" style="margin-bottom: 20px;">
-                        <div class="col-md-6">                            
+                        <div class="col-md-6">
                             <div class="form-group">
                                 <label for="type" class="control-label">Chart Type</label>
                                 <select class="form-control" id="chart-type" name="chart_type" single style="width: 100%;">
@@ -130,7 +135,7 @@
                                     <option value="polarArea">Polar Area</option>
                                 </select>
                             </div>
-                        </div> 
+                        </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="chart" class="control-label">Chart X:</label>
@@ -160,12 +165,12 @@
                                     </select>
                             </div>
                         </div>
-                    </div>                 
+                    </div>
                     <!-- <hr> -->
                     <!-- <div style="overflow-y: scroll; max-height: 350px;"> -->
                     <div class="checkbox-list">
-                        @foreach($configurations as $field => $label)  
-                        @if ($configs == null)                 
+                        @foreach($configurations as $field => $label)
+                        @if ($configs == null)
                         <div class="row bg-soft">
                             <div class="col-md-6 d4-border-top" style="min-height: 45px; padding-top: 15px;">
                                 <div class="checkbox">
@@ -216,11 +221,11 @@
 
                                         if('multiple' === $elementType) {
                                             $options['style'] = 'width: 100%;';
-                                            $options['multiple'] = 'multiple';                                      
+                                            $options['multiple'] = 'multiple';
                                         }
 
                                         if('single' === $elementType) {
-                                            $options['style'] = 'width: 100%;';                                         
+                                            $options['style'] = 'width: 100%;';
                                         }
 
                                         if('dateRange' === $elementType) {
@@ -236,7 +241,7 @@
                                              {
                                                 $val[] = $member->id;
                                              }
-                                            $value =  $val;    
+                                            $value =  $val;
                                         }
 
                                         if($field == 'gender') {
@@ -245,7 +250,7 @@
                                              {
                                                 $val[] = $gen->gender;
                                              }
-                                            $value =  $val;    
+                                            $value =  $val;
                                         }
 
                                         if($field == 'occupation') {
@@ -255,7 +260,7 @@
                                                 $val[] = $o->occupation;
                                              }
                                             $first = ['Select Occupation'];
-                                            $value =  array_merge($first, $val);    
+                                            $value =  array_merge($first, $val);
                                         }
 
                                         if($field == 'last_education') {
@@ -264,7 +269,7 @@
                                              {
                                                 $val[] = $l->last_education;
                                              }
-                                            $value =  $val;    
+                                            $value =  $val;
                                         }
 
                                         if($field == 'users_city') {
@@ -273,7 +278,7 @@
                                              {
                                                 $val[] = $city->city;
                                              }
-                                            $value =  $val;    
+                                            $value =  $val;
                                         }
 
                                         if($field == 'outlet_type') {
@@ -283,7 +288,7 @@
                                                 $val[] = $ot->outlet_type;
                                              }
                                             $first = ['Select Outlet Type'];
-                                            $value =  array_merge($first, $val);   
+                                            $value =  array_merge($first, $val);
                                         }
 
                                         if($field == 'outlet_name') {
@@ -292,7 +297,7 @@
                                              {
                                                 $val[] = $om->outlet_name;
                                              }
-                                            $value =  $val;   
+                                            $value =  $val;
                                         }
 
                                         if($field == 'outlet_province') {
@@ -302,7 +307,7 @@
                                                 $val[] = $op->outlet_province;
                                              }
                                             $first = ['Select Outlet Province'];
-                                            $value =  array_merge($first, $val);   
+                                            $value =  array_merge($first, $val);
                                         }
 
                                         if($field == 'outlet_city') {
@@ -312,7 +317,7 @@
                                                 $val[] = $oc->outlet_city;
                                              }
                                             $first = ['Select Outlet City'];
-                                            $value =  array_merge($first, $val);    
+                                            $value =  array_merge($first, $val);
                                         }
 
                                         if($field == 'products') {
@@ -321,7 +326,7 @@
                                              {
                                                 $val[] = $product->name;
                                              }
-                                            $value =  $val;    
+                                            $value =  $val;
                                         }
 
                                         if($field == 'brand') {
@@ -331,7 +336,7 @@
                                                 $val[] = $brand->brands;
                                              }
                                             $first = ['Select Brand'];
-                                            $value =  array_merge($first, $val);   
+                                            $value =  array_merge($first, $val);
                                         }
 
                                         if($field == 'province') {
@@ -340,7 +345,7 @@
                                              {
                                                 $val[] = $province->name;
                                              }
-                                            $value =  $val;    
+                                            $value =  $val;
                                         }
 
                                         if($field == 'sec') {
@@ -350,7 +355,7 @@
                                                 $val[] = $socio->monthly_expense_code;
                                              }
                                             $first = ['Select Sec'];
-                                            $value =  array_merge($first, $val);   
+                                            $value =  array_merge($first, $val);
                                         }
 
                                     @endphp
@@ -490,7 +495,7 @@
             gtp = (gtp == null) ? '' : '&grand_total_price='+gtp;
             purchaseDate = (purchaseDate == null) ? '' : '&purchase_date='+purchaseDate;
             sentTime = (sentTime == null) ? '' : '&sent_time='+sentTime;
-            window.location.href = '/reports?'+createReport+dateCreate+memberCode+province+gender+occupation+age+products+le+pih+userCity+sec+receiptNumber+outletType+outletName+outletProvince+outletCity+outletAddress+brand+quantity+tpq+gtp+purchaseDate+sentTime;
+            window.location.href = '/reports?'+createReport+dateCreate+memberCode+province+gender+occupation+age+products+le+pih+userCity+sec+receiptNumber+outletType+outletName+outletProvince+outletCity+outletAddress+brand+quantity+tpq+gtp+purchaseDate+sentTime+'&tail=0';
         });
 
     });
@@ -563,7 +568,7 @@
                 scales:{
                     yAxes:[{
                         ticks:{
-                            beginAtZero:true,                                              
+                            beginAtZero:true,
                         },
                         gridLines:{
                             display:false
@@ -609,7 +614,7 @@
                               // Display percent in another line, line break doesn't work for fillText
                               ctx.fillText(percent, model.x + x, model.y + y + 15);
                             }
-                            });               
+                            });
                         }
                     },
                     title : {
@@ -649,13 +654,53 @@
         var _link = window.location.href;
         var _linkArray = _link.split("?");
         var _isiLink = _linkArray[1].split("&");
-        var obj = {};
+        var data = {};
         $.each( _isiLink, function( key, value ) {
           var _field = value.split("=");
-          obj[_field[0]] = _field[1];
+          data[_field[0]] = _field[1];
         });
+        var type_request = 'new';
+        var page = 1;
+        var filename = null;
 
-        console.log(obj);
+        requestCsv(data, type_request, page, filename);
+
+        $('.progress').show();
     });
+
+    function requestCsv(data, type_request, page, filename, no = null) {
+        $.get( "{{ admin_route_url('reports.export') }}", {
+            data : data,
+            type_request : type_request,
+            filename : filename,
+            page : page,
+            no : no,
+        }).success(function( response ) {
+            var type_request = response.message.type_request;
+            if (type_request == 'next') {
+                var type_request = response.message.type_request;
+                var filename = response.message.filename;
+                var page = response.message.page;
+                var no = response.message.no;
+                var last = response.message.last;
+                requestCsv(data, type_request, page, filename, no);
+
+                var progress = Math.round(page/last*100);
+                $('.progress-bar').css("width", function(){
+                    return progress+'%';
+                });
+                $('#persent').text(progress+'% Please wait...');
+            } else {
+                $('.progress-bar').css("width", function(){
+                    return 100+'%';
+                });
+                $('#persent').text('100% Please wait...');
+                setTimeout(function(){
+                    $('.progress').hide();
+                }, 3000);
+                window.location.href = 'download/snaps/?download='+response.message.filename;
+            }
+        });
+    }
 </script>
 @stop

@@ -36,24 +36,6 @@
                                    value="{{ old('cash') }}"
                                    placeholder="Enter cash" required>
                         </div>
-<!--                         <div class="form-group has-feedback">
-                            <label for="cash">Cash</label>
-                            <input type="number" class="form-control" name="cash" id="cash"
-                                   value="{{ old('cash') }}"
-                                   placeholder="Enter cash" required>
-                        </div>
-                        <div class="form-group has-feedback">
-                            <label for="point">Point</label>
-                            <input type="number" class="form-control" name="point" id="point"
-                                   value="{{ old('point') }}"
-                                   placeholder="Enter point" required>
-                        </div> -->
-                        <div class="form-group has-feedback">
-                            <label for="minimum_point">Minimum Cash</label>
-                            <input type="number" class="form-control" name="minimum_point" id="minimum-point"
-                                   value="{{ old('minimum_point') }}"
-                                   placeholder="Enter minimum cash" required>
-                        </div>
                     </div>
                     <!-- /.box-body -->
                     <div class="box-footer text-right">

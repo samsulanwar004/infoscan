@@ -18,19 +18,19 @@
         <!-- Default box -->
         <div class="box">
             <div class="box-header with-border form-inline" style="overflow: hidden; height: 45px;">
-                <div class="box-tools-new"> 
+                <div class="box-tools-new">
                     <div class="new-pagination">
                         {{ $snaps->links() }}
-                    </div>                      
-                </div>                
-                <div class="box-tools pull-right">   
+                    </div>
+                </div>
+                <div class="box-tools pull-right">
                     <div class="input-group">
                       <input type="text" id="search-box" class="form-control" placeholder="Search..." value="{{ $search }}">
                           <span class="input-group-btn">
                             <button type="submit" name="search" id="search-btn" class="btn btn-primary"><i class="fa fa-search"></i>
                             </button>
                           </span>
-                    </div>        
+                    </div>
                 </div>
             </div>
             <div class="box-header with-border form-inline" style="overflow: hidden; height: 45px;">
@@ -41,10 +41,10 @@
                         </div>
                         <input type="text" class="form-control datepicker" name="filter_date" id="filter-date"
                             @if(isset($date)) value="{{$date}}" @endif
-                        >                  
+                        >
                     </div>
-                </div>            
-                <div class="box-tools pull-right">                 
+                </div>
+                <div class="box-tools pull-right">
 
                     <select class="form-control filter-status">
                         <option value="all" @if($status == 'all') selected @endif>Select Status</option>
@@ -68,13 +68,13 @@
                     </select>
 
                     <button class="btn btn-primary" id="show">Show</button>
-                    <button class="btn btn-primary" id="download">Download</button>                    
+                    <button class="btn btn-primary" id="download">Download</button>
 
                 </div>
             </div>
             <div class="box-body">
                 @include('snaps.table_snaps')
-            </div>            
+            </div>
         </div>
         <!-- /.box -->
 
@@ -152,7 +152,7 @@ $(document).ready(function () {
     });
 
     function requestCsv(start_at, end_at, status, type, mode, type_request, page, filename, search, no = null) {
-        $.get( "{{ admin_route_url('snaps.export') }}", { 
+        $.get( "{{ admin_route_url('snaps.export') }}", {
             date_start : start_at,
             date_end : end_at,
             status : status,
@@ -183,13 +183,13 @@ $(document).ready(function () {
                         return 100+'%';
                     });
                     $('#persent').text('100% Please wait...');
-                    setTimeout(function(){ 
-                        $('.progress').hide(); 
+                    setTimeout(function(){
+                        $('.progress').hide();
                     }, 3000);
                     window.location.href = 'download/snaps/?download='+data.message.filename;
                 }
         });
-    }       
+    }
 
 
 });

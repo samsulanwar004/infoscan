@@ -5,12 +5,11 @@ namespace App\Http\Controllers\Web;
 use Illuminate\Http\Request;
 use App\Services\ReportService;
 use App\Reports;
-use Illuminate\Pagination\LengthAwarePaginator;
 
 class ReportController extends AdminController
 {
 	public function index(Request $request)
-	{	
+	{
 
 		if ($request->has('create_report')) {
 			$requestAll = $request->all();
@@ -26,7 +25,7 @@ class ReportController extends AdminController
 			$results = [];
 			$charts = [];
 			$chartType = '';
-		}		
+		}
 		$member = \DB::table('members')
 			->join('provinces', 'provinces.id', '=', 'members.province_id')
 			->distinct();
@@ -127,8 +126,8 @@ class ReportController extends AdminController
 		if (cache('age')) {
 			$age = cache('age');
 		} else {
-			$age = \DB::select('SELECT (SELECT DISTINCT YEAR(CURRENT_TIMESTAMP) - YEAR(dob) - (RIGHT(CURRENT_TIMESTAMP, 5) < RIGHT(dob, 5)) AS age 
-  				FROM members WHERE dob IS NOT NULL ORDER BY age LIMIT 1) as "first",(SELECT DISTINCT YEAR(CURRENT_TIMESTAMP) - YEAR(dob) - (RIGHT(CURRENT_TIMESTAMP, 5) < RIGHT(dob, 5)) AS age 
+			$age = \DB::select('SELECT (SELECT DISTINCT YEAR(CURRENT_TIMESTAMP) - YEAR(dob) - (RIGHT(CURRENT_TIMESTAMP, 5) < RIGHT(dob, 5)) AS age
+  				FROM members WHERE dob IS NOT NULL ORDER BY age LIMIT 1) as "first",(SELECT DISTINCT YEAR(CURRENT_TIMESTAMP) - YEAR(dob) - (RIGHT(CURRENT_TIMESTAMP, 5) < RIGHT(dob, 5)) AS age
   				FROM members ORDER BY age DESC LIMIT 1) as "last"')[0];
 			cache()->put('age', $age, 1440);
 		}
@@ -165,7 +164,7 @@ class ReportController extends AdminController
 		if ($request->has('config')) {
 			$configs = $request->input('config');
 			$configs = array_keys($configs);
-		}		
+		}
 
 		$data = [
 			'results',
@@ -194,5 +193,46 @@ class ReportController extends AdminController
 			'chartType',
 		];
 		return view('reports.index', compact($data));
+	}
+
+	public function export(Request $request)
+	{
+		try {
+
+			if ($request->all() == false) {
+                return view('errors.404');
+            } else if ($download = $request->input('download')) {
+                $get = storage_path('csv/'.$download);
+                return response()->download($get)->deleteFileAfterSend(true);;
+            }
+
+			$datas = $request->input('data');
+			$typeRequest = $request->input('type_request');
+			$filename = $request->input('filename');
+			$page = $request->input('page');
+			$no = $request->input('no');
+
+			$dataPage = [
+                'type' => $typeRequest,
+                'filename' => $filename,
+                'page' => $page,
+                'no' => $no,
+            ];
+
+            $data = array_merge($datas, $dataPage);
+
+			$reports = (new ReportService)->getExportReportToCsv($data);
+
+			return response()->json([
+                'status' => 'ok',
+                'message' => $reports,
+            ], 200);
+		} catch (\Exception $e) {
+			logger($e);
+			return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage().' '.$e->getLine(),
+            ], 500);
+		}
 	}
 }

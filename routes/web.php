@@ -107,7 +107,7 @@ Route::group([
     Route::resource(
         '/exchange',
         'Web\ExchangeController',
-        ['names' => route_resource_name($routePrefix, 'exchange')]
+        ['except' => ['show'],'names' => route_resource_name($routePrefix, 'exchange')]
     );
 
     Route::resource(
@@ -210,11 +210,6 @@ Route::group([
     )->name($routePrefix == null ? 'reports' : '.reports');
 
     Route::post(
-        '/reports',
-        'Web\ReportController@index'
-    )->name($routePrefix == null ? 'reports' : '.reports');
-
-    Route::post(
         '/merchants/settingReports',
         'Web\MerchantController@storeSettingReports'
     )->name($routePrefix == null ? 'merchants.settingReports.store' : '.merchants.settingReports.store');
@@ -293,6 +288,41 @@ Route::group([
         '/exchange/city/{id}',
         'Web\ExchangeController@cityDestroy'
     )->name('city.rate.destroy');
+
+    Route::get(
+        '/download/reports',
+        'Web\ReportController@export'
+    )->name('reports.export');
+
+    Route::get(
+        '/exchange/setting',
+        'Web\ExchangeController@setting'
+    )->name('exchange.setting');
+
+    Route::post(
+        '/exchange/setting-update',
+        'Web\ExchangeController@settingUpdate'
+    )->name('exchange.setting.update');
+
+    Route::get(
+        '/point/limit/create',
+        'Web\PointController@limitCreate'
+    )->name('task.limit.create');
+
+    Route::post(
+        '/point/limit/store',
+        'Web\PointController@limitStore'
+    )->name('task.limit.store');
+
+    Route::get(
+        '/point/limit/{id}/edit',
+        'Web\PointController@limitEdit'
+    )->name('task.limit.edit');
+
+    Route::put(
+        '/point/limit/{id}/update',
+        'Web\PointController@limitUpdate'
+    )->name('task.limit.update');
 
 });
 
