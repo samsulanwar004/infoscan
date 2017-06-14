@@ -54,17 +54,23 @@
                             @foreach($results as $result)
                             <tr>
                                 @foreach($configurations as $field => $label)
-                                <td>
-                                    @if($field == 'age')
-                                    @php
-                                        $newDate = new \Carbon\Carbon($result->{$field});
-                                        $newAge = intval( $newDate->diffInYears() );
-                                    @endphp
-                                        {{ $newAge }}
+                                    @if($field == 'outlet_address')
+                                        <td>
+                                            <div style="overflow:auto;height: 100px;">{{ $result->{$field} }}</div>
+                                        </td>
                                     @else
-                                        {{ $result->{$field} }}
+                                        <td>
+                                            @if($field == 'age')
+                                            @php
+                                                $newDate = new \Carbon\Carbon($result->{$field});
+                                                $newAge = intval( $newDate->diffInYears() );
+                                            @endphp
+                                                {{ $newAge }}
+                                            @else
+                                                {{ $result->{$field} }}
+                                            @endif
+                                        </td>
                                     @endif
-                                </td>
                                 @endforeach
                             </tr>
                             @endforeach

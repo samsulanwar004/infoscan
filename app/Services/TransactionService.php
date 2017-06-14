@@ -173,15 +173,35 @@ class TransactionService
                 $value->updated_at->format('Y-m-d') <= $end;
         });
 
+        $histories = $histories->map(function($entry) {
+
+            if ($entry->status == 'approve') {
+                $word = 'Selamat, klaim sebesar '.number_format($entry->fixed_point, 0,0,'.').' poin telah berhasil! Kluk!';
+            } elseif ($entry->status == 'pending') {
+                $word = 'Kami sedang memproses foto transaksimu. Kamu bisa mendapatkan bonus poin sebesar '.number_format($entry->estimated_point, 0,0,'.').' poin!';
+            }else {
+                $word = $entry->comment;
+            }
+
+            return [
+                'snap_type' => $entry->snap_type,
+                'comment' => $word,
+                'mode_type' => $entry->mode_type,
+                'thumbnail' => config('filesystems.s3url') . $entry->files[0]->file_path,
+                'status' => $entry->status,
+                'date' => $entry->created_at->toDateTimeString(),
+            ];
+        });
+
         $notif = [];
         foreach ($histories as $history) {
             $notif[] = [
-                'title' => $snapService->getType($history->snap_type),
-                'description' => $history->comment,
-                'mode_type' => $history->mode_type,
-                'thumbnail' => config('filesystems.s3url') . $history->files[0]->file_path,
-                'status' => $history->status,
-                'date' => $history->updated_at->toDateTimeString(),
+                'title' => $snapService->getType($history['snap_type']),
+                'description' => $history['comment'],
+                'mode_type' => $history['mode_type'],
+                'thumbnail' => config('filesystems.s3url') . $history['thumbnail'],
+                'status' => $history['status'],
+                'date' => $history['date'],
             ];
         }
         $snaps = $snaps->filter(function ($value, $Key) {

@@ -11,7 +11,7 @@ Member E-mail Verification
 				<h3>Hi, {{ $member->name }}</h3>
 				<p class="lead">Terima kasih telah mengunduh aplikasi Gojago! </p>
 				<p>
-					Silahkan aktifkan aku Anda melalui link di bawah ini
+					Silahkan aktifkan akun Anda melalui link di bawah ini
 				</p>
 				<!-- Callout Panel -->
 				<p class="callout">

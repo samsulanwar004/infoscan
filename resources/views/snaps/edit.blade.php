@@ -47,8 +47,8 @@
                   <option value="">Pilih Alasan</option>
                   @foreach($reasons as $reason)
                     <option value="{{ $reason->id }}">{{ $reason->setting_value }}</option>
-                  @endforeach   
-                  @if($admin)           
+                  @endforeach
+                  @if($admin)
                     <option value="other">Lain-lain...</option>
                   @endif
                 </select>
@@ -114,9 +114,9 @@
       $('#approve').on('click', function() {
         $('.submit-to-server').removeAttr('disabled');
         $('#wording').html('<label><input name="comment" type="radio" onclick="fixed({{ $fixedPoint }});" value="Selamat, klaim sebesar {{ $fixedPoint }} poin telah berhasil! Kluk!" required="required">'+
-          'Selamat, klaim sebesar {{ $fixedPoint }} poin telah berhasil! Kluk!</label>'+
+          'Selamat, klaim sebesar {{ number_format($fixedPoint, 0,0,".") }} poin telah berhasil! Kluk!</label>'+
           '<label><input name="comment" onclick="fixed({{ $fixedPoint }});" value="Oops, data belanja kamu belum lengkap. Kamu dapat {{ $fixedPoint }} poin! Kluk!" type="radio" required="required">'+
-          'Oops, data belanja kamu belum lengkap. Kamu dapat {{ $fixedPoint }} poin! Kluk!</label>');
+          'Oops, data belanja kamu belum lengkap. Kamu dapat {{ number_format($fixedPoint, 0,0,".") }} poin! Kluk!</label>');
         $('#reason').hide();
         $('#other').html('');
       });
