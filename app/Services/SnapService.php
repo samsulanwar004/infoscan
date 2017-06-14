@@ -1856,7 +1856,7 @@ class SnapService
     {
         return Snap::with('files')
                    ->where('member_id', $memberId)
-                   ->orderBy('updated_at', 'DESC')
+                   ->orderBy('created_at', 'DESC')
                    ->get();
     }
 

@@ -181,7 +181,7 @@ class TransactionService
                 'mode_type' => $history->mode_type,
                 'thumbnail' => config('filesystems.s3url') . $history->files[0]->file_path,
                 'status' => $history->status,
-                'date' => $history->updated_at->toDateTimeString(),
+                'date' => $history->created_at->toDateTimeString(),
             ];
         }
         $snaps = $snaps->filter(function ($value, $Key) {
