@@ -555,7 +555,7 @@ class MemberService
 
     public function getLeaderboard()
     {
-        return collect(\DB::select('SELECT id, name, leaderboard_score AS score, @curRank := @curRank + 1 AS rank FROM members m, 
+        return collect(\DB::select('SELECT id, email, name, IFNULL(leaderboard_score, 0) AS score, @curRank := @curRank + 1 AS rank FROM members m,
                 (SELECT @curRank := 0) r ORDER BY leaderboard_score DESC'));
     }
 
