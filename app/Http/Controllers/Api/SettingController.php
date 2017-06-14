@@ -12,36 +12,37 @@ class SettingController extends BaseApiController
      */
     public function index()
     {
-    	$commonConfigs = config('common');
+        $commonConfigs = config('common');
 
         try {
-        	$data['provinces'] = $this->provinceData();
-	        $data['monthly_expenses'] = $this->sesData();
-	        $data['toc'] = 'Lorem ipsum dolor sit amet aja dah mah';
-	        $data['banks'] = $commonConfigs['banks'];
-	        $data['latest_educations'] = $commonConfigs['latest_educations'];
+            $data['provinces'] = $this->provinceData();
+            $data['monthly_expenses'] = $this->sesData();
+            $data['toc'] = 'Lorem ipsum dolor sit amet aja dah mah';
+            $data['banks'] = $commonConfigs['banks'];
+            $data['latest_educations'] = $commonConfigs['latest_educations'];
             $data['genders'] = $commonConfigs['genders'];
             $data['marital_statuses'] = $commonConfigs['marital_statuses'];
 
-	        return $this->success($data, 200);
+            return $this->success($data, 200);
         } catch (\Exception $e) {
-        	return $this->error($e);
+            return $this->error($e);
         }
     }
 
     private function provinceData()
     {
-    	$p = collect(\App\Province::all(['id', 'name'])->toArray());
-    	//$plucked = $p->pluck('name', 'id');
+        $p = collect(\App\Province::all(['id', 'name'])->toArray());
 
-    	return $p;
+        //$plucked = $p->pluck('name', 'id');
+
+        return $p;
     }
 
     private function sesData()
     {
         $ses = \App\SocioEconomicStatus::orderBy('range_start')
-            ->select('range_start as min', 'range_end as max')
-            ->get();
+                                       ->select('range_start as min', 'range_end as max')
+                                       ->get();
         $s = collect($ses)->toArray();
 
         return $s;
@@ -51,15 +52,16 @@ class SettingController extends BaseApiController
     {
         try {
             $citys = collect(\DB::table('regencies')
-                ->where('province_id', $provinceId)
-                ->get());
+                                ->where('province_id', $provinceId)
+                                ->get());
 
-            $city = $citys->map(function($city) {
+            $city = $citys->map(function ($city) {
                 return [
-                'id' => $city->id,
-                'name' => $city->name,
+                    'id' => $city->id,
+                    'name' => $city->name,
                 ];
             });
+
             return $this->success($city->toArray(), 200);
         } catch (\Exception $e) {
             return $this->error($e, 400);

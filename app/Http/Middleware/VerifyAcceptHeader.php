@@ -10,7 +10,7 @@ class VerifyAcceptHeader
 	{
 		if($request->hasHeader('accept') && !$request->wantsJson()) {
 			return response('Forbidden', 403);
-		}
+    	}
 
 		return $next($request);
 	}
