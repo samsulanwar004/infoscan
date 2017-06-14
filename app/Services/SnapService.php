@@ -1848,7 +1848,7 @@ class SnapService
     {
 
         $point = $this->getEstimatedPoint();
-        $snaps->comment = 'Kami sedang memproses foto transaksimu. Kamu bisa mendapatkan bonus poin sebesar ' . $point . ' poin!';
+        $snaps->comment = 'Kami sedang memproses foto transaksimu. Kamu bisa mendapatkan bonus poin sebesar ' . number_format($point, 0,0,'.') . ' poin!';
         $snaps->update();
     }
 
@@ -1856,7 +1856,7 @@ class SnapService
     {
         return Snap::with('files')
                    ->where('member_id', $memberId)
-                   ->orderBy('updated_at', 'DESC')
+                   ->orderBy('created_at', 'DESC')
                    ->get();
     }
 

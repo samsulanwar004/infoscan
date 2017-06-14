@@ -16,7 +16,7 @@ Merchant User Account
 				<!-- Callout Panel -->
 				<p class="callout">
 					Login here. <a href="#">Click it! &raquo;</a>
-				</p><!-- /Callout Panel -->						
+				</p><!-- /Callout Panel -->
 			</td>
 		</tr>
 	</table>

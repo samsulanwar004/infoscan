@@ -8,8 +8,8 @@
     ])
 
     <!-- Main content -->
-    <section class="content">   
-    
+    <section class="content">
+
         <!-- Default box -->
         <div class="box">
             <div class="box-header with-border form-inline" style="overflow: hidden; height: 0px; padding: 0px; margin-bottom: 0px;">
@@ -50,11 +50,11 @@
                                             <a href="{{ admin_route_url('members.show', ['id' => $snap->member->id]) }}">{{ $snap->member->name }}</a> uploaded new photos
                                         </h3>
                                         <div class="timeline-body">
-                                            @if($snap->mode_type == 'input' || $snap->mode_type == 'tags' || $snap->mode_type == 'no_mode') 
-                                                @if($files->lastPage() > 1)  
+                                            @if($snap->mode_type == 'input' || $snap->mode_type == 'tags' || $snap->mode_type == 'no_mode')
+                                                @if($files->lastPage() > 1)
                                                     <div class="new-pagination">
                                                         {{ $files->links() }}
-                                                    </div>                                                   
+                                                    </div>
                                                 @endif
                                                 <div class="new-mode">
                                                     <button id="mode-tag" class="btn btn-primary btn-sm"><i class="fa fa-tag" aria-hidden="true"></i></button>
@@ -64,7 +64,7 @@
                                                 <div id="imgtag" class="show-tag">
                                                     <img src="{{ config('filesystems.s3url') . $files->first()->file_path }}" alt="{{ $files->first()->file_code }}" class="margin img-thumbnail img-responsive img-zoom"  id="tag-image">
                                                     <div id="tagbox">
-                                                    </div>                    
+                                                    </div>
                                                 </div>
                                                 <div class="show-zoom" style="display: none;">
                                                     <div id="window" class="magnify img-thumbnail" data-magnified-zone=".mg_zone">
@@ -84,17 +84,17 @@
                                                 </div>
                                                 <button id="click-zoom" style="display: none;"></button>
                                             @elseif ($snap->mode_type == 'image')
-                                                @if($files->lastPage() > 1)  
+                                                @if($files->lastPage() > 1)
                                                     <div class="new-pagination">
                                                         {{ $files->links() }}
-                                                    </div>                                                   
+                                                    </div>
                                                 @endif
-                                                <div class="new-mode">                                                   
+                                                <div class="new-mode">
                                                     <button id="mode-tag" class="btn btn-primary btn-sm"><i class="fa fa-picture-o" aria-hidden="true"></i></button>
                                                     <button id="mode-zoom" class="btn btn-primary btn-sm"><i class="fa fa-search" aria-hidden="true"></i></button>
                                                 </div>
                                                 <div class="show-tag">
-                                                    <img src="{{ config('filesystems.s3url') . $files->first()->file_path }}" alt="{{ $files->first()->file_code }}" class="margin img-thumbnail img-responsive">                 
+                                                    <img src="{{ config('filesystems.s3url') . $files->first()->file_path }}" alt="{{ $files->first()->file_code }}" class="margin img-thumbnail img-responsive">
                                                 </div>
                                                 <div class="show-zoom" style="display: none;">
                                                     <div id="window" class="magnify img-thumbnail" data-magnified-zone=".mg_zone">
@@ -111,15 +111,15 @@
                                                 </div>
                                                 <button id="click-zoom" style="display: none;"></button>
                                             @elseif($snap->mode_type == 'audios')
-                                                @if($files->lastPage() > 1)  
+                                                @if($files->lastPage() > 1)
                                                     <div class="new-pagination">
                                                         {{ $files->links() }}
-                                                    </div>                                                   
+                                                    </div>
                                                 @endif
-                                                <div class="new-mode">                                                   
+                                                <div class="new-mode">
                                                     <button id="mode-tag" class="btn btn-primary btn-sm"><i class="fa fa-headphones" aria-hidden="true"></i></button>
                                                     <button id="mode-zoom" class="btn btn-primary btn-sm"><i class="fa fa-search" aria-hidden="true"></i></button>
-                                                    <button id="mode-crop" class="btn btn-primary btn-sm"><i class="fa fa-crop" aria-hidden="true"></i></button>                                                    
+                                                    <button id="mode-crop" class="btn btn-primary btn-sm"><i class="fa fa-crop" aria-hidden="true"></i></button>
                                                 </div>
                                                 <div class="img-thumbnail show-tag" style="padding-right: 10px;">
                                                     <img src="{{ config('filesystems.s3url') . $files->first()->file_path }}" alt="{{ $files->first()->file_code }}" class="margin img-responsive" id="{{ $files->first()->id }}">
@@ -147,7 +147,7 @@
                                                     <img src="{{ config('filesystems.s3url') . $files->first()->file_path }}" alt="{{ $files->first()->file_code }}" class="  img-responsive img-crop" id="{{$files->first()->id}}">
                                                 </div>
                                                 <button id="click-zoom" style="display: none;"></button>
-                                            @endif                                                                     
+                                            @endif
                                         </div>
                                     </div>
                                 </li>
@@ -160,7 +160,7 @@
                     <div class="col-md-6">
                         <p class="no-shadow">
 
-                        </p>                       
+                        </p>
                         <div class="timeline-item ">
                             <ul class="timeline timeline-inverse">
                                 <li class="no-margin-right">
@@ -193,8 +193,8 @@
                                 </li>
                             </ul>
                             @endif
-                        </div>                       
-                        
+                        </div>
+
                     </div>
                     <form id="snapUpdate" action="{{ admin_route_url('snaps.update', ['id' => $snap->id]) }}"  method="POST">
                     {{ csrf_field() }}
@@ -204,7 +204,7 @@
                                 <div class="form-group receipt_id">
                                     <label for="receipt_id">Receipt ID</label>
                                     <input type="text" class="form-control input-sm tab-side" id="receipt_id" name="receipt_id" placeholder="Enter Receipt ID" value="{{ $snap->receipt_id }}" data-id="1">
-                                </div>                                    
+                                </div>
                                 <div class="form-group location">
                                     <label for="location">Location</label>
                                     <input type="text" class="form-control input-sm tab-side" id="location" name="location" placeholder="Enter location" value="{{ $snap->location }}" tabIndex="2">
@@ -219,7 +219,7 @@
                                             <input type='text' class="form-control input-sm tab-side" name="purchase_time" value="{{ $snap->purchase_time }}" tabIndex="3"/>
                                         @else
                                             <input type="text" class="form-control input-sm tab-side" name="purchase_time" value="{{ date('Y-m-d H:i')}}" tabIndex="3">
-                                        @endif                                  
+                                        @endif
                                     </div>
                                 </div>
                                 <div class="form-group outlet_name">
@@ -249,7 +249,7 @@
                                 <div class="form-group total_value">
                                     <label for="total_value">Total Value</label>
                                     <input type="number" class="form-control input-sm tab-side" id="total_value" placeholder="Enter Total Value" value="{{ clean_numeric($snap->total_value,'%',false,'.') }}" readonly="readonly" tabIndex="10">
-                                </div>                                    
+                                </div>
                                 <div class="form-group payment_method">
                                     <label for="payment_method">Payment Method</label>
                                     <input type="text" class="form-control input-sm tab-side" list="payment-method" id="payment_method" name="payment_method" placeholder="Enter Payment Method" value="{{ $snap->payment_method }}" tabIndex="11">
@@ -263,7 +263,7 @@
                                 </div> -->
 <!--                                     @if($snap->longitude != 0.00000000 && $snap->latitude != 0.00000000 )
                                     <div class="form-group" id="map"></div>
-                                @endif -->                                
+                                @endif -->
                                 <div class="form-group">
                                     <button type="submit" class="btn btn-primary btn-sm btn-block tab-side" id="submit">
                                         <i class="fa fa-save fa-btn"></i> Update Snap
@@ -284,7 +284,7 @@
                               <option value="Hypermarket">
                               <option value="Drug Store">
                             </datalist>
-                            
+
                             <datalist id="payment-method">
                                 @foreach($paymentMethods as $pm)
                                   <option value="{{ $pm }}">
@@ -304,7 +304,7 @@
         title="Edit">
         Edit Select Image</a>
     </section>
-    <!-- /.content -->    
+    <!-- /.content -->
 @endsection
 
 @section('footer_scripts')
@@ -357,11 +357,11 @@
         border-bottom-right-radius: 6px;
     }
 
-    input[type=number]::-webkit-inner-spin-button, 
-    input[type=number]::-webkit-outer-spin-button 
-    { 
-      -webkit-appearance: none; 
-      margin: 0; 
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button
+    {
+      -webkit-appearance: none;
+      margin: 0;
     }
 
     div.timeline-body img {
@@ -370,12 +370,12 @@
     }
 
     .zoomContainer
-    { 
+    {
         z-index: 9999;
     }
 
     .zoomWindow
-    { 
+    {
         z-index: 9999;
     }
 
@@ -546,9 +546,9 @@
             REBEL.onSubmit($(this), function (responseData) {
                 REBEL.removeAllMessageAlert();
                 if (responseData.status == "ok") {
-                    REBEL.smallNotifTemplate(responseData.message, '.body', 'success'); 
+                    REBEL.smallNotifTemplate(responseData.message, '.body', 'success');
                     var totalValue = responseData.data;
-                    $('#total_value').val(responseData.data);                  
+                    $('#total_value').val(responseData.data);
                 }
             }, false);
 
@@ -562,7 +562,7 @@
             REBEL.onSubmit($(this), function (responseData) {
                 REBEL.removeAllMessageAlert();
                 if (responseData.status == "ok") {
-                    REBEL.smallNotifTemplate(responseData.message, '.body', 'success');               
+                    REBEL.smallNotifTemplate(responseData.message, '.body', 'success');
                 }
             }, false);
 
@@ -620,7 +620,7 @@
                 '<td width="200"><input type="text" name="newtag[weight][]" class="form-control input-sm" placeholder="Weight"></td>'+
                 '<td width="300"><input type="text" name="newtag[brands][]" class="form-control input-sm" placeholder="Brands"></td>'+
                 '<td width="300"><input type="text" name="newtag[sku][]" class="form-control input-sm" placeholder="SKU"></td>'+
-                // '<td width="300"><input type="text" list="variants" name="newtag[variants][]" class="form-control input-sm" placeholder="Variants"></td>'+                
+                // '<td width="300"><input type="text" list="variants" name="newtag[variants][]" class="form-control input-sm" placeholder="Variants"></td>'+
                 '<td width="100"><input type="number" name="newtag[qty][]" class="form-control input-sm" placeholder="QTY" required="required"></td>'+
                 '<td width="200" class="text-right"><input type="number" name="newtag[total][]" class="form-control input-sm" placeholder="Total Price" required="required">'+
                 '</td></tr>');
@@ -674,7 +674,7 @@
             mouseX = (e.pageX - offset.left); // x and y axis
             mouseY = (e.pageY - offset.top);
 
-            $('#tagit').remove(); // remove any tagit div first           
+            $('#tagit').remove(); // remove any tagit div first
             $('div#imgtag').append('<div id="tagit">'+
                 '<input type="text" name="name" class="form-control input-sm" placeholder="Product Name" id="name">'+
                 '<input type="text" name="weight" class="form-control input-sm" placeholder="Weight" id="weight">'+
@@ -689,8 +689,8 @@
             var tagit = document.getElementById('tagit');
             var tengah = imgtag.clientHeight/2;
 
-            if (mouseY > tengah) {                
-                $('#tagit').css({ top:mouseY-tagit.clientHeight, left:mouseX });          
+            if (mouseY > tengah) {
+                $('#tagit').css({ top:mouseY-tagit.clientHeight, left:mouseX });
             } else {
                 $('#tagit').css({ top:mouseY, left:mouseX });
             }
@@ -706,7 +706,7 @@
             if ($('.tag-input[time=' + time + ']').length > 0) {
                 return false;
             }
-            
+
             e.preventDefault();
             var countOfTextbox = $('.tag-name').length;
 
@@ -736,7 +736,7 @@
                 return false;
             }
 
-            var image = document.getElementById('tag-image');            
+            var image = document.getElementById('tag-image');
             mouseX = mouseX / image.clientWidth;
             mouseY = mouseY / image.clientHeight;
 
@@ -762,7 +762,7 @@
                 '<td width="200"><input type="text" name="tag[weight][]" class="form-control input-sm" value="'+weight+'" placeholder="Weight"></td>'+
                 '<td width="200"><input type="text" name="tag[brands][]" class="form-control input-sm" placeholder="Brands"></td>'+
                 '<td width="200"><input type="text" name="tag[sku][]" class="form-control input-sm" placeholder="SKU"></td>'+
-                // '<td width="300"><input type="text" list="variants" name="tag[variants][]" class="form-control input-sm" placeholder="Variants"></td>'+                
+                // '<td width="300"><input type="text" list="variants" name="tag[variants][]" class="form-control input-sm" placeholder="Variants"></td>'+
                 '<td width="100"><input type="number" name="tag[qty][]" class="form-control input-sm" value="'+qty+'"></td>'+
                 '<td width="200"><input type="number" name="tag[total][]" class="form-control input-sm" value="'+total+'">'+
                 '<input type="hidden" name="tag[id][]" id="tag-id-'+time+'"></td></tr>');
@@ -791,7 +791,7 @@
         var type = '{!! $snap->mode_type !!}';
         if (type == 'input' || type == 'tags' || type == 'no_mode') {
             viewtag(id);
-        }        
+        }
         function viewtag(id)
         {
           // get the tag list with action remove and tag boxes and place it on the image.
@@ -872,19 +872,19 @@
         });
 
         function taggingSave(name, weight, qty, price, x, y, fileId, time) {
-            $.get( "{{ admin_route_url('tagging.save') }}", { 
+            $.get( "{{ admin_route_url('tagging.save') }}", {
                 name : name,
                 weight : weight,
                 quantity : qty,
-                total_price : price,                
-                img_x : x,                
-                img_y : y, 
-                file_id : fileId,               
+                total_price : price,
+                img_x : x,
+                img_y : y,
+                file_id : fileId,
             })
                 .success(function( data ) {
                 $('#tag-id-'+time).val(data.message);
             });
-        } 
+        }
 
         $('#mode-zoom').on('click', function() {
             $('.show-tag').hide();
@@ -942,7 +942,7 @@
                 } else {
                     $('.cropper-crop-box').append(_img);
                 }
-                
+
             }
         });
 
@@ -964,13 +964,13 @@
 
     }
 
-    function drop(ev) { 
+    function drop(ev) {
 
         ev.preventDefault();
         var data = ev.dataTransfer.getData("text");
         var node = document.getElementById(data);
         var nodeCopy = document.getElementById(data);
-       
+
         var img = '';
         var _className = '';
         if(ev.target.nodeName == 'IMG') {
@@ -984,18 +984,18 @@
             }catch(e){
                 img = nodeParent.appendChild(node);
                 _className = nodeParent.className;
-            }           
+            }
         } else {
             img = ev.target.appendChild(node);
             _className = ev.target.className;
         }
 
-        
+
         img.style.width += "25px";
         img.style.height += "25px";
 
         $('.img-dragging').removeClass('img-dragging').addClass('img-dropped');
-        
+
         var blob = dataURItoBlob(img.src);
         var fd = new FormData();
         fd.append('image', blob);
@@ -1049,7 +1049,7 @@
                 if (field.form.elements[i].tabIndex == field.tabIndex + 1) {
                     field.form.elements[i].focus();
                     if (field.form.elements[i].type == "text") {
-                        field.form.elements[i].select();                           
+                        field.form.elements[i].select();
                         break;
                     } else if (field.form.elements[i].type == "submit") {
                         field.form.elements[i].click();
@@ -1068,7 +1068,7 @@
           , form = self.parents('form:eq(0)')
           , focusable
           , next
-          ;          
+          ;
         if (e.keyCode == 13) {
             focusable = form.find('input,select,button,textarea').filter(':visible');
             next = focusable.eq(focusable.index(this)+1);
