@@ -776,6 +776,7 @@ inner join level_points as l on l.id = blp.level_id;');
         $point = (new TransactionService)->getCreditMember($member->member_code);
         $cash = (new TransactionService)->getCashCreditMember($member->member_code);
         $memberService = (new MemberService)->getLevelByMemberId($member->id);
+        $snaps = (new SnapService)->getSnapByMemberId($member->id);
         $levelId = $memberService['level_id'];
         $latestPoint = $memberService['latest_point'];
         $level = $this->getLevel($levelId);
@@ -831,12 +832,19 @@ inner join level_points as l on l.id = blp.level_id;');
             }
         }
 
+        $estimated = [];
+        foreach ($snaps as $snap) {
+            $estimated[] = $snap->estimated_point;
+        }
+
+        $estimated = collect($estimated)->sum();
 
         $data = [
             'current_point' => $point,
             'current_cash' => $cash,
             'current_level' => $levelArray[1],
             'point_next_level' => $pointNextLevel,
+            'estimated_point' => $estimated,
         ];
 
         return $data;
