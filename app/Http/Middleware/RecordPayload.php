@@ -18,8 +18,10 @@ class RecordPayload
     {
         if('get' !== strtolower($request->method())) {
             $token = $request->header('X-PLAYER', null);
+            $auth = $request->header('Athorization', null);
             $records = [
                 'player_id' => $token,
+                'auth' => $auth,
                 'detail_post' => $request->all(),
             ];
             DB::insert('Insert into mobile_request_logs (rc, method, type, content, created_at) values(?,?,?,?,?)', [
