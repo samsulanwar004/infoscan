@@ -18,7 +18,7 @@ class RecordPayload
     {
         if('get' !== strtolower($request->method())) {
             $token = $request->header('X-PLAYER', null);
-            $auth = $request->header('Athorization', null);
+            $auth = $request->header('Authorization', null);
             $records = [
                 'player_id' => $token,
                 'auth' => $auth,
