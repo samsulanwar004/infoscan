@@ -105,6 +105,12 @@
                 </ul>
             </li>
 
+            <li class="leaderboard">
+                <a href="/leaderboard">
+                    <i class="fa fa-list-ol"></i> <span>Leaderboard</span>
+                </a>
+            </li>
+
             <li class="treeview">
                 <a href="#">
                     <i class="fa fa-cogs"></i> <span>Settings</span>
