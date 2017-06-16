@@ -18,8 +18,10 @@ class RecordPayload
     {
         if('get' !== strtolower($request->method())) {
             $token = $request->header('X-PLAYER', null);
-            $auth = $request->header('Athorization', null);
+            $auth = $request->header('Authorization', null);
+            $device = $this->isIphone($request) ? 'iphone' : 'android';
             $records = [
+                'device' => $device,
                 'player_id' => $token,
                 'auth' => $auth,
                 'detail_post' => $request->all(),
@@ -30,5 +32,14 @@ class RecordPayload
         }
 
         return $next($request);
+    }
+
+    private function isIphone($request)
+    {
+        if(preg_match("/iphone/", strtolower($request->header('User-Agent')))) {
+            return true;
+        }
+
+        return false;
     }
 }
