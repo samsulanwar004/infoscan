@@ -559,6 +559,12 @@ class MemberService
                 (SELECT @curRank := 0) r ORDER BY leaderboard_score DESC'));
     }
 
+    public function getLeaderboardByDinamisPoint()
+    {
+        return collect(\DB::select('SELECT id, name, IFNULL(temporary_point, 0) AS score, @curRank := @curRank + 1 AS rank FROM members m,
+                (SELECT @curRank := 0) r ORDER BY temporary_point DESC'));
+    }
+
     public function getLatestMemberLevelById($id)
     {
         return MemberLevel::where('member_id', $id)

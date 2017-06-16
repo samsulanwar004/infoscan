@@ -323,11 +323,6 @@ return [
             'verification' => 'Verifikasi Email - Verifikasi akun GoJaGomu sekarang!',
             'resend' => 'Akun Belum Terverifikasi - Kami sudah mengirim ulang email verifikasi ke emailmu. Verifikasi akunmu untuk bisa cashback!',
         ],
-
-        'limit' => [
-            'daily' => 'Snap Anda sudah mencapai batas harian!',
-            'weekly' => 'Snap Anda sudah mencapai batas mingguan!',
-        ],
     ],
 
     'internal_api_token' => env('INTERNAL_API_TOKEN'),
