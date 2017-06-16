@@ -53,25 +53,41 @@ class LimitController extends BaseApiController
         //get limit by task point
         $limits = (new PointService)->getTaskLimitByName($type);
 
-        if($limits) {
-            $countDaily = $countDaily == $limits->limit_daily ? true : false;
-            $countWeekly = $countWeekly == $limits->limit_weekly ? true : false;
-        } else {
-            $countDaily = true;
-            $countWeekly = true;
+        if ($limits) {
+            if ($limits->limit_weekly == $countWeekly) {
+                $type = $this->getTypeSnap($limits->task_category);
+                $limit = [
+                    'mode' => $type,
+                    'is_limit' => true,
+                    'message' => 'Limit foto '.$type.' kamu habis untuk minggu ini! Coba lagi minggu depan ya!',
+                ];
+
+                return $limit;
+            }
+
+            if ($limits->limit_daily == $countDaily) {
+                $type = $this->getTypeSnap($limits->task_category);
+                $limit = [
+                    'mode' => $type,
+                    'is_limit' => true,
+                    'message' => 'Limit foto '.$type.' kamu habis untuk hari ini! Coba lagi besok ya!',
+                ];
+
+                return $limit;
+            }
+
         }
 
         $type = $this->getTypeSnap($limits->task_category);
 
         $limit = [
             'mode' => $type,
-            'is_limit_daily' => $countDaily,
-            'is_limit_weekly' => $countWeekly,
-            'message_daily' => 'Limit foto '.$type.' kamu habis untuk hari ini! Coba lagi besok ya!',
-            'message_weekly' => 'Limit foto '.$type.' kamu habis untuk minggu ini! Coba lagi minggu depan ya!',
+            'is_limit' => false,
+            'message' => '',
         ];
 
         return $limit;
+
     }
 
     private function getTypeSnap($type)
