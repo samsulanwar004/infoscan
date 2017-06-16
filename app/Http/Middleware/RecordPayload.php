@@ -34,7 +34,7 @@ class RecordPayload
         return $next($request);
     }
 
-    private function isIphone(Request $request)
+    private function isIphone($request)
     {
         if(preg_match("/iphone/", strtolower($request->header('User-Agent')))) {
             return true;
