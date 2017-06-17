@@ -54,7 +54,7 @@ class LimitController extends BaseApiController
         $limits = (new PointService)->getTaskLimitByName($type);
 
         if ($limits) {
-            if ($limits->limit_weekly == $countWeekly) {
+            if ($countWeekly >= $limits->limit_weekly) {
                 $type = $this->getTypeSnap($limits->task_category);
                 $limit = [
                     'mode' => $type,
@@ -65,7 +65,7 @@ class LimitController extends BaseApiController
                 return $limit;
             }
 
-            if ($limits->limit_daily == $countDaily) {
+            if ($countDaily >= $limits->limit_daily) {
                 $type = $this->getTypeSnap($limits->task_category);
                 $limit = [
                     'mode' => $type,
