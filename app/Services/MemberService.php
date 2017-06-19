@@ -120,7 +120,7 @@ class MemberService
 
         //create referral code
         $name = explode(' ', $member->name);
-        $member->referral_me = strtolower($name[0]).rand(1000,10000);
+        $member->referral_me = strtolower($name[0]).rand(10000,99999);
 
         if (!$member->save()) {
             DB::rollback();
