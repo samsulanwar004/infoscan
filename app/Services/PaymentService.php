@@ -300,8 +300,8 @@ class PaymentService
             \Storage::disk('csv')->put($filename, $title);
             $no = 1;
             foreach ($results as $row) {
-                $baris = $no . ',' . $row['point'] . ',' . $row['cashout'] . ',' . $row['member']->temporary_point
-                . ',' . $row['member']->temporary_point * 2.5 . ',' . $row['member']->name . ','
+                $baris = $no . ',' . $row['point'] . ',' . $row['cashout'] . ',' . $row['current_point']
+                . ',' . $row['current_cash'] . ',' . $row['member']->name . ','
                 . $row['member']->email . ',' . $row['name']. ',' . $row['bank_account'] . ',' . $row['account_number']
                 . ',' . $row['status'] . ',' . $row['created_at'];
                 \Storage::disk('csv')->append($filename, $baris);
@@ -313,8 +313,8 @@ class PaymentService
                 $filename = $data['filename'];
                 $no = $data['no'];
                 foreach ($results as $row) {
-                    $baris = $no . ',' . $row['point'] . ',' . $row['cashout'] . ',' . $row['member']->temporary_point
-                    . ',' . $row['member']->temporary_point * 2.5 . ',' . $row['member']->name . ','
+                    $baris = $no . ',' . $row['point'] . ',' . $row['cashout'] . ',' . $row['current_point']
+                    . ',' . $row['current_cash'] . ',' . $row['member']->name . ','
                     . $row['member']->email . ',' . $row['name']. ',' . $row['bank_account'] . ',' . $row['account_number']
                     . ',' . $row['status'] . ',' . $row['created_at'];
                     \Storage::disk('csv')->append($filename, $baris);
