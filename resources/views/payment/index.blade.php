@@ -58,16 +58,16 @@
                                 @endif
                             </td>
                             <td class="vertical-middle">
-                                {{ number_format($item->point) }} Pts
+                                {{ number_format($item->point,0,0,'.') }} Pts
                             </td>
                             <td class="vertical-middle">
-                                Rp {{ number_format($item->cashout) }}
+                                Rp {{ number_format($item->cashout,0,0,'.') }}
                             </td>
                             <td class="vertical-middle">
-                                {{ number_format($item->member->temporary_point) }} Pts
+                                {{ number_format($item->current_point,0,0,'.') }} Pts
                             </td>
                             <td class="vertical-middle">
-                                Rp {{ number_format($item->member->temporary_point * 2.5) }}
+                                Rp {{ number_format($item->current_cash,0,0,'.') }}
                             </td>
                             <td class="vertical-middle">
                                 {{ $item->member->name }} <br>

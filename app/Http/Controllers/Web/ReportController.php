@@ -15,7 +15,11 @@ class ReportController extends AdminController
 			$requestAll = $request->all();
 			$reportService = (new ReportService);
 			$results = $reportService->createReport($request);
-			$charts = $reportService->createChart($request);
+			if ($request->has('chart_type') && $request->has('chart_x') && $request->has('dataset')) {
+				$charts = $reportService->createChart($request);
+			} else {
+				$charts = [];
+			}
 			$chartType = $request->input('chart_type');
 			foreach ($requestAll as $key => $value) {
 				$results->appends($key, $value);

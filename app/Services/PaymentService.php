@@ -154,7 +154,7 @@ class PaymentService
         ];
 
         //save to redeem point table
-        $this->saveToRedeemPoint($data, $this->member);
+        $redeemPoint = $this->saveToRedeemPoint($data, $this->member);
 
         //credit point to member
         $this->transactionCredit($transaction);
@@ -172,8 +172,14 @@ class PaymentService
         dispatch($job);
 
         $currentPoint = (new TransactionService)->getCreditMember($memberCode);
+        $currentCash = (new TransactionService)->getCashCreditMember($memberCode);
+
+        $redeemPoint->current_point = $currentPoint;
+        $redeemPoint->current_cash = $currentCash;
+        $redeemPoint->update();
 
         $this->member->temporary_point = $currentPoint;
+        $this->member->temporary_cash = $currentCash;
         $this->member->update();
 
         return true;
@@ -256,6 +262,8 @@ class PaymentService
         $redeem->member()->associate($member);
 
         $redeem->save();
+
+        return $redeem;
     }
 
     public function getListPaymentPortal()
