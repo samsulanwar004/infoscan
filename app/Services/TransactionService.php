@@ -199,7 +199,7 @@ class TransactionService
                 'title' => $snapService->getType($history['snap_type']),
                 'description' => $history['comment'],
                 'mode_type' => $history['mode_type'],
-                'thumbnail' => config('filesystems.s3url') . $history['thumbnail'],
+                'thumbnail' => $history['thumbnail'],
                 'status' => $history['status'],
                 'date' => $history['date'],
             ];
