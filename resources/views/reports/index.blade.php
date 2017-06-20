@@ -105,9 +105,9 @@
                     <h4 class="modal-title">Filter</h4>
                 </div>
                 <div class="modal-body" style="padding-bottom: 1px;">
-                <!-- <form action="{{ admin_route_url('reports') }}" method="POST"> -->
+                {{-- <form action="{{ admin_route_url('reports') }}" method="POST">
                  {{ csrf_field() }}
-                 {{ method_field('POST') }}
+                 {{ method_field('POST') }} --}}
                     <div class="row" style="margin-bottom: 20px;">
                         <div class="col-md-6">
                             <div class="form-group">
@@ -152,7 +152,7 @@
                                         @endforeach
                                     </select>
                             </div>
-                            <!-- <div class="form-group">
+{{--                             <div class="form-group">
                                 <label for="chart" class="control-label">Chart Y:</label>
                                     <select name="chart_y" id="chart-y" class="form-control" single style="width: 100%;">
                                         <option value="">Select Chart Y</option>
@@ -160,7 +160,7 @@
                                             <option value="{{ $field }}">{{ $label['label'] }}</option>
                                         @endforeach
                                     </select>
-                            </div> -->
+                            </div> --}}
                             <div class="form-group">
                                 <label for="dataset" class="control-label">Dataset:</label>
                                     <select name="dataset" id="dataset" class="form-control" single style="width: 100%;">
@@ -476,8 +476,15 @@
             var purchaseDate = $('input[name=purchase_date]').val();
             var sentTime = $('input[name=sent_time]').val();
 
+            var chartType = $('select[name=chart_type]').val();
+            var chartX = $('select[name=chart_x]').val();
+            var dataset = $('select[name=dataset]').val();
+
             createReport = (createReport == null) ? '' : 'create_report='+createReport;
             dateCreate = (dateCreate == null) ? '' : '&date_create='+dateCreate;
+            chartType = (chartType == null) ? '' : '&chart_type='+chartType;
+            chartX = (chartX == null) ? '' : '&chart_x='+chartX;
+            dataset = (dataset == null) ? '' : '&dataset='+dataset;
             memberCode = (memberCode == null) ? '' : '&user_id='+memberCode;
             province = (province == null) ? '' : '&province='+province;
             gender = (gender == null) ? '' : '&gender='+gender;
@@ -501,7 +508,8 @@
             gtp = (gtp == null) ? '' : '&grand_total_price='+gtp;
             purchaseDate = (purchaseDate == null) ? '' : '&purchase_date='+purchaseDate;
             sentTime = (sentTime == null) ? '' : '&sent_time='+sentTime;
-            window.location.href = '/reports?'+createReport+dateCreate+memberCode+province+gender+occupation+age+products+le+pih+userCity+sec+receiptNumber+outletType+outletName+outletProvince+outletCity+outletAddress+brand+quantity+tpq+gtp+purchaseDate+sentTime+'&tail=0';
+
+            window.location.href = '/reports?'+createReport+dateCreate+chartType+chartX+dataset+memberCode+province+gender+occupation+age+products+le+pih+userCity+sec+receiptNumber+outletType+outletName+outletProvince+outletCity+outletAddress+brand+quantity+tpq+gtp+purchaseDate+sentTime+'&tail=0';
         });
 
     });

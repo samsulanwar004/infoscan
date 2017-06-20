@@ -49,12 +49,6 @@ class SecureService
                 ->setApiToken(str_random(60))
                 ->register($user);
 
-            // //debit for new member
-            // $transaction = [
-            //     'member_code' => $user['member_code'],
-            //     'point' => 1000,
-            // ];
-            // $this->transactionDebit($transaction);
         }
 
         //build data for member history

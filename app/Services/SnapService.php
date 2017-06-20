@@ -1870,10 +1870,9 @@ class SnapService
         ])->send();
     }
 
-    public function sendSnapLimitNotification($type, $mode = '')
+    public function sendSnapLimitNotification()
     {
-        $message = config('common.notification_messages.limit.' . $type);
-        $sendMessage = sprintf("$message", (string)$mode);
+        $sendMessage = 'Limit foto kamu sudah habis. Foto yang kamu kirim tidak akan diberikan points';
 
         (new NotificationService($sendMessage))->setData([
             'action' => 'notification',
@@ -1902,17 +1901,15 @@ class SnapService
         SnapTag::whereIn('id', $delete)->delete();
     }
 
-    public function countMemberSnap($id, $type, $mode, $date, $nextDay = null)
+    public function countMemberSnap($id, $type, $date, $nextDay = null)
     {
         return ($nextDay == null) ?
             Snap::where('snap_type', $type)
                 ->where('member_id', $id)
-                ->where('mode_type', $mode)
                 ->whereDate('created_at', $date)
                 ->count() :
             Snap::where('snap_type', $type)
                 ->where('member_id', $id)
-                ->where('mode_type', $mode)
                 ->whereDate('created_at', '>=', $date)
                 ->whereDate('created_at', '<=', $nextDay)
                 ->count();

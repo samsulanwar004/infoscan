@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Exception;
 use Validator;
 use Carbon\Carbon;
+use App\Jobs\MemberActionJob;
 
 class SnapController extends BaseApiController
 {
@@ -21,9 +22,12 @@ class SnapController extends BaseApiController
 
     private $date;
 
+    private $member;
+
     public function __construct()
     {
         $this->date = Carbon::now('Asia/Jakarta');
+        $this->member = auth('api')->user();
     }
 
     /**
@@ -75,12 +79,8 @@ class SnapController extends BaseApiController
             $snapService = (new SnapService);
             $member = $this->getActiveMember();
             //get snap count by daily and weekly
-            $countDaily = $snapService->countMemberSnap($member->id, $type, $mode, $date);
-            $countWeekly = $snapService->countMemberSnap($member->id, $type, $mode, $monday, $nextMonday);
-
-            //get file count by daily and weekly
-            // $countFileDaily = $snapService->countMemberSnapFile($member->id, $type, $mode, $date);
-            // $countFileWeekly = $snapService->countMemberSnapFile($member->id, $type, $mode, $monday, $nextMonday);
+            $countDaily = $snapService->countMemberSnap($member->id, $type, $date);
+            $countWeekly = $snapService->countMemberSnap($member->id, $type, $monday, $nextMonday);
 
             //get limit by task point
             $limit = (new PointService)->getTaskLimitByName($type);
@@ -88,26 +88,18 @@ class SnapController extends BaseApiController
             //limit for daily
             if (isset($limit->limit_daily) && $countDaily >= $limit->limit_daily)
             {
-                return $this->error('Snap '.$limit->task_category.' Anda sudah mencapai batas harian', 400, true);
+                (new SnapService)->sendSnapLimitNotification();
+                $type = $this->getTypeSnap($limit->task_category);
+                return $this->error('Limit foto '.$type.' kamu habis untuk hari ini! Coba lagi besok ya!', 400, true);
             }
 
             //limit for weekly
             if (isset($limit->limit_weekly) && $countWeekly >= $limit->limit_weekly)
             {
-                return $this->error('Snap '.$limit->task_category.' Anda sudah mencapai batas mingguan', 400, true);
+                (new SnapService)->sendSnapLimitNotification();
+                $type = $this->getTypeSnap($limit->task_category);
+                return $this->error('Limit foto '.$type.' kamu habis untuk minggu ini! Coba lagi minggu depan ya!', 400, true);
             }
-
-            // //limit file for daily
-            // if (isset($limit['daily']) && $countFileDaily >= $limit['daily'])
-            // {
-            //     return $this->error('Snap Anda sudah mencapai batas harian', 400, true);
-            // }
-
-            // //limit file for weekly
-            // if (isset($limit['weekly']) && $countFileWeekly >= $limit['weekly'])
-            // {
-            //     return $this->error('Snap Anda sudah mencapai batas mingguan', 400, true);
-            // }
 
             // add request code on the fly
             // TODO: need to refactor!!!!!
@@ -124,28 +116,36 @@ class SnapController extends BaseApiController
                 //push notif limit for daily
                 if (isset($limit->limit_daily) && $nextCountDaily >= $limit->limit_daily)
                 {
-                    $snap->sendSnapLimitNotification('daily', $mode = '');
+                    $type = $this->getTypeSnap($limit->task_category);
+                    //build data for member history
+                    $memberId = $this->member->id;
+                    $content = [
+                        'type' => 'snap',
+                        'title' => 'Limit',
+                        'description' => 'Limit foto '.$type.' kamu habis untuk hari ini! Coba lagi besok ya!',
+                    ];
+
+                    $config = config('common.queue_list.member_action_log');
+                    $job = (new MemberActionJob($memberId, 'notification', $content))->onQueue($config)->onConnection(env('INFOSCAN_QUEUE'));
+                    dispatch($job);
                 }
 
                 //push notif limit for weekly
                 if (isset($limit->limit_weekly) && $nextCountWeekly >= $limit->limit_weekly)
                 {
-                    $snap->sendSnapLimitNotification('weekly', $mode = '');
+                    $type = $this->getTypeSnap($limit->task_category);
+                    //build data for member history
+                    $memberId = $this->member->id;
+                    $content = [
+                        'type' => 'snap',
+                        'title' => 'Limit',
+                        'description' => 'Limit foto '.$type.' kamu habis untuk minggu ini! Coba lagi minggu depan ya!',
+                    ];
+
+                    $config = config('common.queue_list.member_action_log');
+                    $job = (new MemberActionJob($memberId, 'notification', $content))->onQueue($config)->onConnection(env('INFOSCAN_QUEUE'));
+                    dispatch($job);
                 }
-
-                // $nextCountFileDaily = $countFileDaily + 1;
-                // $nextCountFileWeekly = $countFileWeekly + 1;
-                // //push notif limit file for daily
-                // if (isset($limit['daily']) && $nextCountFileDaily >= $limit['daily'])
-                // {
-                //     $snap->sendSnapLimitNotification('daily', $mode = '');
-                // }
-
-                // //push notif limit file for weekly
-                // if (isset($limit['weekly']) && $nextCountFileWeekly >= $limit['weekly'])
-                // {
-                //     $snap->sendSnapLimitNotification('weekly', $mode = '');
-                // }
 
             }
 
@@ -203,5 +203,23 @@ class SnapController extends BaseApiController
         $rules = array_merge($rules, $newRules);
 
         return Validator::make($request->all(), $rules);
+    }
+
+    private function getTypeSnap($type)
+    {
+        switch ($type) {
+            case 'Receipt':
+                return 'Struk';
+                break;
+            case 'Handwritten':
+                return 'Nota Tulis';
+                break;
+            case 'General Trade':
+                return 'Warung';
+                break;
+            default:
+                return 'No Mode';
+                break;
+        }
     }
 }

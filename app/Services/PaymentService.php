@@ -154,7 +154,7 @@ class PaymentService
         ];
 
         //save to redeem point table
-        $this->saveToRedeemPoint($data, $this->member);
+        $redeemPoint = $this->saveToRedeemPoint($data, $this->member);
 
         //credit point to member
         $this->transactionCredit($transaction);
@@ -172,8 +172,14 @@ class PaymentService
         dispatch($job);
 
         $currentPoint = (new TransactionService)->getCreditMember($memberCode);
+        $currentCash = (new TransactionService)->getCashCreditMember($memberCode);
+
+        $redeemPoint->current_point = $currentPoint;
+        $redeemPoint->current_cash = $currentCash;
+        $redeemPoint->update();
 
         $this->member->temporary_point = $currentPoint;
+        $this->member->temporary_cash = $currentCash;
         $this->member->update();
 
         return true;
@@ -256,6 +262,8 @@ class PaymentService
         $redeem->member()->associate($member);
 
         $redeem->save();
+
+        return $redeem;
     }
 
     public function getListPaymentPortal()
@@ -292,8 +300,8 @@ class PaymentService
             \Storage::disk('csv')->put($filename, $title);
             $no = 1;
             foreach ($results as $row) {
-                $baris = $no . ',' . $row['point'] . ',' . $row['cashout'] . ',' . $row['member']->temporary_point
-                . ',' . $row['member']->temporary_point * 2.5 . ',' . $row['member']->name . ','
+                $baris = $no . ',' . $row['point'] . ',' . $row['cashout'] . ',' . $row['current_point']
+                . ',' . $row['current_cash'] . ',' . $row['member']->name . ','
                 . $row['member']->email . ',' . $row['name']. ',' . $row['bank_account'] . ',' . $row['account_number']
                 . ',' . $row['status'] . ',' . $row['created_at'];
                 \Storage::disk('csv')->append($filename, $baris);
@@ -305,8 +313,8 @@ class PaymentService
                 $filename = $data['filename'];
                 $no = $data['no'];
                 foreach ($results as $row) {
-                    $baris = $no . ',' . $row['point'] . ',' . $row['cashout'] . ',' . $row['member']->temporary_point
-                    . ',' . $row['member']->temporary_point * 2.5 . ',' . $row['member']->name . ','
+                    $baris = $no . ',' . $row['point'] . ',' . $row['cashout'] . ',' . $row['current_point']
+                    . ',' . $row['current_cash'] . ',' . $row['member']->name . ','
                     . $row['member']->email . ',' . $row['name']. ',' . $row['bank_account'] . ',' . $row['account_number']
                     . ',' . $row['status'] . ',' . $row['created_at'];
                     \Storage::disk('csv')->append($filename, $baris);

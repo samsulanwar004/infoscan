@@ -116,6 +116,12 @@ Route::group([
         ['names' => route_resource_name($routePrefix, 'payment-portal')]
     );
 
+    Route::resource(
+        '/leaderboard',
+        'Web\LeaderboardController',
+        ['except' => ['show'], 'names' => route_resource_name($routePrefix, 'leaderboard')]
+    );
+
     Route::get('/questionnaire/publish/{id}', 'Web\QuestionnaireController@publish')->name('questionnaire.publish');
 
     Route::get('/questionnaire/results/{id}', 'Web\QuestionnaireController@resultList')->name('questionnaire.result');

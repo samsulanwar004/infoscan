@@ -19,7 +19,7 @@ class LeaderboardController extends BaseApiController
     {
     	$memberId = $this->member->id;
     	try {
-    		$leader = (new MemberService)->getLeaderboard();
+    		$leader = (new MemberService)->getLeaderboardByDinamisPoint();
 			$member = $leader->filter(function($value) use ($memberId) {
 				return $value->id == $memberId;
 			});

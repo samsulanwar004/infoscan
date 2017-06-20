@@ -798,6 +798,7 @@ inner join level_points as l on l.id = blp.level_id;');
         if ($member->temporary_point != $point || $member->temporary_level != $levelArray[1]) {
             $member->temporary_point = $point;
             $member->temporary_level = $levelArray[1];
+            $member->temporary_cash = $cash;
 
             $member->update();
         }

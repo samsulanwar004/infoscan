@@ -183,7 +183,8 @@ class ReportService
 		$query->orderBy('snaps.id', 'DESC');
 
 		$results = $query->paginate(50);
-
+        $dataChart = $query->get();
+        $this->setResultReport($dataChart);
 		return $results;
 	}
 
@@ -411,7 +412,7 @@ class ReportService
         return $params;
 	}
 
-	public function createChart($request, $results)
+	public function createChart($request)
 	{
 		$datasetRequest = $request->input('dataset');
 		$chartXRequest = $request->input('chart_x');
@@ -439,7 +440,7 @@ class ReportService
   			//'chartYRequest' => $chartYRequest,
   		];
 
-  		$charts = $this->buildChartGeneral($data, $request, $results);
+  		$charts = $this->buildChartGeneral($data, $request);
 
   		return $charts;
 	}
@@ -450,10 +451,8 @@ class ReportService
 	    return  $launch;
 	}
 
-	private function buildChartGeneral($data, $request, $results)
+	private function buildChartGeneral($data, $request)
 	{
-
-		$this->setResultReport($results);
 
 		$type = $data['type'];
 		$dataset = $data['dataset'];
@@ -485,52 +484,257 @@ class ReportService
 		if ($type == 'line' || $type == 'bar' || $type == 'radar' || $type == 'horizontalBar') {
 			$content = [];
 			$no = 0;
-			for ($e=$startDataset; $e < $countDataset; $e++) {
-				$search = ($datasetNumeric == true) ? $e : $dataset[$e];
-				$background = config('common.chart.color.'.$no)['background'];
-				$border = config('common.chart.color.'.$no)['border'];
+			if ($datasetNumeric) {
+                for ($e=$startDataset; $e <= $countDataset; $e++) {
+                    $search = $e;
+                    $background = config('common.chart.color.'.$no)['background'];
+                    $border = config('common.chart.color.'.$no)['border'];
 
-				$labels = [];
-				$data = [];
-				for ($i=$startchartX; $i < $countchartX; $i++) {
-					$searchX = ($xNumeric == true) ? $i : $chartX[$i];
-					$labels[] = $searchX;
+                    $labels = [];
+                    $data = [];
+                    if ($xNumeric) {
+                        for ($i=$startchartX; $i <= $countchartX; $i++) {
+                            $searchX = $i;
+                            $labels[] = $searchX;
 
-					$results = $this->getResultReport();
+                            $results = $this->getResultReport();
 
-					$results = $results->filter(function($value, $Key) use ($request, $search, $searchX) {
-			            return $value->{$request['datasetRequest']} == $search &&
-			            	$value->{$request['chartXRequest']} == $searchX;
-			        });
+                            $results = $results->map(function($entry) {
+                                $year = $this->date->year;
+                                $ageArr = explode('-', $entry->age);
+                                $age = $year - $ageArr[0];
+                                return [
+                                    "user_id" => $entry->user_id,
+                                    "age" => $age,
+                                    "gender" => $entry->gender,
+                                    "occupation" => $entry->occupation,
+                                    "person_in_house" => $entry->person_in_house,
+                                    "last_education" => $entry->last_education,
+                                    "users_city" => $entry->users_city,
+                                    "sec" => $entry->sec,
+                                    "usership" => $entry->usership,
+                                    "province" => $entry->province,
+                                    "receipt_number" => $entry->receipt_number,
+                                    "outlet_type" => $entry->outlet_type,
+                                    "outlet_name" => $entry->outlet_name,
+                                    "outlet_province" => $entry->outlet_province,
+                                    "outlet_city" => $entry->outlet_city,
+                                    "outlet_address" => $entry->outlet_address,
+                                    "products" => $entry->products,
+                                    "brand" => $entry->brand,
+                                    "quantity" => $entry->quantity,
+                                    "total_price_quantity" => $entry->total_price_quantity,
+                                    "grand_total_price" => $entry->grand_total_price,
+                                    "purchase_date" => $entry->purchase_date,
+                                    "sent_time" => $entry->sent_time,
+                                ];
+                            });
 
-					$data[] = count($results);
-				}
+                            $results = $results->filter(function($value, $Key) use ($request, $search, $searchX) {
+                                return $value[$request['datasetRequest']] == $search &&
+                                    $value[$request['chartXRequest']] == $searchX;
+                            });
 
-				$content[] = [
-			    	"label" => $search,
-	                "backgroundColor" => $background,
-	                "borderColor" => $border,
-	                "data" => $data,
-	                "borderWidth" => 2,
-	                "fill" => false,
-	                "lineTension" => 0.1,
-	                "spanGaps" => false,
-	                "borderCapStyle" => 'butt',
-		            "borderDash" => [],
-		            "borderDashOffset" => 0.0,
-		            "borderJoinStyle" => 'miter',
-		            "pointBackgroundColor" => "#fff",
-		            "pointBorderWidth" => 1,
-		            "pointHoverRadius" => 5,
-		            "pointHoverBackgroundColor" => $background,
-		            "pointHoverBorderColor" => $border,
-		            "pointHoverBorderWidth" => 2,
-		            "pointRadius" => 1,
-		            "pointHitRadius" => 10,
-	            ];
+                            $data[] = count($results);
+                        }
+                    } else {
+                        for ($i=$startchartX; $i < $countchartX; $i++) {
+                            $searchX = $chartX[$i];
+                            $labels[] = $searchX;
 
-	            $no++;
-			}
+                            $results = $this->getResultReport();
+
+                            $results = $results->map(function($entry) {
+                                $year = $this->date->year;
+                                $ageArr = explode('-', $entry->age);
+                                $age = $year - $ageArr[0];
+                                return [
+                                    "user_id" => $entry->user_id,
+                                    "age" => $age,
+                                    "gender" => $entry->gender,
+                                    "occupation" => $entry->occupation,
+                                    "person_in_house" => $entry->person_in_house,
+                                    "last_education" => $entry->last_education,
+                                    "users_city" => $entry->users_city,
+                                    "sec" => $entry->sec,
+                                    "usership" => $entry->usership,
+                                    "province" => $entry->province,
+                                    "receipt_number" => $entry->receipt_number,
+                                    "outlet_type" => $entry->outlet_type,
+                                    "outlet_name" => $entry->outlet_name,
+                                    "outlet_province" => $entry->outlet_province,
+                                    "outlet_city" => $entry->outlet_city,
+                                    "outlet_address" => $entry->outlet_address,
+                                    "products" => $entry->products,
+                                    "brand" => $entry->brand,
+                                    "quantity" => $entry->quantity,
+                                    "total_price_quantity" => $entry->total_price_quantity,
+                                    "grand_total_price" => $entry->grand_total_price,
+                                    "purchase_date" => $entry->purchase_date,
+                                    "sent_time" => $entry->sent_time,
+                                ];
+                            });
+
+                            $results = $results->filter(function($value, $Key) use ($request, $search, $searchX) {
+                                return $value[$request['datasetRequest']] == $search &&
+                                    $value[$request['chartXRequest']] == $searchX;
+                            });
+
+                            $data[] = count($results);
+                        }
+                    }
+
+                    $content[] = [
+                        "label" => $search,
+                        "backgroundColor" => $background,
+                        "borderColor" => $border,
+                        "data" => $data,
+                        "borderWidth" => 2,
+                        "fill" => false,
+                        "lineTension" => 0.1,
+                        "spanGaps" => false,
+                        "borderCapStyle" => 'butt',
+                        "borderDash" => [],
+                        "borderDashOffset" => 0.0,
+                        "borderJoinStyle" => 'miter',
+                        "pointBackgroundColor" => "#fff",
+                        "pointBorderWidth" => 1,
+                        "pointHoverRadius" => 5,
+                        "pointHoverBackgroundColor" => $background,
+                        "pointHoverBorderColor" => $border,
+                        "pointHoverBorderWidth" => 2,
+                        "pointRadius" => 1,
+                        "pointHitRadius" => 10,
+                    ];
+
+                    $no++;
+                }
+            } else {
+                for ($e=$startDataset; $e < $countDataset; $e++) {
+                    $search = $dataset[$e];
+                    $background = config('common.chart.color.'.$no)['background'];
+                    $border = config('common.chart.color.'.$no)['border'];
+
+                    $labels = [];
+                    $data = [];
+                    if ($xNumeric) {
+                        for ($i=$startchartX; $i <= $countchartX; $i++) {
+                            $searchX = $i;
+                            $labels[] = $searchX;
+
+                            $results = $this->getResultReport();
+
+                            $results = $results->map(function($entry) {
+                                $year = $this->date->year;
+                                $ageArr = explode('-', $entry->age);
+                                $age = $year - $ageArr[0];
+                                return [
+                                    "user_id" => $entry->user_id,
+                                    "age" => $age,
+                                    "gender" => $entry->gender,
+                                    "occupation" => $entry->occupation,
+                                    "person_in_house" => $entry->person_in_house,
+                                    "last_education" => $entry->last_education,
+                                    "users_city" => $entry->users_city,
+                                    "sec" => $entry->sec,
+                                    "usership" => $entry->usership,
+                                    "province" => $entry->province,
+                                    "receipt_number" => $entry->receipt_number,
+                                    "outlet_type" => $entry->outlet_type,
+                                    "outlet_name" => $entry->outlet_name,
+                                    "outlet_province" => $entry->outlet_province,
+                                    "outlet_city" => $entry->outlet_city,
+                                    "outlet_address" => $entry->outlet_address,
+                                    "products" => $entry->products,
+                                    "brand" => $entry->brand,
+                                    "quantity" => $entry->quantity,
+                                    "total_price_quantity" => $entry->total_price_quantity,
+                                    "grand_total_price" => $entry->grand_total_price,
+                                    "purchase_date" => $entry->purchase_date,
+                                    "sent_time" => $entry->sent_time,
+                                ];
+                            });
+
+                            $results = $results->filter(function($value, $Key) use ($request, $search, $searchX) {
+                                return $value[$request['datasetRequest']] == $search &&
+                                    $value[$request['chartXRequest']] == $searchX;
+                            });
+
+                            $data[] = count($results);
+                        }
+                    } else {
+                        for ($i=$startchartX; $i < $countchartX; $i++) {
+                            $searchX = $chartX[$i];
+                            $labels[] = $searchX;
+
+                            $results = $this->getResultReport();
+
+                            $results = $results->map(function($entry) {
+                                $year = $this->date->year;
+                                $ageArr = explode('-', $entry->age);
+                                $age = $year - $ageArr[0];
+                                return [
+                                    "user_id" => $entry->user_id,
+                                    "age" => $age,
+                                    "gender" => $entry->gender,
+                                    "occupation" => $entry->occupation,
+                                    "person_in_house" => $entry->person_in_house,
+                                    "last_education" => $entry->last_education,
+                                    "users_city" => $entry->users_city,
+                                    "sec" => $entry->sec,
+                                    "usership" => $entry->usership,
+                                    "province" => $entry->province,
+                                    "receipt_number" => $entry->receipt_number,
+                                    "outlet_type" => $entry->outlet_type,
+                                    "outlet_name" => $entry->outlet_name,
+                                    "outlet_province" => $entry->outlet_province,
+                                    "outlet_city" => $entry->outlet_city,
+                                    "outlet_address" => $entry->outlet_address,
+                                    "products" => $entry->products,
+                                    "brand" => $entry->brand,
+                                    "quantity" => $entry->quantity,
+                                    "total_price_quantity" => $entry->total_price_quantity,
+                                    "grand_total_price" => $entry->grand_total_price,
+                                    "purchase_date" => $entry->purchase_date,
+                                    "sent_time" => $entry->sent_time,
+                                ];
+                            });
+
+                            $results = $results->filter(function($value, $Key) use ($request, $search, $searchX) {
+                                return $value[$request['datasetRequest']] == $search &&
+                                    $value[$request['chartXRequest']] == $searchX;
+                            });
+
+                            $data[] = count($results);
+                        }
+                    }
+
+                    $content[] = [
+                        "label" => $search,
+                        "backgroundColor" => $background,
+                        "borderColor" => $border,
+                        "data" => $data,
+                        "borderWidth" => 2,
+                        "fill" => false,
+                        "lineTension" => 0.1,
+                        "spanGaps" => false,
+                        "borderCapStyle" => 'butt',
+                        "borderDash" => [],
+                        "borderDashOffset" => 0.0,
+                        "borderJoinStyle" => 'miter',
+                        "pointBackgroundColor" => "#fff",
+                        "pointBorderWidth" => 1,
+                        "pointHoverRadius" => 5,
+                        "pointHoverBackgroundColor" => $background,
+                        "pointHoverBorderColor" => $border,
+                        "pointHoverBorderWidth" => 2,
+                        "pointRadius" => 1,
+                        "pointHitRadius" => 10,
+                    ];
+
+                    $no++;
+                }
+            }
 
 		} else if ($type == 'pie' || $type == 'doughnut' || $type == 'polarArea') {
 			$totalData = [];
@@ -538,29 +742,210 @@ class ReportService
 			$background = [];
 			$border = [];
 			$no = 0;
-			for ($e=$startDataset; $e < $countDataset; $e++) {
-				$search = ($datasetNumeric == true) ? $e : $dataset[$e];
-				$background[] = config('common.chart.color.'.$no)['background'];
-				$border[] = config('common.chart.color.'.$no)['border'];
-				$labels[] = $search;
-				$data = [];
-				for ($i=$startchartX; $i < $countchartX; $i++) {
-					$searchX = ($xNumeric == true) ? $i : $chartX[$i];
 
-					$results = $this->getResultReport();
+            if ($datasetNumeric) {
+                for ($e=$startDataset; $e <= $countDataset; $e++) {
+                    $search = $e;
+                    $background[] = config('common.chart.color.'.$no)['background'];
+                    $border[] = config('common.chart.color.'.$no)['border'];
+                    $labels[] = $search;
+                    $data = [];
+                    if ($xNumeric) {
+                        for ($i=$startchartX; $i <= $countchartX; $i++) {
+                            $searchX = $i;
 
-					$results = $results->filter(function($value, $Key) use ($request, $search, $searchX) {
-			            return $value->{$request['datasetRequest']} == $search &&
-			            	$value->{$request['chartXRequest']} == $searchX;
-			        });
+                            $results = $this->getResultReport();
 
-					$data[] = count($results);
-				}
+                            $results = $results->map(function($entry) {
+                                $year = $this->date->year;
+                                $ageArr = explode('-', $entry->age);
+                                $age = $year - $ageArr[0];
+                                return [
+                                    "user_id" => $entry->user_id,
+                                    "age" => $age,
+                                    "gender" => $entry->gender,
+                                    "occupation" => $entry->occupation,
+                                    "person_in_house" => $entry->person_in_house,
+                                    "last_education" => $entry->last_education,
+                                    "users_city" => $entry->users_city,
+                                    "sec" => $entry->sec,
+                                    "usership" => $entry->usership,
+                                    "province" => $entry->province,
+                                    "receipt_number" => $entry->receipt_number,
+                                    "outlet_type" => $entry->outlet_type,
+                                    "outlet_name" => $entry->outlet_name,
+                                    "outlet_province" => $entry->outlet_province,
+                                    "outlet_city" => $entry->outlet_city,
+                                    "outlet_address" => $entry->outlet_address,
+                                    "products" => $entry->products,
+                                    "brand" => $entry->brand,
+                                    "quantity" => $entry->quantity,
+                                    "total_price_quantity" => $entry->total_price_quantity,
+                                    "grand_total_price" => $entry->grand_total_price,
+                                    "purchase_date" => $entry->purchase_date,
+                                    "sent_time" => $entry->sent_time,
+                                ];
+                            });
 
-				$totalData[] = collect($data)->sum();
+                            $results = $results->filter(function($value, $Key) use ($request, $search, $searchX) {
+                                return $value[$request['datasetRequest']] == $search &&
+                                    $value[$request['chartXRequest']] == $searchX;
+                            });
 
-				$no++;
-			}
+                            $data[] = count($results);
+                        }
+                    } else {
+                        for ($i=$startchartX; $i < $countchartX; $i++) {
+                            $searchX = $chartX[$i];
+
+                            $results = $this->getResultReport();
+
+                            $results = $results->map(function($entry) {
+                                $year = $this->date->year;
+                                $ageArr = explode('-', $entry->age);
+                                $age = $year - $ageArr[0];
+                                return [
+                                    "user_id" => $entry->user_id,
+                                    "age" => $age,
+                                    "gender" => $entry->gender,
+                                    "occupation" => $entry->occupation,
+                                    "person_in_house" => $entry->person_in_house,
+                                    "last_education" => $entry->last_education,
+                                    "users_city" => $entry->users_city,
+                                    "sec" => $entry->sec,
+                                    "usership" => $entry->usership,
+                                    "province" => $entry->province,
+                                    "receipt_number" => $entry->receipt_number,
+                                    "outlet_type" => $entry->outlet_type,
+                                    "outlet_name" => $entry->outlet_name,
+                                    "outlet_province" => $entry->outlet_province,
+                                    "outlet_city" => $entry->outlet_city,
+                                    "outlet_address" => $entry->outlet_address,
+                                    "products" => $entry->products,
+                                    "brand" => $entry->brand,
+                                    "quantity" => $entry->quantity,
+                                    "total_price_quantity" => $entry->total_price_quantity,
+                                    "grand_total_price" => $entry->grand_total_price,
+                                    "purchase_date" => $entry->purchase_date,
+                                    "sent_time" => $entry->sent_time,
+                                ];
+                            });
+
+                            $results = $results->filter(function($value, $Key) use ($request, $search, $searchX) {
+                                return $value[$request['datasetRequest']] == $search &&
+                                    $value[$request['chartXRequest']] == $searchX;
+                            });
+
+                            $data[] = count($results);
+                        }
+                    }
+
+                    $totalData[] = collect($data)->sum();
+
+                    $no++;
+                }
+            } else {
+                for ($e=$startDataset; $e < $countDataset; $e++) {
+                    $search = $dataset[$e];
+                    $background[] = config('common.chart.color.'.$no)['background'];
+                    $border[] = config('common.chart.color.'.$no)['border'];
+                    $labels[] = $search;
+                    $data = [];
+                    if ($xNumeric) {
+                        for ($i=$startchartX; $i <= $countchartX; $i++) {
+                            $searchX = $i;
+
+                            $results = $this->getResultReport();
+
+                            $results = $results->map(function($entry) {
+                                $year = $this->date->year;
+                                $ageArr = explode('-', $entry->age);
+                                $age = $year - $ageArr[0];
+                                return [
+                                    "user_id" => $entry->user_id,
+                                    "age" => $age,
+                                    "gender" => $entry->gender,
+                                    "occupation" => $entry->occupation,
+                                    "person_in_house" => $entry->person_in_house,
+                                    "last_education" => $entry->last_education,
+                                    "users_city" => $entry->users_city,
+                                    "sec" => $entry->sec,
+                                    "usership" => $entry->usership,
+                                    "province" => $entry->province,
+                                    "receipt_number" => $entry->receipt_number,
+                                    "outlet_type" => $entry->outlet_type,
+                                    "outlet_name" => $entry->outlet_name,
+                                    "outlet_province" => $entry->outlet_province,
+                                    "outlet_city" => $entry->outlet_city,
+                                    "outlet_address" => $entry->outlet_address,
+                                    "products" => $entry->products,
+                                    "brand" => $entry->brand,
+                                    "quantity" => $entry->quantity,
+                                    "total_price_quantity" => $entry->total_price_quantity,
+                                    "grand_total_price" => $entry->grand_total_price,
+                                    "purchase_date" => $entry->purchase_date,
+                                    "sent_time" => $entry->sent_time,
+                                ];
+                            });
+
+                            $results = $results->filter(function($value, $Key) use ($request, $search, $searchX) {
+                                return $value[$request['datasetRequest']] == $search &&
+                                    $value[$request['chartXRequest']] == $searchX;
+                            });
+
+                            $data[] = count($results);
+                        }
+                    } else {
+                        for ($i=$startchartX; $i < $countchartX; $i++) {
+                            $searchX = $chartX[$i];
+
+                            $results = $this->getResultReport();
+
+                            $results = $results->map(function($entry) {
+                                $year = $this->date->year;
+                                $ageArr = explode('-', $entry->age);
+                                $age = $year - $ageArr[0];
+                                return [
+                                    "user_id" => $entry->user_id,
+                                    "age" => $age,
+                                    "gender" => $entry->gender,
+                                    "occupation" => $entry->occupation,
+                                    "person_in_house" => $entry->person_in_house,
+                                    "last_education" => $entry->last_education,
+                                    "users_city" => $entry->users_city,
+                                    "sec" => $entry->sec,
+                                    "usership" => $entry->usership,
+                                    "province" => $entry->province,
+                                    "receipt_number" => $entry->receipt_number,
+                                    "outlet_type" => $entry->outlet_type,
+                                    "outlet_name" => $entry->outlet_name,
+                                    "outlet_province" => $entry->outlet_province,
+                                    "outlet_city" => $entry->outlet_city,
+                                    "outlet_address" => $entry->outlet_address,
+                                    "products" => $entry->products,
+                                    "brand" => $entry->brand,
+                                    "quantity" => $entry->quantity,
+                                    "total_price_quantity" => $entry->total_price_quantity,
+                                    "grand_total_price" => $entry->grand_total_price,
+                                    "purchase_date" => $entry->purchase_date,
+                                    "sent_time" => $entry->sent_time,
+                                ];
+                            });
+
+                            $results = $results->filter(function($value, $Key) use ($request, $search, $searchX) {
+                                return $value[$request['datasetRequest']] == $search &&
+                                    $value[$request['chartXRequest']] == $searchX;
+                            });
+
+                            $data[] = count($results);
+                        }
+                    }
+
+                    $totalData[] = collect($data)->sum();
+
+                    $no++;
+                }
+            }
 
 			$content = [
 		    	[
