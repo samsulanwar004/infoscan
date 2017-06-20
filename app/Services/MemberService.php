@@ -119,7 +119,7 @@ class MemberService
         $member->api_token = $this->getApiToken();
 
         //create referral code
-        $name = explode(' ', $member->name);
+        $name = explode(' ', str_replace(str_split('\\/:*?"<>|@.,'), ' ', $member->name));
         $member->referral_me = strtolower($name[0]).rand(10000,99999);
 
         if (!$member->save()) {
