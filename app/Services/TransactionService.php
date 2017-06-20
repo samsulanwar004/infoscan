@@ -173,7 +173,7 @@ class TransactionService
                 $value->updated_at->format('Y-m-d') <= $end;
         });
 
-        $histories = $histories->map(function($entry) {
+        $notif = $histories->map(function($entry) use ($snapService) {
 
             if ($entry->status == 'approve') {
                 $word = 'Selamat, klaim sebesar '.number_format($entry->fixed_point, 0,0,'.').' poin telah berhasil! Kluk!';
@@ -184,26 +184,15 @@ class TransactionService
             }
 
             return [
-                'snap_type' => $entry->snap_type,
-                'comment' => $word,
+                'title' => $snapService->getType($entry->snap_type),
+                'description' => $word,
                 'mode_type' => $entry->mode_type,
                 'thumbnail' => config('filesystems.s3url') . $entry->files[0]->file_path,
                 'status' => $entry->status,
                 'date' => $entry->created_at->toDateTimeString(),
             ];
-        });
+        })->values()->all();
 
-        $notif = [];
-        foreach ($histories as $history) {
-            $notif[] = [
-                'title' => $snapService->getType($history['snap_type']),
-                'description' => $history['comment'],
-                'mode_type' => $history['mode_type'],
-                'thumbnail' => config('filesystems.s3url') . $history['thumbnail'],
-                'status' => $history['status'],
-                'date' => $history['date'],
-            ];
-        }
         $snaps = $snaps->filter(function ($value, $Key) {
             return $value->approved_by == null && $value->reject_by == null;
         });
