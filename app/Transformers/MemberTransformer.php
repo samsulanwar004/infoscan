@@ -18,6 +18,7 @@ class MemberTransformer extends TransformerAbstract
             'avatar' => $member->avatar,
             'bank_account' => null === $backAccount ?:$backAccount['bank_account'],
             'account_number' => null === $backAccount ?:substr($backAccount['account_number'], 0, 3) . '-xxx-xxxx',
+            'referral_me' => $member->referral_me,
         ];
 
         return array_merge($member, $me);

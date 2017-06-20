@@ -20,6 +20,7 @@ Route::get('v1/promotion', 'Api\PromotionController@index');
 Route::get('v1/categories', 'Api\PromotionController@categories');
 Route::get('v1/internal', 'Api\InternalController@index');
 Route::get('v1/city/{id}', 'Api\SettingController@city');
+Route::get('v1/referral/{total}', 'Api\ReferralController@index');
 
 Route::group([
     'prefix' => 'v1',
