@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Mail\RegisterVerification;
 use App\Services\MemberService;
 use App\Services\NotificationService;
+use App\Services\PointService;
 use App\Transformers\MemberTransformer;
 use Carbon\Carbon;
 use DB;
@@ -86,6 +87,28 @@ class MemberController extends BaseApiController
             if($mustSendVerificationEmail) {
                 $this->sendVerificationEmail($m);
                 $this->pushNotification();
+            }
+
+            // referral bonus point
+            if ($request->has('referral_code')) {
+                $referral = $request->input('referral_code');
+
+                $memberReferrer = (new MemberService)->getMemberByReferral($referral);
+
+                $checkReferral = (new PointService)->checkMemberReferral($m->id);
+
+                if ($memberReferrer && $checkReferral == false) {
+                    $bonus = (new PointService)->getReferralPoint();
+                    if ($bonus) {
+                        $referralPoint = $bonus->referral_point;
+                        $referrerPoint = $bonus->referrer_point;
+
+                        // add bonus to referral and referrer
+                        (new PointService)->addBonusRefer($memberReferrer, $m, $referrerPoint, $referralPoint);
+
+                    }
+                }
+
             }
 
             return $this->success('Member successfully updated!');

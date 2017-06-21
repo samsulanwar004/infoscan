@@ -127,6 +127,7 @@
                     <li><a href="/ses"><i class="fa fa-circle-o"></i>Socio Economic Status</a></li>
                     <li><a href="/points"><i class="fa fa-circle-o"></i>Task Points</a></li>
                     <li><a href="/bonus-points"><i class="fa fa-circle-o"></i>Bonus Points</a></li>
+                    <li><a href="/referral"><i class="fa fa-circle-o"></i>Referral Points</a></li>
                 </ul>
             </li>
 

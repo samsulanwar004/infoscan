@@ -19,6 +19,8 @@ use App\Exchange;
 use App\CityRate;
 use App\TaskLimit;
 use App\Jobs\PointProcessJob;
+use App\Referral;
+use App\MemberReferral;
 
 class PointService
 {
@@ -1169,6 +1171,64 @@ inner join tasks as t on t.id = tp.task_id order by t.id;');
     {
         return TaskLimit::where('id', $id)
             ->first();
+    }
+
+    public function persistReferral($request, $id = null)
+    {
+        $r = is_null($id) ? new Referral : $this->getReferralById($id);
+        $r->referral_point = $request->referral_point;
+        $r->referrer_point = $request->referrer_point;
+        $r->description = $request->description;
+
+        $r->save();
+    }
+
+    public function getReferralById($id)
+    {
+        return Referral::where('id', $id)
+            ->first();
+    }
+
+    public function getReferralPoint()
+    {
+        return Referral::orderBy('id', 'DESC')
+            ->first();
+    }
+
+    public function addBonusRefer($memberReferrer, $memberReferral, $referrerPoint, $referralPoint)
+    {
+
+        $config = config('common.queue_list.point_process');
+
+        //queue for point process referrer
+        $type = config('common.transaction.transaction_type.referrer');
+        $job = (new PointProcessJob($memberReferrer->member_code, $referrerPoint, $type))
+            ->onQueue($config)
+            ->onConnection(env('INFOSCAN_QUEUE'));
+        dispatch($job);
+
+        //queue for point process referral
+        $type = config('common.transaction.transaction_type.referral');
+        $job = (new PointProcessJob($memberReferral->member_code, $referralPoint, $type))
+            ->onQueue($config)
+            ->onConnection(env('INFOSCAN_QUEUE'));
+        dispatch($job);
+
+        $mr = new MemberReferral;
+        $mr->referral_point = $referralPoint;
+        $mr->referrer_point = $referrerPoint;
+        $mr->referral()->associate($memberReferral);
+        $mr->referrer()->associate($memberReferrer);
+        $mr->save();
+
+    }
+
+    public function checkMemberReferral($memberId)
+    {
+        $mr = MemberReferral::where('member_id_referral', $memberId)
+            ->first();
+
+        return $mr ? true : false;
     }
 
 }

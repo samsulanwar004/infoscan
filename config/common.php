@@ -241,6 +241,8 @@ return [
             'survey' => '3',
             'lottery' => '4',
             'bonus' => '5',
+            'referral' => '6',
+            'referrer' => '7',
         ],
         'member' => [
             'cashier' => '101',

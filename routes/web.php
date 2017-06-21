@@ -122,6 +122,12 @@ Route::group([
         ['except' => ['show'], 'names' => route_resource_name($routePrefix, 'leaderboard')]
     );
 
+    Route::resource(
+        '/referral',
+        'Web\ReferralController',
+        ['except' => ['show'], 'names' => route_resource_name($routePrefix, 'referral')]
+    );
+
     Route::get('/questionnaire/publish/{id}', 'Web\QuestionnaireController@publish')->name('questionnaire.publish');
 
     Route::get('/questionnaire/results/{id}', 'Web\QuestionnaireController@resultList')->name('questionnaire.result');
