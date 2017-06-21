@@ -326,4 +326,6 @@ return [
     ],
 
     'internal_api_token' => env('INTERNAL_API_TOKEN'),
+
+    'user_tester' => explode(',', env('USER_TESTER')),
 ];

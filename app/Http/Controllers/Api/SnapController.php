@@ -82,6 +82,12 @@ class SnapController extends BaseApiController
             $countDaily = $snapService->countMemberSnap($member->id, $type, $date);
             $countWeekly = $snapService->countMemberSnap($member->id, $type, $monday, $nextMonday);
 
+            // count for member tester
+            if (in_array($member->email, config('common.user_tester'))) {
+                $countDaily = 0;
+                $countWeekly = 0;
+            }
+
             //get limit by task point
             $limit = (new PointService)->getTaskLimitByName($type);
 
