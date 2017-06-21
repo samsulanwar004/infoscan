@@ -575,4 +575,10 @@ class MemberService
             ->orderBy('id', 'DESC')
             ->first();
     }
+
+    public function getMemberByReferral($referral)
+    {
+        return Member::where('referral_me', '=', $referral)
+            ->first();
+    }
 }
