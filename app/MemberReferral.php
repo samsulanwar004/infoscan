@@ -17,4 +17,9 @@ class MemberReferral extends Model
     {
         return $this->belongsTo(Member::class, 'member_id_referrer');
     }
+
+    public function referralPoint()
+    {
+        return $this->belongsTo(Referral::class, 'referral_point_id');
+    }
 }

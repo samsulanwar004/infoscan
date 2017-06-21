@@ -98,15 +98,8 @@ class MemberController extends BaseApiController
                 $checkReferral = (new PointService)->checkMemberReferral($m->id);
 
                 if ($memberReferrer && $checkReferral == false) {
-                    $bonus = (new PointService)->getReferralPoint();
-                    if ($bonus) {
-                        $referralPoint = $bonus->referral_point;
-                        $referrerPoint = $bonus->referrer_point;
-
-                        // add bonus to referral and referrer
-                        (new PointService)->addBonusRefer($memberReferrer, $m, $referrerPoint, $referralPoint);
-
-                    }
+                    // add bonus to referral and referrer
+                    (new PointService)->addBonusRefer($memberReferrer, $m);
                 }
 
             }

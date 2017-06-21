@@ -17,8 +17,7 @@ class CreateMemberReferralsTable extends Migration
             $table->increments('id');
             $table->integer('member_id_referral')->unsigned();
             $table->integer('member_id_referrer')->unsigned();
-            $table->double('referral_point');
-            $table->double('referrer_point');
+            $table->integer('referral_point_id')->unsigned();
             $table->timestamps();
         });
     }

@@ -1195,31 +1195,36 @@ inner join tasks as t on t.id = tp.task_id order by t.id;');
             ->first();
     }
 
-    public function addBonusRefer($memberReferrer, $memberReferral, $referrerPoint, $referralPoint)
+    public function addBonusRefer($memberReferrer, $memberReferral)
     {
 
-        $config = config('common.queue_list.point_process');
+        $bonus = $this->getReferralPoint();
+        if ($bonus) {
+            $referralPoint = $bonus->referral_point;
+            $referrerPoint = $bonus->referrer_point;
 
-        //queue for point process referrer
-        $type = config('common.transaction.transaction_type.referrer');
-        $job = (new PointProcessJob($memberReferrer->member_code, $referrerPoint, $type))
-            ->onQueue($config)
-            ->onConnection(env('INFOSCAN_QUEUE'));
-        dispatch($job);
+            $config = config('common.queue_list.point_process');
 
-        //queue for point process referral
-        $type = config('common.transaction.transaction_type.referral');
-        $job = (new PointProcessJob($memberReferral->member_code, $referralPoint, $type))
-            ->onQueue($config)
-            ->onConnection(env('INFOSCAN_QUEUE'));
-        dispatch($job);
+            //queue for point process referrer
+            $type = config('common.transaction.transaction_type.referrer');
+            $job = (new PointProcessJob($memberReferrer->member_code, $referrerPoint, $type))
+                ->onQueue($config)
+                ->onConnection(env('INFOSCAN_QUEUE'));
+            dispatch($job);
 
-        $mr = new MemberReferral;
-        $mr->referral_point = $referralPoint;
-        $mr->referrer_point = $referrerPoint;
-        $mr->referral()->associate($memberReferral);
-        $mr->referrer()->associate($memberReferrer);
-        $mr->save();
+            //queue for point process referral
+            $type = config('common.transaction.transaction_type.referral');
+            $job = (new PointProcessJob($memberReferral->member_code, $referralPoint, $type))
+                ->onQueue($config)
+                ->onConnection(env('INFOSCAN_QUEUE'));
+            dispatch($job);
+
+            $mr = new MemberReferral;
+            $mr->referralPoint()->associate($bonus);
+            $mr->referral()->associate($memberReferral);
+            $mr->referrer()->associate($memberReferrer);
+            $mr->save();
+        }
 
     }
 
