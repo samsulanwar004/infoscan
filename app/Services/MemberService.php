@@ -476,11 +476,14 @@ class MemberService
         $member = $this->getMemberById($id);
         $memberCode = $member->member_code;
         $cashier = config('common.transaction.member.cashier');
-        $latestPoint = \DB::table('transaction_detail')
-                          ->where('member_code_to', '=', $memberCode)
-                          ->where('member_code_from', '=', $cashier)
-                          ->where('detail_type', '=', 'cr')
-                          ->sum('amount');
+        $refund = config('common.transaction.transaction_type.refund');
+        $latestPoint = \DB::table('transactions')
+            ->join('transaction_detail', 'transactions.id', '=', 'transaction_detail.transaction_id')
+            ->where('transactions.transaction_type', '!=', $refund)
+            ->where('transaction_detail.member_code_to', '=', $memberCode)
+            ->where('transaction_detail.member_code_from', '=', $cashier)
+            ->where('transaction_detail.detail_type', '=', 'cr')
+            ->sum('transaction_detail.amount');
 
         return $latestPoint;
     }
