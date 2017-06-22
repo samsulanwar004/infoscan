@@ -342,6 +342,8 @@ class PaymentService
         $job = (new MemberActionJob($memberId, 'portalpoint', $content))->onQueue($config)->onConnection(env('INFOSCAN_QUEUE'));
         dispatch($job);
 
+        $this->sendPaymentNotification($memberId, $comment);
+
     }
 
     public function getExportPaymentToCsv($data)
@@ -392,6 +394,15 @@ class PaymentService
         ];
 
         return $params;
+    }
+
+    public function sendPaymentNotification($memberId, $message)
+    {
+        (new NotificationService($message))
+            ->setUser($memberId)
+            ->setData([
+            'action' => 'portalpoint',
+        ])->send();
     }
 
 }

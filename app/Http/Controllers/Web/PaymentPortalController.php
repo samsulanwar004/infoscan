@@ -39,9 +39,10 @@ class PaymentPortalController extends AdminController
     	try {
     		(new PaymentService)->saveConfirmation($request, $id);
     	} catch (\Exception $e) {
+            logger($e);
     		return response()->json([
                 'status' => 'error',
-                'message' => $e->getMessage(),
+                'message' => $e->getMessage().' '.$e->getLine(),
             ], 404);
     	}
 
