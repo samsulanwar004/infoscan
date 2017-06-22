@@ -243,6 +243,7 @@ return [
             'bonus' => '5',
             'referral' => '6',
             'referrer' => '7',
+            'refund' => '8',
         ],
         'member' => [
             'cashier' => '101',
