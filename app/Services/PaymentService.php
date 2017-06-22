@@ -300,9 +300,10 @@ class PaymentService
             \Storage::disk('csv')->put($filename, $title);
             $no = 1;
             foreach ($results as $row) {
-                $baris = $no . ',' . $row['point'] . ',' . $row['cashout'] . ',' . $row['current_point']
-                . ',' . $row['current_cash'] . ',' . $row['member']->name . ','
-                . $row['member']->email . ',' . $row['name']. ',' . $row['bank_account'] . ',' . $row['account_number']
+                $baris = $no . ',' . number_format($row['point'],0,0,'.') . ',' . number_format($row['cashout'],0,0,'.')
+                . ',' . number_format($row['current_point'],0,0,'.'). ',' . number_format($row['current_cash'],0,0,'.')
+                . ',' . $row['member']->name . ','. $row['member']->email . ',' . $row['name']
+                . ',' . $row['bank_account'] . ',' . $row['account_number']
                 . ',' . $row['status'] . ',' . $row['created_at'];
                 \Storage::disk('csv')->append($filename, $baris);
                 $no++;
@@ -313,9 +314,10 @@ class PaymentService
                 $filename = $data['filename'];
                 $no = $data['no'];
                 foreach ($results as $row) {
-                    $baris = $no . ',' . $row['point'] . ',' . $row['cashout'] . ',' . $row['current_point']
-                    . ',' . $row['current_cash'] . ',' . $row['member']->name . ','
-                    . $row['member']->email . ',' . $row['name']. ',' . $row['bank_account'] . ',' . $row['account_number']
+                    $baris = $no . ',' . number_format($row['point'],0,0,'.') . ',' . number_format($row['cashout'],0,0,'.')
+                    . ',' . number_format($row['current_point'],0,0,'.'). ',' . number_format($row['current_cash'],0,0,'.')
+                    . ',' . $row['member']->name . ','. $row['member']->email . ',' . $row['name']
+                    . ',' . $row['bank_account'] . ',' . $row['account_number']
                     . ',' . $row['status'] . ',' . $row['created_at'];
                     \Storage::disk('csv')->append($filename, $baris);
                     $no++;
