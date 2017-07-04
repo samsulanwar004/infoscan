@@ -19,6 +19,7 @@ use App\Exchange;
 use App\CityRate;
 use App\TaskLimit;
 use App\Jobs\PointProcessJob;
+use App\Jobs\MemberActionJob;
 use App\Referral;
 use App\MemberReferral;
 
@@ -1224,6 +1225,14 @@ inner join tasks as t on t.id = tp.task_id order by t.id;');
             $mr->referral()->associate($memberReferral);
             $mr->referrer()->associate($memberReferrer);
             $mr->save();
+
+            $content = config('common.notification_messages.referral');
+
+            $config = config('common.queue_list.member_action_log');
+            $job = (new MemberActionJob($memberReferrer->id, 'notification', $content))->onQueue($config)->onConnection(env('INFOSCAN_QUEUE'));
+            dispatch($job);
+
+            $this->sendReferrerNotification($memberReferrer->id, $content);
         }
 
     }
@@ -1234,6 +1243,15 @@ inner join tasks as t on t.id = tp.task_id order by t.id;');
             ->first();
 
         return $mr ? true : false;
+    }
+
+    private function sendReferrerNotification($memberId, $message)
+    {
+        (new NotificationService($message))
+            ->setUser($memberId)
+            ->setData([
+            'action' => 'notification',
+        ])->send();
     }
 
 }

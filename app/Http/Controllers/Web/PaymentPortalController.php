@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Web;
 
 use Illuminate\Http\Request;
 use App\Services\PaymentService;
+use App\Setting;
 
 class PaymentPortalController extends AdminController
 {
@@ -20,8 +21,11 @@ class PaymentPortalController extends AdminController
     {
     	try {
     		$payment = (new PaymentService)->getPaymentPortalById($id);
+            $reasons = Setting::where('setting_group', 'payment_reason')
+                ->get();
 
-    		return view('payment.edit', compact('payment'));
+            $admin = $this->isSuperAdministrator();
+    		return view('payment.edit', compact('payment', 'reasons', 'admin'));
     	} catch (\Exception $e) {
     		return response()->json([
                 'status' => 'error',
@@ -35,9 +39,10 @@ class PaymentPortalController extends AdminController
     	try {
     		(new PaymentService)->saveConfirmation($request, $id);
     	} catch (\Exception $e) {
+            logger($e);
     		return response()->json([
                 'status' => 'error',
-                'message' => $e->getMessage(),
+                'message' => $e->getMessage().' '.$e->getLine(),
             ], 404);
     	}
 

@@ -9,7 +9,7 @@
         <div class="form-horizontal">
             <div class="col-md-8">
                 <div class="form-group name">
-                    <label for="name">City Name</label>
+                    <label for="name">Bonus Name</label>
                     <input type="text" name="bonus_name" class="form-control" value="{{ $bonus->bonus_name }}" placeholder="Bonus Name">
                 </div>
 
@@ -27,7 +27,7 @@
                         <?php
                             $levelArray = explode(' ', $level->name);
                         ?>
-                        <div id="level{{ $levelArray[1] }}">                            
+                        <div id="level{{ $levelArray[1] }}">
                             <div class="form-group">
                                 <label for="name" class="col-sm-4 control-label">{{ $level->name }}</label>
                                 <div class="col-sm-8">
@@ -87,7 +87,7 @@
         $('form').on('blur', 'input[type=number]', function (e) {
           $(this).off('mousewheel.disableScroll')
         });
-        
+
         $('a#add').on('click', function (e) {
             e.preventDefault();
             var countOfTextbox = $('.level-name').length;
@@ -104,7 +104,7 @@
 
         $('a#remove').on('click', function (e) {
             e.preventDefault();
-            var countOfTextbox = $('.level-name').length; 
+            var countOfTextbox = $('.level-name').length;
 
             if(countOfTextbox <= 1) {
                 $(this).attr('disabled', 'disabled');
@@ -114,8 +114,8 @@
             if (confirm('Are you sure want to delete this level?')) {
                 $('#level'+countOfTextbox).remove();
             }
-            
-        });  
+
+        });
 
     });
 </script>
