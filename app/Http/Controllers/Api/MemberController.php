@@ -106,11 +106,17 @@ class MemberController extends BaseApiController
             }
 
             //welcome notification
-            $content = config('common.notification_messages.register.welcome');
+            $message = config('common.notification_messages.register.welcome');
+
+            $content = [
+                'type' => 'register',
+                'title' => 'Register',
+                'description' => $message,
+            ];
 
             $this->saveWelcomeNotification($m->id, $content);
 
-            $this->sendWelcomeNotification($content);
+            $this->sendWelcomeNotification($message);
 
             return $this->success('Member successfully updated!');
         } catch (Exception $e) {
