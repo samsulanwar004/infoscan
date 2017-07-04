@@ -320,6 +320,7 @@ return [
         'cashback' => [
             'success' => 'Cashback Berhasil - Selamat, cashback telah berhasil! Kluk!',
             'failed' => 'Cashback Gagal - Maaf, cashback kamu gagal :(',
+            'send' => 'Kamu telah menukarkan poin untuk cashback. Kami akan mengirim notifikasi setelah kami verifikasi.',
         ],
 
         'referral' => 'Selamat! Kamu sudah mendapatkan bonus poin dari referral codemu, petok!',
