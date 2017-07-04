@@ -287,7 +287,7 @@ class PaymentService
     {
         $confirm = $request->input('confirm');
         $comment = $request->input('comment');
-        if (!empty($request->input('reason'))) {
+        if (!empty($request->input('reason')) && $comment != 'fraud') {
             if ($request->has('other')) {
                 $settingName = 'Payment Reason';
                 $reason = $request->input('other');
@@ -316,17 +316,21 @@ class PaymentService
         $payment->update();
 
         if ($confirm == 'rejected') {
-            $point = $payment->point;
-            $cash = $payment->cashout;
-            $memberCode = $payment->member->member_code;
+            if ($comment != 'fraud') {
+                $point = $payment->point;
+                $cash = $payment->cashout;
+                $memberCode = $payment->member->member_code;
 
-            //queue for refund point process
-            $config = config('common.queue_list.point_process');
-            $type = config('common.transaction.transaction_type.refund');
-            $job = (new CreditProcessJob($memberCode, $point, $cash, $type))
-                ->onQueue($config)
-                ->onConnection(env('INFOSCAN_QUEUE'));
-            dispatch($job);
+                //queue for refund point process
+                $config = config('common.queue_list.point_process');
+                $type = config('common.transaction.transaction_type.refund');
+                $job = (new CreditProcessJob($memberCode, $point, $cash, $type))
+                    ->onQueue($config)
+                    ->onConnection(env('INFOSCAN_QUEUE'));
+                dispatch($job);
+            } else {
+                $comment = 'Sayang sekali, penukaran uang kamu gagal. Terindikasi kecurangan!';
+            }
         }
 
         //build data for member history

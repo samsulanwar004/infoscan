@@ -115,7 +115,8 @@
 
         $('#reject').on('click', function() {
             $('.submit-to-server').removeAttr('disabled');
-            $('#wording').html('<label><input name="comment" value="Sayang sekali, penukaran uang kamu gagal. Ayo coba lagi!" type="radio" required="required">Sayang sekali, penukaran uang kamu gagal. Ayo coba lagi!</label>');
+            $('#wording').html('<div class="radio"><label><input name="comment" value="Sayang sekali, penukaran uang kamu gagal. Ayo coba lagi!" type="radio" required="required">With Reason</label></div>'+
+              '<div class="radio"><label><input name="comment" value="fraud" type="radio" required="required">Because Fraud</label></div>');
             $('#reason').show();
             $('#reason').prop('selectedIndex', 0);
         });
@@ -130,7 +131,10 @@
         $('#reason').on('change', function() {
             if($(this).val() == 'other') {
               $('#other').html('<input type="text" name="other" class="form-control" placeholder="Masukan Alasan Lainnya" required>');
+            } else {
+              $('#other').html('');
             }
         });
     });
+
 </script>
