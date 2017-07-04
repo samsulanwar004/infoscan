@@ -322,9 +322,12 @@ return [
             'failed' => 'Cashback Gagal - Maaf, cashback kamu gagal :(',
         ],
 
+        'referral' => 'Selamat! Kamu sudah mendapatkan bonus poin dari referral codemu, petok!',
+
         'register' => [
             'verification' => 'Verifikasi Email - Verifikasi akun GoJaGomu sekarang!',
             'resend' => 'Akun Belum Terverifikasi - Kami sudah mengirim ulang email verifikasi ke emailmu. Verifikasi akunmu untuk bisa cashback!',
+            'welcome' => 'Selamat datang di GoJaGo! Ayo mulai foto transaksimu dan terus tingkatkan poinmu, petok!',
         ],
     ],
 
