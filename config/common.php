@@ -323,7 +323,10 @@ return [
             'send' => 'Kamu telah menukarkan poin untuk cashback. Kami akan mengirim notifikasi setelah kami verifikasi.',
         ],
 
-        'referral' => 'Selamat! Kamu sudah mendapatkan bonus poin dari referral codemu, petok!',
+        'member' => [
+            'referral' => 'Selamat! Kamu sudah mendapatkan bonus poin dari referral code teman kamu, petok!',
+            'referrer' => 'Selamat! Kamu sudah mendapatkan bonus poin dari referral codemu, petok!',
+        ],
 
         'register' => [
             'verification' => 'Verifikasi Email - Verifikasi akun GoJaGomu sekarang!',
