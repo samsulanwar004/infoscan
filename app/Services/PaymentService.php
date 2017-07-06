@@ -164,16 +164,19 @@ class PaymentService
         $this->transactionCredit($transaction);
 
         //build data for member history
+        $message = config('common.notification_messages.cashback.send');
         $content = [
             'type' => 'cashback',
             'title' => 'Cashback',
-            'description' => 'Kamu telah menukarkan poin untuk cashback. Kami akan mengirim notifikasi setelah kami verifikasi.',
+            'description' => $message,
             'flag' => 1,
         ];
 
         $config = config('common.queue_list.member_action_log');
         $job = (new MemberActionJob($this->member->id, 'portalpoint', $content))->onQueue($config)->onConnection(env('INFOSCAN_QUEUE'));
         dispatch($job);
+
+        $this->sendPaymentNotification($this->member->id, $message);
 
         $currentPoint = (new TransactionService)->getCreditMember($memberCode);
         $currentCash = (new TransactionService)->getCashCreditMember($memberCode);

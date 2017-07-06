@@ -23,31 +23,30 @@ class ReportService
             ->join('snap_tags', 'snap_files.id', '=', 'snap_tags.snap_file_id')
             ->join('members', 'members.id', '=', 'snaps.member_id')
             ->join('provinces', 'provinces.id', '=', 'members.province_id')
-            ->select(
-            	'members.id as user_id',
-            	'members.dob as age',
-            	'members.gender',
-            	'members.occupation',
-            	'members.person_in_house',
-            	'members.last_education',
-            	'members.city as users_city',
-            	'members.monthly_expense_code as sec',
-            	'members.marital_status as usership',
-            	'provinces.name as province',
-            	'snaps.receipt_id as receipt_number',
-            	'snaps.outlet_type',
-            	'snaps.outlet_name',
-            	'snaps.outlet_province',
-            	'snaps.outlet_city',
-            	'snaps.location as outlet_address',
-            	'snap_tags.name as products',
-            	'snap_tags.brands as brand',
-            	'snap_tags.quantity',
-            	'snap_tags.total_price as total_price_quantity',
-            	'snap_tags.total_price as grand_total_price',
-            	'snaps.purchase_time as purchase_date',
-            	'snaps.created_at as sent_time'
-            );
+            ->select(\DB::raw('members.id as user_id,
+                TIMESTAMPDIFF(YEAR, members.dob, CURDATE()) AS age,
+                members.gender,
+                members.occupation,
+                members.person_in_house,
+                members.last_education,
+                members.city as users_city,
+                members.monthly_expense_code as sec,
+                members.marital_status as usership,
+                provinces.name as province,
+                snaps.receipt_id as receipt_number,
+                snaps.outlet_type,
+                snaps.outlet_name,
+                snaps.outlet_province,
+                snaps.outlet_city,
+                snaps.location as outlet_address,
+                snap_tags.name as products,
+                snap_tags.brands as brand,
+                snap_tags.quantity,
+                snap_tags.total_price as total_price_quantity,
+                snap_tags.quantity * snap_tags.total_price as grand_total_price,
+                snaps.purchase_time as purchase_date,
+                snaps.created_at as sent_time,
+                snaps.purchase_time as purchase_date'));
 
 		if ($request->has('date_create')) {
 			$value = $request->input('date_create');

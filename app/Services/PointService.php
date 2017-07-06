@@ -1226,7 +1226,8 @@ inner join tasks as t on t.id = tp.task_id order by t.id;');
             $mr->referrer()->associate($memberReferrer);
             $mr->save();
 
-            $message = config('common.notification_messages.referral');
+            //send notification for referrer
+            $message = config('common.notification_messages.member.referrer');
 
             $content = [
                 'type' => 'referral',
@@ -1239,6 +1240,21 @@ inner join tasks as t on t.id = tp.task_id order by t.id;');
             dispatch($job);
 
             $this->sendReferrerNotification($memberReferrer->id, $message);
+
+            //send notification for referral
+            $message = config('common.notification_messages.member.referral');
+
+            $content = [
+                'type' => 'referral',
+                'title' => 'Referral',
+                'description' => $message,
+            ];
+
+            $config = config('common.queue_list.member_action_log');
+            $job = (new MemberActionJob($memberReferral->id, 'notification', $content))->onQueue($config)->onConnection(env('INFOSCAN_QUEUE'));
+            dispatch($job);
+
+            $this->sendReferrerNotification($memberReferral->id, $message);
         }
 
     }
