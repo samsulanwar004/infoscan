@@ -17,7 +17,7 @@ class ActiveUsers implements ChartInterface
 
     /**
      * Daily users data
-     * @return array [description]
+     * @return array
      */
     public function daily()
     {

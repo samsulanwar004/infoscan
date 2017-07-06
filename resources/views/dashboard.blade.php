@@ -60,55 +60,45 @@
                 labels  : ['Senin', 'Selasa',  'Rabu', 'Kamis', 'Jumat', 'Minggu'],
                 datasets: [
                     {
-                        label               : 'New Users',
-                        fillColor           : 'rgba(210, 214, 222, 1)',
-                        strokeColor         : 'rgba(210, 214, 222, 1)',
-                        pointColor          : 'rgba(210, 214, 222, 1)',
-                        pointStrokeColor    : '#c1c7d1',
-                        pointHighlightFill  : '#fff',
-                        pointHighlightStroke: 'rgba(220,220,220,1)',
-                        data                : [65, 59, 80, 81, 56, 55, 40]
+                        "label"             : 'New Users',
+                        "fill"              : false,
+                        "backgroundColor"   : "rgba(255, 99, 132, 0.5)",
+                        "borderColor"       : "rgb(255, 99, 132)",
+                        "borderWidth"       : 1,
+                        "data"              : [65, 59, 80, 81, 56, 55, 40]
                     },
                     {
-                        label               : 'Snap',
-                        fillColor           : 'rgba(210, 214, 222, 1)',
-                        strokeColor         : 'rgba(210, 214, 222, 1)',
-                        pointColor          : 'rgba(210, 214, 222, 1)',
-                        pointStrokeColor    : '#c1c7d1',
-                        pointHighlightFill  : '#fff',
-                        pointHighlightStroke: 'rgba(220,220,220,1)',
-                        data                : [66, 79, 88, 88, 26, 55, 60]
+                        "label"             : 'Snap',
+                        "fill"              : false,
+                        "backgroundColor"   : "rgba(255, 159, 64, 0.5)",
+                        "borderColor"       : "rgb(255, 159, 64)",
+                        "borderWidth"       : 1,
+                        "data"              : [66, 79, 88, 88, 26, 55, 60]
                     },
 
                     {
-                        label               : 'Receipts',
-                        fillColor           : 'rgba(210, 214, 222, 1)',
-                        strokeColor         : 'rgba(210, 214, 222, 1)',
-                        pointColor          : 'rgba(210, 214, 222, 1)',
-                        pointStrokeColor    : '#c1c7d1',
-                        pointHighlightFill  : '#fff',
-                        pointHighlightStroke: 'rgba(220,220,220,1)',
-                        data                : [65, 59, 80, 81, 56, 55, 40]
+                        "label"               : 'Receipts',
+                        "fill"              : false,
+                        "backgroundColor"   : "rgba(255, 205, 86, 0.2)",
+                        "borderColor"       : "rgb(255, 205, 86)",
+                        "borderWidth"       : 1,
+                        "data"              : [65, 59, 80, 81, 56, 55, 40]
                     },
                     {
-                        label               : 'Warung',
-                        fillColor           : 'rgba(210, 214, 222, 1)',
-                        strokeColor         : 'rgba(210, 214, 222, 1)',
-                        pointColor          : 'rgba(210, 214, 222, 1)',
-                        pointStrokeColor    : '#c1c7d1',
-                        pointHighlightFill  : '#fff',
-                        pointHighlightStroke: 'rgba(220,220,220,1)',
-                        data                : [66, 79, 88, 88, 26, 55, 60]
+                        "label"             : 'Warung',
+                        "fill"              : false,
+                        "backgroundColor"   : "rgba(75, 192, 192, 0.2)",
+                        "borderColor"       : "rgb(75, 192, 192)",
+                        "borderWidth"       : 1,
+                        "data"              : [66, 79, 88, 88, 26, 55, 60]
                     },
                     {
-                        label               : 'Nota Tulis',
-                        fillColor           : 'rgba(210, 214, 222, 1)',
-                        strokeColor         : 'rgba(210, 214, 222, 1)',
-                        pointColor          : 'rgba(210, 214, 222, 1)',
-                        pointStrokeColor    : '#c1c7d1',
-                        pointHighlightFill  : '#fff',
-                        pointHighlightStroke: 'rgba(220,220,220,1)',
-                        data                : [65, 59, 80, 81, 56, 55, 40]
+                        "label"             : 'Nota Tulis',
+                        "fill"              : false,
+                        "backgroundColor"   : "rgba(153, 102, 255, 0.2)",
+                        "borderColor"       : "rgb(54, 162, 235)",
+                        "borderWidth"       : 1,
+                        "data"                : [65, 59, 80, 81, 56, 55, 40]
                     },
 
                 ]
