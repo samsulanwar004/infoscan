@@ -14,39 +14,92 @@ class ActiveUsers implements ChartInterface
     {
         $this->currentDate = Carbon::now();
     }
+
+    /**
+     * Daily users data
+     * @return array [description]
+     */
     public function daily()
     {
-        $newUsers = $this->newUsers('yearly');
-
         return [
-            'new-users' => $newUsers,
+            'new-users'     => $this->newUsers('daily'),
+            'snaps'         => $this->snaps('daily'),
+            'receipts'      => $this->snaps('daily', 'receipt'),
+            'general-trade' => $this->snaps('daily', 'generalTrade'), // Warung
+            'hand-writen'   => $this->snaps('daily', 'handWritten'), // Nota tulis
         ];
     }
 
     public function weekly()
     {
-
+        return [
+            'new-users'     => $this->newUsers('weekly'),
+            'snaps'         => $this->snaps('weekly'),
+            'receipts'      => $this->snaps('weekly', 'receipt'),
+            'general-trade' => $this->snaps('weekly', 'generalTrade'), // Warung
+            'hand-writen'   => $this->snaps('weekly', 'handWritten'), // Nota tulis
+        ];
     }
 
     public function monthly()
     {
-
+        return [
+            'new-users'     => $this->newUsers('monthly'),
+            'snaps'         => $this->snaps('monthly'),
+            'receipts'      => $this->snaps('monthly', 'receipt'),
+            'general-trade' => $this->snaps('monthly', 'generalTrade'), // Warung
+            'hand-writen'   => $this->snaps('monthly', 'handWritten'), // Nota tulis
+        ];
     }
 
     public function yearly()
     {
-
+        return [
+            'new-users'     => $this->newUsers('yearly'),
+            'snaps'         => $this->snaps('yearly'),
+            'receipts'      => $this->snaps('yearly', 'receipt'),
+            'general-trade' => $this->snaps('yearly', 'generalTrade'), // Warung
+            'hand-writen'   => $this->snaps('yearly', 'handWritten'), // Nota tulis
+        ];
     }
 
     /**
      * New Users chart data
-     * @param    string $timeRange time range to count. 'daily' | 'weekly' | monthly' | 'yearly'
-     * @return
+     * @param  string     $timeRange time range of data to summarize. ['daily' | 'weekly' | monthly' | 'yearly']
+     * @return @inherit
      */
     protected function newUsers($timeRange = 'daily')
     {
         $query = DB::table('members');
+        return $this->buildTimeRangeQuery($timeRange, $query);
+    }
 
+    /**
+     * Snaps chart data
+     * @param  string     $timeRange  time range of data to summarize. ['daily' | 'weekly' | monthly' | 'yearly']
+     * @param  string     $snapType
+     * @return @inherit
+     */
+    protected function snaps($timeRange = 'daily', $snapType = 'all')
+    {
+        $query = DB::table('snaps');
+
+        if ($snapType !== 'all')
+        {
+            $query->where('snap_type', '=', $snapType);
+        }
+
+        return $this->buildTimeRangeQuery($timeRange, $query);
+    }
+
+    /**
+     * Building query based on time range (daily, weekly, monthly, yearly)
+     * @param  string                            $timeRange
+     * @param  Illuminate\Database\Query\Builder $query
+     * @return Illuminate\Support\Collection
+     */
+    protected function buildTimeRangeQuery($timeRange, $query)
+    {
         switch ($timeRange)
         {
             case 'weekly':
@@ -78,6 +131,7 @@ class ActiveUsers implements ChartInterface
 
         }
 
-        return collect($query->get())->pluck('total', $keyField);
+        return collect($query->get())
+            ->pluck('total', $keyField);
     }
 }

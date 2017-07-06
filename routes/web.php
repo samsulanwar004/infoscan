@@ -15,7 +15,10 @@ Route::group([
 
     Route::group(['prefix' => '/chart'], function ()
     {
-        Route::get('/active-users/', ['as' => 'chart.active-user', 'uses' => 'Web\ChartController@activeUsers']);
+        Route::get('/active-users/{timeRange?}', [
+            'as'   => 'chart.active-user',
+            'uses' => 'Web\ChartController@activeUsers',
+        ]);
     });
 
     Route::resource(
