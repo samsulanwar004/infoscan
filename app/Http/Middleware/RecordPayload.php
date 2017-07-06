@@ -17,10 +17,14 @@ class RecordPayload
     public function handle($request, Closure $next)
     {
         if('get' !== strtolower($request->method())) {
+            $accept = $request->header('Accept', null);
+            $contentType = $request->header('Content-Type', null);
             $token = $request->header('X-PLAYER', null);
             $auth = $request->header('Authorization', null);
             $device = $this->isIphone($request) ? 'iphone' : 'android';
             $records = [
+                'content_type' => $contentType,
+                'accept' => $accept,
                 'device' => $device,
                 'player_id' => $token,
                 'auth' => $auth,

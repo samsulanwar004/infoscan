@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Exchange;
 use App\RedeemPoint;
 use App\Jobs\MemberActionJob;
+use App\Jobs\CreditProcessJob;
 
 class PaymentService
 {
@@ -14,9 +15,12 @@ class PaymentService
      */
     private $member;
 
+    private $user;
+
     public function __construct()
     {
         $this->member = auth('api')->user();
+        $this->user = auth('web')->user();
     }
 
     public function getPaymentPortal()
@@ -160,16 +164,19 @@ class PaymentService
         $this->transactionCredit($transaction);
 
         //build data for member history
+        $message = config('common.notification_messages.cashback.send');
         $content = [
             'type' => 'cashback',
             'title' => 'Cashback',
-            'description' => 'Kamu telah menukarkan poin untuk cashback. Kami akan mengirim notifikasi setelah kami verifikasi.',
+            'description' => $message,
             'flag' => 1,
         ];
 
         $config = config('common.queue_list.member_action_log');
         $job = (new MemberActionJob($this->member->id, 'portalpoint', $content))->onQueue($config)->onConnection(env('INFOSCAN_QUEUE'));
         dispatch($job);
+
+        $this->sendPaymentNotification($this->member->id, $message);
 
         $currentPoint = (new TransactionService)->getCreditMember($memberCode);
         $currentCash = (new TransactionService)->getCashCreditMember($memberCode);
@@ -257,7 +264,6 @@ class PaymentService
         $redeem->name = $data['name'];
         $redeem->bank_account = $data['bank_account'];
         $redeem->account_number = $data['account_number'];
-        $redeem->status = 'approved';
 
         $redeem->member()->associate($member);
 
@@ -282,17 +288,77 @@ class PaymentService
 
     public function saveConfirmation($request, $id)
     {
+        $confirm = $request->input('confirm');
+        $comment = $request->input('comment');
+        if (!empty($request->input('reason')) && $comment != 'fraud') {
+            if ($request->has('other')) {
+                $settingName = 'Payment Reason';
+                $reason = $request->input('other');
+                $setting = new \App\Setting;
+                $setting->setting_group = strtolower(str_replace(' ', '_', $settingName));
+                $setting->setting_name = strtolower($settingName);
+                $setting->setting_display_name = $settingName;
+                $setting->setting_value = trim($reason);
+                $setting->setting_type = 'toggle';
+                $setting->is_visible = 1;
+                $setting->created_by = $this->user->id;
+                $setting->save();
+            } else {
+                $reason = $request->input('reason');
+                $setting = \App\Setting::where('id', $reason)
+                                       ->first();
+                $reason = $setting->setting_value;
+            }
+
+            $comment = nl2br($comment . ' \n Alasan :' . $reason);
+        }
+
         $payment = $this->getPaymentPortalById($id);
-        $payment->approved_by = auth('web')->user()->id;
+        $payment->status = $confirm;
+        $payment->approved_by = $this->user->id;
         $payment->update();
+
+        if ($confirm == 'rejected') {
+            if ($comment != 'fraud') {
+                $point = $payment->point;
+                $cash = $payment->cashout;
+                $memberCode = $payment->member->member_code;
+
+                //queue for refund point process
+                $config = config('common.queue_list.point_process');
+                $type = config('common.transaction.transaction_type.refund');
+                $job = (new CreditProcessJob($memberCode, $point, $cash, $type))
+                    ->onQueue($config)
+                    ->onConnection(env('INFOSCAN_QUEUE'));
+                dispatch($job);
+            } else {
+                $comment = 'Sayang sekali, penukaran uang kamu gagal. Terindikasi kecurangan!';
+            }
+        }
+
+        //build data for member history
+        $memberId = $payment->member_id;
+        $content = [
+            'type' => 'cashback',
+            'title' => 'Cashback',
+            'description' => $comment,
+            'flag' => $confirm == 'approved' ? 1 : 0,
+        ];
+
+        $config = config('common.queue_list.member_action_log');
+        $job = (new MemberActionJob($memberId, 'portalpoint', $content))->onQueue($config)->onConnection(env('INFOSCAN_QUEUE'));
+        dispatch($job);
+
+        $this->sendPaymentNotification($memberId, $comment);
+
     }
 
     public function getExportPaymentToCsv($data)
     {
         $results = RedeemPoint::whereDate('created_at', '>=', $data['start_date'])
-                              ->whereDate('created_at', '<=', $data['end_date'])
-                              ->orderBy('created_at', 'DESC')
-                              ->paginate(200);
+            ->whereDate('created_at', '<=', $data['end_date'])
+            ->orderBy('created_at', 'DESC')
+            ->paginate(200);
 
         if ($data['type'] == 'new') {
             $filename = strtolower(str_random(10)) . '.csv';
@@ -300,9 +366,10 @@ class PaymentService
             \Storage::disk('csv')->put($filename, $title);
             $no = 1;
             foreach ($results as $row) {
-                $baris = $no . ',' . $row['point'] . ',' . $row['cashout'] . ',' . $row['current_point']
-                . ',' . $row['current_cash'] . ',' . $row['member']->name . ','
-                . $row['member']->email . ',' . $row['name']. ',' . $row['bank_account'] . ',' . $row['account_number']
+                $baris = $no . ',' . number_format($row['point'],0,0,'.') . ',' . number_format($row['cashout'],0,0,'.')
+                . ',' . number_format($row['current_point'],0,0,'.'). ',' . number_format($row['current_cash'],0,0,'.')
+                . ',' . $row['member']->name . ','. $row['member']->email . ',' . $row['name']
+                . ',' . $row['bank_account'] . ',' . $row['account_number']
                 . ',' . $row['status'] . ',' . $row['created_at'];
                 \Storage::disk('csv')->append($filename, $baris);
                 $no++;
@@ -313,9 +380,10 @@ class PaymentService
                 $filename = $data['filename'];
                 $no = $data['no'];
                 foreach ($results as $row) {
-                    $baris = $no . ',' . $row['point'] . ',' . $row['cashout'] . ',' . $row['current_point']
-                    . ',' . $row['current_cash'] . ',' . $row['member']->name . ','
-                    . $row['member']->email . ',' . $row['name']. ',' . $row['bank_account'] . ',' . $row['account_number']
+                    $baris = $no . ',' . number_format($row['point'],0,0,'.') . ',' . number_format($row['cashout'],0,0,'.')
+                    . ',' . number_format($row['current_point'],0,0,'.'). ',' . number_format($row['current_cash'],0,0,'.')
+                    . ',' . $row['member']->name . ','. $row['member']->email . ',' . $row['name']
+                    . ',' . $row['bank_account'] . ',' . $row['account_number']
                     . ',' . $row['status'] . ',' . $row['created_at'];
                     \Storage::disk('csv')->append($filename, $baris);
                     $no++;
@@ -334,4 +402,14 @@ class PaymentService
 
         return $params;
     }
+
+    public function sendPaymentNotification($memberId, $message)
+    {
+        (new NotificationService($message))
+            ->setUser($memberId)
+            ->setData([
+            'action' => 'portalpoint',
+        ])->send();
+    }
+
 }

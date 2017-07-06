@@ -19,6 +19,7 @@ use App\Exchange;
 use App\CityRate;
 use App\TaskLimit;
 use App\Jobs\PointProcessJob;
+use App\Jobs\MemberActionJob;
 use App\Referral;
 use App\MemberReferral;
 
@@ -1224,6 +1225,36 @@ inner join tasks as t on t.id = tp.task_id order by t.id;');
             $mr->referral()->associate($memberReferral);
             $mr->referrer()->associate($memberReferrer);
             $mr->save();
+
+            //send notification for referrer
+            $message = config('common.notification_messages.member.referrer');
+
+            $content = [
+                'type' => 'referral',
+                'title' => 'Referral',
+                'description' => $message,
+            ];
+
+            $config = config('common.queue_list.member_action_log');
+            $job = (new MemberActionJob($memberReferrer->id, 'notification', $content))->onQueue($config)->onConnection(env('INFOSCAN_QUEUE'));
+            dispatch($job);
+
+            $this->sendReferrerNotification($memberReferrer->id, $message);
+
+            //send notification for referral
+            $message = config('common.notification_messages.member.referral');
+
+            $content = [
+                'type' => 'referral',
+                'title' => 'Referral',
+                'description' => $message,
+            ];
+
+            $config = config('common.queue_list.member_action_log');
+            $job = (new MemberActionJob($memberReferral->id, 'notification', $content))->onQueue($config)->onConnection(env('INFOSCAN_QUEUE'));
+            dispatch($job);
+
+            $this->sendReferrerNotification($memberReferral->id, $message);
         }
 
     }
@@ -1234,6 +1265,15 @@ inner join tasks as t on t.id = tp.task_id order by t.id;');
             ->first();
 
         return $mr ? true : false;
+    }
+
+    private function sendReferrerNotification($memberId, $message)
+    {
+        (new NotificationService($message))
+            ->setUser($memberId)
+            ->setData([
+            'action' => 'notification',
+        ])->send();
     }
 
 }

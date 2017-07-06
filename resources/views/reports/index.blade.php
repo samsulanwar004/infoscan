@@ -60,15 +60,7 @@
                                         </td>
                                     @else
                                         <td>
-                                            @if($field == 'age')
-                                            @php
-                                                $newDate = new \Carbon\Carbon($result->{$field});
-                                                $newAge = intval( $newDate->diffInYears() );
-                                            @endphp
-                                                {{ $newAge }}
-                                            @else
-                                                {{ $result->{$field} }}
-                                            @endif
+                                            {{ $result->{$field} }}
                                         </td>
                                     @endif
                                 @endforeach

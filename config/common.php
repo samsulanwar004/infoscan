@@ -243,6 +243,7 @@ return [
             'bonus' => '5',
             'referral' => '6',
             'referrer' => '7',
+            'refund' => '8',
         ],
         'member' => [
             'cashier' => '101',
@@ -319,11 +320,18 @@ return [
         'cashback' => [
             'success' => 'Cashback Berhasil - Selamat, cashback telah berhasil! Kluk!',
             'failed' => 'Cashback Gagal - Maaf, cashback kamu gagal :(',
+            'send' => 'Kamu telah menukarkan poin untuk cashback. Kami akan mengirim notifikasi setelah kami verifikasi.',
+        ],
+
+        'member' => [
+            'referral' => 'Selamat! Kamu sudah mendapatkan bonus poin dari referral code teman kamu, petok!',
+            'referrer' => 'Selamat! Kamu sudah mendapatkan bonus poin dari referral codemu, petok!',
         ],
 
         'register' => [
             'verification' => 'Verifikasi Email - Verifikasi akun GoJaGomu sekarang!',
             'resend' => 'Akun Belum Terverifikasi - Kami sudah mengirim ulang email verifikasi ke emailmu. Verifikasi akunmu untuk bisa cashback!',
+            'welcome' => 'Selamat datang di GoJaGo! Ayo mulai foto transaksimu dan terus tingkatkan poinmu, petok!',
         ],
     ],
 

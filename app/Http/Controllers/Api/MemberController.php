@@ -13,6 +13,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Validator;
+use App\Jobs\MemberActionJob;
 
 class MemberController extends BaseApiController
 {
@@ -103,6 +104,19 @@ class MemberController extends BaseApiController
                 }
 
             }
+
+            //welcome notification
+            $message = config('common.notification_messages.register.welcome');
+
+            $content = [
+                'type' => 'register',
+                'title' => 'Register',
+                'description' => $message,
+            ];
+
+            $this->saveWelcomeNotification($m->id, $content);
+
+            $this->sendWelcomeNotification($message);
 
             return $this->success('Member successfully updated!');
         } catch (Exception $e) {
@@ -233,5 +247,19 @@ class MemberController extends BaseApiController
         (new NotificationService($message))->setData([
             'action' => 'notification',
         ])->send();
+    }
+
+    private function sendWelcomeNotification($message)
+    {
+        (new NotificationService($message))->setData([
+            'action' => 'notification',
+        ])->send();
+    }
+
+    private function saveWelcomeNotification($memberId, $content)
+    {
+        $config = config('common.queue_list.member_action_log');
+        $job = (new MemberActionJob($memberId, 'notification', $content))->onQueue($config)->onConnection(env('INFOSCAN_QUEUE'));
+        dispatch($job);
     }
 }
