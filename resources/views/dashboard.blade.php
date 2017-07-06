@@ -28,9 +28,9 @@
                             <option value="weekly">Weekly</option>
                             <option value="monthly">Monthly</option>
                             <option value="yearly">Yearly</option>
-                        </select> 
+                        </select>
                     </div>
-                   
+
                     <div class="box-tools pull-right">
                         <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
                         </button>
@@ -43,9 +43,9 @@
                     </div>
                 </div>
                 <!-- /.box-body -->
-            </div> 
+            </div>
         </div>
-       
+
     </section>
     <!-- /.content -->
 @endsection
@@ -79,7 +79,7 @@
                         pointHighlightStroke: 'rgba(220,220,220,1)',
                         data                : [66, 79, 88, 88, 26, 55, 60]
                     },
-            
+
                     {
                         label               : 'Receipts',
                         fillColor           : 'rgba(210, 214, 222, 1)',
@@ -110,7 +110,7 @@
                         pointHighlightStroke: 'rgba(220,220,220,1)',
                         data                : [65, 59, 80, 81, 56, 55, 40]
                     },
-                    
+
                 ]
             }
 

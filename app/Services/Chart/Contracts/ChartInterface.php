@@ -1,7 +1,8 @@
 <?php
-namespace App/Services/Chart/Contract;
+namespace App\Services\Chart\Contracts;
 
-class ChartInterface {
+interface ChartInterface
+{
     public function weekly();
     public function daily();
     public function monthly();

@@ -4,13 +4,19 @@ $routePrefix = null;
 Route::get('/verification/{token}', 'Web\MemberController@verify')->name('member_verification');
 Route::group([
     'middleware' => 'auth',
-], function () use ($routePrefix) {
+], function () use ($routePrefix)
+{
 
     // dashboard
     Route::get('/', 'Web\AdminController@dashboard')
-         ->name($routePrefix == null ? 'dashboard' : '.dashboard');
+        ->name($routePrefix == null ? 'dashboard' : '.dashboard');
     Route::post('/transfer', 'Web\AssetController@transferImages')
-         ->name($routePrefix == null ? 'transfer' : '.transfer');
+        ->name($routePrefix == null ? 'transfer' : '.transfer');
+
+    Route::group(['prefix' => '/chart'], function ()
+    {
+        Route::get('/active-users/', ['as' => 'chart.active-user', 'uses' => 'Web\ChartController@activeUsers']);
+    });
 
     Route::resource(
         '/users',
@@ -107,7 +113,7 @@ Route::group([
     Route::resource(
         '/exchange',
         'Web\ExchangeController',
-        ['except' => ['show'],'names' => route_resource_name($routePrefix, 'exchange')]
+        ['except' => ['show'], 'names' => route_resource_name($routePrefix, 'exchange')]
     );
 
     Route::resource(
