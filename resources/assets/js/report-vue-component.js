@@ -200,14 +200,15 @@ Vue.component('report-chart', {
     },
 
     refreshChart: function () {
-      // console.log(JSON.stringify({
-      //   type: 'bar',
-      //   data: {
-      //     labels: this.chartLabels,
-      //     datasets: this.chartData,
-      //   },
-      //   options: this.barChartOptions
-      // }));
+      this.loadChart()
+        .done(function (response) {
+          self.rebuildChartDatasets(response)
+          self.rebuildChartLabels()
+          self.refreshChart()
+        })
+        .fail(function () {
+          console.error('Failed to load chart')
+        });
       if (this.chartInstance !== null) {
         this.chartInstance.destroy();
       }
@@ -220,119 +221,7 @@ Vue.component('report-chart', {
         },
         options: this.barChartOptions
       })
-      // new Chart(this.chartArea, {
-      //   "type": "bar",
-      //   "data": {
-      //     "labels": [
-      //       "Sunday",
-      //       "Tuesday",
-      //       "Wednesday",
-      //       "Thursday",
-      //       "Friday",
-      //       "Thursday",
-      //       "Monday"
-      //     ],
-      //     "datasets": [
-      //       {
-      //         "label": "New Users",
-      //         "fill": false,
-      //         "backgroundColor": "rgba(255, 99, 132, 0.5)",
-      //         "borderColor": "rgb(255, 99, 132)",
-      //         "borderWidth": 1,
-      //         "data": [
-      //           0,
-      //           1,
-      //           0,
-      //           0,
-      //           0,
-      //           0,
-      //           0
-      //         ]
-      //       },
-      //       {
-      //         "label": "Snaps",
-      //         "fill": false,
-      //         "backgroundColor": "rgba(255, 159, 64, 0.5)",
-      //         "borderColor": "rgb(255, 159, 64)",
-      //         "borderWidth": 1,
-      //         "data": [
-      //           5,
-      //           0,
-      //           0,
-      //           0,
-      //           0,
-      //           0,
-      //           4
-      //         ]
-      //       },
-      //       {
-      //         "label": "Receipts",
-      //         "fill": false,
-      //         "backgroundColor": "rgba(255, 205, 86, 0.2)",
-      //         "borderColor": "rgb(255, 205, 86)",
-      //         "borderWidth": 1,
-      //         "data": [
-      //           2,
-      //           0,
-      //           0,
-      //           0,
-      //           0,
-      //           0,
-      //           3
-      //         ]
-      //       },
-      //       {
-      //         "label": "General Trade",
-      //         "fill": false,
-      //         "backgroundColor": "rgba(75, 192, 192, 0.2)",
-      //         "borderColor": "rgb(75, 192, 192)",
-      //         "borderWidth": 1,
-      //         "data": [
-      //           2,
-      //           20,
-      //           0,
-      //           0,
-      //           0,
-      //           0,
-      //           1
-      //         ]
-      //       },
-      //       {
-      //         "label": "Hand Written",
-      //         "fill": false,
-      //         "backgroundColor": "rgba(153, 102, 255, 0.2)",
-      //         "borderColor": "rgb(54, 162, 235)",
-      //         "borderWidth": 1,
-      //         "data": [
-      //           1,
-      //           0,
-      //           0,
-      //           0,
-      //           0,
-      //           0,
-      //           0
-      //         ]
-      //       }
-      //     ]
 
-      //   },
-      //   "options": {
-      //     "scaleBeginAtZero": true,
-      //     "scaleShowGridLines": true,
-      //     "scaleGridLineColor": "rgba(0,0,0,.05)",
-      //     "scaleGridLineWidth": 1,
-      //     "scaleShowHorizontalLines": true,
-      //     "scaleShowVerticalLines": true,
-      //     "barShowStroke": true,
-      //     "barStrokeWidth": 2,
-      //     "barValueSpacing": 5,
-      //     "barDatasetSpacing": 1,
-      //     "legendTemplate": "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].fillColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>",
-      //     "responsive": true,
-      //     "maintainAspectRatio": true,
-      //     "datasetFill": false
-      //   }
-      // })
     },
 
     slugify: function (text){
@@ -363,62 +252,6 @@ Vue.component('report-chart', {
   }
 
 })
-
-$(function() {
-
-  // var areaChartData = {
-  //   labels: ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Minggu'],
-  //   datasets: [{
-  //       "label": 'New Users',
-  //       "fill": false,
-  //       "backgroundColor": "rgba(255, 99, 132, 0.5)",
-  //       "borderColor": "rgb(255, 99, 132)",
-  //       "borderWidth": 1,
-  //       "data": [65, 59, 80, 81, 56, 55, 40]
-  //     },
-  //     {
-  //       "label": 'Snap',
-  //       "fill": false,
-  //       "backgroundColor": "rgba(255, 159, 64, 0.5)",
-  //       "borderColor": "rgb(255, 159, 64)",
-  //       "borderWidth": 1,
-  //       "data": [66, 79, 88, 88, 26, 55, 60]
-  //     },
-
-  //     {
-  //       "label": 'Receipts',
-  //       "fill": false,
-  //       "backgroundColor": "rgba(255, 205, 86, 0.2)",
-  //       "borderColor": "rgb(255, 205, 86)",
-  //       "borderWidth": 1,
-  //       "data": [65, 59, 80, 81, 56, 55, 40]
-  //     },
-  //     {
-  //       "label": 'Warung',
-  //       "fill": false,
-  //       "backgroundColor": "rgba(75, 192, 192, 0.2)",
-  //       "borderColor": "rgb(75, 192, 192)",
-  //       "borderWidth": 1,
-  //       "data": [66, 79, 88, 88, 26, 55, 60]
-  //     },
-  //     {
-  //       "label": 'Nota Tulis',
-  //       "fill": false,
-  //       "backgroundColor": "rgba(153, 102, 255, 0.2)",
-  //       "borderColor": "rgb(54, 162, 235)",
-  //       "borderWidth": 1,
-  //       "data": [65, 59, 80, 81, 56, 55, 40]
-  //     },
-
-  //   ]
-  // }
-
-  // //-------------
-  // //- BAR CHART -
-  // //-------------
-  // var barChartCanvas = $('#barChart').get(0).getContext('2d')
-  // var barChartData = areaChartData
-});
 
 new Vue({
   el: '.content-wrapper'
