@@ -26,7 +26,7 @@ class ActiveUsers implements ChartInterface
             'snaps'         => $this->snaps('daily'),
             'receipts'      => $this->snaps('daily', 'receipt'),
             'general-trade' => $this->snaps('daily', 'generalTrade'), // Warung
-            'hand-writen'   => $this->snaps('daily', 'handWritten'), // Nota tulis
+            'hand-written'  => $this->snaps('daily', 'handWritten'), // Nota tulis
         ];
     }
 
@@ -37,7 +37,7 @@ class ActiveUsers implements ChartInterface
             'snaps'         => $this->snaps('weekly'),
             'receipts'      => $this->snaps('weekly', 'receipt'),
             'general-trade' => $this->snaps('weekly', 'generalTrade'), // Warung
-            'hand-writen'   => $this->snaps('weekly', 'handWritten'), // Nota tulis
+            'hand-written'  => $this->snaps('weekly', 'handWritten'), // Nota tulis
         ];
     }
 
@@ -48,7 +48,7 @@ class ActiveUsers implements ChartInterface
             'snaps'         => $this->snaps('monthly'),
             'receipts'      => $this->snaps('monthly', 'receipt'),
             'general-trade' => $this->snaps('monthly', 'generalTrade'), // Warung
-            'hand-writen'   => $this->snaps('monthly', 'handWritten'), // Nota tulis
+            'hand-written'  => $this->snaps('monthly', 'handWritten'), // Nota tulis
         ];
     }
 
@@ -59,7 +59,7 @@ class ActiveUsers implements ChartInterface
             'snaps'         => $this->snaps('yearly'),
             'receipts'      => $this->snaps('yearly', 'receipt'),
             'general-trade' => $this->snaps('yearly', 'generalTrade'), // Warung
-            'hand-writen'   => $this->snaps('yearly', 'handWritten'), // Nota tulis
+            'hand-written'  => $this->snaps('yearly', 'handWritten'), // Nota tulis
         ];
     }
 
