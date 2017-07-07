@@ -129,7 +129,7 @@ Vue.component('report-chart', {
           "9": "September",
           "10": "October",
           "11": "November",
-          "12": "December",
+          "<12></12>": "December",
 
 
         }
@@ -138,6 +138,7 @@ Vue.component('report-chart', {
       chartArea: {},
       chartData: {},
       chartLabels: [],
+      chartInstance: null,
     }
   },
   created: function () {
@@ -207,8 +208,11 @@ Vue.component('report-chart', {
       //   },
       //   options: this.barChartOptions
       // }));
+      if (this.chartInstance !== null) {
+        this.chartInstance.destroy();
+      }
 
-      new Chart(this.chartArea, {
+      this.chartInstance = new Chart(this.chartArea, {
         type: 'bar',
         data: {
           labels: this.chartLabels,
