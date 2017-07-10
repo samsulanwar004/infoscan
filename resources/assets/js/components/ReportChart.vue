@@ -129,7 +129,7 @@
             _clegends: function () {
                 return this.legends.split(", ")
               },
-          }
+          },
           created: function() {
 
           },

@@ -45,7 +45,7 @@ elixir(mix => {
         ltePath + 'css/cropper.min.css'
     ], 'public/css/crop.css');
 
-    // mix.webpack('app.js');
+    mix.webpack('app.js');
 
     mix.scripts([
         ltePath + 'plugins/jquery/jquery.min.js',
