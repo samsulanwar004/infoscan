@@ -98,11 +98,16 @@ elixir(mix => {
         ltePath + 'js/respond.js'
     ], 'public/js/ie-support.js');
 
+    mix.scripts([
+      assetPath
+    ]);
+
     mix.styles([
         ltePath + 'plugins/ionrange/css/ion.rangeSlider.css',
         ltePath + 'plugins/ionrange/css/ion.rangeSlider.skinModern.css',
         ltePath + 'plugins/select2/css/select2.css',
     ], 'public/css/report-vendor.css');
+
     mix.scripts([
         ltePath + 'plugins/cookie/js.cookie.js',
         ltePath + 'plugins/ionrange/js/ion-rangeSlider/ion.rangeSlider.js',
@@ -117,6 +122,8 @@ elixir(mix => {
     mix.copy(ltePath + 'plugins/easyui/images', 'public/img/easyui'); // lte image
     mix.copy(ltePath + 'plugins/icheck/square/blue.png', 'public/img');
     mix.copy(ltePath + 'plugins/ionrange/img/sprite-skin-modern.png', 'public/img');
+    mix.copy(nodePath + 'vue/dist/vue.min.js', 'public/js/vue.min.js');
+    mix.copy(assetPath + 'js/report-vue-component.js', 'public/js/report-vue-component.js');
 
     mix.version([
         'css/app.css',
@@ -136,5 +143,6 @@ elixir(mix => {
         'js/Chart.bundle.min.js',
         'js/zoom.js',
         'js/crop.js',
+        'js/report-vue-component.js'
     ]);
 });

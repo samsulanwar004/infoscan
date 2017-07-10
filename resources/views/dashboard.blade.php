@@ -11,18 +11,33 @@
             <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
             <li><a href="#">Examples</a></li>
             <li class="active">Blank page</li>
-        </ol> -->
+            </ol> -->
     </section>
 
     <!-- Main content -->
     <section class="content">
-
-      <div class="row">
-        <div class="col-md-12">
-          Welcome to GoJago admin Panel
+        <div class="col-md-6">
+            <report-chart
+                chart-title="Active Users"
+                resource-url="{{ route('chart.active-users') }}"
+                legends="New Users, Snaps, Receipts, General Trade, Hand Written"
+            ></report-chart>
         </div>
-      </div>
+        <div class="col-md-6">
+            <report-chart
+                chart-title="Snaps Status"
+                resource-url="{{ route('chart.snaps-status') }}"
+                legends="Approve, Rejects, Pending"
+            ></report-chart>
+        </div>
 
     </section>
     <!-- /.content -->
+@endsection
+
+@section('footer_scripts')
+    <script src="{{ asset('js/Chart.bundle.min.js') }}">
+    </script>
+    <script src="{{ asset('js/vue.min.js') }}"></script>
+    <script src="{{ asset('js/report-vue-component.js') }}"></script>
 @endsection
