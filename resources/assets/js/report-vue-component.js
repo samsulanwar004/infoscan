@@ -127,6 +127,7 @@ Vue.component('report-chart', {
   },
   mounted: function() {
     this.chartArea = $(this.$el).find('.chart-area').get(0).getContext('2d')
+    this.refreshChart()
   },
   methods: {
     /**
