@@ -7,13 +7,14 @@
   "css/zoom.css": "css/zoom-8cbdf24154.css",
   "js/Chart.bundle.min.js": "js/Chart-6b2cecbd81.bundle.min.js",
   "js/admin.js": "js/admin-b8931d4e62.js",
+  "js/app.js": "js/app-2dc5ebee99.js",
   "js/crop.js": "js/crop-e549c93fd0.js",
-  "js/dasboard.js": "js/dasboard-7b318319d7.js",
+  "js/dashboard.js": "js/dashboard-4e056d7e77.js",
   "js/datetimepicker.js": "js/datetimepicker-25fe4e9e85.js",
   "js/elevate.js": "js/elevate-ae62de6f1b.js",
   "js/ie-support.js": "js/ie-support-581459d2bf.js",
   "js/report-vendor.js": "js/report-vendor-124bea403f.js",
   "js/taggd.js": "js/taggd-03f23f7e27.js",
-  "js/vendor.js": "js/vendor-74821c5c40.js",
+  "js/vendor.js": "js/vendor-7e6f0d55b2.js",
   "js/zoom.js": "js/zoom-a65cfb4f22.js"
 }
