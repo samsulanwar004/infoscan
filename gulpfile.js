@@ -122,8 +122,13 @@ elixir(mix => {
     mix.copy(ltePath + 'plugins/easyui/images', 'public/img/easyui'); // lte image
     mix.copy(ltePath + 'plugins/icheck/square/blue.png', 'public/img');
     mix.copy(ltePath + 'plugins/ionrange/img/sprite-skin-modern.png', 'public/img');
-    mix.copy(nodePath + 'vue/dist/vue.min.js', 'public/js/vue.min.js');
-    mix.copy(assetPath + 'js/report-vue-component.js', 'public/js/report-vue-component.js');
+    /*mix.copy(nodePath + 'vue/dist/vue.min.js', 'public/js/vue.min.js');
+    mix.copy(assetPath + 'js/report-vue-component.js', 'public/js/report-vue-component.js');*/
+
+    mix.scripts([
+        nodePath + 'vue/dist/vue.min.js', 'public/js/vue.min.js',
+        assetPath + 'js/report-vue-component.js', 'public/js/report-vue-component.js'
+    ], 'public/js/dasboard.js')
 
     mix.version([
         'css/app.css',
@@ -143,6 +148,6 @@ elixir(mix => {
         'js/Chart.bundle.min.js',
         'js/zoom.js',
         'js/crop.js',
-        'js/report-vue-component.js'
+        'js/dasboard.js'
     ]);
 });
