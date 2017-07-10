@@ -137,7 +137,7 @@ elixir(mix => {
         'css/report-vendor.css',
         'css/datetimepicker.css',
         'js/datetimepicker.js',
-        'js/Chart.min.js',
+        'js/Chart.bundle.min.js',
         'js/zoom.js',
         'js/crop.js',
         'js/dashboard.js'
