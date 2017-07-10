@@ -89,9 +89,7 @@ elixir(mix => {
         ltePath + 'plugins/datetimepicker/id.js',
     ], 'public/js/datetimepicker.js');
 
-    mix.scripts([
-        ltePath + 'plugins/chartjs/Chart.bundle.min.js',
-    ], 'public/js/Chart.bundle.min.js');
+    mix.copy(ltePath + 'plugins/chartjs/Chart.bundle.min.js', 'public/js');
 
     mix.scripts([
         ltePath + 'js/html5shiv.js',
@@ -139,7 +137,7 @@ elixir(mix => {
         'css/report-vendor.css',
         'css/datetimepicker.css',
         'js/datetimepicker.js',
-        'js/Chart.bundle.min.js',
+        'js/Chart.min.js',
         'js/zoom.js',
         'js/crop.js',
         'js/dashboard.js'
