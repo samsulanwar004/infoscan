@@ -2,7 +2,7 @@ Vue.component('report-chart', {
   template: `<div class="box box-success">
     <div class="box-header with-border">
       <div class="col-md-6">
-        <h3 class="box-title">Active Users</h3>
+        <h3 class="box-title"> {{ chartTitle }} </h3>
       </div>
       <div class="col-md-3">
         <select id="period" v-model="timerange" name="period" class="form-control">
@@ -25,12 +25,10 @@ Vue.component('report-chart', {
     </div>
     <!-- /.box-body -->
   </div>`,
-
-  data: function () {
+  props: ['chartTitle', 'resourceUrl', 'legends'],
+  data: function() {
     return {
       timerange: 'daily',
-      resourceUrl: baseURL + '/chart/active-users',
-
       barChartOptions: {
         //Boolean - Whether the scale should start at zero, or an order of magnitude down from the lowest value
         scaleBeginAtZero: true,
@@ -59,47 +57,33 @@ Vue.component('report-chart', {
         maintainAspectRatio: true,
         datasetFill: false
       },
-
-      defaultColors: [
-        {
-          "fill": false,
-          "backgroundColor": "rgba(255, 99, 132, 0.5)",
-          "borderColor": "rgb(255, 99, 132)",
-          "borderWidth": 1,
-        },
-        {
-          "fill": false,
-          "backgroundColor": "rgba(255, 159, 64, 0.5)",
-          "borderColor": "rgb(255, 159, 64)",
-          "borderWidth": 1,
-        },
-
-        {
-          "fill": false,
-          "backgroundColor": "rgba(255, 205, 86, 0.2)",
-          "borderColor": "rgb(255, 205, 86)",
-          "borderWidth": 1,
-        },
-        {
-          "fill": false,
-          "backgroundColor": "rgba(75, 192, 192, 0.2)",
-          "borderColor": "rgb(75, 192, 192)",
-          "borderWidth": 1,
-        },
-        {
-          "fill": false,
-          "backgroundColor": "rgba(153, 102, 255, 0.2)",
-          "borderColor": "rgb(54, 162, 235)",
-          "borderWidth": 1,
-        }
-      ],
-      legends: [
-        "New Users",
-        "Snaps",
-        "Receipts",
-        "General Trade",
-        "Hand Written",
-      ],
+      defaultColors: [{
+        "fill": false,
+        "backgroundColor": "rgba(255, 99, 132, 0.5)",
+        "borderColor": "rgb(255, 99, 132)",
+        "borderWidth": 1,
+      }, {
+        "fill": false,
+        "backgroundColor": "rgba(255, 159, 64, 0.5)",
+        "borderColor": "rgb(255, 159, 64)",
+        "borderWidth": 1,
+      }, {
+        "fill": false,
+        "backgroundColor": "rgba(255, 205, 86, 0.2)",
+        "borderColor": "rgb(255, 205, 86)",
+        "borderWidth": 1,
+      }, {
+        "fill": false,
+        "backgroundColor": "rgba(75, 192, 192, 0.2)",
+        "borderColor": "rgb(75, 192, 192)",
+        "borderWidth": 1,
+      }, {
+        "fill": false,
+        "backgroundColor": "rgba(153, 102, 255, 0.2)",
+        "borderColor": "rgb(54, 162, 235)",
+        "borderWidth": 1,
+      }],
+      legends: ["New Users", "Snaps", "Receipts", "General Trade", "Hand Written", ],
       periodLabels: {
         "daily": {
           "1": "Sunday",
@@ -129,11 +113,8 @@ Vue.component('report-chart', {
           "9": "September",
           "10": "October",
           "11": "November",
-          "<12></12>": "December",
-
-
+          "12": "December",
         }
-
       },
       chartArea: {},
       chartData: {},
@@ -141,47 +122,45 @@ Vue.component('report-chart', {
       chartInstance: null,
     }
   },
-  created: function () {
+  created: function() {
 
   },
-
-  mounted: function () {
+  mounted: function() {
     this.chartArea = $(this.$el).find('.chart-area').get(0).getContext('2d')
   },
-
   methods: {
     /**
      * Loading chart resource data
      * @return $.ajax
      */
-    loadChart: function () {
+    loadChart: function() {
       return $.ajax({
         url: this.resourceUrl + '/' + this.timerange
       })
     },
-
-    rebuildChartDatasets: function (responseData) {
+    rebuildChartDatasets: function(responseData) {
       var self = this;
       var periodLabel = this.periodLabels[this.timerange];
-
       self.chartData = [];
 
-      $.each(this.legends, function (key, legend) {
+      if (typeof this.legends == 'string') {
+        this.legends =  this.legends.split(', ')
+      }
 
+      $.each(this.legends, function(key, legend) {
         var responseItem = responseData[self.slugify(legend)];
         var dots = [];
-
-        for (var i=0; i <= Object.keys(periodLabel).length - 1; i++) {
+        console.log(self.slugify(legend))
+        for (var i = 0; i <= Object.keys(periodLabel).length - 1; i++) {
           if (typeof responseItem[i] !== 'undefined') {
             dots[i] = responseItem[i];
           } else {
             dots[i] = 0;
           }
         }
-
         self.chartData[key] = {
           label: legend,
-          fill:  self.defaultColors[key].fill,
+          fill: self.defaultColors[key].fill,
           backgroundColor: self.defaultColors[key].backgroundColor,
           borderColor: self.defaultColors[key].borderColor,
           borderWidth: self.defaultColors[key].borderWidth,
@@ -189,70 +168,50 @@ Vue.component('report-chart', {
         }
       });
     },
-
-    rebuildChartLabels: function () {
+    rebuildChartLabels: function() {
       var self = this
-
       self.chartLabels = [];
-      $.each(this.periodLabels[this.timerange], function (key, item) {
+      console.log(this.periodLabels[this.timerange])
+      $.each(this.periodLabels[this.timerange], function(key, item) {
         self.chartLabels.push(item);
       });
     },
-
-    refreshChart: function () {
-      this.loadChart()
-        .done(function (response) {
-          self.rebuildChartDatasets(response)
-          self.rebuildChartLabels()
-          self.refreshChart()
+    refreshChart: function() {
+      var self = this
+      this.loadChart().done(function(response) {
+        self.rebuildChartDatasets(response)
+        self.rebuildChartLabels()
+        if (self.chartInstance !== null) {
+          self.chartInstance.destroy();
+        }
+        self.chartInstance = new Chart(self.chartArea, {
+          type: 'bar',
+          data: {
+            labels: self.chartLabels,
+            datasets: self.chartData,
+          },
+          options: self.barChartOptions
         })
-        .fail(function () {
-          console.error('Failed to load chart')
-        });
-      if (this.chartInstance !== null) {
-        this.chartInstance.destroy();
-      }
-
-      this.chartInstance = new Chart(this.chartArea, {
-        type: 'bar',
-        data: {
-          labels: this.chartLabels,
-          datasets: this.chartData,
-        },
-        options: this.barChartOptions
-      })
-
+      }).fail(function() {
+        console.error('Failed to load chart')
+      });
     },
-
-    slugify: function (text){
-      return text.toString().toLowerCase()
-        .replace(/\s+/g, '-')           // Replace spaces with -
-        .replace(/[^\w\-]+/g, '')       // Remove all non-word chars
-        .replace(/\-\-+/g, '-')         // Replace multiple - with single -
-        .replace(/^-+/, '')             // Trim - from start of text
-        .replace(/-+$/, '');            // Trim - from end of text
+    slugify: function(text) {
+      return text.toString().toLowerCase().replace(/\s+/g, '-') // Replace spaces with -
+        .replace(/[^\w\-]+/g, '') // Remove all non-word chars
+        .replace(/\-\-+/g, '-') // Replace multiple - with single -
+        .replace(/^-+/, '') // Trim - from start of text
+        .replace(/-+$/, ''); // Trim - from end of text
     }
-
   },
   watch: {
-    timerange: function () {
-      var self = this
-
-      this.loadChart()
-        .done(function (response) {
-          self.rebuildChartDatasets(response)
-          self.rebuildChartLabels()
-          self.refreshChart()
-        })
-        .fail(function () {
-          console.error('Failed to load chart')
-        });
+    timerange: function() {
+      console.log(this.resourceUrl)
+      this.refreshChart()
       // console.log(this.chartData)
     }
   }
-
 })
-
 new Vue({
   el: '.content-wrapper'
 })

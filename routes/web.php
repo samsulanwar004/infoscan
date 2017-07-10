@@ -4,8 +4,7 @@ $routePrefix = null;
 Route::get('/verification/{token}', 'Web\MemberController@verify')->name('member_verification');
 Route::group([
     'middleware' => 'auth',
-], function () use ($routePrefix)
-{
+], function () use ($routePrefix) {
 
     // dashboard
     Route::get('/', 'Web\AdminController@dashboard')
@@ -13,12 +12,17 @@ Route::group([
     Route::post('/transfer', 'Web\AssetController@transferImages')
         ->name($routePrefix == null ? 'transfer' : '.transfer');
 
-    Route::group(['prefix' => '/chart'], function ()
-    {
+    Route::group(['prefix' => '/chart'], function () {
         Route::get('/active-users/{timeRange?}', [
-            'as'   => 'chart.active-user',
+            'as'   => 'chart.active-users',
             'uses' => 'Web\ChartController@activeUsers',
         ]);
+
+        Route::get('/snaps-status/{timeRange?}', [
+            'as'   => 'chart.snaps-status',
+            'uses' => 'Web\ChartController@snapsStatus',
+        ]);
+
     });
 
     Route::resource(
@@ -204,9 +208,9 @@ Route::group([
     )->name('points.promo');
 
     /*Route::get(
-        '/pages/404', function() {
-            return view('errors.404');
-        }
+    '/pages/404', function() {
+    return view('errors.404');
+    }
     )->name('pages.404');*/
 
     Route::resource(

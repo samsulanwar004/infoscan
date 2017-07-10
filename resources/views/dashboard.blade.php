@@ -17,7 +17,18 @@
     <!-- Main content -->
     <section class="content">
         <div class="col-md-6">
-            <report-chart></report-chart>
+            <report-chart
+                chart-title="Active Users"
+                resource-url="{{ route('chart.active-users') }}"
+                legends="New Users, Snaps, Receipts, General Trade, Hand Written"
+            ></report-chart>
+        </div>
+        <div class="col-md-6">
+            <report-chart
+                chart-title="Snaps Status"
+                resource-url="{{ route('chart.snaps-status') }}"
+                legends="Approve, Rejects, Pending"
+            ></report-chart>
         </div>
 
     </section>
