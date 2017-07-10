@@ -37,6 +37,5 @@
 
 @section('footer_scripts')
     <script src="{{ elixirCDN('js/Chart.bundle.min.js') }}"></script>
-    <script src="{{ elixirCDN('js/vue.min.js') }}"></script>
-    <script src="{{ elixirCDN('js/report-vue-component.js') }}"></script>
+    <script src="{{ elixirCDN('js/dashboard.js') }}"></script>
 @endsection
