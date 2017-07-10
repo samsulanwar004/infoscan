@@ -15,8 +15,11 @@ trait TimeRangeQuery
     {
         switch ($timeRange) {
             case 'weekly':
-                $query->select(DB::raw('FLOOR((DAYOFMONTH(CURRENT_DATE()) - 1) / 7) + 1 AS week_of_month,
-                    WEEK(created_at) AS week, MONTH(created_at) as month,  COUNT(created_at) AS total'))
+                $query->select(
+                    DB::raw(
+                        'FLOOR((DAYOFMONTH(CURRENT_DATE()) - 1) / 7) + 1 AS week_of_month, WEEK(created_at) AS week, ' .
+                        'MONTH(created_at) as month,  COUNT(created_at) AS total'
+                    ))
                     ->groupBy(['month', 'week'])
                     ->having('month', '=', $this->currentDate->month);
                 $keyField = 'week_of_month';
