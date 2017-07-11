@@ -6,7 +6,12 @@
  */
 
 require('./bootstrap');
-
+/**
+ * Uncomment below when compiling to production
+ */
+Vue.config.devtools = false
+Vue.config.debug = false
+Vue.config.silent = true
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
@@ -18,5 +23,3 @@ Vue.component('report-chart', require('./components/ReportChart.vue'));
 const app = new Vue({
     el: '.content-wrapper'
 });
-
-console.log(app.$el)
