@@ -42,6 +42,8 @@
 <script>
     var baseURL = '{{ url('/') }}';
 </script>
+@section('header_scripts')
+@show
 <script src="{{ elixirCDN('js/vendor.js') }}"></script>
 <script src="{{ elixirCDN('js/admin.js') }}"></script>
 

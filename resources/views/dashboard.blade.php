@@ -34,9 +34,11 @@
     </section>
     <!-- /.content -->
 @endsection
+@section('header_scripts')
+    <script src="{{ elixirCDN('js/app.js') }}"></script>
+@endsection
 
 @section('footer_scripts')
     <script src="{{ elixirCDN('js/Chart.bundle.min.js') }}"></script>
-    <script src="{{ elixirCDN('js/app.js') }}"></script>
     <script src="{{ elixirCDN('js/dashboard.js') }}"></script>
 @endsection
