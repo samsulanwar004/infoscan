@@ -89,13 +89,13 @@
               }],
               periodLabels: {
                 "daily": {
-                  "1": "Sunday",
+                  "1": "Monday",
                   "2": "Tuesday",
                   "3": "Wednesday",
                   "4": "Thursday",
                   "5": "Friday",
                   "6": "Thursday",
-                  "7": "Monday",
+                  "7": "Sunday",
                 },
                 "weekly": {
                   "1": "Week 1",
