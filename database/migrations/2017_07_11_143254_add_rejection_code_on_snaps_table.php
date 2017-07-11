@@ -14,7 +14,9 @@ class AddRejectionCodeOnSnapsTable extends Migration
     public function up()
     {
         Schema::table('snaps', function (Blueprint $table) {
-            $table->string('rejection_code')->nullable();
+            $table->string('rejection_code')
+                ->after('reject_by')
+                ->nullable();
         });
     }
 

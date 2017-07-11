@@ -22,7 +22,7 @@ class RejectionCodeMigrator extends Command
      *
      * @var string
      */
-    protected $description = 'Migrate command for data integrity of rejection code on snaps table and settings table';
+    protected $description = 'Migration command for data integrity of rejection code on snaps table and settings table';
 
     /**
      * Create a new command instance.
@@ -42,6 +42,8 @@ class RejectionCodeMigrator extends Command
     public function handle()
     {
 
+        $this->info("Migration command for data integrity of rejection code on snaps table and settings table\n");
+
         // show warning
         $this->error('Warning: Running this command will change data on \'settings\' table and \'snaps\' table. ' .
             'Please make sure you have a database backup before running this command, because this command ' .
@@ -52,15 +54,17 @@ class RejectionCodeMigrator extends Command
             'N' => 'No'
         ], 'N');
 
-        DB::beginTransaction();
-        try {
-            $this->settingsTableMigration();
-            $this->snapsTableMigration();
-            DB::commit();
-            $this->info('Migration finish.');
-        } catch (Exception $e) {
-            DB::rollBack();
-            throw $e;
+        if ($continue == 'Y') {
+            DB::beginTransaction();
+            try {
+                $this->settingsTableMigration();
+                $this->snapsTableMigration();
+                DB::commit();
+                $this->info('Migration finish.');
+            } catch (Exception $e) {
+                DB::rollBack();
+                throw $e;
+            }
         }
     }
 
