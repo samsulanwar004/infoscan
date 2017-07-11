@@ -31,6 +31,14 @@
             ></report-chart>
         </div>
 
+        <div class="col-md-6">
+            <report-chart
+                chart-title="Rejection Status"
+                resource-url="{{ route('chart.snaps-rejection-reason') }}"
+                legends="Approve, Rejects, Pending"
+            ></report-chart>
+        </div>
+
     </section>
     <!-- /.content -->
 @endsection

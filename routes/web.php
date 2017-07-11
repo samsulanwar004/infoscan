@@ -23,6 +23,11 @@ Route::group([
             'uses' => 'Web\ChartController@snapsStatus',
         ]);
 
+        Route::get('/snaps-rejection-reason/{timeRange?}', [
+            'as'   => 'chart.snaps-rejection-reason',
+            'uses' => 'Web\ChartController@snapsRejections',
+        ]);
+
     });
 
     Route::resource(
