@@ -9,18 +9,27 @@ use App\Jobs\ForcedAssignProcessJob;
 class ForcedAssignController extends AdminController
 {
     protected $redirectAfterSave = 'forced-assign';
+
+    protected $csService;
+
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
+
+    public function __construct(CrowdsourceService $csService)
+    {
+        $this->csService = $csService;
+    }
+
     public function index()
     {
         $this->isAllowed('Crowdsource.List');
-        $csService = (new CrowdsourceService);
-        $crowdsources = $csService->getAllCrowdsource();
 
-        $remainAssign = $csService->getRemainAssignSnap();
+        $crowdsources = $this->csService->getAllCrowdsource();
+
+        $remainAssign = $this->csService->getRemainAssignSnap();
 
         return view('forcedassign.index', compact('crowdsources', 'remainAssign'));
     }
@@ -65,8 +74,7 @@ class ForcedAssignController extends AdminController
      */
     public function edit($id)
     {
-        $csService = (new CrowdsourceService);
-        $crowdsources = $csService->getAllCrowdsource();
+        $crowdsources = $this->csService->getAllCrowdsource();
 
         $crowdsources = $crowdsources->filter(function($value) use ($id) {
             return $value->id != $id;
@@ -94,8 +102,7 @@ class ForcedAssignController extends AdminController
         }
 
         try {
-            $csService = (new CrowdsourceService);
-            $snaps = $csService->getSnapByCrowdsourceId($id);
+            $snaps = $this->csService->getSnapByCrowdsourceId($id);
 
             $no = 1;
             $snapCs = [];
