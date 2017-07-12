@@ -70,6 +70,7 @@
                 </a>
                 <ul class="treeview-menu">
                     <li><a href="/crowdsource"><i class="fa fa-circle-o"></i>Crowdsource Account</a></li>
+                    <li><a href="/forced-assign"><i class="fa fa-circle-o"></i>Forced assign crowdsource</a></li>
                 </ul>
             </li>
 
