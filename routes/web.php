@@ -8,9 +8,27 @@ Route::group([
 
     // dashboard
     Route::get('/', 'Web\AdminController@dashboard')
-         ->name($routePrefix == null ? 'dashboard' : '.dashboard');
+        ->name($routePrefix == null ? 'dashboard' : '.dashboard');
     Route::post('/transfer', 'Web\AssetController@transferImages')
-         ->name($routePrefix == null ? 'transfer' : '.transfer');
+        ->name($routePrefix == null ? 'transfer' : '.transfer');
+
+    Route::group(['prefix' => '/chart'], function () {
+        Route::get('/active-users/{timeRange?}', [
+            'as'   => 'chart.active-users',
+            'uses' => 'Web\ChartController@activeUsers',
+        ]);
+
+        Route::get('/snaps-status/{timeRange?}', [
+            'as'   => 'chart.snaps-status',
+            'uses' => 'Web\ChartController@snapsStatus',
+        ]);
+
+        Route::get('/snaps-rejection-reason/{timeRange?}', [
+            'as'   => 'chart.snaps-rejection-reason',
+            'uses' => 'Web\ChartController@snapsRejections',
+        ]);
+
+    });
 
     Route::resource(
         '/users',
@@ -107,7 +125,7 @@ Route::group([
     Route::resource(
         '/exchange',
         'Web\ExchangeController',
-        ['except' => ['show'],'names' => route_resource_name($routePrefix, 'exchange')]
+        ['except' => ['show'], 'names' => route_resource_name($routePrefix, 'exchange')]
     );
 
     Route::resource(
@@ -201,9 +219,9 @@ Route::group([
     )->name('points.promo');
 
     /*Route::get(
-        '/pages/404', function() {
-            return view('errors.404');
-        }
+    '/pages/404', function() {
+    return view('errors.404');
+    }
     )->name('pages.404');*/
 
     Route::resource(

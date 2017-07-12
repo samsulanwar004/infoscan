@@ -6,13 +6,13 @@
     <title>Admin Panel</title>
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <meta id="token" content="{{ csrf_token() }}">
-    <link rel="stylesheet" href="{{ elixirCDN('css/app.css') }}">    
+    <link rel="stylesheet" href="{{ elixirCDN('css/app.css') }}">
     <!--[if lt IE 9]>
     <script src="{{ elixirCDN('js/ie-support.js') }}"></script>
     <![endif]-->
 </head>
 
-<body class="hold-transition body skin-red-light sidebar-mini {{ isset($mini_sidebar) ? 'sidebar-collapse' : ''}}">
+<body id="" class="hold-transition body skin-red-light sidebar-mini {{ isset($mini_sidebar) ? 'sidebar-collapse' : ''}}">
 @include('partials.alert')
 <!-- Site wrapper -->
 <div class="wrapper">
@@ -39,6 +39,11 @@
     <div class="control-sidebar-bg"></div>
 </div>
 <!-- ./wrapper -->
+<script>
+    var baseURL = '{{ url('/') }}';
+</script>
+@section('header_scripts')
+@show
 <script src="{{ elixirCDN('js/vendor.js') }}"></script>
 <script src="{{ elixirCDN('js/admin.js') }}"></script>
 

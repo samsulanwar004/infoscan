@@ -396,17 +396,22 @@ class SnapService
                 $reason = $request->input('other');
                 $setting = new \App\Setting;
                 $setting->setting_group = strtolower(str_replace(' ', '_', $settingName));
-                $setting->setting_name = strtolower($settingName);
+                // $setting->setting_name = strtolower($settingName);
                 $setting->setting_display_name = $settingName;
                 $setting->setting_value = trim($reason);
                 $setting->setting_type = 'toggle';
                 $setting->is_visible = 1;
                 $setting->created_by = $userId;
                 $setting->save();
+
+                // generate rejection_code
+                $setting->setting_name = 'R' . str_pad($setting->id, 3, '0', STR_PAD_LEFT);
+                $setting->save();
+
             } else {
-                $reason = $request->input('reason');
-                $setting = \App\Setting::where('id', $reason)
-                                       ->first();
+                $reasonId = $request->input('reason');
+                $setting = \App\Setting::where('id', $reasonId)
+                    ->first();
                 $reason = $setting->setting_value;
             }
 
@@ -439,6 +444,7 @@ class SnapService
             $snaps->reject_by = $userId;
             $snaps->comment = $comment;
             $snaps->status = 'reject';
+            $snaps->rejection_code = $setting->setting_name;
             $snaps->fixed_point = '0';
             $snaps->update();
 

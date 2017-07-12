@@ -6,15 +6,20 @@
  */
 
 require('./bootstrap');
-
+/**
+ * Uncomment below when compiling to production
+ */
+Vue.config.devtools = false
+Vue.config.debug = false
+Vue.config.silent = true
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-/*Vue.component('example', require('./components/Example.vue'));*/
+Vue.component('report-chart', require('./components/ReportChart.vue'));
 
 const app = new Vue({
-    el: '#app'
+    el: '.content-wrapper'
 });
