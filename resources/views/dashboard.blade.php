@@ -38,7 +38,17 @@
                 legends="Approve, Rejects, Pending"
             ></report-chart>
         </div>
+        {{-- <div class="col-md-6">
+            <report-chart
+                chart-title="Survey"
+            resource-url="{{ route('chart.survey') }}"
+                legends="All, Active, Inactive"
+            ></report-chart>
+        </div> --}}
 
+        <div class="col-md-12">
+            <report-table resource-url="{{ route('chart.top-ten') }}"></report-table>
+        </div>
     </section>
     <!-- /.content -->
 @endsection
