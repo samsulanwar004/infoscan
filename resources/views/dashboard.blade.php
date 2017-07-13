@@ -16,39 +16,35 @@
 
     <!-- Main content -->
     <section class="content">
-        <div class="col-md-6">
-            <report-chart
-                chart-title="Active Users"
-                resource-url="{{ route('chart.active-users') }}"
-                legends="New Users, Snaps, Receipts, General Trade, Hand Written"
-            ></report-chart>
+        <div class="row">
+            <div class="col-md-6">
+                <report-chart
+                    chart-title="Active Users"
+                    resource-url="{{ route('chart.active-users') }}"
+                    legends="New Users, Snaps, Receipts, General Trade, Hand Written"
+                ></report-chart>
+            </div>
+            <div class="col-md-6">
+                <report-chart
+                    chart-title="Snaps Status"
+                    resource-url="{{ route('chart.snaps-status') }}"
+                    legends="Approve, Rejects, Pending"
+                ></report-chart>
+            </div>
         </div>
-        <div class="col-md-6">
-            <report-chart
-                chart-title="Snaps Status"
-                resource-url="{{ route('chart.snaps-status') }}"
-                legends="Approve, Rejects, Pending"
-            ></report-chart>
+        <div class="row">
+            <div class="col-md-6">
+                <report-chart
+                    chart-title="Rejection Status"
+                    resource-url="{{ route('chart.snaps-rejection-reason') }}"
+                    legends="Approve, Rejects, Pending"
+                ></report-chart>
+            </div>
+            <div class="col-md-6">
+                <report-table resource-url="{{ route('chart.top-ten') }}"></report-table>
+            </div>
         </div>
 
-        <div class="col-md-6">
-            <report-chart
-                chart-title="Rejection Status"
-                resource-url="{{ route('chart.snaps-rejection-reason') }}"
-                legends="Approve, Rejects, Pending"
-            ></report-chart>
-        </div>
-        {{-- <div class="col-md-6">
-            <report-chart
-                chart-title="Survey"
-            resource-url="{{ route('chart.survey') }}"
-                legends="All, Active, Inactive"
-            ></report-chart>
-        </div> --}}
-
-        <div class="col-md-12">
-            <report-table resource-url="{{ route('chart.top-ten') }}"></report-table>
-        </div>
     </section>
     <!-- /.content -->
 @endsection

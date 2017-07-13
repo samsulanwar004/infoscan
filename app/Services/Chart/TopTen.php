@@ -24,44 +24,45 @@ class TopTen implements ChartInterface
     public function daily()
     {
         return [
-            'claims-reason' => $this->claimReason('daily'),
-            // 'user-approved-claims' => $this->snaps('daily', 'pending'),
-            // 'rejections' => $this->snaps('daily', 'reject'),
-            // 'user-rejected-claims' => $this->snaps()
+            // 'claims-reason' => $this->claimReason('daily'),
+            'user-approved-claims' => $this->userHaveMoreClaims('daily'),
+            'rejections' => $this->rejections('daily'),
+            'user-rejected-claims' => $this->userHaveMoreClaims('daily', 'reject')
         ];
     }
 
     public function weekly()
     {
         return [
-            'claims-reason' => $this->claimReason('weekly'),
-            // 'user-approved-claims' => $this->snaps('daily', 'pending'),
-            // 'rejections' => $this->snaps('daily', 'reject'),
-            // 'user-rejected-claims' => $this->snaps()
+            // 'claims-reason' => $this->claimReason('weekly'),
+            'user-approved-claims' => $this->userHaveMoreClaims('weekly'),
+            'rejections' => $this->rejections('weekly'),
+            'user-rejected-claims' => $this->userHaveMoreClaims('weekly', 'reject')
         ];
     }
 
     public function monthly()
     {
         return [
-            'claims-reason' => $this->claimReason('monthly'),
-            // 'user-approved-claims' => $this->snaps('daily', 'pending'),
-            // 'rejections' => $this->snaps('daily', 'reject'),
-            // 'user-rejected-claims' => $this->snaps()
+            // 'claims-reason' => $this->claimReason('monthly'),
+            'user-approved-claims' => $this->userHaveMoreClaims('monthly'),
+            'rejections' => $this->rejections('monthly'),
+            'user-rejected-claims' => $this->userHaveMoreClaims('monthly', 'reject')
         ];
     }
 
     public function yearly()
     {
         return [
-            'claims-reason' => $this->claimReason('yearly'),
-            // 'user-approved-claims' => $this->snaps('daily', 'pending'),
-            // 'rejections' => $this->snaps('daily', 'reject'),
-            // 'user-rejected-claims' => $this->snaps()
+            // 'claims-reason' => $this->claimReason('yearly'),
+            'user-approved-claims' => $this->userHaveMoreClaims('yearly'),
+            'rejections' => $this->rejections('yearly'),
+            'user-rejected-claims' => $this->userHaveMoreClaims('yearly', 'reject')
         ];
     }
 
-    protected function claimReason($timeRange = 'daily')
+
+    protected function rejections($timeRange = 'daily')
     {
         $query = DB::table('snaps')
             ->join('settings', 'snaps.rejection_code', '=', 'settings.setting_name')
@@ -70,7 +71,18 @@ class TopTen implements ChartInterface
             ->where('status', '=', 'reject')
             ->groupBy('rejection_code');
 
-        return $this->buildTimeRangeQuery($timeRange, $query, 'settings.updated_at');
+        return $this->buildTimeRangeQuery($timeRange, $query, 'snaps.updated_at');
+    }
+
+    protected function userHaveMoreClaims($timeRange = 'daily', $snapStatus = 'approve')
+    {
+        $query = DB::table('members')
+            ->join('snaps', 'members.id', '=', 'snaps.member_id')
+            ->select(DB::raw('members.name as label, count(snaps.id) as total'))
+            ->where('snaps.status', '=', $snapStatus)
+            ->groupBy(['members.id']);
+
+        return $this->buildTimeRangeQuery($timeRange, $query, 'snaps.updated_at');
     }
 
     /**
@@ -86,35 +98,39 @@ class TopTen implements ChartInterface
                 $query->addSelect(
                     DB::raw(
                         'FLOOR((DAYOFMONTH(CURRENT_DATE()) - 1) / 7) + 1 AS week_of_month, WEEK(' . $dateTimeFieldName . ') AS week, ' .
-                        'MONTH(' . $dateTimeFieldName . ') as month,  COUNT(' . $dateTimeFieldName . ') AS total'
+                        'YEAR(' . $dateTimeFieldName . ') as year, MONTH(' . $dateTimeFieldName . ') as month,  COUNT(' . $dateTimeFieldName . ') AS total'
                     ))
-                    ->groupBy(['month', 'week'])
+                    ->groupBy(['year', 'month', 'week'])
                     ->having('month', '=', $this->currentDate->month);
-                $keyField = 'week_of_month';
+                // $keyField = 'week_of_month';
                 break;
 
             case 'monthly':
                 $query->addSelect(DB::raw('MONTH(' . $dateTimeFieldName . ') as month, YEAR(' . $dateTimeFieldName . ') as year, COUNT(' . $dateTimeFieldName . ') AS total'))
                     ->groupBy(['year', 'month'])
                     ->having('year', '=', $this->currentDate->year);
-                $keyField = 'month';
+                // $keyField = 'month';
                 break;
 
             case 'yearly':
                 $query->addSelect(DB::raw('YEAR(' . $dateTimeFieldName . ') as year,  COUNT(' . $dateTimeFieldName . ') AS total'))
                     ->groupBy(['year']);
-                $keyField = 'year';
+                // $keyField = 'year';
                 break;
 
             default: // daily
-                $query->addSelect(DB::raw('WEEKDAY(' . $dateTimeFieldName . ') AS day, WEEK(' . $dateTimeFieldName . ') AS week, COUNT(' . $dateTimeFieldName . ') AS total'))
+                $query->addSelect(DB::raw('WEEKDAY(' . $dateTimeFieldName . ') AS day, ' .
+                    'WEEK(' . $dateTimeFieldName . ') AS week, YEAR(' . $dateTimeFieldName . ') as year, COUNT(' . $dateTimeFieldName . ') AS total'))
                     ->groupBy(['week', 'day'])
                     ->having('week', '=', $this->currentDate->weekOfYear);
-                $keyField = 'day';
+                // $keyField = 'day';
 
         }
-
-        return $query->get();
+        // dd($query->groupBy('rejection_code')
+        //     ->orderBy('total', 'DESC')->toSql());
+        return $query->orderBy('total', 'DESC')
+            ->limit(10)
+            ->get();
 
     }
 

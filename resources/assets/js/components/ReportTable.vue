@@ -3,11 +3,12 @@
         <div class="box-header with-border">
           <div class="col-md-6">
             <h3 class="box-title"> Top 10s</h3>
+            <p>within <strong>{{ timeRangeInfoText }}</strong></p>
           </div>
           <div class="col-md-3">
             <label for="">&nbsp;</label>
-            <select id="category" name="category" class="form-control">
-                <option value="claims-reason">Claims(reason)</option>
+            <select id="category"v-model="category" name="category" class="form-control">
+                <!-- <option value="claims-reason">Claims(reason)</option> -->
                 <option value="user-approved-claims">User who have more claims</option>
                 <option value="rejections">Rejections</option>
                 <option value="user-rejected-claims">Users who have more rejections</option>
@@ -38,20 +39,32 @@
                   <th>Count</th>
                 </tr>
             </thead>
-            <tbody>
-                <tr v-for="row in tableRows">
-                    <td></td>
-                    <td>{{ row.label }}</td>
-                    <td>{{ row.total }}</td>
-                </tr>
+            <template v-if="tableRows.length">
+                <tbody>
 
-            </tbody>
+                    <tr v-for="(row, key, index) in tableRows">
+                        <td>{{ key + 1   }}</td>
+                        <td>{{ row.label }}</td>
+                        <td>{{ row.total }}</td>
+                    </tr>
+                </tbody>
+            </template>
+            <template v-else>
+                <tbody>
+                    <tr>
+                        <td colspan="3">
+                            Empty Result
+                        </td>
+                    </tr>
+                </tbody>
+            </template>
           </table>
         </div>
     </div>
 </template>
 
 <script>
+ import moment from 'moment'
  export default {
         props: [
             'resourceUrl'
@@ -59,9 +72,15 @@
         data: function() {
             return {
                 period: 'daily',
-                category: 'claims-reason',
+                category: 'user-approved-claims',
                 responseData: [],
-                tableRows: []
+                tableRows: [],
+                timeRangeInfo: {
+                    daily: moment().startOf('week').add(1, 'days').format('DD-MM-YYYY') + ' - ' + moment().endOf('week').add(1, 'days').format('DD-MM-YYYY'), // ex: 20/07/2017 - 27/07/2017
+                    weekly: moment().format('MMMM YYYY'), // ex: July 2017
+                    monthly: moment().format('YYYY'), // ex: 2017
+                    yearly: 'All periods',
+                },
             }
         },
         created: function () {
@@ -69,6 +88,11 @@
         },
         mounted: function () {
 
+        },
+        computed: {
+            timeRangeInfoText: function () {
+                return this.timeRangeInfo[this.period];
+            }
         },
         methods: {
             loadResource: function () {
@@ -78,14 +102,18 @@
                 });
             },
             refreshTable: function () {
+                var self = this;
                 this.loadResource()
                     .done(function(response) {
-                        this.responseData = response;
-                        this.tableRows = this.responseData[this.category];
+                        self.responseData = response;
+                        self.refreshTableData();
                     })
                     .fail(function () {
                         console.error('Failed to load report table data');
                     })
+            },
+            refreshTableData: function () {
+                this.tableRows = this.responseData[this.category];
             }
         },
         watch: {
@@ -95,7 +123,7 @@
             },
             category: function () {
                 console.log('Category changed')
-                // this.refreshTable();
+                this.refreshTableData();
             }
         }
     }

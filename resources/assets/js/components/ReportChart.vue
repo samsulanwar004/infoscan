@@ -3,8 +3,10 @@
         <div class="box-header with-border">
           <div class="col-md-6">
             <h3 class="box-title"> {{ chartTitle }} </h3>
+            <p>within <strong>{{ timeRangeInfoText }}</strong></p>
           </div>
           <div class="col-md-3">
+            <label for="">Period</label>
             <select id="period" v-model="timerange" name="period" class="form-control">
                 <option value="daily">Daily</option>
                 <option value="weekly">Weekly</option>
@@ -28,6 +30,7 @@
 </template>
 
 <script>
+    import moment from 'moment'
     export default {
         props: ['chartTitle', 'resourceUrl', 'legends'],
         data: function() {
@@ -119,6 +122,12 @@
                   "12": "December",
                 }
               },
+              timeRangeInfo: {
+                    daily: moment().startOf('week').add(1, 'days').format('DD-MM-YYYY') + ' - ' + moment().endOf('week').add(1, 'days').format('DD-MM-YYYY'), // ex: 20/07/2017 - 27/07/2017
+                    weekly: moment().format('MMMM YYYY'), // ex: July 2017
+                    monthly: moment().format('YYYY'), // ex: 2017
+                    yearly: 'All periods',
+                },
               chartArea: {},
               chartData: {},
               chartLabels: [],
@@ -129,6 +138,10 @@
             _clegends: function () {
                 return this.legends.split(", ")
               },
+            timeRangeInfoText: function () {
+                return this.timeRangeInfo[this.timerange];
+            }
+
           },
           created: function() {
 
@@ -136,6 +149,7 @@
           mounted: function() {
             this.chartArea = $(this.$el).find('.chart-area').get(0).getContext('2d')
             this.refreshChart()
+            // console.log(this.timeRangeInfo)
           },
           methods: {
             /**
