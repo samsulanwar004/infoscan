@@ -17,6 +17,7 @@ class Kernel extends ConsoleKernel
         Commands\LotteryCron::class,
         Commands\PointModeling::class,
         Commands\ExportCurrentPoint::class,
+        Commands\RejectionCodeMigrator::class,
     ];
 
     /**
