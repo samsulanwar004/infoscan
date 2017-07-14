@@ -146,6 +146,12 @@ Route::group([
         ['except' => ['show'], 'names' => route_resource_name($routePrefix, 'referral')]
     );
 
+    Route::resource(
+        '/forced-assign',
+        'Web\ForcedAssignController',
+        ['except' => ['show'], 'names' => route_resource_name($routePrefix, 'forced-assign')]
+    );
+
     Route::get('/questionnaire/publish/{id}', 'Web\QuestionnaireController@publish')->name('questionnaire.publish');
 
     Route::get('/questionnaire/results/{id}', 'Web\QuestionnaireController@resultList')->name('questionnaire.result');

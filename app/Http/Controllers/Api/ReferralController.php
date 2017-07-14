@@ -10,15 +10,13 @@ class ReferralController extends BaseApiController
     public function index()
     {
         try {
-            $member = Member::whereNull('referral_me')
-                ->take(10)
-                ->get();
+
+            $member = Member::get();
 
             if ($member) {
                 foreach ($member as $key => $value) {
                     $m = $this->getMemberById($value->id);
-                    $name = explode(' ', str_replace(str_split('\\/:*?"<>|@.,'), ' ', $m->name));
-                    $m->referral_me = strtolower($name[0].rand(10000,99999));
+                    $m->referral_me = unique_random('members', 'referral_me', 6);
                     $m->update();
                 }
             }

@@ -318,9 +318,10 @@ return [
         ],
 
         'cashback' => [
-            'success' => 'Cashback Berhasil - Selamat, cashback telah berhasil! Kluk!',
-            'failed' => 'Cashback Gagal - Maaf, cashback kamu gagal :(',
+            'success' => 'Hore! Point kamu berhasil ditukar dengan hadiah cashback.',
+            'failed' => 'Maaf, kamu belum berhasil tukar point dengan cashback. Point masih tersimpan utuh.',
             'send' => 'Kamu telah menukarkan poin untuk cashback. Kami akan mengirim notifikasi setelah kami verifikasi.',
+            'fraud' => 'Kamu belum berhasil tukar point dengan cashback. Hayoo cek dulu riwayat point kamu! GoJago memastikan hanya point dari upload transaksi asli yang bisa ditukar hadiah cashback.',
         ],
 
         'member' => [
