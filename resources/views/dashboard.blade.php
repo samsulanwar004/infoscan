@@ -32,8 +32,11 @@
                 ></report-chart>
             </div>
         </div>
+        <div class="divider">
+        </div>
+        <br>
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-12">
                 <report-chart
                     chart-title="Rejection Reason"
                     resource-url="{{ route('chart.snaps-rejection-reason') }}"

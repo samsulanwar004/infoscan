@@ -5,6 +5,17 @@
             <h3 class="box-title"> {{ chartTitle }} </h3>
             <p>within <strong>{{ timeRangeInfoText }}</strong></p>
           </div>
+
+         <div class="col-md-3">
+            <label for=""></label>
+            <select id="category" v-model="category" name="category" class="form-control">
+                <option value="">All</option>
+                <option v-for="legend in _clegends"
+                    :value="slugify(legend)">{{ legend }}
+                </option>
+            </select>
+          </div>
+
           <div class="col-md-3">
             <label for="">Period</label>
             <select id="period" v-model="timerange" name="period" class="form-control">
@@ -135,6 +146,7 @@
                     monthly: moment().format('YYYY'), // ex: 2017
                     yearly: 'All periods',
                 },
+              category: '',
               chartArea: {},
               chartData: {},
               chartLabels: [],
@@ -173,38 +185,76 @@
               var periodLabel = this.periodLabels[this.timerange];
               self.chartData = [];
 
-              $.each(this._clegends, function(key, legend) {
-                var responseItem = responseData[self.slugify(legend)];
-                var dots = [];
-                var colorPallete = self.defaultColors[key];
+                if (self.category !== '') {
+                  $.each(this._clegends, function(key, legend) {
+                    // skip iteration if category is set
+                    if (self.category == self.slugify(legend)) {
 
-                // randomize color pallete
-                if (typeof colorPallete == 'undefined') {
-                    colorPallete = {
-                        "fill": false,
-                        // "backgroundColor": "rgba(255, 99, 132, 0.5)",
-                        "backgroundColor": "rgba(" + Math.floor((Math.random() * 255) + 20) + ", " + Math.floor((Math.random() * 255) + 20) + ", " + Math.floor((Math.random() * 255) + 20) + ", 0.5)",
-                        // "borderColor": "rgb(255, 99, 132)",
-                        "borderWidth": 1,
+                        var responseItem = responseData[self.slugify(legend)];
+                        var dots = [];
+                        var colorPallete = self.defaultColors[key];
+
+                        // randomize color pallete if need any additional color
+                        if (typeof colorPallete == 'undefined') {
+                            colorPallete = {
+                                "fill": false,
+                                "backgroundColor": "rgba(" + Math.floor((Math.random() * 255) + 20) + ", " + Math.floor((Math.random() * 255) + 20) + ", " + Math.floor((Math.random() * 255) + 20) + ", 0.5)",
+                                "borderWidth": 1,
+                            }
+                        }
+
+                        for (var i = 0; i <= Object.keys(periodLabel).length - 1; i++) {
+                          if (typeof responseItem[i] !== 'undefined') {
+                            dots[i] = responseItem[i];
+                          } else {
+                            dots[i] = 0;
+                          }
+                        }
+
+                        self.chartData.push({
+                          label: legend,
+                          fill: colorPallete.fill,
+                          backgroundColor: colorPallete.backgroundColor,
+                          borderColor: colorPallete.borderColor,
+                          borderWidth: colorPallete.borderWidth,
+                          data: dots
+                        });
                     }
-                }
+                  });
+                } else { // single category data
+                    $.each(this._clegends, function(key, legend) {
+                    // skip iteration if category is set
+                        var responseItem = responseData[self.slugify(legend)];
+                        var dots = [];
+                        var colorPallete = self.defaultColors[key];
 
-                for (var i = 0; i <= Object.keys(periodLabel).length - 1; i++) {
-                  if (typeof responseItem[i] !== 'undefined') {
-                    dots[i] = responseItem[i];
-                  } else {
-                    dots[i] = 0;
-                  }
+                        // randomize color pallete if need any additional color
+                        if (typeof colorPallete == 'undefined') {
+                            colorPallete = {
+                                "fill": false,
+                                "backgroundColor": "rgba(" + Math.floor((Math.random() * 255) + 20) + ", " + Math.floor((Math.random() * 255) + 20) + ", " + Math.floor((Math.random() * 255) + 20) + ", 0.5)",
+                                "borderWidth": 1,
+                            }
+                        }
+
+                        for (var i = 0; i <= Object.keys(periodLabel).length - 1; i++) {
+                          if (typeof responseItem[i] !== 'undefined') {
+                            dots[i] = responseItem[i];
+                          } else {
+                            dots[i] = 0;
+                          }
+                        }
+
+                        self.chartData.push({
+                          label: legend,
+                          fill: colorPallete.fill,
+                          backgroundColor: colorPallete.backgroundColor,
+                          borderColor: colorPallete.borderColor,
+                          borderWidth: colorPallete.borderWidth,
+                          data: dots
+                        });
+                  });
                 }
-                self.chartData[key] = {
-                  label: legend,
-                  fill: colorPallete.fill,
-                  backgroundColor: colorPallete.backgroundColor,
-                  borderColor: colorPallete.borderColor,
-                  borderWidth: colorPallete.borderWidth,
-                  data: dots
-                }
-              });
             },
             rebuildChartLabels: function() {
               var self = this
@@ -224,6 +274,7 @@
                   self.chartInstance.destroy();
                 }
 
+                console.log(self.chartData)
                 self.chartInstance = new Chart(self.chartArea, {
                   type: 'bar',
                   data: {
@@ -247,7 +298,9 @@
           watch: {
             timerange: function() {
               this.refreshChart()
-              // console.log(this.chartData)
+            },
+            category: function () {
+                this.refreshChart()
             }
           }
     }
