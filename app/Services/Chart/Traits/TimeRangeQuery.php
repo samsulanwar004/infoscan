@@ -18,9 +18,9 @@ trait TimeRangeQuery
                 $query->select(
                     DB::raw(
                         'FLOOR((DAYOFMONTH(CURRENT_DATE()) - 1) / 7) + 1 AS week_of_month, WEEK(created_at) AS week, ' .
-                        'MONTH(created_at) as month,  COUNT(created_at) AS total'
+                        'YEAR(created_at) as year, MONTH(created_at) as month,  COUNT(created_at) AS total'
                     ))
-                    ->groupBy(['month', 'week'])
+                    ->groupBy(['year', 'month', 'week'])
                     ->having('month', '=', $this->currentDate->month);
                 $keyField = 'week_of_month';
                 break;
@@ -39,14 +39,14 @@ trait TimeRangeQuery
                 break;
 
             default: // daily
-                $query->select(DB::raw('WEEKDAY(created_at) AS day, WEEK(created_at) AS week, COUNT(created_at) AS total'))
-                    ->groupBy(['week', 'day'])
+                $query->select(DB::raw('YEAR(created_at) as year, WEEKDAY(created_at) AS day, WEEK(created_at) AS week, COUNT(created_at) AS total'))
+                    ->groupBy(['year', 'week', 'day'])
                     ->having('week', '=', $this->currentDate->weekOfYear);
                 $keyField = 'day';
 
         }
 
-        return collect($query->get())
+        return $query->get()
             ->pluck('total', $keyField);
     }
 }

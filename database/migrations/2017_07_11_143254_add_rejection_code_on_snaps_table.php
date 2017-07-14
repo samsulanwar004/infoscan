@@ -17,6 +17,7 @@ class AddRejectionCodeOnSnapsTable extends Migration
             $table->string('rejection_code')
                 ->after('reject_by')
                 ->nullable();
+            $table->index('rejection_code');
         });
     }
 

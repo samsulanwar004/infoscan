@@ -409,8 +409,9 @@ class SnapService
                 $setting->save();
 
             } else {
-                $reasonId = $request->input('reason');
-                $setting = \App\Setting::where('id', $reasonId)
+                $reasonCode = $request->input('reason');
+                $setting = \App\Setting::where('setting_group', '=', 'snap_reason')
+                    ->where('setting_name', $reasonCode)
                     ->first();
                 $reason = $setting->setting_value;
             }

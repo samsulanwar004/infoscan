@@ -28,6 +28,11 @@ Route::group([
             'uses' => 'Web\ChartController@snapsRejections',
         ]);
 
+        Route::get('/top-ten/{timeRange?}', [
+            'uses' => 'Web\ChartController@topTen',
+            'as'   => 'chart.top-ten',
+        ]);
+
     });
 
     Route::resource(
