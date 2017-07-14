@@ -35,8 +35,15 @@
           <div class="chart">
             <canvas class="chart-area" style="height: 230px; width: 511px;" width="511" height="230"></canvas>
           </div>
+        <!-- loader -->
+        <div class="overlay loader">
+            <i class="fa fa-refresh fa-spin"></i>
+        </div>
+        <!-- /.loader -->
+
         </div>
         <!-- /.box-body -->
+
       </div>
 </template>
 
@@ -151,6 +158,7 @@
               chartData: {},
               chartLabels: [],
               chartInstance: null,
+              loaderAnimation: '',
             }
           },
           computed: {
@@ -167,6 +175,7 @@
           },
           mounted: function() {
             this.chartArea = $(this.$el).find('.chart-area').get(0).getContext('2d')
+            this.loaderAnimation = $(this.$el).find('.loader');
             this.refreshChart()
             // console.log(this.timeRangeInfo)
           },
@@ -265,6 +274,10 @@
             },
             refreshChart: function() {
               var self = this
+
+              // show loader
+              this.loaderAnimation.show();
+
               this.loadChart().done(function(response) {
 
                 self.rebuildChartDatasets(response)
@@ -274,7 +287,6 @@
                   self.chartInstance.destroy();
                 }
 
-                console.log(self.chartData)
                 self.chartInstance = new Chart(self.chartArea, {
                   type: 'bar',
                   data: {
@@ -282,7 +294,11 @@
                     datasets: self.chartData,
                   },
                   options: self.barChartOptions
-                })
+                });
+
+                // hide loader animation
+                self.loaderAnimation.hide()
+
               }).fail(function() {
                 console.error('Failed to load chart')
               });
