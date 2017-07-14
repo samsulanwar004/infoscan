@@ -58,8 +58,15 @@
                     </tr>
                 </tbody>
             </template>
-          </table>
+        </table>
+        <!-- loader -->
+        <div class="overlay loader">
+            <i class="fa fa-refresh fa-spin"></i>
         </div>
+        <!-- /.loader -->
+
+        </div>
+
     </div>
 </template>
 
@@ -81,13 +88,14 @@
                     monthly: moment().format('YYYY'), // ex: 2017
                     yearly: 'All periods',
                 },
+                loaderAnimation: '',
             }
         },
         created: function () {
-            this.refreshTable();
         },
         mounted: function () {
-
+            this.loaderAnimation = $(this.$el).find('.loader')
+            this.refreshTable();
         },
         computed: {
             timeRangeInfoText: function () {
@@ -103,10 +111,16 @@
             },
             refreshTable: function () {
                 var self = this;
+
+                this.loaderAnimation.show()
+
                 this.loadResource()
                     .done(function(response) {
                         self.responseData = response;
+
                         self.refreshTableData();
+
+                        self.loaderAnimation.hide()
                     })
                     .fail(function () {
                         console.error('Failed to load report table data');

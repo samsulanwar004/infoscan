@@ -5,6 +5,17 @@
             <h3 class="box-title"> {{ chartTitle }} </h3>
             <p>within <strong>{{ timeRangeInfoText }}</strong></p>
           </div>
+
+         <div class="col-md-3">
+            <label for=""></label>
+            <select id="category" v-model="category" name="category" class="form-control">
+                <option value="">All</option>
+                <option v-for="legend in _clegends"
+                    :value="slugify(legend)">{{ legend }}
+                </option>
+            </select>
+          </div>
+
           <div class="col-md-3">
             <label for="">Period</label>
             <select id="period" v-model="timerange" name="period" class="form-control">
@@ -24,8 +35,15 @@
           <div class="chart">
             <canvas class="chart-area" style="height: 230px; width: 511px;" width="511" height="230"></canvas>
           </div>
+        <!-- loader -->
+        <div class="overlay loader">
+            <i class="fa fa-refresh fa-spin"></i>
+        </div>
+        <!-- /.loader -->
+
         </div>
         <!-- /.box-body -->
+
       </div>
 </template>
 
@@ -135,10 +153,12 @@
                     monthly: moment().format('YYYY'), // ex: 2017
                     yearly: 'All periods',
                 },
+              category: '',
               chartArea: {},
               chartData: {},
               chartLabels: [],
               chartInstance: null,
+              loaderAnimation: '',
             }
           },
           computed: {
@@ -155,6 +175,7 @@
           },
           mounted: function() {
             this.chartArea = $(this.$el).find('.chart-area').get(0).getContext('2d')
+            this.loaderAnimation = $(this.$el).find('.loader');
             this.refreshChart()
             // console.log(this.timeRangeInfo)
           },
@@ -173,38 +194,76 @@
               var periodLabel = this.periodLabels[this.timerange];
               self.chartData = [];
 
-              $.each(this._clegends, function(key, legend) {
-                var responseItem = responseData[self.slugify(legend)];
-                var dots = [];
-                var colorPallete = self.defaultColors[key];
+                if (self.category !== '') {
+                  $.each(this._clegends, function(key, legend) {
+                    // skip iteration if category is set
+                    if (self.category == self.slugify(legend)) {
 
-                // randomize color pallete
-                if (typeof colorPallete == 'undefined') {
-                    colorPallete = {
-                        "fill": false,
-                        // "backgroundColor": "rgba(255, 99, 132, 0.5)",
-                        "backgroundColor": "rgba(" + Math.floor((Math.random() * 255) + 20) + ", " + Math.floor((Math.random() * 255) + 20) + ", " + Math.floor((Math.random() * 255) + 20) + ", 0.5)",
-                        // "borderColor": "rgb(255, 99, 132)",
-                        "borderWidth": 1,
+                        var responseItem = responseData[self.slugify(legend)];
+                        var dots = [];
+                        var colorPallete = self.defaultColors[key];
+
+                        // randomize color pallete if need any additional color
+                        if (typeof colorPallete == 'undefined') {
+                            colorPallete = {
+                                "fill": false,
+                                "backgroundColor": "rgba(" + Math.floor((Math.random() * 255) + 20) + ", " + Math.floor((Math.random() * 255) + 20) + ", " + Math.floor((Math.random() * 255) + 20) + ", 0.5)",
+                                "borderWidth": 1,
+                            }
+                        }
+
+                        for (var i = 0; i <= Object.keys(periodLabel).length - 1; i++) {
+                          if (typeof responseItem[i] !== 'undefined') {
+                            dots[i] = responseItem[i];
+                          } else {
+                            dots[i] = 0;
+                          }
+                        }
+
+                        self.chartData.push({
+                          label: legend,
+                          fill: colorPallete.fill,
+                          backgroundColor: colorPallete.backgroundColor,
+                          borderColor: colorPallete.borderColor,
+                          borderWidth: colorPallete.borderWidth,
+                          data: dots
+                        });
                     }
-                }
+                  });
+                } else { // single category data
+                    $.each(this._clegends, function(key, legend) {
+                    // skip iteration if category is set
+                        var responseItem = responseData[self.slugify(legend)];
+                        var dots = [];
+                        var colorPallete = self.defaultColors[key];
 
-                for (var i = 0; i <= Object.keys(periodLabel).length - 1; i++) {
-                  if (typeof responseItem[i] !== 'undefined') {
-                    dots[i] = responseItem[i];
-                  } else {
-                    dots[i] = 0;
-                  }
+                        // randomize color pallete if need any additional color
+                        if (typeof colorPallete == 'undefined') {
+                            colorPallete = {
+                                "fill": false,
+                                "backgroundColor": "rgba(" + Math.floor((Math.random() * 255) + 20) + ", " + Math.floor((Math.random() * 255) + 20) + ", " + Math.floor((Math.random() * 255) + 20) + ", 0.5)",
+                                "borderWidth": 1,
+                            }
+                        }
+
+                        for (var i = 0; i <= Object.keys(periodLabel).length - 1; i++) {
+                          if (typeof responseItem[i] !== 'undefined') {
+                            dots[i] = responseItem[i];
+                          } else {
+                            dots[i] = 0;
+                          }
+                        }
+
+                        self.chartData.push({
+                          label: legend,
+                          fill: colorPallete.fill,
+                          backgroundColor: colorPallete.backgroundColor,
+                          borderColor: colorPallete.borderColor,
+                          borderWidth: colorPallete.borderWidth,
+                          data: dots
+                        });
+                  });
                 }
-                self.chartData[key] = {
-                  label: legend,
-                  fill: colorPallete.fill,
-                  backgroundColor: colorPallete.backgroundColor,
-                  borderColor: colorPallete.borderColor,
-                  borderWidth: colorPallete.borderWidth,
-                  data: dots
-                }
-              });
             },
             rebuildChartLabels: function() {
               var self = this
@@ -215,6 +274,10 @@
             },
             refreshChart: function() {
               var self = this
+
+              // show loader
+              this.loaderAnimation.show();
+
               this.loadChart().done(function(response) {
 
                 self.rebuildChartDatasets(response)
@@ -231,7 +294,11 @@
                     datasets: self.chartData,
                   },
                   options: self.barChartOptions
-                })
+                });
+
+                // hide loader animation
+                self.loaderAnimation.hide()
+
               }).fail(function() {
                 console.error('Failed to load chart')
               });
@@ -247,7 +314,9 @@
           watch: {
             timerange: function() {
               this.refreshChart()
-              // console.log(this.chartData)
+            },
+            category: function () {
+                this.refreshChart()
             }
           }
     }
