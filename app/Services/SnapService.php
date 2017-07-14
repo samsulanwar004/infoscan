@@ -17,6 +17,7 @@ use App\Events\TransactionEvent;
 use App\Jobs\PointCalculation;
 use App\Jobs\MemberActionJob;
 use App\Jobs\AssignJob;
+use App\Jobs\LocationProcessJob;
 use App\Events\CrowdsourceEvent;
 use App\Events\MemberActivityEvent;
 use App\Member;
@@ -408,8 +409,9 @@ class SnapService
                 $setting->save();
 
             } else {
-                $reasonId = $request->input('reason');
-                $setting = \App\Setting::where('id', $reasonId)
+                $reasonCode = $request->input('reason');
+                $setting = \App\Setting::where('setting_group', '=', 'snap_reason')
+                    ->where('setting_name', $reasonCode)
                     ->first();
                 $reason = $setting->setting_value;
             }
@@ -1461,6 +1463,9 @@ class SnapService
         $snap->current_level_member = auth('api')->user()->temporary_level;
         $snap->save();
 
+        //save location from google maps
+        $this->queueSaveLocation($snap, $snap->latitude, $snap->longitude);
+
         return $snap;
     }
 
@@ -2017,6 +2022,46 @@ class SnapService
                ->select('task_points.point as point')
                ->where('tasks.code', '=', $code)
                ->first();
+    }
+
+    public function saveLocationSnap($snapId, $latitude, $longitude)
+    {
+        $location = $this->handleMapAddress($latitude, $longitude);
+        if (strtolower($location->status) == "ok") {
+            $address = $location->results[0]->address_components;
+            $s = $this->getSnapByid($snapId);
+            $s->location = $location->results[0]->formatted_address;
+
+            $city = null;
+            $province = null;
+            $zipcode = null;
+            foreach ($address as $add) {
+
+                if (in_array("administrative_area_level_2", $add->types) == true) {
+                    $city = $add->long_name;
+                }
+
+                if (in_array("administrative_area_level_1", $add->types) == true) {
+                    $province = $add->long_name;
+                }
+
+                if (in_array("postal_code", $add->types) == true) {
+                    $zipcode = $add->long_name;
+                }
+            }
+
+            $s->outlet_city = $city;
+            $s->outlet_province = $province;
+            $s->outlet_zip_code = $zipcode;
+            $s->update();
+        }
+    }
+
+    private function queueSaveLocation($snap, $latitude, $longitude)
+    {
+        $config = config('common.queue_list.assign_process');
+        $job = (new LocationProcessJob($snap->id, $latitude, $longitude))->onQueue($config)->onConnection(env('INFOSCAN_QUEUE'));
+        dispatch($job);
     }
 
 }

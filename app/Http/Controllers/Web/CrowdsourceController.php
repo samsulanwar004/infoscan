@@ -7,7 +7,7 @@ use App\Services\CrowdsourceService;
 use App\Services\SnapService;
 
 class CrowdsourceController extends AdminController
-{	
+{
 
     public function index()
     {
@@ -25,7 +25,7 @@ class CrowdsourceController extends AdminController
         $crowdsource = (new CrowdsourceService);
     	$date = false;
         if ($request->has('start_at') && $request->has('end_at')) {
-            
+
             $dateStartArr = explode('-', $request->input('start_at'));
             $dateEndArr = explode('-', $request->input('end_at'));
             $date = $dateStartArr[1].'/'.$dateStartArr[2].'/'.$dateStartArr[0].' - '.$dateEndArr[1].'/'.$dateEndArr[2].'/'.$dateEndArr[0];

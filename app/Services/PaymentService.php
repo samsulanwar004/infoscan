@@ -332,7 +332,7 @@ class PaymentService
                     ->onConnection(env('INFOSCAN_QUEUE'));
                 dispatch($job);
             } else {
-                $comment = 'Sayang sekali, penukaran uang kamu gagal. Terindikasi kecurangan!';
+                $comment = config('common.notification_messages.cashback.fraud');
             }
         }
 
@@ -349,7 +349,17 @@ class PaymentService
         $job = (new MemberActionJob($memberId, 'portalpoint', $content))->onQueue($config)->onConnection(env('INFOSCAN_QUEUE'));
         dispatch($job);
 
-        $this->sendPaymentNotification($memberId, $comment);
+        if ($confirm == 'approved') {
+            $message = config('common.notification_messages.cashback.success');
+        } else {
+            if ($comment != 'fraud') {
+                $message = config('common.notification_messages.cashback.failed');
+            } else {
+                $message = config('common.notification_messages.cashback.fraud');
+            }
+        }
+
+        $this->sendPaymentNotification($memberId, $message);
 
     }
 

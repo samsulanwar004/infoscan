@@ -13,8 +13,8 @@
 				<th width="100"></th>
 				<th width="300">Product Item</th>
 				<th width="100">Weight</th>
-                <th width="200">Brands</th>
-                <th width="200">SKU</th>                
+                <th width="200" style="display:none;">Brands</th>
+                <th width="200" style="display:none;">SKU</th>
                 <th width="100">Qty</th>
                 <th width="200">Total Price</th>
 			</tr>
@@ -39,8 +39,8 @@
                     </td>
 					<td><input type="text" name="tag[name][]" class="form-control input-sm tag-name-show" value="{{ $tag->name }}" placeholder="Product Name" required="required"></td>
 					<td><input type="text" name="tag[weight][]" class="form-control input-sm" value="{{ $tag->weight }}" placeholder="Weight"></td>
-					<td><input type="text" name="tag[brands][]" class="form-control input-sm" value="{{ $tag->brands }}" placeholder="Brands"></td>
-					<td><input type="text" name="tag[sku][]" class="form-control input-sm" value="{{ $tag->sku }}" placeholder="SKU"></td>
+					<td style="display:none;"><input type="text" name="tag[brands][]" class="form-control input-sm" value="{{ $tag->brands }}" placeholder="Brands"></td>
+					<td style="display:none;"><input type="text" name="tag[sku][]" class="form-control input-sm" value="{{ $tag->sku }}" placeholder="SKU"></td>
 					<!-- <td style="max-width: 100px"><input type="text" list="variants" name="tag[variants][]" class="form-control input-sm" value="{{ $tag->variants }}" placeholder="Variants"></td> -->
 					<td><input type="number" name="tag[qty][]" class="form-control input-sm" value="{{ $tag->quantity }}" placeholder="QTY" required="required"></td>
 					<td><input type="number" name="tag[total][]" class="form-control input-sm" value="{{ clean_numeric($tag->total_price,'%',false,'.') }}" placeholder="Total Price" required="required"></td>
@@ -61,15 +61,15 @@
 	@if($snap->mode_type == 'image' || $snap->mode_type == 'audios')
     <a class="btn btn-default" id="add-show">
         <i class="fa fa-plus fa-btn"></i>Create New
-    </a>    
+    </a>
     @endif
     @if($files->first()->mode_type == 'image')
     	<input type="hidden" name="image_approve" value="a">
     @elseif($totalPage == 1)
 
-	@else		
+	@else
 		<select name="image_approve" class="form-control" required="required">
-		  <option value="">Select Approve</option>		  
+		  <option value="">Select Approve</option>
 		  @foreach($code as $key => $value)
 		  	<option @if($files->first()->image_code == $value) selected @endif value="{{ $value }}">{{ $key }}</option>
 		  @endforeach
@@ -80,7 +80,7 @@
     <button type="submit" class="btn btn-default" id="submit-tag">
         <i class="fa fa-floppy-o fa-btn"></i> Save
     </button>
-</div>   
+</div>
 </form>
 @if (isset($js))
 <script type="text/javascript">

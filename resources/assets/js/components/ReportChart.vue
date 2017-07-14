@@ -3,8 +3,10 @@
         <div class="box-header with-border">
           <div class="col-md-6">
             <h3 class="box-title"> {{ chartTitle }} </h3>
+            <p>within <strong>{{ timeRangeInfoText }}</strong></p>
           </div>
           <div class="col-md-3">
+            <label for="">Period</label>
             <select id="period" v-model="timerange" name="period" class="form-control">
                 <option value="daily">Daily</option>
                 <option value="weekly">Weekly</option>
@@ -28,6 +30,7 @@
 </template>
 
 <script>
+    import moment from 'moment'
     export default {
         props: ['chartTitle', 'resourceUrl', 'legends'],
         data: function() {
@@ -64,6 +67,7 @@
               defaultColors: [{
                 "fill": false,
                 "backgroundColor": "rgba(255, 99, 132, 0.5)",
+                // "backgroundColor": "rgba(" + Math.floor((Math.random() * 255) + 20) + ", " + Math.floor((Math.random() * 255) + 20) + ", " + Math.floor((Math.random() * 255) + 20) + ", 0.5)",
                 "borderColor": "rgb(255, 99, 132)",
                 "borderWidth": 1,
               }, {
@@ -86,7 +90,13 @@
                 "backgroundColor": "rgba(153, 102, 255, 0.2)",
                 "borderColor": "rgb(54, 162, 235)",
                 "borderWidth": 1,
-              }],
+              },
+              {
+                "fill": false,
+                "backgroundColor": "rgba(255, 159, 64, 0.5)",
+                "borderColor": "rgb(255, 159, 64)",
+                "borderWidth": 1,
+              },],
               periodLabels: {
                 "daily": {
                   "1": "Monday",
@@ -119,6 +129,12 @@
                   "12": "December",
                 }
               },
+              timeRangeInfo: {
+                    daily: moment().startOf('week').add(1, 'days').format('DD-MM-YYYY') + ' - ' + moment().endOf('week').add(1, 'days').format('DD-MM-YYYY'), // ex: 20/07/2017 - 27/07/2017
+                    weekly: moment().format('MMMM YYYY'), // ex: July 2017
+                    monthly: moment().format('YYYY'), // ex: 2017
+                    yearly: 'All periods',
+                },
               chartArea: {},
               chartData: {},
               chartLabels: [],
@@ -129,6 +145,10 @@
             _clegends: function () {
                 return this.legends.split(", ")
               },
+            timeRangeInfoText: function () {
+                return this.timeRangeInfo[this.timerange];
+            }
+
           },
           created: function() {
 
@@ -136,6 +156,7 @@
           mounted: function() {
             this.chartArea = $(this.$el).find('.chart-area').get(0).getContext('2d')
             this.refreshChart()
+            // console.log(this.timeRangeInfo)
           },
           methods: {
             /**
@@ -155,6 +176,19 @@
               $.each(this._clegends, function(key, legend) {
                 var responseItem = responseData[self.slugify(legend)];
                 var dots = [];
+                var colorPallete = self.defaultColors[key];
+
+                // randomize color pallete
+                if (typeof colorPallete == 'undefined') {
+                    colorPallete = {
+                        "fill": false,
+                        // "backgroundColor": "rgba(255, 99, 132, 0.5)",
+                        "backgroundColor": "rgba(" + Math.floor((Math.random() * 255) + 20) + ", " + Math.floor((Math.random() * 255) + 20) + ", " + Math.floor((Math.random() * 255) + 20) + ", 0.5)",
+                        // "borderColor": "rgb(255, 99, 132)",
+                        "borderWidth": 1,
+                    }
+                }
+
                 for (var i = 0; i <= Object.keys(periodLabel).length - 1; i++) {
                   if (typeof responseItem[i] !== 'undefined') {
                     dots[i] = responseItem[i];
@@ -164,10 +198,10 @@
                 }
                 self.chartData[key] = {
                   label: legend,
-                  fill: self.defaultColors[key].fill,
-                  backgroundColor: self.defaultColors[key].backgroundColor,
-                  borderColor: self.defaultColors[key].borderColor,
-                  borderWidth: self.defaultColors[key].borderWidth,
+                  fill: colorPallete.fill,
+                  backgroundColor: colorPallete.backgroundColor,
+                  borderColor: colorPallete.borderColor,
+                  borderWidth: colorPallete.borderWidth,
                   data: dots
                 }
               });
@@ -182,11 +216,14 @@
             refreshChart: function() {
               var self = this
               this.loadChart().done(function(response) {
+
                 self.rebuildChartDatasets(response)
                 self.rebuildChartLabels()
+
                 if (self.chartInstance !== null) {
                   self.chartInstance.destroy();
                 }
+
                 self.chartInstance = new Chart(self.chartArea, {
                   type: 'bar',
                   data: {

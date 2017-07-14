@@ -67,11 +67,11 @@ class CrowdsourceService
             $addTag[] = $extract->data->add_tag;
             $editTag[] = $extract->data->edit_tag;
         }
-        
+
         $action = array_count_values($action);
 
         $totalAddTag = collect($addTag)->sum();
-        $totalEditTag = collect($editTag)->sum();   
+        $totalEditTag = collect($editTag)->sum();
         $totalUpdate = isset($action['update']) ? $action['update'] : 0;
         $totalApprove = isset($action['approve']) ? $action['approve'] : 0;
         $totalReject = isset($action['reject']) ? $action['reject'] : 0;
@@ -125,6 +125,14 @@ class CrowdsourceService
              ->where('status', 'pending')
              ->groupBy('user_id')
              ->get();
+    }
+
+    public function getSnapByCrowdsourceId($userId)
+    {
+        return DB::table('snaps')
+            ->where('status', 'pending')
+            ->where('user_id', $userId)
+            ->get();
     }
 
 }

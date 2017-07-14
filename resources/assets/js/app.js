@@ -19,6 +19,7 @@ Vue.config.silent = true
  */
 
 Vue.component('report-chart', require('./components/ReportChart.vue'));
+Vue.component('report-table', require('./components/ReportTable.vue'));
 
 const app = new Vue({
     el: '.content-wrapper'

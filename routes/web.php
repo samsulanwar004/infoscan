@@ -28,6 +28,11 @@ Route::group([
             'uses' => 'Web\ChartController@snapsRejections',
         ]);
 
+        Route::get('/top-ten/{timeRange?}', [
+            'uses' => 'Web\ChartController@topTen',
+            'as'   => 'chart.top-ten',
+        ]);
+
     });
 
     Route::resource(
@@ -144,6 +149,12 @@ Route::group([
         '/referral',
         'Web\ReferralController',
         ['except' => ['show'], 'names' => route_resource_name($routePrefix, 'referral')]
+    );
+
+    Route::resource(
+        '/forced-assign',
+        'Web\ForcedAssignController',
+        ['except' => ['show'], 'names' => route_resource_name($routePrefix, 'forced-assign')]
     );
 
     Route::get('/questionnaire/publish/{id}', 'Web\QuestionnaireController@publish')->name('questionnaire.publish');

@@ -46,7 +46,7 @@
                 <select class="form-control" name="reason" id="reason" style="display: none;">
                   <option value="">Pilih Alasan</option>
                   @foreach($reasons as $reason)
-                    <option value="{{ $reason->id }}">{{ $reason->setting_value }}</option>
+                    <option value="{{ $reason->setting_name }}">{{ $reason->setting_value }}</option>
                   @endforeach
                   @if($admin)
                     <option value="other">Lain-lain...</option>

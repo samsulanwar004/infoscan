@@ -119,8 +119,7 @@ class MemberService
         $member->api_token = $this->getApiToken();
 
         //create referral code
-        $name = explode(' ', str_replace(str_split('\\/:*?"<>|@.,'), ' ', $member->name));
-        $member->referral_me = strtolower($name[0]).rand(10000,99999);
+        $member->referral_me = unique_random('members', 'referral_me', 6);
 
         if (!$member->save()) {
             DB::rollback();
