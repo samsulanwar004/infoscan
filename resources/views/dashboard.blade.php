@@ -35,9 +35,9 @@
         <div class="row">
             <div class="col-md-6">
                 <report-chart
-                    chart-title="Rejection Status"
+                    chart-title="Rejection Reason"
                     resource-url="{{ route('chart.snaps-rejection-reason') }}"
-                    legends="Approve, Rejects, Pending"
+                    legends="{{ implode($reasons, ', ') }}"
                 ></report-chart>
             </div>
             <div class="col-md-6">

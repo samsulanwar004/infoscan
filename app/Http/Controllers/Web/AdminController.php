@@ -3,9 +3,10 @@
 namespace App\Http\Controllers\Web;
 
 use App\Contracts\UriTrait;
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Exceptions\PermissionDeniedException;
+use App\Http\Controllers\Controller;
+use App\Setting;
+use Illuminate\Http\Request;
 
 class AdminController extends Controller
 {
@@ -15,16 +16,21 @@ class AdminController extends Controller
 
     public function dashboard(Request $request)
     {
-        return view('dashboard');
+        $reasons = Setting::select('setting_value')
+            ->where('setting_group', '=', 'snap_reason')
+            ->get()
+            ->pluck('setting_value')
+            ->toArray();
+        return view('dashboard', compact('reasons'));
     }
 
     public function isAllowed($roleOrPermission)
     {
-    	if(! auth()->user()->hasRole($roleOrPermission)) {
-    		throw new PermissionDeniedException('You does not have access to this page!');
-    	}
+        if (!auth()->user()->hasRole($roleOrPermission)) {
+            throw new PermissionDeniedException('You does not have access to this page!');
+        }
 
-    	return;
+        return;
     }
 
     public function isSuperAdministrator()

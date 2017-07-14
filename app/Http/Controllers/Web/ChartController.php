@@ -50,12 +50,13 @@ class ChartController extends AdminController
 
     public function snapsRejections(Request $request, $timeRange = 'daily')
     {
-        if (method_exists($this->snapRejection, $timeRange)) {
-            $chartData = $this->snapRejection->{$timeRange}();
-            return $chartData;
-        } else {
-            abort(404);
-        }
+        // if (method_exists($this->snapRejection, $timeRange)) {
+        //     $chartData = $this->snapRejection->{$timeRange}();
+        //     return $chartData;
+        // } else {
+        //     abort(404);
+        // }
+        return $this->snapRejection->summarize($timeRange);
 
     }
 

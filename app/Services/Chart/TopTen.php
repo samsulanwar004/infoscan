@@ -18,7 +18,7 @@ class TopTen implements ChartInterface
     }
 
     /**
-     * Daily users data
+     * Daily snaps data
      * @return array
      */
     public function daily()
