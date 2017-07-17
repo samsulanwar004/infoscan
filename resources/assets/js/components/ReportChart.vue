@@ -221,7 +221,7 @@
                         }
                         for (var i = 0; i <= Object.keys(periodLabel).length - 1; i++) {
                           if (typeof responseItem[i - 1] !== 'undefined') {
-                            dots[i] = responseItem[i - 1];
+                            dots[i] = responseItem[i];
                           } else {
                             dots[i] = 0;
                           }

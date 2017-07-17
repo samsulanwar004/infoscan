@@ -14,7 +14,8 @@ class ActiveUsers implements ChartInterface
 
     public function __construct()
     {
-        $this->currentDate = Carbon::now();
+        // $this->currentDate = Carbon::now();
+        $this->currentDate = Carbon::parse('2017-07-03');
     }
 
     /**

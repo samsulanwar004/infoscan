@@ -17,6 +17,10 @@ Route::group([
             'as'   => 'chart.active-users',
             'uses' => 'Web\ChartController@activeUsers',
         ]);
+        //  Route::get('/active-users/{timeRange?}/export', [
+        //     'as'   => 'chart.active-users',
+        //     'uses' => 'Web\ChartController@activeUsersExport',
+        // ]);
 
         Route::get('/snaps-status/{timeRange?}', [
             'as'   => 'chart.snaps-status',
