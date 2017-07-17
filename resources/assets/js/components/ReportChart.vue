@@ -1,12 +1,12 @@
 <template>
     <div class="box box-success">
         <div class="box-header with-border">
-          <div class="col-md-6">
+          <div class="col-md-5">
             <h3 class="box-title"> {{ chartTitle }} </h3>
             <p>within <strong>{{ timeRangeInfoText }}</strong></p>
           </div>
 
-         <div class="col-md-3">
+         <div class="col-md-2">
             <label for=""></label>
             <select id="category" v-model="category" name="category" class="form-control">
                 <option value="">All</option>
@@ -16,7 +16,7 @@
             </select>
           </div>
 
-          <div class="col-md-3">
+          <div class="col-md-2">
             <label for="">Period</label>
             <select id="period" v-model="timerange" name="period" class="form-control">
                 <option value="daily">Daily</option>
@@ -24,6 +24,14 @@
                 <option value="monthly">Monthly</option>
                 <option value="yearly">Yearly</option>
             </select>
+          </div>
+          <div class="col-md-2">
+              <label for="">&nbsp;
+              <br>
+              </label>
+              <div class="">
+                  <a class="btn btn-primary" >Export</a>
+              </div>
           </div>
 
           <div class="box-tools pull-right">
