@@ -163,7 +163,8 @@
           },
           computed: {
             _clegends: function () {
-                return this.legends.split(", ")
+                // return this.legends.split(", ")
+                return JSON.parse(this.legends)
               },
             timeRangeInfoText: function () {
                 return this.timeRangeInfo[this.timerange];
@@ -193,7 +194,6 @@
               var self = this;
               var periodLabel = this.periodLabels[this.timerange];
               self.chartData = [];
-
                 if (self.category !== '') {
                   $.each(this._clegends, function(key, legend) {
                     // skip iteration if category is set
@@ -203,7 +203,7 @@
                         var dots = [];
                         var colorPallete = self.defaultColors[key];
 
-                        // randomize color pallete if need any additional color
+                        // color pallete if need any additional color
                         if (typeof colorPallete == 'undefined') {
                             colorPallete = {
                                 "fill": false,
@@ -211,10 +211,9 @@
                                 "borderWidth": 1,
                             }
                         }
-
                         for (var i = 0; i <= Object.keys(periodLabel).length - 1; i++) {
-                          if (typeof responseItem[i] !== 'undefined') {
-                            dots[i] = responseItem[i];
+                          if (typeof responseItem[i - 1] !== 'undefined') {
+                            dots[i] = responseItem[i - 1];
                           } else {
                             dots[i] = 0;
                           }
@@ -245,7 +244,7 @@
                                 "borderWidth": 1,
                             }
                         }
-
+                        console.log(responseItem, self.slugify(legend))
                         for (var i = 0; i <= Object.keys(periodLabel).length - 1; i++) {
                           if (typeof responseItem[i] !== 'undefined') {
                             dots[i] = responseItem[i];

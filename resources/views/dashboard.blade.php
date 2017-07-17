@@ -21,14 +21,16 @@
                 <report-chart
                     chart-title="Active Users"
                     resource-url="{{ route('chart.active-users') }}"
-                    legends="New Users, Snaps, Receipts, General Trade, Hand Written"
+                    {{-- legends="New Users, Snaps, Receipts, General Trade, Hand Written" --}}
+                    legends='["New Users", "Snaps", "Receipts", "General Trade", "Hand Written"]'
                 ></report-chart>
             </div>
             <div class="col-md-6">
                 <report-chart
                     chart-title="Snaps Status"
                     resource-url="{{ route('chart.snaps-status') }}"
-                    legends="Approve, Rejects, Pending"
+                    {{-- legends="Approve, Rejects, Pending" --}}
+                    legends='["Approve", "Rejects", "Pending"]'
                 ></report-chart>
             </div>
         </div>
@@ -40,7 +42,8 @@
                 <report-chart
                     chart-title="Rejection Reason"
                     resource-url="{{ route('chart.snaps-rejection-reason') }}"
-                    legends="{{ implode($reasons, ', ') }}"
+                    {{-- legends="{{ implode($reasons, ', ') }}" --}}
+                    legends="{{ json_encode($reasons) }}"
                 ></report-chart>
             </div>
             <div class="col-md-6">
