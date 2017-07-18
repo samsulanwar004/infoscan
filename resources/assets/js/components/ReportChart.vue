@@ -30,7 +30,7 @@
               <br>
               </label>
               <div class="">
-                  <a class="btn btn-primary" >Export</a>
+                  <a :href="exportUrl" download class="btn btn-primary" >Export</a>
               </div>
           </div>
 
@@ -176,6 +176,9 @@
               },
             timeRangeInfoText: function () {
                 return this.timeRangeInfo[this.timerange];
+            },
+            exportUrl: function () {
+                return this.resourceUrl + '/' + this.timerange + '/xls';
             }
 
           },

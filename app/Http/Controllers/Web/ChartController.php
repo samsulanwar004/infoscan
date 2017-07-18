@@ -29,16 +29,21 @@ class ChartController extends AdminController
         $this->topTen        = $topTen;
     }
 
-    public function activeUsers(Request $request, $timeRange = 'daily')
+    public function activeUsers(Request $request, $timeRange = 'daily', $export = false)
     {
         if (method_exists($this->activeUsers, $timeRange)) {
             $chartData = $this->activeUsers->{$timeRange}();
-            $this->toXls($timeRange, $chartData);
+
+            if ($export == 'xls') {
+                return $this->toXls($timeRange, $chartData);
+            }
+
             return $chartData;
         } else {
             abort(404);
         }
     }
+
 
     protected function toXls($timeRange = 'daily', array $data)
     {
@@ -58,11 +63,11 @@ class ChartController extends AdminController
 
                 // set column header as date format
                 $sheet->setColumnFormat([
-                    'B4:H4' => 'dd-mm-yyyy'
+                    'B4:H4' => 'dd-mm-yyyy',
                 ]);
 
                 $columnsTitle = ['']; // set empty string as first array item
-                $startDate = Carbon::now()->startOfWeek();
+                $startDate    = Carbon::now()->startOfWeek();
                 for ($i = 0; $i < 7; $i++) {
                     $columnsTitle[] = $startDate->format('d-m-Y');
                     $startDate->addDay();
