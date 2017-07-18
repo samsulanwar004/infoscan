@@ -37,7 +37,7 @@ class ChartController extends AdminController
             $chartData = $this->activeUsers->{$timeRange}();
 
             if ($export == 'xls') {
-                return $this->excel->export($timeRange, $chartData);
+                return $this->excel->export('Active Users', $timeRange, $chartData);
             }
 
             return $chartData;
@@ -46,10 +46,15 @@ class ChartController extends AdminController
         }
     }
 
-    public function snapsStatus(Request $request, $timeRange = 'daily')
+    public function snapsStatus(Request $request, $timeRange = 'daily', $export = false)
     {
         if (method_exists($this->snaps, $timeRange)) {
             $chartData = $this->snaps->{$timeRange}();
+
+            if ($export == 'xls') {
+                return $this->excel->export('Snaps Statuses', $timeRange, $chartData);
+            }
+
             return $chartData;
         } else {
             abort(404);

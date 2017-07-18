@@ -9,8 +9,12 @@ use Excel as BaseExcel;
  */
 class Excel
 {
-    public function export($timeRange, $data)
+
+    protected $title;
+
+    public function export($title, $timeRange, $data)
     {
+        $this->title = $title;
         $methodName = "toXls" . ucfirst($timeRange);
         if (method_exists($this, $methodName)) {
             return $this->{$methodName}($data);
@@ -26,7 +30,7 @@ class Excel
                 $startDate = Carbon::now()->startOfWeek();
 
                 $sheet->cell('A1', function ($cell) {
-                    $cell->setValue('Active Users Daily');
+                    $cell->setValue($this->title . ' Daily');
                 });
 
                 $sheet->cell('A2', function ($cell) use ($startDate) {
@@ -80,7 +84,7 @@ class Excel
                 $startDate = Carbon::now()->startOfWeek();
 
                 $sheet->cell('A1', function ($cell) {
-                    $cell->setValue('Active Users Daily');
+                    $cell->setValue($this->title . ' Weekly');
                 });
 
                 $sheet->cell('A2', function ($cell) use ($startDate) {
@@ -119,4 +123,61 @@ class Excel
 
         })->export('xls');
     }
+
+    protected function toXlsMonthly(array $data)
+    {
+
+        BaseExcel::create('Statistics data', function ($excel) use ($data) {
+
+            $excel->sheet('Sheetname', function ($sheet) use ($data) {
+                $startDate = Carbon::now()->startOfWeek();
+
+                $sheet->cell('A1', function ($cell) {
+                    $cell->setValue($this->title . ' Monthly');
+                });
+
+                $sheet->cell('A2', function ($cell) use ($startDate) {
+                    $cell->setValue('of ' . $startDate->format('Y'));
+                });
+
+                $columnsTitle = [
+                    'January',
+                    'February',
+                    'March',
+                    'April',
+                    'May',
+                    'June',
+                    'July',
+                    'August',
+                    'September',
+                    'October',
+                    'November',
+                    'December'
+                ];
+
+                $rowNum = 4;
+
+                $sheet->row($rowNum, array_merge([""], $columnsTitle));
+
+                foreach ($data as $key => $item) {
+                    $rowNum++;
+                    $rowData = [title_case($key)];
+
+                    foreach ($columnsTitle as $key => $title) {
+                        if (isset($item[$key + 1])) {
+                            $rowData[] = $item[$key + 1];
+                        } else {
+                            $rowData[] = 0;
+                        }
+                    }
+
+                    $sheet->row($rowNum, $rowData);
+
+                }
+
+            });
+
+        })->export('xls');
+    }
+
 }
