@@ -15,97 +15,34 @@ class Excel
     public function export($title, $timeRange, $data)
     {
         $this->title = $title;
-        $methodName = "toXls" . ucfirst($timeRange);
-        if (method_exists($this, $methodName)) {
-            return $this->{$methodName}($data);
-        }
-    }
 
-    protected function toXlsDaily(array $data)
-    {
+        BaseExcel::create('Chart data', function ($excel) use ($data, $timeRange) {
 
-        BaseExcel::create('Statistics data', function ($excel) use ($data) {
-
-            $excel->sheet('Sheetname', function ($sheet) use ($data) {
+            $excel->sheet('Sheetname', function ($sheet) use ($data, $timeRange) {
                 $startDate = Carbon::now()->startOfWeek();
 
-                $sheet->cell('A1', function ($cell) {
-                    $cell->setValue($this->title . ' Daily');
+                $sheet->cell('A1', function ($cell) use ($timeRange) {
+                    $cell->setValue($this->title . ' ' . ucfirst($timeRange));
                 });
 
-                $sheet->cell('A2', function ($cell) use ($startDate) {
-                    $cell->setValue('of ' . $startDate->format('d-m-Y') . ' - ' . $startDate->addDays(6)->format('d-m-Y'));
+                $sheet->cell('A2', function ($cell) use ($startDate, $timeRange) {
+                    $cell->setValue('of ' . $this->getTableSubtitle($timeRange));
                 });
 
-                // set column header as date format
-                $sheet->setColumnFormat([
-                    'B4:H4' => 'dd-mm-yyyy',
-                ]);
-
-                $columnsTitle = ['']; // set empty string as first array item
-                $startDate    = Carbon::now()->startOfWeek();
-                for ($i = 0; $i < 7; $i++) {
-                    $columnsTitle[] = $startDate->format('d-m-Y');
-                    $startDate->addDay();
+                if ($timeRange == 'daily') {
+                    // set column header as date format
+                    $sheet->setColumnFormat([
+                        'B4:H4' => 'dd-mm-yyyy',
+                    ]);
                 }
 
                 $rowNum = 4;
 
-                $sheet->row($rowNum, $columnsTitle);
-                // dd($data);
+                $columnsTitle =  $this->columnsTitle($timeRange);
+                $sheet->row($rowNum, array_merge([''], $columnsTitle));
                 foreach ($data as $key => $item) {
                     $rowNum++;
-                    $rowData = [title_case($key)];
-
-                    for ($i = 0; $i < 7; $i++) {
-                        if (isset($item[$i])) {
-                            $rowData[] = $item[$i];
-                        } else {
-                            $rowData[] = 0;
-                        }
-                    }
-
-                    $sheet->row($rowNum, $rowData);
-
-                }
-
-            });
-
-        })->export('xls');
-
-    }
-
-    protected function toXlsWeekly(array $data)
-    {
-
-        BaseExcel::create('Statistics data', function ($excel) use ($data) {
-
-            $excel->sheet('Sheetname', function ($sheet) use ($data) {
-                $startDate = Carbon::now()->startOfWeek();
-
-                $sheet->cell('A1', function ($cell) {
-                    $cell->setValue($this->title . ' Weekly');
-                });
-
-                $sheet->cell('A2', function ($cell) use ($startDate) {
-                    $cell->setValue('of ' . $startDate->format('F Y'));
-                });
-
-                $columnsTitle = [
-                    'Week 1',
-                    "Week 2",
-                    "Week 3",
-                    "Week 4",
-                    "Week 5"
-                ];
-
-                $rowNum = 4;
-
-                $sheet->row($rowNum, array_merge([""], $columnsTitle));
-
-                foreach ($data as $key => $item) {
-                    $rowNum++;
-                    $rowData = [title_case($key)];
+                    $rowData = [str_replace('-', ' ', title_case($key))];
 
                     foreach($columnsTitle as $key => $title) {
                         if (isset($item[$key + 1])) {
@@ -124,23 +61,39 @@ class Excel
         })->export('xls');
     }
 
-    protected function toXlsMonthly(array $data)
+    protected function getTableSubtitle($timeRange)
     {
+        $startOfWeek = Carbon::now()->startOfWeek();
 
-        BaseExcel::create('Statistics data', function ($excel) use ($data) {
+        switch ($timeRange) {
+            case 'weekly':
+                return $startOfWeek->format('F Y');
+                break;
+           case 'monthly':
+                return $startOfWeek->format('Y');
+                break;
+            case 'yearly':
+                return 'All Period';
+                break;
+            default: // daily
+                return $startOfWeek->format('d-m-Y') . ' - ' . $startOfWeek->addDays(6)->format('d-m-Y');
+                break;
+        }
+    }
 
-            $excel->sheet('Sheetname', function ($sheet) use ($data) {
-                $startDate = Carbon::now()->startOfWeek();
-
-                $sheet->cell('A1', function ($cell) {
-                    $cell->setValue($this->title . ' Monthly');
-                });
-
-                $sheet->cell('A2', function ($cell) use ($startDate) {
-                    $cell->setValue('of ' . $startDate->format('Y'));
-                });
-
-                $columnsTitle = [
+    protected function columnsTitle($timeRange){
+        switch ($timeRange) {
+            case 'weekly':
+               return [
+                    'Week 1',
+                    "Week 2",
+                    "Week 3",
+                    "Week 4",
+                    "Week 5"
+                ];
+                break;
+            case 'monthly':
+                return [
                     'January',
                     'February',
                     'March',
@@ -154,30 +107,20 @@ class Excel
                     'November',
                     'December'
                 ];
+                break;
+            case 'yearly':
+                return [];
+                break;
 
-                $rowNum = 4;
-
-                $sheet->row($rowNum, array_merge([""], $columnsTitle));
-
-                foreach ($data as $key => $item) {
-                    $rowNum++;
-                    $rowData = [title_case($key)];
-
-                    foreach ($columnsTitle as $key => $title) {
-                        if (isset($item[$key + 1])) {
-                            $rowData[] = $item[$key + 1];
-                        } else {
-                            $rowData[] = 0;
-                        }
-                    }
-
-                    $sheet->row($rowNum, $rowData);
-
+            default: // daily
+                $startDate    = Carbon::now()->startOfWeek();
+                for ($i = 0; $i < 7; $i++) {
+                    $columnsTitle[] = $startDate->format('d-m-Y');
+                    $startDate->addDay();
                 }
-
-            });
-
-        })->export('xls');
+                break;
+        }
     }
+
 
 }

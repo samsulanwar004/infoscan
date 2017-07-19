@@ -61,15 +61,14 @@ class ChartController extends AdminController
         }
     }
 
-    public function snapsRejections(Request $request, $timeRange = 'daily')
+    public function snapsRejections(Request $request, $timeRange = 'daily', $export = false)
     {
-        // if (method_exists($this->snapRejection, $timeRange)) {
-        //     $chartData = $this->snapRejection->{$timeRange}();
-        //     return $chartData;
-        // } else {
-        //     abort(404);
-        // }
-        return $this->snapRejection->summarize($timeRange);
+        $chartData = $this->snapRejection->summarize($timeRange);
+        if ($export == 'xls') {
+            return $this->excel->export('Rejection Reason', $timeRange, $chartData);
+        }
+
+        return $chartData;
 
     }
 

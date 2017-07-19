@@ -35,6 +35,10 @@ Route::group([
             'as'   => 'chart.snaps-rejection-reason',
             'uses' => 'Web\ChartController@snapsRejections',
         ]);
+        Route::get('/snaps-rejection-reason/{timeRange}/{export}', [
+            'as'   => 'chart.snaps-rejection-reason.export',
+            'uses' => 'Web\ChartController@snapsRejections',
+        ]);
 
         Route::get('/top-ten/{timeRange?}', [
             'uses' => 'Web\ChartController@topTen',
