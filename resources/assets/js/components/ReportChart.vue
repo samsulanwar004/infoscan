@@ -63,18 +63,26 @@
             return {
               timerange: 'daily',
               barChartOptions: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero:true,
+                            suggestedMin: 0
+                        },
+                    }]
+                },
                 //Boolean - Whether the scale should start at zero, or an order of magnitude down from the lowest value
-                scaleBeginAtZero: true,
+                // scaleBeginAtZero: true,
                 //Boolean - Whether grid lines are shown across the chart
-                scaleShowGridLines: true,
+                // scaleShowGridLines: true,
                 //String - Colour of the grid lines
-                scaleGridLineColor: 'rgba(0,0,0,.05)',
+                // scaleGridLineColor: 'rgba(0,0,0,.05)',
                 //Number - Width of the grid lines
-                scaleGridLineWidth: 1,
+                // scaleGridLineWidth: 1,
                 //Boolean - Whether to show horizontal lines (except X axis)
-                scaleShowHorizontalLines: true,
+                // scaleShowHorizontalLines: true,
                 //Boolean - Whether to show vertical lines (except Y axis)
-                scaleShowVerticalLines: true,
+                // scaleShowVerticalLines: true,
                 //Boolean - If there is a stroke on each bar
                 barShowStroke: true,
                 //Number - Pixel width of the bar stroke
