@@ -1,9 +1,9 @@
 <template>
-    <div class="box box-success">
+    <div class="box">
         <div class="box-header with-border">
           <div class="col-md-5">
             <h3 class="box-title"> {{ chartTitle }} </h3>
-            <p>within <strong>{{ timeRangeInfoText }}</strong></p>
+            <p>of <strong>{{ timeRangeInfoText }}</strong></p>
           </div>
 
          <div class="col-md-2">

@@ -3,7 +3,7 @@
         <div class="box-header with-border">
           <div class="col-md-6">
             <h3 class="box-title"> Top 10s</h3>
-            <p>within <strong>{{ timeRangeInfoText }}</strong></p>
+            <p>of <strong>{{ timeRangeInfoText }}</strong></p>
           </div>
           <div class="col-md-3">
             <label for="">&nbsp;</label>

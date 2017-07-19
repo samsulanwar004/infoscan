@@ -72,16 +72,6 @@ class ChartController extends AdminController
 
     }
 
-    // public function survey(Request $request, $timeRange = 'daily')
-    // {
-    //     if (method_exists($this->survey, $timeRange)) {
-    //         $chartData = $this->survey->{$timeRange}();
-    //         return $chartData;
-    //     } else {
-    //         abort(404);
-    //     }
-
-    // }
 
     public function topTen(Request $request, $timeRange = 'daily')
     {
