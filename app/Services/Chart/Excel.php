@@ -118,6 +118,8 @@ class Excel
                     $columnsTitle[] = $startDate->format('d-m-Y');
                     $startDate->addDay();
                 }
+
+                return $columnsTitle;
                 break;
         }
     }
