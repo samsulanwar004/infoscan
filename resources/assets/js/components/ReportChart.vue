@@ -1,12 +1,12 @@
 <template>
-    <div class="box box-success">
+    <div class="box">
         <div class="box-header with-border">
-          <div class="col-md-6">
+          <div class="col-md-5">
             <h3 class="box-title"> {{ chartTitle }} </h3>
-            <p>within <strong>{{ timeRangeInfoText }}</strong></p>
+            <p>of <strong>{{ timeRangeInfoText }}</strong></p>
           </div>
 
-         <div class="col-md-3">
+         <div class="col-md-2">
             <label for=""></label>
             <select id="category" v-model="category" name="category" class="form-control">
                 <option value="">All</option>
@@ -16,7 +16,7 @@
             </select>
           </div>
 
-          <div class="col-md-3">
+          <div class="col-md-2">
             <label for="">Period</label>
             <select id="period" v-model="timerange" name="period" class="form-control">
                 <option value="daily">Daily</option>
@@ -24,6 +24,14 @@
                 <option value="monthly">Monthly</option>
                 <option value="yearly">Yearly</option>
             </select>
+          </div>
+          <div class="col-md-2">
+              <label for="">&nbsp;
+              <br>
+              </label>
+              <div class="">
+                  <a :href="exportUrl" download class="btn btn-primary" >Export</a>
+              </div>
           </div>
 
           <div class="box-tools pull-right">
@@ -55,18 +63,26 @@
             return {
               timerange: 'daily',
               barChartOptions: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero:true,
+                            suggestedMin: 0
+                        },
+                    }]
+                },
                 //Boolean - Whether the scale should start at zero, or an order of magnitude down from the lowest value
-                scaleBeginAtZero: true,
+                // scaleBeginAtZero: true,
                 //Boolean - Whether grid lines are shown across the chart
-                scaleShowGridLines: true,
+                // scaleShowGridLines: true,
                 //String - Colour of the grid lines
-                scaleGridLineColor: 'rgba(0,0,0,.05)',
+                // scaleGridLineColor: 'rgba(0,0,0,.05)',
                 //Number - Width of the grid lines
-                scaleGridLineWidth: 1,
+                // scaleGridLineWidth: 1,
                 //Boolean - Whether to show horizontal lines (except X axis)
-                scaleShowHorizontalLines: true,
+                // scaleShowHorizontalLines: true,
                 //Boolean - Whether to show vertical lines (except Y axis)
-                scaleShowVerticalLines: true,
+                // scaleShowVerticalLines: true,
                 //Boolean - If there is a stroke on each bar
                 barShowStroke: true,
                 //Number - Pixel width of the bar stroke
@@ -163,10 +179,14 @@
           },
           computed: {
             _clegends: function () {
-                return this.legends.split(", ")
+                // return this.legends.split(", ")
+                return JSON.parse(this.legends)
               },
             timeRangeInfoText: function () {
                 return this.timeRangeInfo[this.timerange];
+            },
+            exportUrl: function () {
+                return this.resourceUrl + '/' + this.timerange + '/xls';
             }
 
           },
@@ -193,7 +213,6 @@
               var self = this;
               var periodLabel = this.periodLabels[this.timerange];
               self.chartData = [];
-
                 if (self.category !== '') {
                   $.each(this._clegends, function(key, legend) {
                     // skip iteration if category is set
@@ -203,7 +222,7 @@
                         var dots = [];
                         var colorPallete = self.defaultColors[key];
 
-                        // randomize color pallete if need any additional color
+                        // color pallete if need any additional color
                         if (typeof colorPallete == 'undefined') {
                             colorPallete = {
                                 "fill": false,
@@ -211,9 +230,8 @@
                                 "borderWidth": 1,
                             }
                         }
-
                         for (var i = 0; i <= Object.keys(periodLabel).length - 1; i++) {
-                          if (typeof responseItem[i] !== 'undefined') {
+                          if (typeof responseItem[i - 1] !== 'undefined') {
                             dots[i] = responseItem[i];
                           } else {
                             dots[i] = 0;
@@ -245,7 +263,7 @@
                                 "borderWidth": 1,
                             }
                         }
-
+                        console.log(responseItem, self.slugify(legend))
                         for (var i = 0; i <= Object.keys(periodLabel).length - 1; i++) {
                           if (typeof responseItem[i] !== 'undefined') {
                             dots[i] = responseItem[i];
