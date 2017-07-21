@@ -13,7 +13,6 @@ use Exception;
 use Illuminate\Http\Request;
 use Storage;
 use App\Libraries\GoogleMap;
-use App\Events\TransactionEvent;
 use App\Jobs\PointCalculation;
 use App\Jobs\MemberActionJob;
 use App\Jobs\AssignJob;
