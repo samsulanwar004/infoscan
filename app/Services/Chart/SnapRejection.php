@@ -1,15 +1,12 @@
 <?php
 namespace App\Services\Chart;
 
-use App\Services\Chart\Contracts\ChartInterface;
-use App\Services\Chart\Traits\TimeRangeQuery;
 use Carbon\Carbon;
 use DB;
+use App\Setting;
 
-class SnapRejection implements ChartInterface
+class SnapRejection
 {
-    use TimeRangeQuery;
-
     protected $currentDate;
 
     public function __construct()
@@ -17,57 +14,69 @@ class SnapRejection implements ChartInterface
         $this->currentDate = Carbon::now();
     }
 
-    /**
-     * Daily users data
-     * @return array
-     */
-    public function daily()
+    public function summarize($timeRange = 'daily')
     {
-        return [
-            'approve' => $this->rejections('daily', 'approve'),
-            'pending' => $this->rejections('daily', 'pending'),
-            'rejects' => $this->rejections('daily', 'reject'),
-        ];
+        $reasons = Setting::where('setting_group', '=', 'snap_reason')->get();
+        $summary = [];
+        foreach ($reasons as $reason)
+        {
+            $summary[str_slug($reason->setting_value)] = $this->rejectionByCode($timeRange, $reason->setting_name);
+        }
+
+        return $summary;
     }
 
-    public function weekly()
-    {
-        return [
-            'approve' => $this->rejections('weekly', 'approve'),
-            'pending' => $this->rejections('weekly', 'pending'),
-            'rejects' => $this->rejections('weekly', 'reject'),
-        ];
-    }
-
-    public function monthly()
-    {
-        return [
-            'approve' => $this->rejections('monthly', 'approve'),
-            'pending' => $this->rejections('monthly', 'pending'),
-            'rejects' => $this->rejections('monthly', 'reject'),
-        ];
-    }
-
-    public function yearly()
-    {
-        return [
-            'approve' => $this->rejections('yearly', 'approve'),
-            'pending' => $this->rejections('yearly', 'pending'),
-            'rejects' => $this->rejections('yearly', 'reject'),
-        ];
-    }
-
-    /**
-     * Snaps chart data
-     * @param  string     $timeRange  time range of data to summarize. ['daily' | 'weekly' | monthly' | 'yearly']
-     * @param  string     $snapType
-     * @return @inherit
-     */
-    protected function rejections($timeRange = 'daily')
+    protected function rejectionByCode($timeRange = 'daily', $rejectionCode)
     {
         $query = DB::table('snaps')
-            ->where('status', '=', 'reject');
-        return $this->buildTimeRangeQuery($timeRange, $query);
+            ->where('status', '=', 'reject')
+            ->where('rejection_code', '=', $rejectionCode);
+        return $this->buildTimeRangeQuery($timeRange, $query, 'snaps.updated_at');
+    }
+
+    /**
+     * Building query based on time range (daily, weekly, monthly, yearly)
+     * @param  string                            $timeRange
+     * @param  Illuminate\Database\Query\Builder $query
+     * @return Illuminate\Support\Collection
+     */
+    protected function buildTimeRangeQuery($timeRange, $query, $dateTimeField = 'created_at')
+    {
+        switch ($timeRange) {
+            case 'weekly':
+                $query->addSelect(
+                    DB::raw(
+                        'FLOOR((DAYOFMONTH(CURRENT_DATE()) - 1) / 7) + 1 AS week_of_month, WEEK(' . $dateTimeField . ') AS week, ' .
+                        'YEAR(' . $dateTimeField . ') as year, MONTH(' . $dateTimeField . ') as month,  COUNT(' . $dateTimeField . ') AS total'
+                    ))
+                    ->groupBy(['year', 'month', 'week'])
+                    ->having('month', '=', $this->currentDate->month);
+                $keyField = 'week_of_month';
+                break;
+
+            case 'monthly':
+                $query->addSelect(DB::raw('MONTH(' . $dateTimeField . ') as month, YEAR(' . $dateTimeField . ') as year, COUNT(' . $dateTimeField . ') AS total'))
+                    ->groupBy(['year', 'month'])
+                    ->having('year', '=', $this->currentDate->year);
+                $keyField = 'month';
+                break;
+
+            case 'yearly':
+                $query->addSelect(DB::raw('YEAR(' . $dateTimeField . ') as year,  COUNT(' . $dateTimeField . ') AS total'))
+                    ->groupBy(['year']);
+                $keyField = 'year';
+                break;
+
+            default: // daily
+                $query->addSelect(DB::raw('YEAR(' . $dateTimeField . ') as year, WEEKDAY(' . $dateTimeField . ') AS day, WEEK(' . $dateTimeField . ') AS week, COUNT(' . $dateTimeField . ') AS total'))
+                    ->groupBy(['year', 'week', 'day'])
+                    ->having('week', '=', $this->currentDate->weekOfYear);
+                $keyField = 'day';
+
+        }
+
+        return $query->get()
+            ->pluck('total', $keyField);
     }
 
 }

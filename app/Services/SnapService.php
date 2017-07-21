@@ -408,8 +408,9 @@ class SnapService
                 $setting->save();
 
             } else {
-                $reasonId = $request->input('reason');
-                $setting = \App\Setting::where('id', $reasonId)
+                $reasonCode = $request->input('reason');
+                $setting = \App\Setting::where('setting_group', '=', 'snap_reason')
+                    ->where('setting_name', $reasonCode)
                     ->first();
                 $reason = $setting->setting_value;
             }
@@ -784,7 +785,7 @@ class SnapService
 
         $point = isset($task->point) ? $task->point : 0;
 
-        // send dispatcher
+        // send dispatcher : fucking SQS not SEND
         $job = $this->getPlainDispatcher($data);
         dispatch($job);
 
@@ -1668,7 +1669,8 @@ class SnapService
      */
     protected function getPlainDispatcher($object)
     {
-        return new DispatcherJob($object);
+        return (new DispatcherJob($object))->onQueue('recognition-reader') //
+                                           ->onConnection('sqs-plain');
     }
 
     /**
