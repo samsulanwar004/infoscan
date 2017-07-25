@@ -72,12 +72,7 @@ elixir(mix => {
     ], 'public/js/taggd.js');
 
     mix.scripts([
-        ltePath + 'plugins/elevate/jquery.elevatezoom.js'
-    ], 'public/js/elevate.js');
-
-    mix.scripts([
-        ltePath + 'plugins/zoom/jquery-ui.js',
-        ltePath + 'plugins/zoom/jfmagnify.min.js'
+        ltePath + 'plugins/zoom/jquery.panzoom.js'
     ], 'public/js/zoom.js');
 
     mix.scripts([
@@ -131,7 +126,6 @@ elixir(mix => {
         'js/admin.js',
         'js/ie-support.js',
         'js/app.js',
-        'js/elevate.js',
         'js/taggd.js',
         'js/report-vendor.js',
         'css/report-vendor.css',

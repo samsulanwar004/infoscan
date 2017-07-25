@@ -67,22 +67,25 @@
                                                     </div>
                                                 </div>
                                                 <div class="show-zoom" style="display: none;">
-                                                    <div id="window" class="magnify img-thumbnail" data-magnified-zone=".mg_zone">
-                                                        <div class="magnify_glass">
-                                                            <div class="mg_ring"></div>
-                                                            <div class="pm_btn plus"><h3>+</h3></div>
-                                                            <div class="pm_btn minus"><h3>-</h3></div>
-                                                            <div class="mg_zone"></div>
+                                                    <section id="focal">
+                                                        <div class="img-thumbnail">
+                                                            <div class="parent">
+                                                                <div class="panzoom">
+                                                                    <img src="{{ config('filesystems.s3url') . $files->first()->file_path }}" alt="{{ $files->first()->file_code }}" class="img-responsive" id="{{$files->first()->id}}" style="width: 100%;">
+                                                                </div>
+                                                            </div>
                                                         </div>
-                                                        <div class="element_to_magnify">
-                                                            <img src="{{ config('filesystems.s3url') . $files->first()->file_path }}" alt="{{ $files->first()->file_code }}" class="img-responsive img-zoom" id="{{$files->first()->id}}">
+                                                        <div class="buttons">
+                                                            <input type="range" class="zoom-range">
+                                                            <button class="zoom-in btn btn-primary btn-sm"><i class="fa fa-search-plus" aria-hidden="true"></i></button>
+                                                            <button class="zoom-out btn btn-primary btn-sm"><i class="fa fa-search-minus" aria-hidden="true"></i></button>
+                                                            <button class="reset btn btn-primary btn-sm">Reset</button>
                                                         </div>
-                                                    </div>
+                                                    </section>
                                                 </div>
                                                 <div class="show-crop img-thumbnail margin" style="display: none;">
-                                                    <img src="{{ config('filesystems.s3url') . $files->first()->file_path }}" alt="{{ $files->first()->file_code }}" class="  img-responsive img-crop" id="{{$files->first()->id}}">
+                                                    <img src="{{ config('filesystems.s3url') . $files->first()->file_path }}" alt="{{ $files->first()->file_code }}" class="img-responsive img-crop" id="{{$files->first()->id}}">
                                                 </div>
-                                                <button id="click-zoom" style="display: none;"></button>
                                             @elseif ($snap->mode_type == 'image')
                                                 @if($files->lastPage() > 1)
                                                     <div class="new-pagination">
@@ -97,19 +100,22 @@
                                                     <img src="{{ config('filesystems.s3url') . $files->first()->file_path }}" alt="{{ $files->first()->file_code }}" class="margin img-thumbnail img-responsive">
                                                 </div>
                                                 <div class="show-zoom" style="display: none;">
-                                                    <div id="window" class="magnify img-thumbnail" data-magnified-zone=".mg_zone">
-                                                        <div class="magnify_glass">
-                                                            <div class="mg_ring"></div>
-                                                            <div class="pm_btn plus"><h3>+</h3></div>
-                                                            <div class="pm_btn minus"><h3>-</h3></div>
-                                                            <div class="mg_zone"></div>
+                                                    <section id="focal">
+                                                        <div class="img-thumbnail">
+                                                            <div class="parent">
+                                                                <div class="panzoom">
+                                                                    <img src="{{ config('filesystems.s3url') . $files->first()->file_path }}" alt="{{ $files->first()->file_code }}" class="img-responsive" id="{{$files->first()->id}}" style="width: 100%;">
+                                                                </div>
+                                                            </div>
                                                         </div>
-                                                        <div class="element_to_magnify">
-                                                            <img src="{{ config('filesystems.s3url') . $files->first()->file_path }}" alt="{{ $files->first()->file_code }}" class="img-responsive img-zoom" id="{{$files->first()->id}}">
+                                                        <div class="buttons">
+                                                            <input type="range" class="zoom-range">
+                                                            <button class="zoom-in btn btn-primary btn-sm"><i class="fa fa-search-plus" aria-hidden="true"></i></button>
+                                                            <button class="zoom-out btn btn-primary btn-sm"><i class="fa fa-search-minus" aria-hidden="true"></i></button>
+                                                            <button class="reset btn btn-primary btn-sm">Reset</button>
                                                         </div>
-                                                    </div>
+                                                    </section>
                                                 </div>
-                                                <button id="click-zoom" style="display: none;"></button>
                                             @elseif($snap->mode_type == 'audios')
                                                 @if($files->lastPage() > 1)
                                                     <div class="new-pagination">
@@ -131,22 +137,25 @@
                                                     @endif
                                                 </div>
                                                 <div class="show-zoom" style="display: none;">
-                                                    <div id="window" class="magnify img-thumbnail" data-magnified-zone=".mg_zone">
-                                                        <div class="magnify_glass">
-                                                            <div class="mg_ring"></div>
-                                                            <div class="pm_btn plus"><h3>+</h3></div>
-                                                            <div class="pm_btn minus"><h3>-</h3></div>
-                                                            <div class="mg_zone"></div>
+                                                    <section id="focal">
+                                                        <div class="img-thumbnail">
+                                                            <div class="parent">
+                                                                <div class="panzoom">
+                                                                    <img src="{{ config('filesystems.s3url') . $files->first()->file_path }}" alt="{{ $files->first()->file_code }}" class="img-responsive" id="{{$files->first()->id}}" style="width: 100%;">
+                                                                </div>
+                                                            </div>
                                                         </div>
-                                                        <div class="element_to_magnify">
-                                                            <img src="{{ config('filesystems.s3url') . $files->first()->file_path }}" alt="{{ $files->first()->file_code }}" class="img-responsive img-zoom" id="{{$files->first()->id}}">
+                                                        <div class="buttons">
+                                                            <input type="range" class="zoom-range">
+                                                            <button class="zoom-in btn btn-primary btn-sm"><i class="fa fa-search-plus" aria-hidden="true"></i></button>
+                                                            <button class="zoom-out btn btn-primary btn-sm"><i class="fa fa-search-minus" aria-hidden="true"></i></button>
+                                                            <button class="reset btn btn-primary btn-sm">Reset</button>
                                                         </div>
-                                                    </div>
+                                                    </section>
                                                 </div>
                                                 <div class="show-crop img-thumbnail margin" style="display: none;">
                                                     <img src="{{ config('filesystems.s3url') . $files->first()->file_path }}" alt="{{ $files->first()->file_code }}" class="  img-responsive img-crop" id="{{$files->first()->id}}">
                                                 </div>
-                                                <button id="click-zoom" style="display: none;"></button>
                                             @endif
                                         </div>
                                     </div>
@@ -504,6 +513,10 @@
         top: 5px;
     }
 
+    .buttons {
+        margin-top: 3px;
+    }
+
 </style>
 <link rel="stylesheet" href="{{ elixirCDN('css/datetimepicker.css') }}" />
 <link rel="stylesheet" href="{{ elixirCDN('css/crop.css') }}" />
@@ -529,7 +542,6 @@
 
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDL2kUSI8aZRZY2M1x3ios-LmwOoVYZ_9o&callback=initMap" async defer></script> -->
 <script src="{{ elixirCDN('js/taggd.js') }}"></script>
-<script src="{{ elixirCDN('js/elevate.js') }}"></script>
 <script src="{{ elixirCDN('js/zoom.js') }}"></script>
 <script src="{{ elixirCDN('js/crop.js') }}" crossorigin="anonymous"></script>
 <script type="text/javascript">
@@ -643,25 +655,6 @@
 
         $('#receipt_id').blur(function(e) {
             this.removeAttribute('tabIndex');
-        });
-
-        $('#click-zoom').on('click', function() {
-            var scaleNum = 1.5;
-            $(".magnify").jfMagnify();
-            $('.plus').click(function(){
-                scaleNum += .5;
-                if (scaleNum >=3) {
-                    scaleNum = 3;
-                };
-                $(".magnify").data("jfMagnify").scaleMe(scaleNum);
-            });
-            $('.minus').click(function(){
-                scaleNum -= .5;
-                if (scaleNum <=1.5) {
-                    scaleNum = 1.5;
-                };
-                $(".magnify").data("jfMagnify").scaleMe(scaleNum);
-            });
         });
 
         var counter = 0;
@@ -890,7 +883,7 @@
             $('.show-tag').hide();
             $('.show-crop').hide();
             $('.show-zoom').show();
-            $('#click-zoom').click();
+            $('.reset').click();
         });
 
         $('#mode-tag').on('click', function() {
@@ -945,6 +938,24 @@
 
             }
         });
+
+        var $section = $('#focal');
+        $section.find('.panzoom').panzoom({
+            $zoomIn: $section.find(".zoom-in"),
+            $zoomOut: $section.find(".zoom-out"),
+            $zoomRange: $section.find(".zoom-range"),
+            $reset: $section.find(".reset"),
+        });
+        var $panzoom = $section.find('.panzoom').panzoom();
+            $panzoom.parent().on('mousewheel.focal', function( e ) {
+                e.preventDefault();
+                var delta = e.delta || e.originalEvent.wheelDelta;
+                var zoomOut = delta ? delta < 0 : e.originalEvent.deltaY > 0;
+                $panzoom.panzoom('zoom', zoomOut, {
+                  animate: false,
+                  focal: e
+                });
+            });
 
     });
 

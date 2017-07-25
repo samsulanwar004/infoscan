@@ -45,7 +45,7 @@ class SnapController extends AdminController
                 'status' => $status,
                 'search' => $search,
             ];
-            
+
             $dateStartArr = explode('-', $dateStart);
             $dateEndArr = explode('-', $dateEnd);
             $date = $dateStartArr[1].'/'.$dateStartArr[2].'/'.$dateStartArr[0].' - '.$dateEndArr[1].'/'.$dateEndArr[2].'/'.$dateEndArr[0];
@@ -104,7 +104,7 @@ class SnapController extends AdminController
             $snap = (new SnapService)->getSnapById($id);
             if(null === $snap) {
                 throw new Exception('Id Snap not valid!');
-            }      
+            }
             // build code for approve
             $code = $this->getCodeTask($snap->snap_type, $snap->mode_type);
 
@@ -128,7 +128,7 @@ class SnapController extends AdminController
     {
         try {
             $snap = (new SnapService)->getSnapByid($id);
-            
+
             $point = [];
             $tag = [];
             foreach ($snap->files as $file) {
@@ -141,16 +141,16 @@ class SnapController extends AdminController
                 $task = $this->getTaskPointByRange('a', $totalTag);
                 $fixedPoint = isset($task->point) ? $task->point : 0;
             } elseif ($snap->mode_type == 'tags') {
-                $fixedPoint = (new PointService)->calculateNewApprovePoint($snap);          
+                $fixedPoint = (new PointService)->calculateNewApprovePoint($snap);
             } else {
                 $imageCount = $snap->files()->where('file_mimes', 'like', 'image%')->count();
                 if($imageCount == 1) {
                     $fixedPoint = (new PointService)->calculateNewApprovePoint($snap);
                 } else {
                     $fixedPoint = collect($point)->sum();
-                }         
-            }            
-            
+                }
+            }
+
             $point = (new PointService)->calculatePromoPoint($snap->member_id, $snap->outlet_city);
 
             $promo = $point['point_city'] + $point['point_level_city'];
@@ -383,7 +383,7 @@ class SnapController extends AdminController
             case 'input':
                 $mode = array('Only Pic' => $type.'|1','Error' => $type.'|2', 'Error Free' => $type.'|3');
                 break;
-            
+
             default:
                 $mode = array('Only Pic' => $type.'|1');
                 break;
@@ -416,8 +416,8 @@ class SnapController extends AdminController
                 (new SnapService)->updateSnapModeAudios($request, $id);
             } else if ($request->input('mode_type') === 'image') {
                 (new SnapService)->updateSnapModeImages($request, $id);
-            }            
-            
+            }
+
             $file = (new SnapService)->getSnapFileById($id);
             if ($request->input('image_approve') == 'reject') {
                 $file->is_approve = 0;

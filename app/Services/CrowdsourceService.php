@@ -135,4 +135,49 @@ class CrowdsourceService
             ->get();
     }
 
+    public function getSnapsCs($userId)
+    {
+        return Snap::with('member')
+           ->with([
+               'files' => function ($query) {
+                   $query->where('file_mimes', 'like', 'image%');
+               },
+           ])
+           ->where('user_id', $userId)
+           ->orderBy('created_at', 'DESC')
+           ->paginate(50);
+    }
+
+    public function getSnapsCsByFilter($data, $userId)
+    {
+        $query = Snap::with('member')
+            ->with([
+                'files' => function ($query) {
+                    $query->where('file_mimes', 'like', 'image%');
+                },
+            ])
+            ->whereDate('created_at', '>=', $data['start_date'])
+            ->whereDate('created_at', '<=', $data['end_date']);
+
+        if ($data['status'] != 'all') {
+            $query->where('status', '=', $data['status']);
+        }
+
+        if ($data['mode_type']) {
+            $query->where('mode_type', '=', $data['mode_type']);
+        }
+
+        if ($data['snap_type']) {
+            $query->where('snap_type', '=', $data['snap_type']);
+        }
+
+        if ($userId != null) {
+            $query->where('user_id', '=', $userId);
+        }
+
+        $query->orderBy('created_at', 'DESC');
+
+        return $query->paginate(50);
+    }
+
 }
