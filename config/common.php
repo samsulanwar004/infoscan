@@ -345,5 +345,7 @@ return [
         'api_secret' => env('API_SECRET_EGIFT'),
         'url_token' => env('URL_TOKEN_EGIFT'),
         'url_list' => env('URL_LIST_EGIFT'),
+        'url_purchase' => env('URL_PURCHASE_EGIFT'),
+        'expired' => env('EXPIRED_EGIFT'),
     ],
 ];
