@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
+use Carbon\Carbon;
 
 class LoyaltyController extends BaseApiController
 {
@@ -98,7 +99,9 @@ class LoyaltyController extends BaseApiController
         $accessToken = $r->access_token;
         $expired = $r->expires_in;
 
-        cache()->put(self::CACHE_EXPIRED_TOKEN, $accessToken, $expired);
+        $expiresAt = Carbon::now()->addSeconds($expired);
+
+        cache()->put(self::CACHE_EXPIRED_TOKEN, $accessToken, $expiresAt);
 
         return $accessToken;
     }
