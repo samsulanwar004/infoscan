@@ -303,6 +303,7 @@ return [
         'assign_process' => 'assignProcess',
         'member_action_log' => 'userBehaviourLog',
         'member_register_verification_email' => 'userBehaviourLog',
+        'member_order_loyalty' => 'userBehaviourLog',
     ],
 
     'notification_messages' => [

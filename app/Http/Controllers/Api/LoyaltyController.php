@@ -7,6 +7,8 @@ use GuzzleHttp\Client;
 use Carbon\Carbon;
 use Validator;
 use App\MemberReward;
+use App\Mail\OrderLoyalty;
+use Illuminate\Support\Facades\Mail;
 
 class LoyaltyController extends BaseApiController
 {
@@ -106,7 +108,11 @@ class LoyaltyController extends BaseApiController
 
             $result = $this->requestToClient($method, $url, $key, $data, $type);
 
-            $this->saveMemberReward($result, $image);
+            $order = $this->saveMemberReward($result, $image);
+
+            if ($order) {
+                $this->sendOrderLoyaltyEmail($this->member, $order);
+            }
 
             return $this->success();
 
@@ -156,6 +162,8 @@ class LoyaltyController extends BaseApiController
         $mr->member()->associate($this->member);
 
         $mr->save();
+
+        return $mr;
     }
 
     private function getMemberReward($trxNo = null)
@@ -231,5 +239,14 @@ class LoyaltyController extends BaseApiController
         $newDateTime = $newDate.' '.$dateTimeArray[1];
 
         return $newDateTime;
+    }
+
+    private function sendOrderLoyaltyEmail($member, $order)
+    {
+        $message = (new OrderLoyalty($member, $order))
+            ->onConnection(env('INFOSCAN_QUEUE', 'sync'))
+            ->onQueue(config('common.queue_list.member_order_loyalty'));
+
+        Mail::to($member->email)->queue($message);
     }
 }
