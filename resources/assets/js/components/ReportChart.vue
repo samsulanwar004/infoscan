@@ -133,13 +133,13 @@
               },],
               periodLabels: {
                 "daily": {
-                  "1": "Monday",
-                  "2": "Tuesday",
-                  "3": "Wednesday",
-                  "4": "Thursday",
-                  "5": "Friday",
-                  "6": "Thursday",
-                  "7": "Sunday",
+                  "0": "Monday",
+                  "1": "Tuesday",
+                  "2": "Wednesday",
+                  "3": "Thursday",
+                  "4": "Friday",
+                  "5": "Saturday",
+                  "6": "Sunday",
                 },
                 "weekly": {
                   "1": "Week 1",
@@ -213,7 +213,7 @@
               var self = this;
               var periodLabel = this.periodLabels[this.timerange];
               self.chartData = [];
-                if (self.category !== '') {
+                if (self.category !== '') { // single category data
                   $.each(this._clegends, function(key, legend) {
                     // skip iteration if category is set
                     if (self.category == self.slugify(legend)) {
@@ -230,14 +230,15 @@
                                 "borderWidth": 1,
                             }
                         }
+
                         for (var i = 0; i <= Object.keys(periodLabel).length - 1; i++) {
-                          if (typeof responseItem[i - 1] !== 'undefined') {
-                            dots[i] = responseItem[i];
+                          if (typeof responseItem[i + 1] !== 'undefined') {
+                            dots[i] = responseItem[i + 1];
                           } else {
                             dots[i] = 0;
                           }
                         }
-
+                        console.log(responseItem, dots)
                         self.chartData.push({
                           label: legend,
                           fill: colorPallete.fill,
@@ -248,9 +249,9 @@
                         });
                     }
                   });
-                } else { // single category data
+                } else { // all category
                     $.each(this._clegends, function(key, legend) {
-                    // skip iteration if category is set
+                    
                         var responseItem = responseData[self.slugify(legend)];
                         var dots = [];
                         var colorPallete = self.defaultColors[key];
@@ -263,15 +264,17 @@
                                 "borderWidth": 1,
                             }
                         }
-                        console.log(responseItem, self.slugify(legend))
+
+                        // console.log(responseItem)
                         for (var i = 0; i <= Object.keys(periodLabel).length - 1; i++) {
-                          if (typeof responseItem[i] !== 'undefined') {
-                            dots[i] = responseItem[i];
+                          if (typeof responseItem[i + 1] !== 'undefined') {
+                            dots[i] = responseItem[i + 1];
                           } else {
                             dots[i] = 0;
                           }
                         }
 
+                        // console.log(dots)
                         self.chartData.push({
                           label: legend,
                           fill: colorPallete.fill,
