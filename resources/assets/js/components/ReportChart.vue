@@ -133,13 +133,13 @@
               },],
               periodLabels: {
                 "daily": {
-                  "1": "Monday",
-                  "2": "Tuesday",
-                  "3": "Wednesday",
-                  "4": "Thursday",
-                  "5": "Friday",
-                  "6": "Thursday",
-                  "7": "Sunday",
+                  "0": "Monday",
+                  "1": "Tuesday",
+                  "2": "Wednesday",
+                  "3": "Thursday",
+                  "4": "Friday",
+                  "5": "Saturday",
+                  "6": "Sunday",
                 },
                 "weekly": {
                   "1": "Week 1",
@@ -161,12 +161,15 @@
                   "10": "October",
                   "11": "November",
                   "12": "December",
+                },
+                "yearly": {
+
                 }
               },
               timeRangeInfo: {
-                    daily: moment().startOf('week').add(1, 'days').format('DD-MM-YYYY') + ' - ' + moment().endOf('week').add(1, 'days').format('DD-MM-YYYY'), // ex: 20/07/2017 - 27/07/2017
-                    weekly: moment().format('MMMM YYYY'), // ex: July 2017
-                    monthly: moment().format('YYYY'), // ex: 2017
+                    daily: moment().locale('id').startOf('week').format('DD-MM-YYYY') + ' - ' + moment().locale('id').endOf('week').add(1, 'days').format('DD-MM-YYYY'), // ex: 20/07/2017 - 27/07/2017
+                    weekly: moment().locale('id').format('MMMM YYYY'), // ex: July 2017
+                    monthly: moment().locale('id').format('YYYY'), // ex: 2017
                     yearly: 'All periods',
                 },
               category: '',
@@ -191,9 +194,19 @@
 
           },
           created: function() {
-
+    
           },
           mounted: function() {
+
+            var startYear = 2017; // starting year data is 2017
+            var endYear = parseInt(moment().format('YYYY'));
+            
+            for (var i = startYear; i <= endYear; i++) {
+              this.periodLabels.yearly[i - startYear] = i;
+            }
+
+            // console.log(this.periodLabels);
+
             this.chartArea = $(this.$el).find('.chart-area').get(0).getContext('2d')
             this.loaderAnimation = $(this.$el).find('.loader');
             this.refreshChart()
@@ -213,7 +226,7 @@
               var self = this;
               var periodLabel = this.periodLabels[this.timerange];
               self.chartData = [];
-                if (self.category !== '') {
+                if (self.category !== '') { // single category data
                   $.each(this._clegends, function(key, legend) {
                     // skip iteration if category is set
                     if (self.category == self.slugify(legend)) {
@@ -230,14 +243,23 @@
                                 "borderWidth": 1,
                             }
                         }
+
                         for (var i = 0; i <= Object.keys(periodLabel).length - 1; i++) {
-                          if (typeof responseItem[i - 1] !== 'undefined') {
-                            dots[i] = responseItem[i];
+
+                          var dataIndex = i + 1;
+
+                          // data index for year is started from 2017 not, 0 
+                          if (self.timerange == "yearly") {
+                            dataIndex = i + 2017;
+                          }
+
+                          if (typeof responseItem[dataIndex] !== 'undefined') {
+                            dots[i] = responseItem[dataIndex];
                           } else {
                             dots[i] = 0;
                           }
                         }
-
+                        console.log(dots)
                         self.chartData.push({
                           label: legend,
                           fill: colorPallete.fill,
@@ -248,9 +270,9 @@
                         });
                     }
                   });
-                } else { // single category data
+                } else { // all category
                     $.each(this._clegends, function(key, legend) {
-                    // skip iteration if category is set
+                    
                         var responseItem = responseData[self.slugify(legend)];
                         var dots = [];
                         var colorPallete = self.defaultColors[key];
@@ -263,15 +285,24 @@
                                 "borderWidth": 1,
                             }
                         }
-                        console.log(responseItem, self.slugify(legend))
+
+                        // console.log(responseItem)
                         for (var i = 0; i <= Object.keys(periodLabel).length - 1; i++) {
-                          if (typeof responseItem[i] !== 'undefined') {
-                            dots[i] = responseItem[i];
+                          var dataIndex = i + 1;
+
+                          // data index for year is started from 2017 not, 0 
+                          if (self.timerange == "yearly") {
+                            dataIndex = i + 2017;
+                          }
+                          
+                          if (typeof responseItem[dataIndex] !== 'undefined') {
+                            dots[i] = responseItem[dataIndex];
                           } else {
                             dots[i] = 0;
                           }
                         }
 
+                        console.log(dots)
                         self.chartData.push({
                           label: legend,
                           fill: colorPallete.fill,

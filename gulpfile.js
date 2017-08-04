@@ -52,6 +52,7 @@ elixir(mix => {
         ltePath + 'plugins/daterangepicker/moment.js',
         ltePath + 'plugins/datepicker/bootstrap-datepicker.js',
         ltePath + 'plugins/daterangepicker/daterangepicker.js',
+        nodePath + 'moment/min/moment-with-locales.js',
         assetPath + 'bootstrap/js/bootstrap.js',
         ltePath + 'plugins/fastclick/fastclick.min.js',
         ltePath + 'plugins/form-serialize/jquery.serializejson.min.js',
