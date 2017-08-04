@@ -164,9 +164,9 @@
                 }
               },
               timeRangeInfo: {
-                    daily: moment().startOf('week').add(1, 'days').format('DD-MM-YYYY') + ' - ' + moment().endOf('week').add(1, 'days').format('DD-MM-YYYY'), // ex: 20/07/2017 - 27/07/2017
-                    weekly: moment().format('MMMM YYYY'), // ex: July 2017
-                    monthly: moment().format('YYYY'), // ex: 2017
+                    daily: moment().locale('id').startOf('week').format('DD-MM-YYYY') + ' - ' + moment().locale('id').endOf('week').add(1, 'days').format('DD-MM-YYYY'), // ex: 20/07/2017 - 27/07/2017
+                    weekly: moment().locale('id').format('MMMM YYYY'), // ex: July 2017
+                    monthly: moment().locale('id').format('YYYY'), // ex: 2017
                     yearly: 'All periods',
                 },
               category: '',
@@ -191,7 +191,7 @@
 
           },
           created: function() {
-
+    
           },
           mounted: function() {
             this.chartArea = $(this.$el).find('.chart-area').get(0).getContext('2d')

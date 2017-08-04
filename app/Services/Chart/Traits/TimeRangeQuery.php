@@ -2,6 +2,7 @@
 namespace App\Services\Chart\Traits;
 
 use DB;
+use Carbon\Carbon;
 
 trait TimeRangeQuery
 {
@@ -39,13 +40,25 @@ trait TimeRangeQuery
                 break;
 
             default: // daily
-                $query->select(DB::raw('YEAR(created_at) as year, WEEKDAY(created_at) AS day, WEEK(created_at) AS week, COUNT(created_at) AS total'))
-                    ->groupBy(['year', 'week', 'day'])
-                    ->having('week', '=', $this->currentDate->weekOfYear);
+                // $query->select(DB::raw('YEAR(created_at) as year, WEEKDAY(created_at) AS day, WEEK(created_at) AS week, COUNT(created_at) AS total, DATE(created_at) as tgl'))
+                // $query->select(DB::raw('YEAR(created_at) as year, WEEKDAY(created_at) AS day, WEEK(created_at) AS week, COUNT(created_at) AS total, DATE(created_at) as tgl'))
+                //     ->groupBy(['year', 'week', 'day'])
+                //     ->having('week', '=', $this->currentDate->weekOfYear)
+                //     ->orderBy('tgl');
+                // // $keyField = 'day';
+                // $keyField = 'day';
+                
+                $startOfWeek = Carbon::now()->startOfWeek();
+                $endOfWeek = Carbon::now()->endOfWeek();
+
+                $query->select(DB::raw('COUNT(created_at) AS total, DATE(created_at) as tgl, WEEKDAY(created_at) AS day'))
+                    ->whereBetween('created_at', [$startOfWeek->format('Y-m-d 00:00:00'), $endOfWeek->format('Y-m-d 23:59:59')])
+                    ->groupBy(['tgl'])
+                    ->orderBy('tgl');
                 $keyField = 'day';
 
         }
-
+        // dd($query->get());
         return $query->get()
             ->pluck('total', $keyField);
     }
