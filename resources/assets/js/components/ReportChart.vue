@@ -161,6 +161,9 @@
                   "10": "October",
                   "11": "November",
                   "12": "December",
+                },
+                "yearly": {
+
                 }
               },
               timeRangeInfo: {
@@ -194,6 +197,16 @@
     
           },
           mounted: function() {
+
+            var startYear = 2017; // starting year data is 2017
+            var endYear = parseInt(moment().format('YYYY'));
+            
+            for (var i = startYear; i <= endYear; i++) {
+              this.periodLabels.yearly[i - startYear] = i;
+            }
+
+            // console.log(this.periodLabels);
+
             this.chartArea = $(this.$el).find('.chart-area').get(0).getContext('2d')
             this.loaderAnimation = $(this.$el).find('.loader');
             this.refreshChart()
@@ -232,13 +245,21 @@
                         }
 
                         for (var i = 0; i <= Object.keys(periodLabel).length - 1; i++) {
-                          if (typeof responseItem[i + 1] !== 'undefined') {
-                            dots[i] = responseItem[i + 1];
+
+                          var dataIndex = i + 1;
+
+                          // data index for year is started from 2017 not, 0 
+                          if (self.timerange == "yearly") {
+                            dataIndex = i + 2017;
+                          }
+
+                          if (typeof responseItem[dataIndex] !== 'undefined') {
+                            dots[i] = responseItem[dataIndex];
                           } else {
                             dots[i] = 0;
                           }
                         }
-                        console.log(responseItem, dots)
+                        console.log(dots)
                         self.chartData.push({
                           label: legend,
                           fill: colorPallete.fill,
@@ -267,14 +288,21 @@
 
                         // console.log(responseItem)
                         for (var i = 0; i <= Object.keys(periodLabel).length - 1; i++) {
-                          if (typeof responseItem[i + 1] !== 'undefined') {
-                            dots[i] = responseItem[i + 1];
+                          var dataIndex = i + 1;
+
+                          // data index for year is started from 2017 not, 0 
+                          if (self.timerange == "yearly") {
+                            dataIndex = i + 2017;
+                          }
+                          
+                          if (typeof responseItem[dataIndex] !== 'undefined') {
+                            dots[i] = responseItem[dataIndex];
                           } else {
                             dots[i] = 0;
                           }
                         }
 
-                        // console.log(dots)
+                        console.log(dots)
                         self.chartData.push({
                           label: legend,
                           fill: colorPallete.fill,
