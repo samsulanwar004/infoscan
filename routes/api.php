@@ -45,4 +45,10 @@ Route::group([
     Route::post('/log', 'Api\LogController@store');
     Route::get('/leaderboard', 'Api\LeaderboardController@index');
     Route::get('/limit', 'Api\LimitController@index');
+    Route::get('/loyalty', 'Api\LoyaltyController@index');
+    Route::get('/loyalty/{id}', 'Api\LoyaltyController@show');
+    Route::post('/loyalty', 'Api\LoyaltyController@store');
+    Route::get('/reward', 'Api\LoyaltyController@reward');
+    Route::get('/reward/{id}', 'Api\LoyaltyController@detailReward');
+
 });

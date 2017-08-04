@@ -5,6 +5,7 @@ namespace App\Exceptions;
 use Exception;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Support\Str;
 
 class Handler extends ExceptionHandler
 {
@@ -86,7 +87,7 @@ class Handler extends ExceptionHandler
      */
     protected function unauthenticated($request, AuthenticationException $exception)
     {
-        if ($request->expectsJson()) {
+        if ($request->expectsJson() || Str::contains($request->header('content-type'), ['/json', 'json'])) {
             return response()->json([
                     'status' => 'error',
                     'message' => 'Unauthenticated'

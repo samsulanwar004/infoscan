@@ -20,12 +20,13 @@ class CreateUserSeeder extends Seeder
         'Ses.List','Ses.Create','Ses.Update','Ses.Delete',
         'Points.List','Points.Create','Points.Update','Points.Delete',
         'Member.List','Member.Show',
-        'Snaps.List','Snaps.Show',        
+        'Snaps.List','Snaps.Show',
         'Settings.List',
         'Transactions.List',
         'Reports.List',
         'Crowdsource.List',
         'PaymentPortal.List', 'PaymentPortal.Confirm',
+        'Referral.List', 'Referral.Create', 'Referral.Update', 'Referral.Delete',
     ];
 
     protected $createPermissionsCrowdsourceAdmin = [
@@ -40,7 +41,7 @@ class CreateUserSeeder extends Seeder
         'Ses.List','Ses.Create','Ses.Update','Ses.Delete',
         'Points.List','Points.Create','Points.Update','Points.Delete',
         'Member.List','Member.Show',
-        'Snaps.List','Snaps.Show',        
+        'Snaps.List','Snaps.Show',
         'Settings.List',
         'Transactions.List',
         'Reports.List',
@@ -113,7 +114,7 @@ class CreateUserSeeder extends Seeder
         }
 
         // assign role for this user;
-        $u->assignRole($r);   
+        $u->assignRole($r);
 
         $ca = new \Rebel\Component\Rbac\Models\Role();
         $ca->role_name = 'Crowdsource Admin';
@@ -122,7 +123,7 @@ class CreateUserSeeder extends Seeder
         $ca->save();
 
         foreach ($this->createPermissionsCrowdsourceAdmin as $permission) {
-            // add permission for current role {Crowdsource Admin}            
+            // add permission for current role {Crowdsource Admin}
             $ca->addPermissions($permission);
         }
 
@@ -133,7 +134,7 @@ class CreateUserSeeder extends Seeder
         $cs->save();
 
         foreach ($this->createPermissionsCrowdsourceSupervisor as $permission) {
-            // add permission for current role {Crowdsource Supervisor}            
+            // add permission for current role {Crowdsource Supervisor}
             $cs->addPermissions($permission);
         }
 
@@ -144,7 +145,7 @@ class CreateUserSeeder extends Seeder
         $cac->save();
 
         foreach ($this->createPermissionsCrowdsourceAccount as $permission) {
-            // add permission for current role {Crowdsource Account}            
+            // add permission for current role {Crowdsource Account}
             $cac->addPermissions($permission);
         }
 
@@ -155,7 +156,7 @@ class CreateUserSeeder extends Seeder
         $va->save();
 
         foreach ($this->createPermissionsVendorAdmin as $permission) {
-            // add permission for current role {Vendor Admin}            
+            // add permission for current role {Vendor Admin}
             $va->addPermissions($permission);
         }
 
@@ -166,7 +167,7 @@ class CreateUserSeeder extends Seeder
         $vac->save();
 
         foreach ($this->createPermissionsVendorAccount as $permission) {
-            // add permission for current role {Vendor Account}            
+            // add permission for current role {Vendor Account}
             $vac->addPermissions($permission);
         }
 

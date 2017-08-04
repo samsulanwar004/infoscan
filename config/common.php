@@ -303,6 +303,7 @@ return [
         'assign_process' => 'assignProcess',
         'member_action_log' => 'userBehaviourLog',
         'member_register_verification_email' => 'userBehaviourLog',
+        'member_order_loyalty' => 'userBehaviourLog',
     ],
 
     'notification_messages' => [
@@ -339,4 +340,13 @@ return [
     'internal_api_token' => env('INTERNAL_API_TOKEN'),
 
     'user_tester' => explode(',', env('USER_TESTER')),
+
+    'egift' => [
+        'api_key' => env('API_KEY_EGIFT'),
+        'api_secret' => env('API_SECRET_EGIFT'),
+        'url_token' => env('URL_TOKEN_EGIFT'),
+        'url_list' => env('URL_LIST_EGIFT'),
+        'url_purchase' => env('URL_PURCHASE_EGIFT'),
+        'expired' => env('EXPIRED_EGIFT'),
+    ],
 ];

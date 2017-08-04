@@ -13,7 +13,6 @@ use Exception;
 use Illuminate\Http\Request;
 use Storage;
 use App\Libraries\GoogleMap;
-use App\Events\TransactionEvent;
 use App\Jobs\PointCalculation;
 use App\Jobs\MemberActionJob;
 use App\Jobs\AssignJob;
@@ -786,7 +785,7 @@ class SnapService
 
         $point = isset($task->point) ? $task->point : 0;
 
-        // send dispatcher
+        // send dispatcher : fucking SQS not SEND
         $job = $this->getPlainDispatcher($data);
         dispatch($job);
 
@@ -1670,7 +1669,8 @@ class SnapService
      */
     protected function getPlainDispatcher($object)
     {
-        return new DispatcherJob($object);
+        return (new DispatcherJob($object))->onQueue('recognition-reader') //
+                                           ->onConnection('sqs-plain');
     }
 
     /**
