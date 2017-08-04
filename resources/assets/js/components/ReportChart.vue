@@ -259,7 +259,7 @@
                             dots[i] = 0;
                           }
                         }
-                        console.log(dots)
+                        // console.log(dots)
                         self.chartData.push({
                           label: legend,
                           fill: colorPallete.fill,
@@ -302,7 +302,7 @@
                           }
                         }
 
-                        console.log(dots)
+                        // console.log(dots)
                         self.chartData.push({
                           label: legend,
                           fill: colorPallete.fill,
