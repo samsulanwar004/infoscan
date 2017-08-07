@@ -247,6 +247,17 @@ class SnapService
                         'sku' => trim(str_replace(["\n", "\r", ","], ' ', $tag->sku)),
                         'quantity' => trim(str_replace(["\n", "\r", ","], ' ', $tag->quantity)),
                         'total_price' => trim(str_replace(["\n", "\r", ","], ' ', $tag->total_price)),
+                        'receipt_id' => trim(str_replace(["\n", "\r", ","], ' ', $snap['main']->receipt_id)),
+                        'location' => trim(str_replace(["\n", "\r", ","], ' ', $snap['main']->location)),
+                        'purchase_time' => trim(str_replace(["\n", "\r", ","], ' ', $snap['main']->purchase_time)),
+                        'outlet_name' => trim(str_replace(["\n", "\r", ","], ' ', $snap['main']->outlet_name)),
+                        'outlet_type' => trim(str_replace(["\n", "\r", ","], ' ', $snap['main']->outlet_type)),
+                        'outlet_city' => trim(str_replace(["\n", "\r", ","], ' ', $snap['main']->outlet_city)),
+                        'outlet_province' => trim(str_replace(["\n", "\r", ","], ' ', $snap['main']->outlet_province)),
+                        'outlet_zip_code' => trim(str_replace(["\n", "\r", ","], ' ', $snap['main']->outlet_zip_code)),
+                        'outlet_rt_rw' => trim(str_replace(["\n", "\r", ","], ' ', $snap['main']->outlet_rt_rw)),
+                        'total_value' => trim(str_replace(["\n", "\r", ","], ' ', $snap['main']->total_value)),
+                        'payment_method' => trim(str_replace(["\n", "\r", ","], ' ', $snap['main']->payment_method)),
                     ];
                 }
             } else {
@@ -272,6 +283,17 @@ class SnapService
                     'sku' => '',
                     'quantity' => '',
                     'total_price' => '',
+                    'receipt_id' => trim(str_replace(["\n", "\r", ","], ' ', $snap['main']->receipt_id)),
+                    'location' => trim(str_replace(["\n", "\r", ","], ' ', $snap['main']->location)),
+                    'purchase_time' => trim(str_replace(["\n", "\r", ","], ' ', $snap['main']->purchase_time)),
+                    'outlet_name' => trim(str_replace(["\n", "\r", ","], ' ', $snap['main']->outlet_name)),
+                    'outlet_type' => trim(str_replace(["\n", "\r", ","], ' ', $snap['main']->outlet_type)),
+                    'outlet_city' => trim(str_replace(["\n", "\r", ","], ' ', $snap['main']->outlet_city)),
+                    'outlet_province' => trim(str_replace(["\n", "\r", ","], ' ', $snap['main']->outlet_province)),
+                    'outlet_zip_code' => trim(str_replace(["\n", "\r", ","], ' ', $snap['main']->outlet_zip_code)),
+                    'outlet_rt_rw' => trim(str_replace(["\n", "\r", ","], ' ', $snap['main']->outlet_rt_rw)),
+                    'total_value' => trim(str_replace(["\n", "\r", ","], ' ', $snap['main']->total_value)),
+                    'payment_method' => trim(str_replace(["\n", "\r", ","], ' ', $snap['main']->payment_method)),
                 ];
             }
 
@@ -279,11 +301,20 @@ class SnapService
 
         if ($data['type'] == 'new') {
             $filename = strtolower(str_random(10)) . '.csv';
-            $title = 'No,Snap Code,Type,# of images,User Details,Name,Estimated Point,Fixed Point,Current Point,Current Level,Aproved / Rejected,Rejection Reason,Receipt Snapped,Approved / Rejected Date,Approved / Rejected By,Product Name,Brands,Weight,SKU,Quantity,Total Price,OCR';
+            $title = 'No,Snap Code,Type,# of images,User Details,Name,Estimated Point,Fixed Point,Current Point,Current Level,Aproved / Rejected,Rejection Reason,Receipt Snapped,Approved / Rejected Date,Approved / Rejected By,Product Name,Weight,Quantity,Total Price,Receipt ID,Location,Purchase Time,Outlet Name,Outlet Type,Outlet City,Outlet Province,Outlet Zipcode,Outlet RT/RW,Total Value,Payment Method,OCR';
             \Storage::disk('csv')->put($filename, $title);
             $no = 1;
             foreach ($results as $row) {
-                $baris = $no . ',' . $row['snap_code'] . ',' . $row['type'] . ',' . $row['of_images'] . ',' . $row['email'] . ',' . $row['name'] . ',' . $row['estimated_point'] . ',' . $row['fixed_point'] . ',' . $row['current_point'] . ',' . $row['current_level'] . ',' . $row['status'] . ',' . $row['reason'] . ',' . $row['snapped'] . ',' . $row['approve_or_reject_date'] . ',' . $row['approve_or_reject_by'] . ',' . $row['product_name'] . ',' . $row['brands'] . ',' . $row['weight'] . ',' . $row['sku'] . ',' . $row['quantity'] . ',' . $row['total_price'] . ',' . $row['ocr'];
+                $baris = $no . ',' . $row['snap_code'] . ',' . $row['type'] . ',' . $row['of_images']
+                . ',' . $row['email'] . ',' . $row['name'] . ',' . $row['estimated_point'] . ','
+                . $row['fixed_point'] . ',' . $row['current_point'] . ',' . $row['current_level'] . ','
+                . $row['status'] . ',' . $row['reason'] . ',' . $row['snapped'] . ','
+                . $row['approve_or_reject_date'] . ',' . $row['approve_or_reject_by'] . ','
+                . $row['product_name'] . ',' . $row['weight'] . ',' . $row['quantity'] . ','
+                . $row['total_price'] . ',' . $row['receipt_id'] . ',' . $row['location'] . ','
+                . $row['purchase_time'] . ',' . $row['outlet_name'] . ',' . $row['outlet_type'] . ','
+                . $row['outlet_city'] . ',' . $row['outlet_province'] . ',' . $row['outlet_zip_code'] . ','
+                . $row['outlet_rt_rw'] . ',' . $row['total_value'] . ','. $row['payment_method'] . ',' . $row['ocr'];
                 \Storage::disk('csv')->append($filename, $baris);
                 $no++;
             }
@@ -293,7 +324,16 @@ class SnapService
                 $filename = $data['filename'];
                 $no = $data['no'];
                 foreach ($results as $row) {
-                    $baris = $no . ',' . $row['snap_code'] . ',' . $row['type'] . ',' . $row['of_images'] . ',' . $row['email'] . ',' . $row['name'] . ',' . $row['estimated_point'] . ',' . $row['fixed_point'] . ',' . $row['current_point'] . ',' . $row['current_level'] . ',' . $row['status'] . ',' . $row['reason'] . ',' . $row['snapped'] . ',' . $row['approve_or_reject_date'] . ',' . $row['approve_or_reject_by'] . ',' . $row['product_name'] . ',' . $row['brands'] . ',' . $row['weight'] . ',' . $row['sku'] . ',' . $row['quantity'] . ',' . $row['total_price'] . ',' . $row['ocr'];
+                    $baris = $no . ',' . $row['snap_code'] . ',' . $row['type'] . ',' . $row['of_images']
+                    . ',' . $row['email'] . ',' . $row['name'] . ',' . $row['estimated_point'] . ','
+                    . $row['fixed_point'] . ',' . $row['current_point'] . ',' . $row['current_level'] . ','
+                    . $row['status'] . ',' . $row['reason'] . ',' . $row['snapped'] . ','
+                    . $row['approve_or_reject_date'] . ',' . $row['approve_or_reject_by'] . ','
+                    . $row['product_name'] . ',' . $row['weight'] . ',' . $row['quantity'] . ','
+                    . $row['total_price'] . ',' . $row['receipt_id'] . ',' . $row['location'] . ','
+                    . $row['purchase_time'] . ',' . $row['outlet_name'] . ',' . $row['outlet_type'] . ','
+                    . $row['outlet_city'] . ',' . $row['outlet_province'] . ',' . $row['outlet_zip_code'] . ','
+                    . $row['outlet_rt_rw'] . ',' . $row['total_value'] . ','. $row['payment_method'] . ',' . $row['ocr'];
                     \Storage::disk('csv')->append($filename, $baris);
                     $no++;
                 }
