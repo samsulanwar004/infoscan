@@ -1,4 +1,4 @@
-@extends('app', ['mini_sidebar' => true])
+{{-- @extends('app', ['mini_sidebar' => true]) --}}
 
 @section('content')
     @include('partials.content_header', [
@@ -76,7 +76,7 @@
                                                             </div>
                                                         </div>
                                                         <div class="buttons">
-                                                            <input type="range" class="zoom-range">
+                                                            {{-- <input type="range" class="zoom-range"> --}}
                                                             <button class="zoom-in btn btn-primary btn-sm"><i class="fa fa-search-plus" aria-hidden="true"></i></button>
                                                             <button class="zoom-out btn btn-primary btn-sm"><i class="fa fa-search-minus" aria-hidden="true"></i></button>
                                                             <button class="reset btn btn-primary btn-sm">Reset</button>
@@ -109,7 +109,7 @@
                                                             </div>
                                                         </div>
                                                         <div class="buttons">
-                                                            <input type="range" class="zoom-range">
+                                                            {{-- <input type="range" class="zoom-range"> --}}
                                                             <button class="zoom-in btn btn-primary btn-sm"><i class="fa fa-search-plus" aria-hidden="true"></i></button>
                                                             <button class="zoom-out btn btn-primary btn-sm"><i class="fa fa-search-minus" aria-hidden="true"></i></button>
                                                             <button class="reset btn btn-primary btn-sm">Reset</button>
@@ -146,7 +146,7 @@
                                                             </div>
                                                         </div>
                                                         <div class="buttons">
-                                                            <input type="range" class="zoom-range">
+                                                            {{-- <input type="range" class="zoom-range"> --}}
                                                             <button class="zoom-in btn btn-primary btn-sm"><i class="fa fa-search-plus" aria-hidden="true"></i></button>
                                                             <button class="zoom-out btn btn-primary btn-sm"><i class="fa fa-search-minus" aria-hidden="true"></i></button>
                                                             <button class="reset btn btn-primary btn-sm">Reset</button>
@@ -257,7 +257,7 @@
                                 </div>
                                 <div class="form-group total_value">
                                     <label for="total_value">Total Value</label>
-                                    <input type="number" class="form-control input-sm tab-side" id="total_value" placeholder="Enter Total Value" value="{{ clean_numeric($snap->total_value,'%',false,'.') }}" readonly="readonly" tabIndex="10">
+                                    <input type="number" class="form-control input-sm tab-side" id="total_value" placeholder="Enter Total Value" value="{{ number_format($snap->total_value,0,0,'.') }}" readonly="readonly" tabIndex="10">
                                 </div>
                                 <div class="form-group payment_method">
                                     <label for="payment_method">Payment Method</label>

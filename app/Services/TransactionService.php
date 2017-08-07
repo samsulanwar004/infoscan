@@ -265,4 +265,24 @@ class TransactionService
 
         return true;
     }
+
+    public function redeemPointToLoyalty($transaction, $datas)
+    {
+        $t = new Transaction;
+        $t->transaction_code = strtolower(str_random(10));
+        $t->member_code = $transaction['member_code'];
+        $t->transaction_type = config('common.transaction.transaction_type.loyalty');
+
+        $t->save();
+
+        foreach ($datas['detail_transaction'] as $data) {
+            $td = new TransactionDetail;
+            $td->member_code_from = $data['member_code_from'];
+            $td->member_code_to = $data['member_code_to'];
+            $td->amount = $data['amount'];
+            $td->detail_type = $data['detail_type'];
+            $td->transaction()->associate($t);
+            $td->save();
+        }
+    }
 }

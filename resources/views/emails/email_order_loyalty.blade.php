@@ -15,13 +15,13 @@ Member E-mail Verification
 				</p>
 				<!-- Callout Panel -->
 				<p class="callout">
-					Transaction Time : {{ $order->trx_time }}</br>
-					Order Number : {{ $order->order_number }}</br>
-					Brand : {{ $order->brand }}</br>
-					EGIFT CODE : {{ $order->egift_code }}</br>
-					Program Name : {{ $order->program_name }}</br>
-					Value : {{ $order->value }}</br>
-					Expired Date : {{ $order->expired_date }}</br>
+					Transaction Time : {{ $order->trx_time }}<br>
+					Order Number : {{ $order->order_number }}<br>
+					Brand : {{ $order->brand }}<br>
+					EGIFT CODE : {{ $order->egift_code }}<br>
+					Program Name : {{ $order->program_name }}<br>
+					Value : {{ $order->value }}<br>
+					Expired Date : {{ $order->expired_date }}<br>
 				</p><!-- /Callout Panel -->
 
 				<p>Foto terus belanjaanmu untuk mengumpulkan poin!</p>

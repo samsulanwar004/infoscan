@@ -108,6 +108,8 @@ class SnapController extends AdminController
             // build code for approve
             $code = $this->getCodeTask($snap->snap_type, $snap->mode_type);
 
+            $receipt = $snap->files()->where('file_mimes', 'like', 'image%')->first();
+
             $files = $snap->files()->where('file_mimes', 'like', 'image%')->paginate(1);
 
             $audios = $snap->files->filter(function($value, $Key) use ($files){
@@ -116,7 +118,7 @@ class SnapController extends AdminController
 
             $paymentMethods = config("common.payment_methods");
 
-            return view('snaps.show', compact('snap', 'paymentMethods', 'audios', 'files', 'code'));
+            return view('snaps.show', compact('snap', 'paymentMethods', 'audios', 'files', 'code', 'receipt'));
         } catch (Exception $e) {
             logger($e->getMessage());
             return view('errors.404');
