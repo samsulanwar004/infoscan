@@ -1,4 +1,4 @@
-@extends('app', ['mini_sidebar' => true])
+{{-- @extends('app', ['mini_sidebar' => true]) --}}
 
 @section('content')
     @include('partials.content_header', [
@@ -76,7 +76,7 @@
                                                             </div>
                                                         </div>
                                                         <div class="buttons">
-                                                            <input type="range" class="zoom-range">
+                                                            {{-- <input type="range" class="zoom-range"> --}}
                                                             <button class="zoom-in btn btn-primary btn-sm"><i class="fa fa-search-plus" aria-hidden="true"></i></button>
                                                             <button class="zoom-out btn btn-primary btn-sm"><i class="fa fa-search-minus" aria-hidden="true"></i></button>
                                                             <button class="reset btn btn-primary btn-sm">Reset</button>
@@ -109,7 +109,7 @@
                                                             </div>
                                                         </div>
                                                         <div class="buttons">
-                                                            <input type="range" class="zoom-range">
+                                                            {{-- <input type="range" class="zoom-range"> --}}
                                                             <button class="zoom-in btn btn-primary btn-sm"><i class="fa fa-search-plus" aria-hidden="true"></i></button>
                                                             <button class="zoom-out btn btn-primary btn-sm"><i class="fa fa-search-minus" aria-hidden="true"></i></button>
                                                             <button class="reset btn btn-primary btn-sm">Reset</button>
@@ -146,7 +146,7 @@
                                                             </div>
                                                         </div>
                                                         <div class="buttons">
-                                                            <input type="range" class="zoom-range">
+                                                            {{-- <input type="range" class="zoom-range"> --}}
                                                             <button class="zoom-in btn btn-primary btn-sm"><i class="fa fa-search-plus" aria-hidden="true"></i></button>
                                                             <button class="zoom-out btn btn-primary btn-sm"><i class="fa fa-search-minus" aria-hidden="true"></i></button>
                                                             <button class="reset btn btn-primary btn-sm">Reset</button>
