@@ -233,9 +233,9 @@ class SnapService
                         'of_images' => $snap['main']->files->count(),
                         'email' => $snap['main']->member->email,
                         'name' => $snap['main']->member->name,
-                        'estimated_point' => $snap['main']->estimated_point,
-                        'fixed_point' => $snap['main']->fixed_point,
-                        'current_point' => $snap['main']->current_point_member,
+                        'estimated_point' => number_format($snap['main']->estimated_point,0,0,'.'),
+                        'fixed_point' => number_format($snap['main']->fixed_point,0,0,'.'),
+                        'current_point' => number_format($snap['main']->current_point_member,0,0,'.'),
                         'current_level' => $snap['main']->current_level_member,
                         'snapped' => $snap['main']->created_at->toDateTimeString(),
                         'approve_or_reject_date' => $snap['main']->updated_at->toDateTimeString(),
@@ -246,7 +246,7 @@ class SnapService
                         'weight' => trim(str_replace(["\n", "\r", ","], ' ', $tag->weight)),
                         'sku' => trim(str_replace(["\n", "\r", ","], ' ', $tag->sku)),
                         'quantity' => trim(str_replace(["\n", "\r", ","], ' ', $tag->quantity)),
-                        'total_price' => trim(str_replace(["\n", "\r", ","], ' ', $tag->total_price)),
+                        'total_price' => number_format(trim(str_replace(["\n", "\r", ","], ' ', $tag->total_price)),0,0,'.'),
                         'receipt_id' => trim(str_replace(["\n", "\r", ","], ' ', $snap['main']->receipt_id)),
                         'location' => trim(str_replace(["\n", "\r", ","], ' ', $snap['main']->location)),
                         'purchase_time' => trim(str_replace(["\n", "\r", ","], ' ', $snap['main']->purchase_time)),
@@ -256,7 +256,7 @@ class SnapService
                         'outlet_province' => trim(str_replace(["\n", "\r", ","], ' ', $snap['main']->outlet_province)),
                         'outlet_zip_code' => trim(str_replace(["\n", "\r", ","], ' ', $snap['main']->outlet_zip_code)),
                         'outlet_rt_rw' => trim(str_replace(["\n", "\r", ","], ' ', $snap['main']->outlet_rt_rw)),
-                        'total_value' => trim(str_replace(["\n", "\r", ","], ' ', $snap['main']->total_value)),
+                        'total_value' => number_format(trim(str_replace(["\n", "\r", ","], ' ', $snap['main']->total_value)),0,0,'.'),
                         'payment_method' => trim(str_replace(["\n", "\r", ","], ' ', $snap['main']->payment_method)),
                     ];
                 }
@@ -269,9 +269,9 @@ class SnapService
                     'of_images' => $snap['main']->files->count(),
                     'email' => $snap['main']->member->email,
                     'name' => $snap['main']->member->name,
-                    'estimated_point' => $snap['main']->estimated_point,
-                    'fixed_point' => $snap['main']->fixed_point,
-                    'current_point' => $snap['main']->current_point_member,
+                    'estimated_point' => number_format($snap['main']->estimated_point,0,0,'.'),
+                    'fixed_point' => number_format($snap['main']->fixed_point,0,0,'.'),
+                    'current_point' => number_format($snap['main']->current_point_member,0,0,'.'),
                     'current_level' => $snap['main']->current_level_member,
                     'snapped' => $snap['main']->created_at->toDateTimeString(),
                     'approve_or_reject_date' => $snap['main']->updated_at->toDateTimeString(),
@@ -292,7 +292,7 @@ class SnapService
                     'outlet_province' => trim(str_replace(["\n", "\r", ","], ' ', $snap['main']->outlet_province)),
                     'outlet_zip_code' => trim(str_replace(["\n", "\r", ","], ' ', $snap['main']->outlet_zip_code)),
                     'outlet_rt_rw' => trim(str_replace(["\n", "\r", ","], ' ', $snap['main']->outlet_rt_rw)),
-                    'total_value' => trim(str_replace(["\n", "\r", ","], ' ', $snap['main']->total_value)),
+                    'total_value' => number_format(trim(str_replace(["\n", "\r", ","], ' ', $snap['main']->total_value)),0,0,'.'),
                     'payment_method' => trim(str_replace(["\n", "\r", ","], ' ', $snap['main']->payment_method)),
                 ];
             }
@@ -583,7 +583,7 @@ class SnapService
             $t->variants = $tags['variants'][$i];
             $t->weight = $tags['weight'][$i];
             $t->quantity = $tags['qty'][$i];
-            $t->total_price = $tags['total'][$i];
+            $t->total_price = $this->removeDot($tags['total'][$i]);
             $t->crop_file_path = isset($tags['crop_path'][$i]) ? $tags['crop_path'][$i] : null;
             $t->edited_signature = $this->generateSignature($tags['name'][$i], $tags['weight'][$i], $tags['qty'][$i], $tags['total'][$i]);
 
@@ -598,7 +598,7 @@ class SnapService
             $t->variants = $newTags['variants'][$i];
             $t->weight = $newTags['weight'][$i];
             $t->quantity = $newTags['qty'][$i];
-            $t->total_price = $newTags['total'][$i];
+            $t->total_price = $this->removeDot($newTags['total'][$i]);
             $t->crop_file_path = isset($newTags['crop_path'][$i]) ? $newTags['crop_path'][$i] : null;
             $t->file()->associate($id);
 
@@ -629,7 +629,7 @@ class SnapService
             $t->sku = $tags['sku'][$i];
             $t->weight = $tags['weight'][$i];
             $t->quantity = $tags['qty'][$i];
-            $t->total_price = $tags['total'][$i];
+            $t->total_price = $this->removeDot($tags['total'][$i]);
             $t->crop_file_path = isset($tags['crop_path'][$i]) ? $tags['crop_path'][$i] : null;
             $t->edited_signature = $this->generateSignature($tags['name'][$i], $tags['weight'][$i], $tags['qty'][$i], $tags['total'][$i]);
 
@@ -645,7 +645,7 @@ class SnapService
             $t->sku = $newTags['sku'][$i];
             $t->weight = $newTags['weight'][$i];
             $t->quantity = $newTags['qty'][$i];
-            $t->total_price = $newTags['total'][$i];
+            $t->total_price = $this->removeDot($newTags['total'][$i]);
             $t->img_x = $newTags['x'][$i];
             $t->img_y = $newTags['y'][$i];
             $t->crop_file_path = isset($newTags['crop_path'][$i]) ? $newTags['crop_path'][$i] : null;
@@ -678,7 +678,7 @@ class SnapService
             $t->sku = $tags['sku'][$i];
             $t->weight = $tags['weight'][$i];
             $t->quantity = $tags['qty'][$i];
-            $t->total_price = $tags['total'][$i];
+            $t->total_price = $this->removeDot($tags['total'][$i]);
             $t->crop_file_path = isset($tags['crop_path'][$i]) ? $tags['crop_path'][$i] : null;
             $t->edited_signature = $this->generateSignature($tags['name'][$i], $tags['weight'][$i], $tags['qty'][$i], $tags['total'][$i]);
 
@@ -694,7 +694,7 @@ class SnapService
             $t->sku = $newTags['sku'][$i];
             $t->weight = $newTags['weight'][$i];
             $t->quantity = $newTags['qty'][$i];
-            $t->total_price = $newTags['total'][$i];
+            $t->total_price = $this->removeDot($newTags['total'][$i]);
             $t->crop_file_path = isset($newTags['crop_path'][$i]) ? $newTags['crop_path'][$i] : null;
             $t->file()->associate($id);
 
@@ -725,7 +725,7 @@ class SnapService
             $t->sku = $tags['sku'][$i];
             $t->weight = $tags['weight'][$i];
             $t->quantity = $tags['qty'][$i];
-            $t->total_price = $tags['total'][$i];
+            $t->total_price = $this->removeDot($tags['total'][$i]);
             $t->crop_file_path = isset($tags['crop_path'][$i]) ? $tags['crop_path'][$i] : null;
             $t->edited_signature = $this->generateSignature($tags['name'][$i], $tags['weight'][$i], $tags['qty'][$i], $tags['total'][$i]);
 
@@ -741,7 +741,7 @@ class SnapService
             $t->sku = $newTags['sku'][$i];
             $t->weight = $newTags['weight'][$i];
             $t->quantity = $newTags['qty'][$i];
-            $t->total_price = $newTags['total'][$i];
+            $t->total_price = $this->removeDot($newTags['total'][$i]);
             $t->crop_file_path = isset($newTags['crop_path'][$i]) ? $newTags['crop_path'][$i] : null;
             $t->file()->associate($id);
 
@@ -766,8 +766,8 @@ class SnapService
 
     public function totalValue($tagsTotal, $newTagsTotal, $id)
     {
-        $tagsTotal = ($tagsTotal == true) ? $tagsTotal : [];
-        $newTagsTotal = ($newTagsTotal == true) ? $newTagsTotal : [];
+        $tagsTotal = ($tagsTotal == true) ? $this->removeDot($tagsTotal) : [];
+        $newTagsTotal = ($newTagsTotal == true) ? $this->removeDot($newTagsTotal) : [];
 
         $total = collect(array_merge($tagsTotal, $newTagsTotal))->sum();
 
@@ -2102,6 +2102,11 @@ class SnapService
         $config = config('common.queue_list.assign_process');
         $job = (new LocationProcessJob($snap->id, $latitude, $longitude))->onQueue($config)->onConnection(env('INFOSCAN_QUEUE'));
         dispatch($job);
+    }
+
+    private function removeDot($value)
+    {
+        return str_replace('.', '', $value);
     }
 
 }

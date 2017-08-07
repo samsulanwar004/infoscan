@@ -257,7 +257,7 @@
                                 </div>
                                 <div class="form-group total_value">
                                     <label for="total_value">Total Value</label>
-                                    <input type="number" class="form-control input-sm tab-side" id="total_value" placeholder="Enter Total Value" value="{{ clean_numeric($snap->total_value,'%',false,'.') }}" readonly="readonly" tabIndex="10">
+                                    <input type="number" class="form-control input-sm tab-side" id="total_value" placeholder="Enter Total Value" value="{{ number_format($snap->total_value,0,0,'.') }}" readonly="readonly" tabIndex="10">
                                 </div>
                                 <div class="form-group payment_method">
                                     <label for="payment_method">Payment Method</label>

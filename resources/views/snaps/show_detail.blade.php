@@ -48,7 +48,7 @@
                     <td style="display:none;"><input type="text" name="tag[sku][]" class="form-control input-sm" value="{{ $tag->sku }}" placeholder="SKU"></td>
                     <!-- <td style="max-width: 100px"><input type="text" list="variants" name="tag[variants][]" class="form-control input-sm" value="{{ $tag->variants }}" placeholder="Variants"></td> -->
                     <td><input type="number" name="tag[qty][]" class="form-control input-sm" value="{{ $tag->quantity }}" placeholder="QTY" required="required"></td>
-                    <td><input type="number" name="tag[total][]" class="form-control input-sm" value="{{ clean_numeric($tag->total_price,'%',false,'.') }}" placeholder="Total Price" required="required"></td>
+                    <td><input type="number" name="tag[total][]" class="form-control input-sm" value="{{ number_format($tag->total_price,0,0,'.') }}" placeholder="Total Price" required="required"></td>
                     <input type="hidden" name="tag[id][]" value="{{ $tag->id }}">
                 </tr>
             @endforeach
@@ -75,7 +75,7 @@
                     <td style="display:none;"><input type="text" name="tag[sku][]" class="form-control input-sm" value="{{ $tag->sku }}" placeholder="SKU"></td>
                     <!-- <td style="max-width: 100px"><input type="text" list="variants" name="tag[variants][]" class="form-control input-sm" value="{{ $tag->variants }}" placeholder="Variants"></td> -->
                     <td><input type="number" name="tag[qty][]" class="form-control input-sm" value="{{ $tag->quantity }}" placeholder="QTY" required="required"></td>
-                    <td><input type="number" name="tag[total][]" class="form-control input-sm" value="{{ clean_numeric($tag->total_price,'%',false,'.') }}" placeholder="Total Price" required="required"></td>
+                    <td><input type="number" name="tag[total][]" class="form-control input-sm" value="{{ number_format($tag->total_price,0,0,'.') }}" placeholder="Total Price" required="required"></td>
                     <input type="hidden" name="tag[id][]" value="{{ $tag->id }}">
                 </tr>
             @endforeach
