@@ -326,16 +326,27 @@ class SnapController extends AdminController
             $t->name = $request->input('name');
             $t->weight = $request->input('weight');
             $t->quantity = $request->input('quantity');
-            $t->total_price = $request->input('total_price');
+            $t->total_price = str_replace('.', '', $request->input('total_price'));
             $t->img_x = $request->input('img_x');
             $t->img_y = $request->input('img_y');
             $t->file()->associate($request->input('file_id'));
 
             $t->save();
 
+            $snapId = $t->file->snap_id;
+
+            $snap = \App\Snap::where('id', $snapId)->first();
+
+            $totalValue = $t->total_price + $snap->total_value;
+
+            $snap->total_value = $totalValue;
+
+            $snap->update();
+
             return response()->json([
-                'status' => 'ok',
+                'status' => 'ok'.$snap->total_value,
                 'message' => $t->id,
+                'data' => isset($totalValue) ? number_format($totalValue,0,0,'.') : '',
             ], 200);
         } catch (\Exception $e) {
             return response()->json([
