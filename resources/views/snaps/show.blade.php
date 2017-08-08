@@ -575,6 +575,8 @@
                 REBEL.removeAllMessageAlert();
                 if (responseData.status == "ok") {
                     REBEL.smallNotifTemplate(responseData.message, '.body', 'success');
+                    var totalValue = responseData.data;
+                    $('#total_value').val(responseData.data);
                 }
             }, false);
 

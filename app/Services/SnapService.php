@@ -561,6 +561,9 @@ class SnapService
 
         $snaps->update();
 
+        $totalValue = $snaps->files->pluck('total')->sum();
+
+        return $totalValue;
     }
 
     public function updateSnapModeInput(Request $request, $id)
@@ -605,7 +608,9 @@ class SnapService
             $t->save();
         }
 
-        $this->totalValue($tags['total'], $newTags['total'], $id);
+        $totalValue = $this->totalValue($tags['total'], $newTags['total'], $id);
+
+        return $totalValue;
     }
 
     public function updateSnapModeTags(Request $request, $id)
@@ -654,7 +659,9 @@ class SnapService
             $t->save();
         }
 
-        $this->totalValue($tags['total'], $newTags['total'], $id);
+        $totalValue = $this->totalValue($tags['total'], $newTags['total'], $id);
+
+        return $totalValue;
     }
 
     public function updateSnapModeAudios($request, $id)
@@ -701,7 +708,9 @@ class SnapService
             $t->save();
         }
 
-        $this->totalValue($tags['total'], $newTags['total'], $id);
+        $totalValue = $this->totalValue($tags['total'], $newTags['total'], $id);
+
+        return $totalValue;
     }
 
     public function updateSnapModeImages($request, $id)
@@ -748,7 +757,9 @@ class SnapService
             $t->save();
         }
 
-        $this->totalValue($tags['total'], $newTags['total'], $id);
+        $totalValue = $this->totalValue($tags['total'], $newTags['total'], $id);
+
+        return $totalValue;
     }
 
     public function generateSignature($name, $weight, $qty, $total)
@@ -781,7 +792,7 @@ class SnapService
         $snap->total_value = $snap->files->pluck('total')->sum();
         $snap->update();
 
-        $this->setTotalValue($snap->total_value);
+        return $snap->total_value;
     }
 
     public function handleMapAddress($latitude = 0.00000000, $longitude = 0.00000000)
