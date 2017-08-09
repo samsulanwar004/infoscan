@@ -575,6 +575,8 @@
                 REBEL.removeAllMessageAlert();
                 if (responseData.status == "ok") {
                     REBEL.smallNotifTemplate(responseData.message, '.body', 'success');
+                    var totalValue = responseData.data;
+                    $('#total_value').val(responseData.data);
                 }
             }, false);
 
@@ -634,7 +636,7 @@
                 '<td width="300" style="display:none;"><input type="text" name="newtag[sku][]" class="form-control input-sm" placeholder="SKU"></td>'+
                 // '<td width="300"><input type="text" list="variants" name="newtag[variants][]" class="form-control input-sm" placeholder="Variants"></td>'+
                 '<td width="100"><input type="number" name="newtag[qty][]" class="form-control input-sm" placeholder="QTY" required="required"></td>'+
-                '<td width="200" class="text-right"><input type="number" name="newtag[total][]" class="form-control input-sm" placeholder="Total Price" required="required">'+
+                '<td width="200" class="text-right"><input type="text" name="newtag[total][]" class="form-control input-sm" onkeypress="return isNumberKey(event)" onkeyup="splitInDots(this)" placeholder="Total Price" required="required">'+
                 '</td></tr>');
         });
 
@@ -672,7 +674,7 @@
                 '<input type="text" name="name" class="form-control input-sm" placeholder="Product Name" id="name">'+
                 '<input type="text" name="weight" class="form-control input-sm" placeholder="Weight" id="weight">'+
                 '<input type="number" name="qty" class="form-control input-sm" placeholder="QTY" id="qty">'+
-                '<input type="number" class="form-control input-sm" placeholder="Total Price" id="total" name="total">'+
+                '<input type="number" class="form-control input-sm" placeholder="Total Price" id="total" onkeypress="return isNumberKey(event)" onkeyup="splitInDots(this)" name="total">'+
                 '<input type="hidden" name="x" id="x" value="'+mouseX+'">'+
                 '<input type="hidden" id="y" name="y" value="'+mouseY+'">'+
                 '<input type="button" name="btnsave" value="Save" id="btnsave"/>'+
@@ -757,7 +759,7 @@
                 '<td width="200" style="display:none;"><input type="text" name="tag[sku][]" class="form-control input-sm" placeholder="SKU"></td>'+
                 // '<td width="300"><input type="text" list="variants" name="tag[variants][]" class="form-control input-sm" placeholder="Variants"></td>'+
                 '<td width="100"><input type="number" name="tag[qty][]" class="form-control input-sm" value="'+qty+'"></td>'+
-                '<td width="200"><input type="number" name="tag[total][]" class="form-control input-sm" value="'+total+'">'+
+                '<td width="200"><input type="text" name="tag[total][]" class="form-control input-sm" onkeypress="return isNumberKey(event)" onkeyup="splitInDots(this)" value="'+total+'">'+
                 '<input type="hidden" name="tag[id][]" id="tag-id-'+time+'"></td></tr>');
 
 
@@ -876,6 +878,7 @@
             })
                 .success(function( data ) {
                 $('#tag-id-'+time).val(data.message);
+                $('#total_value').val(data.data);
             });
         }
 
@@ -1136,6 +1139,37 @@
         var idArray = e.id.split('|');
         var id = idArray[0];
         $("#"+id+"newpopup").html($("."+id+'new').val());
+    }
+
+    function reverseNumber(input) {
+       return [].map.call(input, function(x) {
+          return x;
+        }).reverse().join('');
+    }
+
+    function plainNumber(number) {
+        return number.split('.').join('');
+    }
+
+    function splitInDots(input) {
+
+        var value = input.value,
+            plain = plainNumber(value),
+            reversed = reverseNumber(plain),
+            reversedWithDots = reversed.match(/.{1,3}/g).join('.'),
+            normal = reverseNumber(reversedWithDots);
+
+        console.log(plain,reversed, reversedWithDots, normal);
+        input.value = normal;
+    }
+
+    function isNumberKey(evt){  <!--Function to accept only numeric values-->
+        //var e = evt || window.event;
+        var charCode = (evt.which) ? evt.which : evt.keyCode
+        if (charCode != 46 && charCode > 31
+        && (charCode < 48 || charCode > 57))
+        return false;
+        return true;
     }
 
 

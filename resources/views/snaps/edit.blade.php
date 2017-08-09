@@ -138,6 +138,8 @@
       $('#reason').on('change', function() {
         if($(this).val() == 'other') {
           $('#other').html('<input type="text" name="other" class="form-control" placeholder="Masukan Alasan Lainya" required>');
+        } else {
+          $('#other').html('');
         }
       });
       var fixed = $('#fixed-point').html();
