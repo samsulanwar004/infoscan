@@ -218,6 +218,10 @@
                                     <label for="location">Location</label>
                                     <input type="text" class="form-control input-sm tab-side" id="location" name="location" placeholder="Enter location" value="{{ $snap->location }}" tabIndex="2">
                                 </div>
+                                <div class="form-group location">
+                                    <label for="location">Latitude & Longitude</label>
+                                    <input type="text" class="form-control input-sm tab-side" id="latlon" name="latlng" disabled placeholder="Latitude & longitude" value="{{ $snap->latitude . ', ' . $snap->longitude }}">
+                                </div>
                                 <div class="form-group purchase_time">
                                     <label for="purchase_time">Purchase Date & Time</label>
                                     <div class='input-group date' id='datetimepicker1'>
