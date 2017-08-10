@@ -108,6 +108,8 @@ class SnapController extends AdminController
             // build code for approve
             $code = $this->getCodeTask($snap->snap_type, $snap->mode_type);
 
+            $receipt = $snap->files()->where('file_mimes', 'like', 'image%')->first();
+
             $files = $snap->files()->where('file_mimes', 'like', 'image%')->paginate(1);
 
             $audios = $snap->files->filter(function($value, $Key) use ($files){
@@ -116,7 +118,7 @@ class SnapController extends AdminController
 
             $paymentMethods = config("common.payment_methods");
 
-            return view('snaps.show', compact('snap', 'paymentMethods', 'audios', 'files', 'code'));
+            return view('snaps.show', compact('snap', 'paymentMethods', 'audios', 'files', 'code', 'receipt'));
         } catch (Exception $e) {
             logger($e->getMessage());
             return view('errors.404');
@@ -234,8 +236,7 @@ class SnapController extends AdminController
                 (new SnapService)->confirmSnap($request, $id);
             } else {
                 $snap = (new SnapService);
-                $snap->updateSnap($request, $id);
-                $totalValue = $snap->getTotalValue();
+                $totalValue = $snap->updateSnap($request, $id);
             }
 
         } catch (Exception $e) {
@@ -253,7 +254,7 @@ class SnapController extends AdminController
         $mode = ($request->has('mode') == true) ? $request->input('mode') : "";
         return response()->json([
             'status' => 'ok',
-            'data' => isset($totalValue) ? clean_numeric($totalValue,'%',false,'.') : '',
+            'data' => isset($totalValue) ? number_format($totalValue,0,0,'.') : '',
             'message' => 'Snaps '.$mode.' successfully updated!',
         ]);
 
@@ -325,16 +326,27 @@ class SnapController extends AdminController
             $t->name = $request->input('name');
             $t->weight = $request->input('weight');
             $t->quantity = $request->input('quantity');
-            $t->total_price = $request->input('total_price');
+            $t->total_price = str_replace('.', '', $request->input('total_price'));
             $t->img_x = $request->input('img_x');
             $t->img_y = $request->input('img_y');
             $t->file()->associate($request->input('file_id'));
 
             $t->save();
 
+            $snapId = $t->file->snap_id;
+
+            $snap = \App\Snap::where('id', $snapId)->first();
+
+            $totalValue = $t->total_price + $snap->total_value;
+
+            $snap->total_value = $totalValue;
+
+            $snap->update();
+
             return response()->json([
-                'status' => 'ok',
+                'status' => 'ok'.$snap->total_value,
                 'message' => $t->id,
+                'data' => isset($totalValue) ? number_format($totalValue,0,0,'.') : '',
             ], 200);
         } catch (\Exception $e) {
             return response()->json([
@@ -407,15 +419,15 @@ class SnapController extends AdminController
 
         try {
             if ($request->input('mode_type') === 'input') {
-                (new SnapService)->updateSnapModeTags($request, $id);
+                $totalValue = (new SnapService)->updateSnapModeTags($request, $id);
             } else if ($request->input('mode_type') === 'tags') {
-                (new SnapService)->updateSnapModeTags($request, $id);
+                $totalValue = (new SnapService)->updateSnapModeTags($request, $id);
             } else if ($request->input('mode_type') === 'no_mode') {
-                (new SnapService)->updateSnapModeTags($request, $id);
+                $totalValue = (new SnapService)->updateSnapModeTags($request, $id);
             } else if ($request->input('mode_type') === 'audios') {
-                (new SnapService)->updateSnapModeAudios($request, $id);
+                $totalValue = (new SnapService)->updateSnapModeAudios($request, $id);
             } else if ($request->input('mode_type') === 'image') {
-                (new SnapService)->updateSnapModeImages($request, $id);
+                $totalValue = (new SnapService)->updateSnapModeImages($request, $id);
             }
 
             $file = (new SnapService)->getSnapFileById($id);
@@ -456,6 +468,7 @@ class SnapController extends AdminController
 
         return response()->json([
             'status' => 'ok',
+            'data' => isset($totalValue) ? number_format($totalValue,0,0,'.') : '',
             'message' => 'Approve this image successfully',
         ]);
     }

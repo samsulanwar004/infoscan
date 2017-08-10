@@ -233,9 +233,9 @@ class SnapService
                         'of_images' => $snap['main']->files->count(),
                         'email' => $snap['main']->member->email,
                         'name' => $snap['main']->member->name,
-                        'estimated_point' => $snap['main']->estimated_point,
-                        'fixed_point' => $snap['main']->fixed_point,
-                        'current_point' => $snap['main']->current_point_member,
+                        'estimated_point' => number_format($snap['main']->estimated_point,0,0,'.'),
+                        'fixed_point' => number_format($snap['main']->fixed_point,0,0,'.'),
+                        'current_point' => number_format($snap['main']->current_point_member,0,0,'.'),
                         'current_level' => $snap['main']->current_level_member,
                         'snapped' => $snap['main']->created_at->toDateTimeString(),
                         'approve_or_reject_date' => $snap['main']->updated_at->toDateTimeString(),
@@ -246,7 +246,18 @@ class SnapService
                         'weight' => trim(str_replace(["\n", "\r", ","], ' ', $tag->weight)),
                         'sku' => trim(str_replace(["\n", "\r", ","], ' ', $tag->sku)),
                         'quantity' => trim(str_replace(["\n", "\r", ","], ' ', $tag->quantity)),
-                        'total_price' => trim(str_replace(["\n", "\r", ","], ' ', $tag->total_price)),
+                        'total_price' => number_format(trim(str_replace(["\n", "\r", ","], ' ', $tag->total_price)),0,0,'.'),
+                        'receipt_id' => trim(str_replace(["\n", "\r", ","], ' ', $snap['main']->receipt_id)),
+                        'location' => trim(str_replace(["\n", "\r", ","], ' ', $snap['main']->location)),
+                        'purchase_time' => trim(str_replace(["\n", "\r", ","], ' ', $snap['main']->purchase_time)),
+                        'outlet_name' => trim(str_replace(["\n", "\r", ","], ' ', $snap['main']->outlet_name)),
+                        'outlet_type' => trim(str_replace(["\n", "\r", ","], ' ', $snap['main']->outlet_type)),
+                        'outlet_city' => trim(str_replace(["\n", "\r", ","], ' ', $snap['main']->outlet_city)),
+                        'outlet_province' => trim(str_replace(["\n", "\r", ","], ' ', $snap['main']->outlet_province)),
+                        'outlet_zip_code' => trim(str_replace(["\n", "\r", ","], ' ', $snap['main']->outlet_zip_code)),
+                        'outlet_rt_rw' => trim(str_replace(["\n", "\r", ","], ' ', $snap['main']->outlet_rt_rw)),
+                        'total_value' => number_format(trim(str_replace(["\n", "\r", ","], ' ', $snap['main']->total_value)),0,0,'.'),
+                        'payment_method' => trim(str_replace(["\n", "\r", ","], ' ', $snap['main']->payment_method)),
                     ];
                 }
             } else {
@@ -258,9 +269,9 @@ class SnapService
                     'of_images' => $snap['main']->files->count(),
                     'email' => $snap['main']->member->email,
                     'name' => $snap['main']->member->name,
-                    'estimated_point' => $snap['main']->estimated_point,
-                    'fixed_point' => $snap['main']->fixed_point,
-                    'current_point' => $snap['main']->current_point_member,
+                    'estimated_point' => number_format($snap['main']->estimated_point,0,0,'.'),
+                    'fixed_point' => number_format($snap['main']->fixed_point,0,0,'.'),
+                    'current_point' => number_format($snap['main']->current_point_member,0,0,'.'),
                     'current_level' => $snap['main']->current_level_member,
                     'snapped' => $snap['main']->created_at->toDateTimeString(),
                     'approve_or_reject_date' => $snap['main']->updated_at->toDateTimeString(),
@@ -272,6 +283,17 @@ class SnapService
                     'sku' => '',
                     'quantity' => '',
                     'total_price' => '',
+                    'receipt_id' => trim(str_replace(["\n", "\r", ","], ' ', $snap['main']->receipt_id)),
+                    'location' => trim(str_replace(["\n", "\r", ","], ' ', $snap['main']->location)),
+                    'purchase_time' => trim(str_replace(["\n", "\r", ","], ' ', $snap['main']->purchase_time)),
+                    'outlet_name' => trim(str_replace(["\n", "\r", ","], ' ', $snap['main']->outlet_name)),
+                    'outlet_type' => trim(str_replace(["\n", "\r", ","], ' ', $snap['main']->outlet_type)),
+                    'outlet_city' => trim(str_replace(["\n", "\r", ","], ' ', $snap['main']->outlet_city)),
+                    'outlet_province' => trim(str_replace(["\n", "\r", ","], ' ', $snap['main']->outlet_province)),
+                    'outlet_zip_code' => trim(str_replace(["\n", "\r", ","], ' ', $snap['main']->outlet_zip_code)),
+                    'outlet_rt_rw' => trim(str_replace(["\n", "\r", ","], ' ', $snap['main']->outlet_rt_rw)),
+                    'total_value' => number_format(trim(str_replace(["\n", "\r", ","], ' ', $snap['main']->total_value)),0,0,'.'),
+                    'payment_method' => trim(str_replace(["\n", "\r", ","], ' ', $snap['main']->payment_method)),
                 ];
             }
 
@@ -279,11 +301,20 @@ class SnapService
 
         if ($data['type'] == 'new') {
             $filename = strtolower(str_random(10)) . '.csv';
-            $title = 'No,Snap Code,Type,# of images,User Details,Name,Estimated Point,Fixed Point,Current Point,Current Level,Aproved / Rejected,Rejection Reason,Receipt Snapped,Approved / Rejected Date,Approved / Rejected By,Product Name,Brands,Weight,SKU,Quantity,Total Price,OCR';
+            $title = 'No,Snap Code,Type,# of images,User Details,Name,Estimated Point,Fixed Point,Current Point,Current Level,Aproved / Rejected,Rejection Reason,Receipt Snapped,Approved / Rejected Date,Approved / Rejected By,Product Name,Weight,Quantity,Total Price,Receipt ID,Location,Purchase Time,Outlet Name,Outlet Type,Outlet City,Outlet Province,Outlet Zipcode,Outlet RT/RW,Total Value,Payment Method,OCR';
             \Storage::disk('csv')->put($filename, $title);
             $no = 1;
             foreach ($results as $row) {
-                $baris = $no . ',' . $row['snap_code'] . ',' . $row['type'] . ',' . $row['of_images'] . ',' . $row['email'] . ',' . $row['name'] . ',' . $row['estimated_point'] . ',' . $row['fixed_point'] . ',' . $row['current_point'] . ',' . $row['current_level'] . ',' . $row['status'] . ',' . $row['reason'] . ',' . $row['snapped'] . ',' . $row['approve_or_reject_date'] . ',' . $row['approve_or_reject_by'] . ',' . $row['product_name'] . ',' . $row['brands'] . ',' . $row['weight'] . ',' . $row['sku'] . ',' . $row['quantity'] . ',' . $row['total_price'] . ',' . $row['ocr'];
+                $baris = $no . ',' . $row['snap_code'] . ',' . $row['type'] . ',' . $row['of_images']
+                . ',' . $row['email'] . ',' . $row['name'] . ',' . $row['estimated_point'] . ','
+                . $row['fixed_point'] . ',' . $row['current_point'] . ',' . $row['current_level'] . ','
+                . $row['status'] . ',' . $row['reason'] . ',' . $row['snapped'] . ','
+                . $row['approve_or_reject_date'] . ',' . $row['approve_or_reject_by'] . ','
+                . $row['product_name'] . ',' . $row['weight'] . ',' . $row['quantity'] . ','
+                . $row['total_price'] . ',' . $row['receipt_id'] . ',' . $row['location'] . ','
+                . $row['purchase_time'] . ',' . $row['outlet_name'] . ',' . $row['outlet_type'] . ','
+                . $row['outlet_city'] . ',' . $row['outlet_province'] . ',' . $row['outlet_zip_code'] . ','
+                . $row['outlet_rt_rw'] . ',' . $row['total_value'] . ','. $row['payment_method'] . ',' . $row['ocr'];
                 \Storage::disk('csv')->append($filename, $baris);
                 $no++;
             }
@@ -293,7 +324,16 @@ class SnapService
                 $filename = $data['filename'];
                 $no = $data['no'];
                 foreach ($results as $row) {
-                    $baris = $no . ',' . $row['snap_code'] . ',' . $row['type'] . ',' . $row['of_images'] . ',' . $row['email'] . ',' . $row['name'] . ',' . $row['estimated_point'] . ',' . $row['fixed_point'] . ',' . $row['current_point'] . ',' . $row['current_level'] . ',' . $row['status'] . ',' . $row['reason'] . ',' . $row['snapped'] . ',' . $row['approve_or_reject_date'] . ',' . $row['approve_or_reject_by'] . ',' . $row['product_name'] . ',' . $row['brands'] . ',' . $row['weight'] . ',' . $row['sku'] . ',' . $row['quantity'] . ',' . $row['total_price'] . ',' . $row['ocr'];
+                    $baris = $no . ',' . $row['snap_code'] . ',' . $row['type'] . ',' . $row['of_images']
+                    . ',' . $row['email'] . ',' . $row['name'] . ',' . $row['estimated_point'] . ','
+                    . $row['fixed_point'] . ',' . $row['current_point'] . ',' . $row['current_level'] . ','
+                    . $row['status'] . ',' . $row['reason'] . ',' . $row['snapped'] . ','
+                    . $row['approve_or_reject_date'] . ',' . $row['approve_or_reject_by'] . ','
+                    . $row['product_name'] . ',' . $row['weight'] . ',' . $row['quantity'] . ','
+                    . $row['total_price'] . ',' . $row['receipt_id'] . ',' . $row['location'] . ','
+                    . $row['purchase_time'] . ',' . $row['outlet_name'] . ',' . $row['outlet_type'] . ','
+                    . $row['outlet_city'] . ',' . $row['outlet_province'] . ',' . $row['outlet_zip_code'] . ','
+                    . $row['outlet_rt_rw'] . ',' . $row['total_value'] . ','. $row['payment_method'] . ',' . $row['ocr'];
                     \Storage::disk('csv')->append($filename, $baris);
                     $no++;
                 }
@@ -521,6 +561,9 @@ class SnapService
 
         $snaps->update();
 
+        $totalValue = $snaps->files->pluck('total')->sum();
+
+        return $totalValue;
     }
 
     public function updateSnapModeInput(Request $request, $id)
@@ -543,7 +586,7 @@ class SnapService
             $t->variants = $tags['variants'][$i];
             $t->weight = $tags['weight'][$i];
             $t->quantity = $tags['qty'][$i];
-            $t->total_price = $tags['total'][$i];
+            $t->total_price = $this->removeDot($tags['total'][$i]);
             $t->crop_file_path = isset($tags['crop_path'][$i]) ? $tags['crop_path'][$i] : null;
             $t->edited_signature = $this->generateSignature($tags['name'][$i], $tags['weight'][$i], $tags['qty'][$i], $tags['total'][$i]);
 
@@ -558,14 +601,16 @@ class SnapService
             $t->variants = $newTags['variants'][$i];
             $t->weight = $newTags['weight'][$i];
             $t->quantity = $newTags['qty'][$i];
-            $t->total_price = $newTags['total'][$i];
+            $t->total_price = $this->removeDot($newTags['total'][$i]);
             $t->crop_file_path = isset($newTags['crop_path'][$i]) ? $newTags['crop_path'][$i] : null;
             $t->file()->associate($id);
 
             $t->save();
         }
 
-        $this->totalValue($tags['total'], $newTags['total'], $id);
+        $totalValue = $this->totalValue($tags['total'], $newTags['total'], $id);
+
+        return $totalValue;
     }
 
     public function updateSnapModeTags(Request $request, $id)
@@ -589,7 +634,7 @@ class SnapService
             $t->sku = $tags['sku'][$i];
             $t->weight = $tags['weight'][$i];
             $t->quantity = $tags['qty'][$i];
-            $t->total_price = $tags['total'][$i];
+            $t->total_price = $this->removeDot($tags['total'][$i]);
             $t->crop_file_path = isset($tags['crop_path'][$i]) ? $tags['crop_path'][$i] : null;
             $t->edited_signature = $this->generateSignature($tags['name'][$i], $tags['weight'][$i], $tags['qty'][$i], $tags['total'][$i]);
 
@@ -605,7 +650,7 @@ class SnapService
             $t->sku = $newTags['sku'][$i];
             $t->weight = $newTags['weight'][$i];
             $t->quantity = $newTags['qty'][$i];
-            $t->total_price = $newTags['total'][$i];
+            $t->total_price = $this->removeDot($newTags['total'][$i]);
             $t->img_x = $newTags['x'][$i];
             $t->img_y = $newTags['y'][$i];
             $t->crop_file_path = isset($newTags['crop_path'][$i]) ? $newTags['crop_path'][$i] : null;
@@ -614,7 +659,9 @@ class SnapService
             $t->save();
         }
 
-        $this->totalValue($tags['total'], $newTags['total'], $id);
+        $totalValue = $this->totalValue($tags['total'], $newTags['total'], $id);
+
+        return $totalValue;
     }
 
     public function updateSnapModeAudios($request, $id)
@@ -638,7 +685,7 @@ class SnapService
             $t->sku = $tags['sku'][$i];
             $t->weight = $tags['weight'][$i];
             $t->quantity = $tags['qty'][$i];
-            $t->total_price = $tags['total'][$i];
+            $t->total_price = $this->removeDot($tags['total'][$i]);
             $t->crop_file_path = isset($tags['crop_path'][$i]) ? $tags['crop_path'][$i] : null;
             $t->edited_signature = $this->generateSignature($tags['name'][$i], $tags['weight'][$i], $tags['qty'][$i], $tags['total'][$i]);
 
@@ -654,14 +701,16 @@ class SnapService
             $t->sku = $newTags['sku'][$i];
             $t->weight = $newTags['weight'][$i];
             $t->quantity = $newTags['qty'][$i];
-            $t->total_price = $newTags['total'][$i];
+            $t->total_price = $this->removeDot($newTags['total'][$i]);
             $t->crop_file_path = isset($newTags['crop_path'][$i]) ? $newTags['crop_path'][$i] : null;
             $t->file()->associate($id);
 
             $t->save();
         }
 
-        $this->totalValue($tags['total'], $newTags['total'], $id);
+        $totalValue = $this->totalValue($tags['total'], $newTags['total'], $id);
+
+        return $totalValue;
     }
 
     public function updateSnapModeImages($request, $id)
@@ -685,7 +734,7 @@ class SnapService
             $t->sku = $tags['sku'][$i];
             $t->weight = $tags['weight'][$i];
             $t->quantity = $tags['qty'][$i];
-            $t->total_price = $tags['total'][$i];
+            $t->total_price = $this->removeDot($tags['total'][$i]);
             $t->crop_file_path = isset($tags['crop_path'][$i]) ? $tags['crop_path'][$i] : null;
             $t->edited_signature = $this->generateSignature($tags['name'][$i], $tags['weight'][$i], $tags['qty'][$i], $tags['total'][$i]);
 
@@ -701,14 +750,16 @@ class SnapService
             $t->sku = $newTags['sku'][$i];
             $t->weight = $newTags['weight'][$i];
             $t->quantity = $newTags['qty'][$i];
-            $t->total_price = $newTags['total'][$i];
+            $t->total_price = $this->removeDot($newTags['total'][$i]);
             $t->crop_file_path = isset($newTags['crop_path'][$i]) ? $newTags['crop_path'][$i] : null;
             $t->file()->associate($id);
 
             $t->save();
         }
 
-        $this->totalValue($tags['total'], $newTags['total'], $id);
+        $totalValue = $this->totalValue($tags['total'], $newTags['total'], $id);
+
+        return $totalValue;
     }
 
     public function generateSignature($name, $weight, $qty, $total)
@@ -726,8 +777,8 @@ class SnapService
 
     public function totalValue($tagsTotal, $newTagsTotal, $id)
     {
-        $tagsTotal = ($tagsTotal == true) ? $tagsTotal : [];
-        $newTagsTotal = ($newTagsTotal == true) ? $newTagsTotal : [];
+        $tagsTotal = ($tagsTotal == true) ? $this->removeDot($tagsTotal) : [];
+        $newTagsTotal = ($newTagsTotal == true) ? $this->removeDot($newTagsTotal) : [];
 
         $total = collect(array_merge($tagsTotal, $newTagsTotal))->sum();
 
@@ -741,7 +792,7 @@ class SnapService
         $snap->total_value = $snap->files->pluck('total')->sum();
         $snap->update();
 
-        $this->setTotalValue($snap->total_value);
+        return $snap->total_value;
     }
 
     public function handleMapAddress($latitude = 0.00000000, $longitude = 0.00000000)
@@ -2062,6 +2113,11 @@ class SnapService
         $config = config('common.queue_list.assign_process');
         $job = (new LocationProcessJob($snap->id, $latitude, $longitude))->onQueue($config)->onConnection(env('INFOSCAN_QUEUE'));
         dispatch($job);
+    }
+
+    private function removeDot($value)
+    {
+        return str_replace('.', '', $value);
     }
 
 }

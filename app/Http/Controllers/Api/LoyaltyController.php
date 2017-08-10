@@ -9,11 +9,14 @@ use Validator;
 use App\MemberReward;
 use App\Mail\OrderLoyalty;
 use Illuminate\Support\Facades\Mail;
+use App\Services\TransactionService;
 
 class LoyaltyController extends BaseApiController
 {
 
     private $member;
+
+    private $status;
 
     const CACHE_EXPIRED_TOKEN = 'expired.token.egift';
 
@@ -108,10 +111,15 @@ class LoyaltyController extends BaseApiController
 
             $result = $this->requestToClient($method, $url, $key, $data, $type);
 
-            $order = $this->saveMemberReward($result, $image);
+            if ($this->getStatusCode() == '200') {
+                //credit point and cash
+                $this->creditCash($result->purchases[0]->value);
 
-            if ($order) {
+                $order = $this->saveMemberReward($result, $image);
+
                 $this->sendOrderLoyaltyEmail($this->member, $order);
+            } else {
+                throw new Exception("Invalid Response from client!", 1);
             }
 
             return $this->success();
@@ -200,6 +208,8 @@ class LoyaltyController extends BaseApiController
             ]
         );
 
+        $this->setStatusCode($res->getStatusCode());
+
         return json_decode($res->getBody());
     }
 
@@ -248,5 +258,97 @@ class LoyaltyController extends BaseApiController
             ->onQueue(config('common.queue_list.member_order_loyalty'));
 
         Mail::to($member->email)->queue($message);
+    }
+
+    private function creditCash($cash)
+    {
+        $memberCode = $this->member->member_code;
+
+        $point = $this->getDeductPoint($memberCode, $cash);
+
+        $transaction = [
+            'member_code' => $memberCode,
+            'point' => $point,
+            'cashout' => $cash,
+        ];
+
+        //credit point to member
+        $this->transactionCredit($transaction);
+
+        $currentPoint = (new TransactionService)->getCreditMember($memberCode);
+        $currentCash = (new TransactionService)->getCashCreditMember($memberCode);
+
+        $this->member->temporary_point = $currentPoint;
+        $this->member->temporary_cash = $currentCash;
+        $this->member->update();
+
+        return true;
+    }
+
+    private function getDeductPoint($memberCode, $cash)
+    {
+        $currentMemberPoint = (new TransactionService)->getCreditMember($memberCode);
+        $currentMemberCash = (new TransactionService)->getCashCreditMember($memberCode);
+
+        $exitRate = $currentMemberCash / $currentMemberPoint;
+
+        $point = $cash / $exitRate;
+
+        if ($currentMemberCash < $cash) {
+            throw new \Exception("Credit Cash not enough!", 1);
+        }
+
+        if ($currentMemberPoint < $point) {
+            throw new \Exception("Credit Point not enough!", 1);
+        }
+
+        return round($point);
+    }
+
+    private function transactionCredit($transaction)
+    {
+        $cashier = config('common.transaction.member.cashier');
+        $cashierMoney = config('common.transaction.member.cashier_money');
+        $data = [
+            'detail_transaction' => [
+                '0' => [
+                    'member_code_from' => $transaction['member_code'],
+                    'member_code_to' => $cashier,
+                    'amount' => $transaction['point'],
+                    'detail_type' => 'db',
+                ],
+                '1' => [
+                    'member_code_from' => $transaction['member_code'],
+                    'member_code_to' => $cashier,
+                    'amount' => $transaction['point'],
+                    'detail_type' => 'cr',
+                ],
+                '2' => [
+                    'member_code_from' => $transaction['member_code'],
+                    'member_code_to' => $cashierMoney,
+                    'amount' => $transaction['cashout'],
+                    'detail_type' => 'db',
+                ],
+                '3' => [
+                    'member_code_from' => $transaction['member_code'],
+                    'member_code_to' => $cashierMoney,
+                    'amount' => $transaction['cashout'],
+                    'detail_type' => 'cr',
+                ],
+            ],
+        ];
+
+        (new TransactionService())->redeemPointToLoyalty($transaction, $data);
+    }
+
+    private function setStatusCode($value)
+    {
+        $this->status = $value;
+        return $this;
+    }
+
+    private function getStatusCode()
+    {
+        return $this->status;
     }
 }

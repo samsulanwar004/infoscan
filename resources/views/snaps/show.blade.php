@@ -1,4 +1,4 @@
-@extends('app', ['mini_sidebar' => true])
+{{-- @extends('app', ['mini_sidebar' => true]) --}}
 
 @section('content')
     @include('partials.content_header', [
@@ -76,7 +76,7 @@
                                                             </div>
                                                         </div>
                                                         <div class="buttons">
-                                                            <input type="range" class="zoom-range">
+                                                            {{-- <input type="range" class="zoom-range"> --}}
                                                             <button class="zoom-in btn btn-primary btn-sm"><i class="fa fa-search-plus" aria-hidden="true"></i></button>
                                                             <button class="zoom-out btn btn-primary btn-sm"><i class="fa fa-search-minus" aria-hidden="true"></i></button>
                                                             <button class="reset btn btn-primary btn-sm">Reset</button>
@@ -109,7 +109,7 @@
                                                             </div>
                                                         </div>
                                                         <div class="buttons">
-                                                            <input type="range" class="zoom-range">
+                                                            {{-- <input type="range" class="zoom-range"> --}}
                                                             <button class="zoom-in btn btn-primary btn-sm"><i class="fa fa-search-plus" aria-hidden="true"></i></button>
                                                             <button class="zoom-out btn btn-primary btn-sm"><i class="fa fa-search-minus" aria-hidden="true"></i></button>
                                                             <button class="reset btn btn-primary btn-sm">Reset</button>
@@ -146,7 +146,7 @@
                                                             </div>
                                                         </div>
                                                         <div class="buttons">
-                                                            <input type="range" class="zoom-range">
+                                                            {{-- <input type="range" class="zoom-range"> --}}
                                                             <button class="zoom-in btn btn-primary btn-sm"><i class="fa fa-search-plus" aria-hidden="true"></i></button>
                                                             <button class="zoom-out btn btn-primary btn-sm"><i class="fa fa-search-minus" aria-hidden="true"></i></button>
                                                             <button class="reset btn btn-primary btn-sm">Reset</button>
@@ -261,7 +261,7 @@
                                 </div>
                                 <div class="form-group total_value">
                                     <label for="total_value">Total Value</label>
-                                    <input type="number" class="form-control input-sm tab-side" id="total_value" placeholder="Enter Total Value" value="{{ clean_numeric($snap->total_value,'%',false,'.') }}" readonly="readonly" tabIndex="10">
+                                    <input type="number" class="form-control input-sm tab-side" id="total_value" placeholder="Enter Total Value" value="{{ number_format($snap->total_value,0,0,'.') }}" readonly="readonly" tabIndex="10">
                                 </div>
                                 <div class="form-group payment_method">
                                     <label for="payment_method">Payment Method</label>
@@ -579,6 +579,8 @@
                 REBEL.removeAllMessageAlert();
                 if (responseData.status == "ok") {
                     REBEL.smallNotifTemplate(responseData.message, '.body', 'success');
+                    var totalValue = responseData.data;
+                    $('#total_value').val(responseData.data);
                 }
             }, false);
 
@@ -638,7 +640,7 @@
                 '<td width="300" style="display:none;"><input type="text" name="newtag[sku][]" class="form-control input-sm" placeholder="SKU"></td>'+
                 // '<td width="300"><input type="text" list="variants" name="newtag[variants][]" class="form-control input-sm" placeholder="Variants"></td>'+
                 '<td width="100"><input type="number" name="newtag[qty][]" class="form-control input-sm" placeholder="QTY" required="required"></td>'+
-                '<td width="200" class="text-right"><input type="number" name="newtag[total][]" class="form-control input-sm" placeholder="Total Price" required="required">'+
+                '<td width="200" class="text-right"><input type="text" name="newtag[total][]" class="form-control input-sm" onkeypress="return isNumberKey(event)" onkeyup="splitInDots(this)" placeholder="Total Price" required="required">'+
                 '</td></tr>');
         });
 
@@ -676,7 +678,7 @@
                 '<input type="text" name="name" class="form-control input-sm" placeholder="Product Name" id="name">'+
                 '<input type="text" name="weight" class="form-control input-sm" placeholder="Weight" id="weight">'+
                 '<input type="number" name="qty" class="form-control input-sm" placeholder="QTY" id="qty">'+
-                '<input type="number" class="form-control input-sm" placeholder="Total Price" id="total" name="total">'+
+                '<input type="number" class="form-control input-sm" placeholder="Total Price" id="total" onkeypress="return isNumberKey(event)" onkeyup="splitInDots(this)" name="total">'+
                 '<input type="hidden" name="x" id="x" value="'+mouseX+'">'+
                 '<input type="hidden" id="y" name="y" value="'+mouseY+'">'+
                 '<input type="button" name="btnsave" value="Save" id="btnsave"/>'+
@@ -761,7 +763,7 @@
                 '<td width="200" style="display:none;"><input type="text" name="tag[sku][]" class="form-control input-sm" placeholder="SKU"></td>'+
                 // '<td width="300"><input type="text" list="variants" name="tag[variants][]" class="form-control input-sm" placeholder="Variants"></td>'+
                 '<td width="100"><input type="number" name="tag[qty][]" class="form-control input-sm" value="'+qty+'"></td>'+
-                '<td width="200"><input type="number" name="tag[total][]" class="form-control input-sm" value="'+total+'">'+
+                '<td width="200"><input type="text" name="tag[total][]" class="form-control input-sm" onkeypress="return isNumberKey(event)" onkeyup="splitInDots(this)" value="'+total+'">'+
                 '<input type="hidden" name="tag[id][]" id="tag-id-'+time+'"></td></tr>');
 
 
@@ -880,6 +882,7 @@
             })
                 .success(function( data ) {
                 $('#tag-id-'+time).val(data.message);
+                $('#total_value').val(data.data);
             });
         }
 
@@ -1140,6 +1143,37 @@
         var idArray = e.id.split('|');
         var id = idArray[0];
         $("#"+id+"newpopup").html($("."+id+'new').val());
+    }
+
+    function reverseNumber(input) {
+       return [].map.call(input, function(x) {
+          return x;
+        }).reverse().join('');
+    }
+
+    function plainNumber(number) {
+        return number.split('.').join('');
+    }
+
+    function splitInDots(input) {
+
+        var value = input.value,
+            plain = plainNumber(value),
+            reversed = reverseNumber(plain),
+            reversedWithDots = reversed.match(/.{1,3}/g).join('.'),
+            normal = reverseNumber(reversedWithDots);
+
+        console.log(plain,reversed, reversedWithDots, normal);
+        input.value = normal;
+    }
+
+    function isNumberKey(evt){  <!--Function to accept only numeric values-->
+        //var e = evt || window.event;
+        var charCode = (evt.which) ? evt.which : evt.keyCode
+        if (charCode != 46 && charCode > 31
+        && (charCode < 48 || charCode > 57))
+        return false;
+        return true;
     }
 
 
