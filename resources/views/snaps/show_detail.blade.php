@@ -5,6 +5,7 @@
 @endif
 {{ csrf_field() }}
 {{ method_field('PUT') }}
+
 <div class="table-responsive table-custom">
 	@php
 		$total_value = $snap->files->pluck('total')->sum();
@@ -27,59 +28,81 @@
 		<tbody id="inputs-show">
 			@if($snap->mode_type == 'image')
                 @foreach($receipt->tag as $tag)
-                <tr id="input-show">
-                    <td>
-                        <a class="btn btn-box-tool" id="remove-show">
-                            <i class="fa fa-remove"></i>
-                        </a>
-                    </td>
-                    <td>
-                        <i class="fa fa-spinner fa-spin fa-2x img-item-loading" id="load-{{ $tag->id }}" aria-hidden="true" style="display: none;"></i>
-                        <div id="kotak-drop" class="{{ $tag->id }}" ondrop="drop(event)" ondragover="allowDrop(event)">
-                            @if($tag->crop_file_path)
-                            <img src="{{ config('filesystems.s3url') . $tag->crop_file_path }}" id="img-cropping">
-                            @endif
-                        </div>
-                        <input type="hidden" name="tag[crop_path][]" id="crop-{{ $tag->id }}" value="{{$tag->crop_file_path}}">
-                    </td>
-                    <td><input type="text" name="tag[name][]" class="form-control input-sm tag-name-show" value="{{ $tag->name }}" placeholder="Product Name" required="required"></td>
-                    <td><input type="text" name="tag[weight][]" class="form-control input-sm" value="{{ $tag->weight }}" placeholder="Weight"></td>
-                    <td style="display:none;"><input type="text" name="tag[brands][]" class="form-control input-sm" value="{{ $tag->brands }}" placeholder="Brands"></td>
-                    <td style="display:none;"><input type="text" name="tag[sku][]" class="form-control input-sm" value="{{ $tag->sku }}" placeholder="SKU"></td>
-                    <!-- <td style="max-width: 100px"><input type="text" list="variants" name="tag[variants][]" class="form-control input-sm" value="{{ $tag->variants }}" placeholder="Variants"></td> -->
-                    <td><input type="number" name="tag[qty][]" class="form-control input-sm" value="{{ $tag->quantity }}" placeholder="QTY" required="required"></td>
-                    <td><input type="text" name="tag[total][]" class="form-control input-sm" onkeypress="return isNumberKey(event)" onkeyup="splitInDots(this)" value="{{ number_format($tag->total_price,0,0,'.') }}" placeholder="Total Price" required="required"></td>
-                    <input type="hidden" name="tag[id][]" value="{{ $tag->id }}">
-                </tr>
-            @endforeach
-        @else
-            @foreach($files->first()->tag as $tag)
-                <tr id="input-show">
-                    <td>
-                        <a class="btn btn-box-tool" id="remove-show">
-                            <i class="fa fa-remove"></i>
-                        </a>
-                    </td>
-                    <td>
-                        <i class="fa fa-spinner fa-spin fa-2x img-item-loading" id="load-{{ $tag->id }}" aria-hidden="true" style="display: none;"></i>
-                        <div id="kotak-drop" class="{{ $tag->id }}" ondrop="drop(event)" ondragover="allowDrop(event)">
-                            @if($tag->crop_file_path)
-                            <img src="{{ config('filesystems.s3url') . $tag->crop_file_path }}" id="img-cropping">
-                            @endif
-                        </div>
-                        <input type="hidden" name="tag[crop_path][]" id="crop-{{ $tag->id }}" value="{{$tag->crop_file_path}}">
-                    </td>
-                    <td><input type="text" name="tag[name][]" class="form-control input-sm tag-name-show" value="{{ $tag->name }}" placeholder="Product Name" required="required"></td>
-                    <td><input type="text" name="tag[weight][]" class="form-control input-sm" value="{{ $tag->weight }}" placeholder="Weight"></td>
-                    <td style="display:none;"><input type="text" name="tag[brands][]" class="form-control input-sm" value="{{ $tag->brands }}" placeholder="Brands"></td>
-                    <td style="display:none;"><input type="text" name="tag[sku][]" class="form-control input-sm" value="{{ $tag->sku }}" placeholder="SKU"></td>
-                    <!-- <td style="max-width: 100px"><input type="text" list="variants" name="tag[variants][]" class="form-control input-sm" value="{{ $tag->variants }}" placeholder="Variants"></td> -->
-                    <td><input type="number" name="tag[qty][]" class="form-control input-sm" value="{{ $tag->quantity }}" placeholder="QTY" required="required"></td>
-                    <td><input type="text" name="tag[total][]" class="form-control input-sm" onkeypress="return isNumberKey(event)" onkeyup="splitInDots(this)" value="{{ number_format($tag->total_price,0,0,'.') }}" placeholder="Total Price" required="required"></td>
-                    <input type="hidden" name="tag[id][]" value="{{ $tag->id }}">
-                </tr>
-            @endforeach
-        @endif
+                    {{-- {{ dump($tag->edited_signature, $tag->created_signature) }} --}}
+
+                    <tr id="input-show" style="{{ $tag->edited_signature !== $tag->current_signature && !empty($tag->edited_signature) ? 'background:bisque' : '' }}">
+                        <td>
+                            <a class="btn btn-box-tool" id="remove-show">
+                                <i class="fa fa-remove"></i>
+                            </a>
+                        </td>
+                        <td>
+                            <i class="fa fa-spinner fa-spin fa-2x img-item-loading" id="load-{{ $tag->id }}" aria-hidden="true" style="display: none;"></i>
+                            <div id="kotak-drop" class="{{ $tag->id }}" ondrop="drop(event)" ondragover="allowDrop(event)">
+                                @if($tag->crop_file_path)
+                                    <img src="{{ config('filesystems.s3url') . $tag->crop_file_path }}" id="img-cropping">
+                                @endif
+                            </div>
+                            <input type="hidden" name="tag[crop_path][]" id="crop-{{ $tag->id }}" value="{{$tag->crop_file_path}}">
+                        </td>
+                        <td>
+                            <input type="text" name="tag[name][]" class="form-control input-sm tag-name-show" value="{{ $tag->name }}" placeholder="Product Name" required="required">
+                        </td>
+                        <td>
+                            <input type="text" name="tag[weight][]" class="form-control input-sm" value="{{ $tag->weight }}" placeholder="Weight">
+                        </td>
+                        <td style="display:none;">
+                            <input type="text" name="tag[brands][]" class="form-control input-sm" value="{{ $tag->brands }}" placeholder="Brands">
+                        </td>
+                        <td style="display:none;">
+                            <input type="text" name="tag[sku][]" class="form-control input-sm" value="{{ $tag->sku }}" placeholder="SKU">
+                        </td>
+                        <!-- <td style="max-width: 100px"><input type="text" list="variants" name="tag[variants][]" class="form-control input-sm" value="{{ $tag->variants }}" placeholder="Variants"></td> -->
+                        <td>
+                            <input type="number" name="tag[qty][]" class="form-control input-sm" value="{{ $tag->quantity }}" placeholder="QTY" required="required">
+                        </td>
+                        <td>
+                            <input
+                                type="text"
+                                name="tag[total][]"
+                                class="form-control input-sm"
+                                onkeypress="return isNumberKey(event)"
+                                onkeyup="splitInDots(this)"
+                                value="{{ number_format($tag->total_price,0,0,'.') }}"
+                                placeholder="Total Price"
+                                required="required">
+                        </td>
+                        <input type="hidden" name="tag[id][]" value="{{ $tag->id }}">
+                    </tr>
+                @endforeach
+            @else
+                @foreach($files->first()->tag as $tag)
+                    <tr id="input-show">
+                        <td>
+                            <a class="btn btn-box-tool" id="remove-show">
+                                <i class="fa fa-remove"></i>
+                            </a>
+                        </td>
+                        <td>
+                            <i class="fa fa-spinner fa-spin fa-2x img-item-loading" id="load-{{ $tag->id }}" aria-hidden="true" style="display: none;"></i>
+                            <div id="kotak-drop" class="{{ $tag->id }}" ondrop="drop(event)" ondragover="allowDrop(event)">
+                                @if($tag->crop_file_path)
+                                <img src="{{ config('filesystems.s3url') . $tag->crop_file_path }}" id="img-cropping">
+                                @endif
+                            </div>
+                            <input type="hidden" name="tag[crop_path][]" id="crop-{{ $tag->id }}" value="{{$tag->crop_file_path}}">
+                        </td>
+                        <td><input type="text" name="tag[name][]" class="form-control input-sm tag-name-show" value="{{ $tag->name }}" placeholder="Product Name" required="required"></td>
+                        <td><input type="text" name="tag[weight][]" class="form-control input-sm" value="{{ $tag->weight }}" placeholder="Weight"></td>
+                        <td style="display:none;"><input type="text" name="tag[brands][]" class="form-control input-sm" value="{{ $tag->brands }}" placeholder="Brands"></td>
+                        <td style="display:none;"><input type="text" name="tag[sku][]" class="form-control input-sm" value="{{ $tag->sku }}" placeholder="SKU"></td>
+                        <!-- <td style="max-width: 100px"><input type="text" list="variants" name="tag[variants][]" class="form-control input-sm" value="{{ $tag->variants }}" placeholder="Variants"></td> -->
+                        <td><input type="number" name="tag[qty][]" class="form-control input-sm" value="{{ $tag->quantity }}" placeholder="QTY" required="required"></td>
+                        <td><input type="text" name="tag[total][]" class="form-control input-sm" onkeypress="return isNumberKey(event)" onkeyup="splitInDots(this)" value="{{ number_format($tag->total_price,0,0,'.') }}" placeholder="Total Price" required="required"></td>
+                        <input type="hidden" name="tag[id][]" value="{{ $tag->id }}">
+                    </tr>
+                @endforeach
+            @endif
 		</tbody>
 	</table>
 	<datalist id="variants">

@@ -20,6 +20,7 @@ use App\Jobs\LocationProcessJob;
 use App\Events\CrowdsourceEvent;
 use App\Events\MemberActivityEvent;
 use App\Member;
+use Auth;
 
 class SnapService
 {
@@ -736,7 +737,9 @@ class SnapService
             $t->quantity = $tags['qty'][$i];
             $t->total_price = $this->removeDot($tags['total'][$i]);
             $t->crop_file_path = isset($tags['crop_path'][$i]) ? $tags['crop_path'][$i] : null;
-            $t->edited_signature = $this->generateSignature($tags['name'][$i], $tags['weight'][$i], $tags['qty'][$i], $tags['total'][$i]);
+            $t->edited_signature = $this->generateSignature($tags['name'][$i], $tags['weight'][$i], $tags['qty'][$i], $this->removeDot($tags['total'][$i]));
+
+            $t->updated_by = Auth::user()->id;
 
             $t->update();
         }
