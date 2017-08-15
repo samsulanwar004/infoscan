@@ -219,8 +219,17 @@ class SnapService
             $ocr = implode(' ', $ocr);
             $approve = isset($snap['main']->approve) ? $snap['main']->approve->name : null;
             $reject = isset($snap['main']->reject) ? $snap['main']->reject->name : null;
+
+            if($snap['main']->status == 'approve') {
+                $approveOrRejectBy = $approve;
+            } elseif ($snap['main']->status == 'reject') {
+                $approveOrRejectBy = $reject;
+            } else {
+                $approveOrRejectBy = '';
+            }
             $type = ($snap['main']->snap_type == 'receipt') ? strtoupper($snap['main']->snap_type) : strtoupper($snap['main']->snap_type) . ' Snap with ' . strtoupper($snap['main']->mode_type) . ' mode';
-            $comment = explode('\n', $snap['main']->comment);
+            $commentArr = explode('\n', $snap['main']->comment);
+            $comment = str_replace(' Alasan :', '', $commentArr);
 
             if (isset($snap['tags'])) {
                 foreach ($snap['tags'] as $tag) {
@@ -238,8 +247,8 @@ class SnapService
                         'current_point' => number_format($snap['main']->current_point_member,0,0,'.'),
                         'current_level' => $snap['main']->current_level_member,
                         'snapped' => $snap['main']->created_at->toDateTimeString(),
-                        'approve_or_reject_date' => $snap['main']->updated_at->toDateTimeString(),
-                        'approve_or_reject_by' => isset($approve) ? $approve : $reject,
+                        'approve_or_reject_date' => ($snap['main']->status == 'pending') ? '' : $snap['main']->updated_at->toDateTimeString(),
+                        'approve_or_reject_by' => $approveOrRejectBy,
                         'ocr' => trim(str_replace(["\n", "\r", ","], ' ', $ocr)),
                         'product_name' => trim(str_replace(["\n", "\r", ","], ' ', $tag->name)),
                         'brands' => trim(str_replace(["\n", "\r", ","], ' ', $tag->brands)),
@@ -249,7 +258,7 @@ class SnapService
                         'total_price' => number_format(trim(str_replace(["\n", "\r", ","], ' ', $tag->total_price)),0,0,'.'),
                         'receipt_id' => trim(str_replace(["\n", "\r", ","], ' ', $snap['main']->receipt_id)),
                         'location' => trim(str_replace(["\n", "\r", ","], ' ', $snap['main']->location)),
-                        'purchase_time' => trim(str_replace(["\n", "\r", ","], ' ', $snap['main']->purchase_time)),
+                        'purchase_time' => ($snap['main']->snap_type == 'receipt') ? trim(str_replace(["\n", "\r", ","], ' ', $snap['main']->purchase_time)) : $snap['main']->created_at->toDateTimeString(),
                         'outlet_name' => trim(str_replace(["\n", "\r", ","], ' ', $snap['main']->outlet_name)),
                         'outlet_type' => trim(str_replace(["\n", "\r", ","], ' ', $snap['main']->outlet_type)),
                         'outlet_city' => trim(str_replace(["\n", "\r", ","], ' ', $snap['main']->outlet_city)),
@@ -274,8 +283,8 @@ class SnapService
                     'current_point' => number_format($snap['main']->current_point_member,0,0,'.'),
                     'current_level' => $snap['main']->current_level_member,
                     'snapped' => $snap['main']->created_at->toDateTimeString(),
-                    'approve_or_reject_date' => $snap['main']->updated_at->toDateTimeString(),
-                    'approve_or_reject_by' => isset($approve) ? $approve : $reject,
+                    'approve_or_reject_date' => ($snap['main']->status == 'pending') ? '' : $snap['main']->updated_at->toDateTimeString(),
+                    'approve_or_reject_by' => $approveOrRejectBy,
                     'ocr' => trim(str_replace(["\n", "\r", ","], ' ', $ocr)),
                     'product_name' => '',
                     'brands' => '',
@@ -285,7 +294,7 @@ class SnapService
                     'total_price' => '',
                     'receipt_id' => trim(str_replace(["\n", "\r", ","], ' ', $snap['main']->receipt_id)),
                     'location' => trim(str_replace(["\n", "\r", ","], ' ', $snap['main']->location)),
-                    'purchase_time' => trim(str_replace(["\n", "\r", ","], ' ', $snap['main']->purchase_time)),
+                    'purchase_time' => ($snap['main']->snap_type == 'receipt') ? trim(str_replace(["\n", "\r", ","], ' ', $snap['main']->purchase_time)) : $snap['main']->created_at->toDateTimeString(),
                     'outlet_name' => trim(str_replace(["\n", "\r", ","], ' ', $snap['main']->outlet_name)),
                     'outlet_type' => trim(str_replace(["\n", "\r", ","], ' ', $snap['main']->outlet_type)),
                     'outlet_city' => trim(str_replace(["\n", "\r", ","], ' ', $snap['main']->outlet_city)),
