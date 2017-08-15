@@ -231,7 +231,11 @@
                                         @if($snap->purchase_time == true)
                                             <input type='text' class="form-control input-sm tab-side" name="purchase_time" value="{{ $snap->purchase_time }}" tabIndex="3"/>
                                         @else
-                                            <input type="text" class="form-control input-sm tab-side" name="purchase_time" value="{{ date('Y-m-d H:i')}}" tabIndex="3">
+                                            @if($snap->snap_type == 'receipt')
+                                                <input type="text" class="form-control input-sm tab-side" name="purchase_time" value="{{ date('Y-m-d H:i')}}" tabIndex="3">
+                                            @else
+                                                <input type="text" class="form-control input-sm tab-side" name="purchase_time" value="{{ $snap->created_at }}" tabIndex="3">
+                                            @endif
                                         @endif
                                     </div>
                                 </div>

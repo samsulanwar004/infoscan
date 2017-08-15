@@ -26,6 +26,6 @@ class Snap extends Model
 
    	public function reject()
    	{
-   		return $this->belongsTo(\App\User::class, 'rejected_by');
+   		return $this->belongsTo(\App\User::class, 'reject_by');
    	}
 }
