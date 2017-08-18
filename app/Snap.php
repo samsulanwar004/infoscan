@@ -29,7 +29,7 @@ class Snap extends Model
 
    	public function reject()
    	{
-   		return $this->belongsTo(User::class, 'rejected_by');
+   		return $this->belongsTo(User::class, 'reject_by');
    	}
 
     public function tags()
