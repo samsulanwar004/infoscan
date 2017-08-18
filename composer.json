@@ -26,7 +26,8 @@
         "intervention/image": "^2.3",
         "edujugon/push-notification": "^2.1",
         "berkayk/onesignal-laravel": "^0.9.7",
-        "guzzlehttp/guzzle": "~6.0"
+        "guzzlehttp/guzzle": "~6.0",
+        "laravelcollective/html": "5.3"
     },
     "require-dev": {
         "fzaninotto/faker": "^1.6",

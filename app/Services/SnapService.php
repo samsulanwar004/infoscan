@@ -716,6 +716,10 @@ class SnapService
 
     public function updateSnapModeImages($request, $id)
     {
+
+        // dd($id);
+        $snapFile = $this->getSnapFileByid($id);
+
         $tags = $request->input('tag');
         $newTags = $request->input('newtag');
         $tagCount = count($tags['name']);
@@ -761,6 +765,16 @@ class SnapService
         }
 
         $totalValue = $this->totalValue($tags['total'], $newTags['total'], $id);
+
+        // set snap edited by current user
+        if (Auth::user() && $snapFile->snap) {
+            $snap = $snapFile->snap;
+            $snap->edited_by = Auth::user()->id;
+            $snap->save();
+        }
+
+
+
 
         return $totalValue;
     }
