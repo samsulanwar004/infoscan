@@ -32,6 +32,25 @@
 
                     Total : {{ $snaps->total() }}
 
+                   {{-- <select class="form-control filter-edited">
+                        <option value="all" @if($status == 'all') selected @endif>Select Status</option>
+                        <option value="approve" @if($status == 'approve') selected @endif>Approved</option>
+                        <option value="reject" @if($status == 'reject') selected @endif>Rejected</option>
+                        <option value="pending" @if($status == 'pending') selected @endif>Pending</option>
+                    </select> --}}
+
+                    {!! Form::select('filter-is-edited',
+                        [
+                            '' => 'Select Edit Status',
+                            'true' => 'Edited',
+                            'false' => 'Not Edited'
+                        ],
+                        '',
+                        [
+                            'class' => 'form-control'
+                        ]
+                    ) !!}
+
                     <select class="form-control filter-status">
                         <option value="all" @if($status == 'all') selected @endif>Select Status</option>
                         <option value="approve" @if($status == 'approve') selected @endif>Approved</option>
@@ -96,12 +115,19 @@ $(document).ready(function () {
         var dateArr = date.split(' - ');
         var startArr = dateArr[0].split("/");
         var endArr = dateArr[1].split("/");
+        var filterEdited = $('select[name=filter-is-edited]').val();
 
-        var start_at = startArr[2]+"-"+startArr[0]+"-"+startArr[1];
-        var end_at = endArr[2]+"-"+endArr[0]+"-"+endArr[1];
+        var start_at = startArr[2] + "-" + startArr[0] + "-" + startArr[1];
+        var end_at = endArr[2] + "-" + endArr[0] + "-" + endArr[1];
         var id = '{{ $userId }}';
 
-        window.location.href = '/crowdsource/'+id+'?date_start='+start_at+'&date_end='+end_at+'&status='+status+'&type='+type+'&mode='+mode;
+        window.location.href = '/crowdsource/' + id +
+            '?date_start=' + start_at +
+            '&date_end=' + end_at +
+            '&status=' + status +
+            '&type=' + type +
+            '&mode=' + mode +
+            '&isEdited=' + filterEdited ;
     });
 
 });

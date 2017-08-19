@@ -173,6 +173,14 @@ class CrowdsourceService
 
         if ($userId != null) {
             $query->where('user_id', '=', $userId);
+
+            if ($data['is_edited'] !== '') {
+                if ($data['is_edited'] == true) {
+                    $query->where('edited_by', '=', $userId);
+                } else {
+                    $query->where('edited_by', '<>', $userId);
+                }
+            }
         }
 
         $query->orderBy('created_at', 'DESC');

@@ -179,6 +179,7 @@ return [
         Elibyy\TCPDF\ServiceProvider::class,
         //Sentry\SentryLaravel\SentryLaravelServiceProvider::class,
         Berkayk\OneSignal\OneSignalServiceProvider::class,
+        Collective\Html\HtmlServiceProvider::class,
 
 
         /*
@@ -246,6 +247,8 @@ return [
         //'Sentry' => Sentry\SentryLaravel\SentryFacade::class,
         'OneSignal' => Berkayk\OneSignal\OneSignalFacade::class,
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
+        'Form' => Collective\Html\FormFacade::class,
+        'Html' => Collective\Html\HtmlFacade::class,
     ],
 
 ];

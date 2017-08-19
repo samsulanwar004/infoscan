@@ -41,6 +41,7 @@ class CrowdsourceController extends AdminController
             $mode = $request->input('mode');
             $modeFilter = config("common.snap_mode.$mode");
             $status = $request->input('status');
+            $isEdited = $request->has('isEdited') ? $request->isEdited : '';
 
             $data = [
                 'start_date' => $dateStart,
@@ -48,6 +49,7 @@ class CrowdsourceController extends AdminController
                 'snap_type' => $typeFilter,
                 'mode_type' => $modeFilter,
                 'status' => $status,
+                'is_edited' => $isEdited,
             ];
 
             $dateStartArr = explode('-', $dateStart);
@@ -55,13 +57,13 @@ class CrowdsourceController extends AdminController
             $date = $dateStartArr[1].'/'.$dateStartArr[2].'/'.$dateStartArr[0].' - '.$dateEndArr[1].'/'.$dateEndArr[2].'/'.$dateEndArr[0];
 
             $status = $status;
-
             $snaps = $snapsCs->getSnapsCsByFilter($data, $id)
                 ->appends('date_start', $dateStart)
                 ->appends('date_end', $dateEnd)
                 ->appends('status', $status)
                 ->appends('type', $type)
-                ->appends('mode', $mode);
+                ->appends('mode', $mode)
+                ->appends('isEdited', $isEdited);
         } else {
             $snaps = $snapsCs->getSnapsCs($id);
         }
