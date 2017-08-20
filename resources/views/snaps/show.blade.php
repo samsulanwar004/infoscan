@@ -178,7 +178,7 @@
                                   <div class="timeline-item no-margin-right">
                                     <span class="time"><i class="fa fa-clock-o"></i> {{ $snap->created_at->diffForHumans() }}</span>
 
-                                    <h3 class="timeline-header">Detail product</h3>
+                                    <h3 class="timeline-header">Detail product @if($snap->total_item > 0) <small>Total item parsed: {{ $snap->total_item }} @endif</small></h3>
 
                                     <div class="timeline-body snaps-detail">
                                       @include('snaps.show_detail', ['snap' => $snap])
